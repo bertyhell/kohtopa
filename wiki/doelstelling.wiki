@@ -18,7 +18,7 @@ http://groups.google.com/group/kohtopa
 -zoeken naar vrij koten (bezoek aanvragen)
 
 Opties
--slimme energie meters (/ kamer)
+  *slimme energie meters (/ kamer)
 -bijhouden verbruiik + melden bij overdadig gebruik
 -webapp optie in engels
 
