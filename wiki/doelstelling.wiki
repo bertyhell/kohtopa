@@ -11,11 +11,11 @@ http://groups.google.com/group/kohtopa
   * aanwezig meubulair en sanitair
   * beheer gemeenschappelijke ruimtes
 
-===facturen naar studenten toe===
+facturen naar studenten toe
   * beheer verbruik`
-===problemen melden naar kotbaar via web===
-===overzicht kosten + kalender===
-===zoeken naar vrij koten (bezoek aanvragen)===
+problemen melden naar kotbaar via web
+overzicht kosten + kalender
+zoeken naar vrij koten (bezoek aanvragen)
 
 ===Opties===
   * slimme energie meters (/ kamer)
