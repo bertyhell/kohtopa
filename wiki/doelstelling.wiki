@@ -1,0 +1,23 @@
+Studentenkot applicatie
+
+naam: kohtopa
+
+http://groups.google.com/group/kohtopa
+
+-beheer verschillende kamers
+ 	-bewoners
+ 	-schade, problemen
+	-aanwezig meubulair en sanitair
+	-beheer gemeenschappelijke ruimtes
+
+-facturen naar studenten toe
+	-beheer verbruik 
+-problemen melden naar kotbaar via web
+-overzicht kosten + kalender
+-zoeken naar vrij koten (bezoek aanvragen)
+
+opties
+-slimme energie meters (/ kamer)
+-bijhouden verbruiik + melden bij overdadig gebruik
+-webapp optie in engels
+
