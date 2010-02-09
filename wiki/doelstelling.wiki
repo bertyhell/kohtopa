@@ -17,7 +17,7 @@ http://groups.google.com/group/kohtopa
 -overzicht kosten + kalender
 -zoeken naar vrij koten (bezoek aanvragen)
 
-opties
+Opties
 -slimme energie meters (/ kamer)
 -bijhouden verbruiik + melden bij overdadig gebruik
 -webapp optie in engels
