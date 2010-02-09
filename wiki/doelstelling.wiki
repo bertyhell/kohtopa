@@ -21,3 +21,20 @@ opties
 -bijhouden verbruiik + melden bij overdadig gebruik
 -webapp optie in engels
 
+
+actoren:
+-kotbaas
+-studenten op kot
+-externen (zoeken kot)
+
+hardware:
+asp.net server
+pc met java JRE 1.6
+(e-id card lezer)
+internet
+
+
+
+
+
+
