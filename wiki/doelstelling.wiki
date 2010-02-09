@@ -6,16 +6,16 @@
 http://groups.google.com/group/kohtopa
 
 -beheer verschillende kamers
- 	-bewoners
- 	-schade, problemen
-	-aanwezig meubulair en sanitair
-	-beheer gemeenschappelijke ruimtes
+  * bewoners
+  * schade, problemen
+  * aanwezig meubulair en sanitair
+  * beheer gemeenschappelijke ruimtes
 
 -facturen naar studenten toe
-	-beheer verbruik 
--problemen melden naar kotbaar via web
--overzicht kosten + kalender
--zoeken naar vrij koten (bezoek aanvragen)
+	  * beheer verbruik 
+  * problemen melden naar kotbaar via web
+  * overzicht kosten + kalender
+  * zoeken naar vrij koten (bezoek aanvragen)
 
 Opties
   *slimme energie meters (/ kamer)
@@ -24,37 +24,37 @@ Opties
 
 ----
 ==actoren:==
-  *kotbaas
-  *studenten op kot
-  *externen (zoeken kot)
+  * kotbaas
+  * studenten op kot
+  * externen (zoeken kot)
 
 ----
 ==hardware:==
-  *asp.net server
-  *pc met java JRE 1.6
-  *(e-id card lezer)
-  *internet
+  * asp.net server
+  * pc met java JRE 1.6
+  * (e-id card lezer)
+  * internet
 
 ----
 ==gui ==
 
 +desktop app:
-  *kot toevoegen
-  *koten beheren (venster per kot)
-  *kosten beheren
-  *berichten beheer
+  * kot toevoegen
+  * koten beheren (venster per kot)
+  * kosten beheren
+  * berichten beheer
 
 +web app bewoners
-  *contact met kotbaas
-  *verbruik bekijken (internet beheren)
-  *vorige facturen (kalender toekomstige)
+  * contact met kotbaas
+  * verbruik bekijken (internet beheren)
+  * vorige facturen (kalender toekomstige)
 
 
 +web app externen
-  *zoeken koten
-  *contact kotbaas
+  * zoeken koten
+  * contact kotbaas
 
 
 ----
 ==gegevens scrapen:==
-  *enkele reele waarden manueel invoeren de rest random interpoleren
+  * enkele reele waarden manueel invoeren de rest random interpoleren
