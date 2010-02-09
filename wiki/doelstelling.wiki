@@ -15,7 +15,6 @@ facturen naar studenten toe
   * beheer verbruik
 problemen melden naar kotbaar via web<br>
 overzicht kosten + kalender<br>
-
 zoeken naar vrij koten (bezoek aanvragen)
 
 ===Opties===
