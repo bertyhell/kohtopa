@@ -1,7 +1,7 @@
----Studentenkot applicatie---
+=Studentenkot applicatie=
 
-naam: kohtopa
----
+==naam: kohtopa==
+----
 
 http://groups.google.com/group/kohtopa
 
@@ -22,21 +22,21 @@ opties
 -bijhouden verbruiik + melden bij overdadig gebruik
 -webapp optie in engels
 
----
-actoren:
+----
+==actoren:==
 -kotbaas
 -studenten op kot
 -externen (zoeken kot)
 
----
-hardware:
+----
+==hardware:==
 asp.net server
 pc met java JRE 1.6
 (e-id card lezer)
 internet
 
----
-gui 
+----
+==gui ==
 
 +desktop app:
 kot toevoegen
@@ -55,6 +55,6 @@ zoeken koten
 contact kotbaas
 
 
----
-gegevens scrapen:
+----
+==gegevens scrapen:==
 enkele reele waarden manueel invoeren de rest random interpoleren
