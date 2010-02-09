@@ -12,7 +12,7 @@ beheer verschillende kamers
   * beheer gemeenschappelijke ruimtes
 
 facturen naar studenten toe
-  * beheer verbruik`
+  * beheer verbruik
 
 problemen melden naar kotbaar via web
 
