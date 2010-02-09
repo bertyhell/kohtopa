@@ -36,19 +36,19 @@ internet
 
 gui 
 
-\*desktop app:
++desktop app:
 kot toevoegen
 koten beheren (venster per kot)
 kosten beheren
 berichten beheer
 
-\*web app bewoners
++web app bewoners
 contact met kotbaas
 verbruik bekijken (internet beheren)
 vorige facturen (kalender toekomstige)
 
 
-\*web app externen
++web app externen
 zoeken koten
 contact kotbaas
 
@@ -56,4 +56,3 @@ contact kotbaas
 
 gegevens scrapen:
 enkele reele waarden manueel invoeren de rest random interpoleren
-
