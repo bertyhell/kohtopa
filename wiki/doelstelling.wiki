@@ -19,42 +19,42 @@ http://groups.google.com/group/kohtopa
 
 Opties
   *slimme energie meters (/ kamer)
--bijhouden verbruiik + melden bij overdadig gebruik
--webapp optie in engels
+  *bijhouden verbruiik + melden bij overdadig gebruik
+  *webapp optie in engels
 
 ----
 ==actoren:==
--kotbaas
--studenten op kot
--externen (zoeken kot)
+  *kotbaas
+  *studenten op kot
+  *externen (zoeken kot)
 
 ----
 ==hardware:==
-asp.net server
-pc met java JRE 1.6
-(e-id card lezer)
-internet
+  *asp.net server
+  *pc met java JRE 1.6
+  *(e-id card lezer)
+  *internet
 
 ----
 ==gui ==
 
 +desktop app:
-kot toevoegen
-koten beheren (venster per kot)
-kosten beheren
-berichten beheer
+  *kot toevoegen
+  *koten beheren (venster per kot)
+  *kosten beheren
+  *berichten beheer
 
 +web app bewoners
-contact met kotbaas
-verbruik bekijken (internet beheren)
-vorige facturen (kalender toekomstige)
+  *contact met kotbaas
+  *verbruik bekijken (internet beheren)
+  *vorige facturen (kalender toekomstige)
 
 
 +web app externen
-zoeken koten
-contact kotbaas
+  *zoeken koten
+  *contact kotbaas
 
 
 ----
 ==gegevens scrapen:==
-enkele reele waarden manueel invoeren de rest random interpoleren
+  *enkele reele waarden manueel invoeren de rest random interpoleren
