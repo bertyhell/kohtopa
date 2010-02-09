@@ -12,10 +12,10 @@ http://groups.google.com/group/kohtopa
   * beheer gemeenschappelijke ruimtes
 
 ===facturen naar studenten toe===
-beheer verbruik`
-`problemen melden naar kotbaar via web
-  * overzicht kosten + kalender
-  * zoeken naar vrij koten (bezoek aanvragen)
+  * beheer verbruik`
+===problemen melden naar kotbaar via web===
+===overzicht kosten + kalender===
+===zoeken naar vrij koten (bezoek aanvragen)===
 
 ===Opties===
   * slimme energie meters (/ kamer)
