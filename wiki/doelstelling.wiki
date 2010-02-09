@@ -39,6 +39,7 @@ internet
 ==gui ==
 
 +desktop app:
+
 kot toevoegen
 koten beheren (venster per kot)
 kosten beheren
