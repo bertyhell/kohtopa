@@ -13,7 +13,7 @@ beheer verschillende kamers
 
 facturen naar studenten toe
   * beheer verbruik
-problemen melden naar kotbaar via web<br>
+problemen melden naar kotbaas via web<br>
 overzicht kosten + kalender<br>
 zoeken naar vrij koten (bezoek aanvragen)
 ----
