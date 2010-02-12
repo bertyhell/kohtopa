@@ -36,9 +36,9 @@ zoeken naar vrij koten (bezoek aanvragen)
   * evt. e-id card lezer
   * internet
   * webcam
-  *  * om de 10 sec foto (1 dag bijgehouden)
-  *  * bij beweging extra foto van de persoon (1 week bijgehouden)
-  *  * opgeslagen per kot, bij problemen mogelijkheid tot ophalen
+    * om de 10 sec foto (1 dag bijgehouden)
+    * bij beweging extra foto van de persoon (1 week bijgehouden)
+    * opgeslagen per kot, bij problemen mogelijkheid tot ophalen
 
 ----
 ==gui ==
