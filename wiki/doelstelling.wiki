@@ -1,3 +1,129 @@
+=Studentkot Applicatie: Kohtopa=
+
+ 
+
+==Korte Inleiding==
+
+ 
+
+De desktopapplicatie staat in voor het beheer van verschillende studentenkamers door de kotbaas.
+
+Alle gegevens worden bewaard in een centrale databank die zowel via een webapplicatie als een desktopapplicate geraadpleegd kan worden.
+
+De webapplicatie is bestemd voor zowel huurders als externe studenten die op zoek zijn naar een kot.
+
+Daartegenover is de desktopapplicatie bedoeld voor de kotbaas om zijn kamers te beheren.
+
+ 
+
+==Desktopapplicatie==
+
+ 
+
+Dit onderdeel wordt volledig geschreven in JavaSwing. De toegang tot de database wordt verzorgd door middel van Java Database Connectivity (JDBC).
+
+Kamers en gebouwen worden door de kotbaas toegevoegd aan de databank samen met alle bijhorende exacte informatie. Deze informatie omvat kostprijs, oppervlakte, grondplan gebouw en stad, locatie, meubilering, aantal ramen, aantal stopcontacten, internet, aanwezigheid distributie, oriëntatie ramen (windrichting), huidige staat, schade, foto’s kamer en gevel, meterstanden., bewakingsfoto’s van de gemeenschappelijke ruimten.
+
+Liggingen worden gescraped van Google Maps. Foto’s van de kamers en het gebouw kunnen door de kotbaas toegevoegd worden.
+
+De bewakingsfoto’s van gemeenschappelijke ruimten worden door middel van een geïnstalleerde webcam. De besturing van de webcam wordt geïmplementeerd door een C# programma die op een PC in het kot draait. De foto's worden bewaard op een locale databank. Er wordt om de 10 seconden een foto genomen met de webcam. Deze foto’s worden standaard 1 dag bewaard. Indien er een zeer grote activiteit wordt waargenomen wordt er elke seconde een afbeelding genomen en wordt dit aan de kotbaas gemeld. Deze foto's worden een week bewaard. De kotbaas heeft de mogelijkheid om de foto's te downloaden van de computers op het kot, hiervoor kan hij gebruik maken van de desktopapplicatie. Ook kan de mate van verwittiging aangepast worden.
+
+De kotbaas heeft enkel toegang tot zijn eigen kamers en gebouwen. Om hiervoor te zorgen moet hij bij het opstarten van de desktopapplicatie inloggen.
+
+De kotbaas kan elke maand een factuur laten genereren per huurder. Hij heeft ook de mogelijkheid om facturen van vorige perioden te raadplegen. Deze facturen kunnen dan door de huurders via de webapplicatie bekeken worden, deze worden ook automatisch toegestuurd via email.
+
+De kotbaas dient zelf de meterstanden aan te vullen als hij een goed overzicht van het gebruik wil zien. Er zal ook een mogelijkheid zijn in de webapplicatie zodat de huurders ook zelf hun meterstanden kunnen doorgeven. Indien de meterstanden een te grote afwijking vertonen wordt er automatisch een bericht gestuurd naar zowel huurder als kotbaas om deze te verwittigen van het overmatig gebruik.
+
+De kotbaas kan een kalender opstellen met de GUI die ook door de huurders via de webapplicatie geraadpleegd kan worden. Deze kalender bevat de deadlines van de te betalen facturen en algemene dringende berichten voor zijn huurders. Hierop kunnen ook de taakverdelingen van de huurders staan, de kotbaas kan deze taken delegeren aan individuele studenten indien gewenst. Het is dan de applicatie die automatisch een planning kan aanmaken per gebouw voor de gewenste taken.
+
+Bij een te late betaling van een factuur wordt door een SMS-server een bericht gestuurd naar de desbetreffende student. Bij zeer dringende berichten van de kotbaas kan deze ook gebruikt worden. Om deze te versturen kan hij gebruik maken van de GUI. Een voorbeeld van een dringend bericht kan zijn dat iemand van het kot een gaslek in de keuken heeft gemeld en de kotbaas wil dit zo vlug mogelijk aan alle huurders van dit gebouw laten weten.
+
+Voor schetsen van de GUI zie documenten discussiegroep Kohtopa, idem voor het raadplegen van het klassendiagram.
+
+ 
+
+==Webapplicatie==
+
+ 
+
+De webapplicatie is bedoeld voor externe studenten die een kot zoeken en huurders.
+
+De verbinding met de databank wordt hier verzorgd door ADO.NET.
+
+De unieke identificatie van de huurder wordt verzekerd door inloggen met gebruikersnaam en paswoord verkregen bij het tekenen van het contract.
+
+Zoals vermeld bij de desktopapplicatie kunnen de huurders hier hun maandelijkse facturen raadplegen en printen. Alsook kunnen de studenten hun maandelijks energieverbruik zien. Elke student kan een persoonlijke kalender raadplegen met zijn taken, deadlines van facturen en enkele dringende boodschappen (bijvoorbeeld: "Energieverbruik alarmerend hoog").
+
+De huurders zullen hier zelf de mogelijkheid krijgen om de meterstanden door te geven, zo kunnen ze indien ze dit wensen beter op de hoogte blijven van hun verbruik indien de kotbaas de meterstanden niet elke maand komt opmeten.
+
+Huurders kunnen via een contactformulier eenvoudig contact opnemen  met de kotbaas indien dit nodig is.
+
+Voor externen die op zoek zijn naar een kot zijn er zoekformulieren voorzien om vrijstaande koten en koten die vrijkomen de doorzoeken. Er kan gezocht worden op (straat)naam, afstand tot school, prijsklasse en oppervlakte. Er zijn foto's beschikbaar van het gebouw en de kamers(indien ingegeven door de kotbaas). Bij enkele grote koten zal er bovendien een plattegrond beschikbaar zijn met daarop de verschillende koten. Deze kan ingesteld worden door de kotbaas in de desktopapplicatie. Er worden bovendien bijkomende gegevens getoond, zoals internetaansluiting, aantal stopcontacten, ramen, ... Ook op deze gegevens zullen de externen hun zoekopdracht kunnen verfijnen.
+
+Ook de externen kunnen via een contactformulier de kotbaas contacteren indien er vragen zijn of om concrete afspraken te maken in geval van interesse.
+
+ 
+
+==Hardware==
+
+ 
+
+Om de sms'en te versturen wordt een sms-server gebruikt. Deze kan zowel automatisch(bij te laat betalen factuur) als manueel (bij andere belangrijke mededelingen) aangesproken worden via de GUI.
+
+Verder wordt in elk pand een webcam geïnstalleerd in een openbare ruimte. Dit verhoogt de veiligheid van de huurders. De besturing van deze webcam wordt geïmplementeerd in C#.
+
+Ten slotte kan er door de studenten een eID-kaart  worden gebruikt om vlug zijn gegevens te verstrekken aan de kotbaas of om digitaal het huurcontract te ondertekenen. Hiervoor gebruiken we uiteraard een eID-kaartlezer.
+
+ 
+
+==Databank==
+
+ 
+
+Om de gegevens te delen tussen de desktopapplicatie en de webapplicatie mogelijk te maken,  gebruiken we een Oracle  RDMBS. Voor meer informatie en de opbouw van deze databank verwijzen we naar de discussiegroep Kohtopa.
+
+ 
+
+==Gegevens Scrapen==
+
+ 
+
+Het scrapen van gegevens doen we via perl-sciptjes. Het vinden van personen en adressen enerzijds en het scrapen van kotadressen  met bijhorende foto’s anderszijds gebeurt op een onafhankelijke basis, later worden beiden samengevoegd. Wegens privacyredenen zijn gegevens over huidige huurders en hun adres niet te vinden.
+
+De websites die we gebruiken zijn:
+
+Koten::
+
+  Kotatgent: http://www.gent.be/eCache/THE/1/27/923.html
+
+  Op kot in gent: http://www.opkotingent.be/
+
+  Alle koten:  http://www.allekoten.be/
+
+Namen:
+
+  voornamen: http://www.babygrafix.be
+
+  familienamen: http://www.vroomen.be/linders/surnames100.php?topnum=1000&tree=1
+
+Straten:
+
+    http://www.bloggen.be/stratenlijst/
+
+    http://geo-vlaanderen.gisvlaanderen.be/Geo-Vlaanderen/geosjabloonnew/sjbasp/crab/crab.aspx
+
+De ligging van de koten worden gehaald van Google Maps, dit is mogelijk door het meegeven van parameters die te vinden zijn in de API (http://code.google.com/intl/nl/apis/maps/documentation/reference.html).
+
+ 
+
+==Besluit==
+
+ 
+
+Samengevat is het systeem te gebruiken door 3 verschillende actoren, namelijk de kotbaas zelf, huurders en externen. Elke actor krijgt een eigenlijke functionaliteit toegewezen door het systeem. Unieke identificatie is vereist, behalve voor externen. 
+
+
+
 =Studentenkot applicatie=
 
 ==naam: kohtopa==
