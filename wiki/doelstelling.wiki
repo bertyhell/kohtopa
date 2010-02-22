@@ -46,9 +46,9 @@ Voor schetsen van de GUI zie documenten discussiegroep Kohtopa, idem voor het ra
 
  
 
-De webapplicatie is bedoeld voor externe studenten die een kot zoeken en huurders.
+De webapplicatie is enerzijds bedoeld voor externe studenten die een kot zoeken en anderzijds de huurders.
 
-De verbinding met de databank wordt hier verzorgd door ADO.NET.
+De webapplicatie wordt geschreven in ASP.NET en de verbinding met de databank wordt hier verzorgd door ADO.NET.
 
 De unieke identificatie van de huurder wordt verzekerd door inloggen met gebruikersnaam en paswoord verkregen bij het tekenen van het contract.
 
