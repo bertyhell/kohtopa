@@ -7,3 +7,5 @@ C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\R
 C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Release\KohtopaWebcam.csproj.GenerateResource.Cache
 C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Release\KohtopaWebcam.exe
 C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Release\KohtopaWebcam.pdb
+C:\Documents and Settings\Ruben\Bureaublad\VOP\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Release\KohtopaWebcam.exe
+C:\Documents and Settings\Ruben\Bureaublad\VOP\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Release\KohtopaWebcam.pdb
