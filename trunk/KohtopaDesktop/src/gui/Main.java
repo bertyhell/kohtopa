@@ -6,6 +6,7 @@ import gui.actions.EditBuildingAction;
 import gui.actions.EditTaskAction;
 import gui.actions.RemoveBuildingAction;
 import gui.actions.RemoveTaskAction;
+import Language.Language;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.io.File;
@@ -21,9 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
 /**
  *
@@ -46,12 +45,13 @@ public class Main extends JFrame {
 
 	private Main() {
 		lang = ResourceBundle.getBundle("Language/language_ENG");
-//		//write language file
-//		try {
-//			serialize();
-//		} catch (Exception ex) {
-//			JOptionPane.showMessageDialog(instance, lang.getString("errWriteLangFile"), lang.getString("errWriteLangFileTitle"), JOptionPane.ERROR_MESSAGE);
-//		}
+		//write language file
+		try {
+			serialize();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(instance, lang.getString("errWriteLangFile"), lang.getString("errWriteLangFileTitle"), JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
+		}
 
 
 //
@@ -167,17 +167,26 @@ public class Main extends JFrame {
 //		m.marshal(new Language(), fo);
 //
 //	}
-	
 	public static void serialize() throws Exception {
-		FileOutputStream fos = null;
-		fos = new FileOutputStream("Translation_EN.xml");
-		JAXBContext context = JAXBContext.newInstance(Hashmap.class);
+		JAXBContext context = JAXBContext.newInstance(HashMap.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		FileOutputStream fo = new FileOutputStream(new File("Translation_EN.xml"));
-		m.marshal(new HashMap<String, String>(), fo);
+
+
+		
+		HashMap<String, String> strings = new HashMap<String, String>();
+		strings.put("errWriteLangFile", "failed to write language file");
+		strings.put("errWriteLangFileTitle", "language fail");
+		strings.put("errLookAndFeelNotFound", "Failed to locate look and feel nimbus\\nYou need version 1.6_18 of jre for smooth look and feel");
+		strings.put("errLookAndFeelNotFoundTitle", "Look and Feel not found");
+		strings.put("titleAddRemove", "Add / Remove");
+		strings.put("titleCalendar", "Calendar");
+		strings.put("titleJFrameDesktopMain", "Kohtopa Desktop Application");
+
+		Language langs = new Language(strings);
+
+		m.marshal(langs, fo);
 
 	}
-
-
 }
