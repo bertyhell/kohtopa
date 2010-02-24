@@ -17,7 +17,8 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-//jklmeajklmear jkeamjkleraklmjeraklmjjklm
+            Language.read("language_EN.xml");
+            Language.write();
         }
     }
 }
