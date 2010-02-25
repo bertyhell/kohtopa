@@ -1,19 +1,16 @@
 package gui.actions;
 
+import Language.Language;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author bert
- */
-public class RemoveRoomAction extends AbstractAction{
+public class RoomEditAction extends AbstractAction {
 
-	public RemoveRoomAction(Icon img) {
-		super("Remove Building", img);
+	public RoomEditAction(Icon img) {
+		super(Language.getString("editRoom"), img);
 		this.setEnabled(false);
 	}
 

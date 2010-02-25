@@ -1,5 +1,6 @@
 package gui.actions;
 
+import Language.Language;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -10,10 +11,11 @@ import javax.swing.JOptionPane;
  *
  * @author bert
  */
-public class AddTaskAction extends AbstractAction {
+public class TaskEditAction extends AbstractAction {
 
-	public AddTaskAction(Icon img) {
-		super("Add Task", img);
+	public TaskEditAction(Icon img) {
+		super(Language.getString("editTask"), img);
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
