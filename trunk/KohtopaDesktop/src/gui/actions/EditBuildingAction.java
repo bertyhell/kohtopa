@@ -14,6 +14,7 @@ public class EditBuildingAction extends AbstractAction {
 
 	public EditBuildingAction(Icon img) {
 		super("Edit Building", img);
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
