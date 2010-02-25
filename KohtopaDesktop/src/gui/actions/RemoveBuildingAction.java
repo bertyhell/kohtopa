@@ -14,6 +14,7 @@ public class RemoveBuildingAction extends AbstractAction{
 
 	public RemoveBuildingAction(Icon img) {
 		super("Remove Building", img);
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {

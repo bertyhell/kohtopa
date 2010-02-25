@@ -10,10 +10,10 @@ import javax.swing.JOptionPane;
  *
  * @author bert
  */
-public class RemoveTaskAction extends AbstractAction {
+public class EditRoomAction extends AbstractAction {
 
-	public RemoveTaskAction(Icon img) {
-		super("Add Task", img);
+	public EditRoomAction(Icon img) {
+		super("Edit Building", img);
 		this.setEnabled(false);
 	}
 

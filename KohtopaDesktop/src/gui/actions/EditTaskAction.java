@@ -14,6 +14,7 @@ public class EditTaskAction extends AbstractAction {
 
 	public EditTaskAction(Icon img) {
 		super("Add Task", img);
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
