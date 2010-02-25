@@ -5,15 +5,16 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
+import Language.Language;
 
 /**
  *
  * @author bert
  */
-public class AddBuildingAction extends AbstractAction {
+public class BuildingAddAction extends AbstractAction {
 
-	public AddBuildingAction(Icon img) {
-		super("Add Building", img);
+	public BuildingAddAction(Icon img) {
+		super(Language.getString("addBuilding"), img);
 	}
 
 	public void actionPerformed(ActionEvent e) {

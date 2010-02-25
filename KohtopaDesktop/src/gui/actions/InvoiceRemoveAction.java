@@ -1,5 +1,6 @@
 package gui.actions;
 
+import Language.Language;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -10,10 +11,10 @@ import javax.swing.JOptionPane;
  *
  * @author bert
  */
-public class RemoveTaskAction extends AbstractAction {
+public class InvoiceRemoveAction extends AbstractAction{
 
-	public RemoveTaskAction(Icon img) {
-		super("Add Task", img);
+	public InvoiceRemoveAction(Icon img) {
+		super(Language.getString("removeInvoices"), img);
 		this.setEnabled(false);
 	}
 

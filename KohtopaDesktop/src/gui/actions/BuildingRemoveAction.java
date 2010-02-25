@@ -1,5 +1,6 @@
 package gui.actions;
 
+import Language.Language;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -10,10 +11,11 @@ import javax.swing.JOptionPane;
  *
  * @author bert
  */
-public class AddRoomAction extends AbstractAction {
+public class BuildingRemoveAction extends AbstractAction{
 
-	public AddRoomAction(Icon img) {
-		super("Add Building", img);
+	public BuildingRemoveAction(Icon img) {
+		super(Language.getString("removeBuildings"), img);
+		this.setEnabled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
