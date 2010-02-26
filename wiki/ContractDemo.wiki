@@ -1,0 +1,18 @@
+==GUI:==
+Het uitzicht van de gui is zo goed als afgewerkt.
+De functionaliteit zal nog niet volledig af zijn.
+Bij de desktopapplicatie zal er enkel mogelijkheid zijn om gegevens op te halen, nog niet om toe te voegen/aan te passen.
+De kotbaas kan zijn berichten al lezen. Het verzenden van berichten komt later.
+
+
+==Databank:==
+De databank is opgevuld, om de data op te halen zullen perl scripts gebruikt worden.
+
+
+==Webapplicatie:== 
+Hierin zal de login-form functioneren. De student kan koten te zoeken met een 3-tal ingegeven parameters. Hiervoor zal er connectie met de databank zijn, de databank staat nog lokaal op de computer. 
+Er is ook mogelijkheid om een bericht te sturen naar de kotbaas. Deze krijgt dit dan te zien op de desktopapplicatie en ook in een e-mail.
+
+
+==Webcam:==
+De webcam zal functioneel zijn, maar zonder connectie met databank of mogelijkheid tot afhalen foto's op afstand.
