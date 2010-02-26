@@ -10,17 +10,14 @@ namespace WinFormCharpWebCam
 {
     class WebCam
     {
-        private Label lblMotionDetection;
-
         private WebCamCapture webcam;
         private System.Windows.Forms.PictureBox _FrameImage;
         private int FrameNumber = 30;
         private MotionDetection motionDetection;
 
-        public WebCam(Label lblMotionDetection)
+        public WebCam()
         {
-            this.lblMotionDetection = lblMotionDetection;
-            this.motionDetection = new MotionDetection(lblMotionDetection);
+            this.motionDetection = new MotionDetection();
         }
 
         public void InitializeWebCam(ref System.Windows.Forms.PictureBox ImageControl)
@@ -35,7 +32,10 @@ namespace WinFormCharpWebCam
         void webcam_ImageCaptured(object source, WebcamEventArgs e)
         {
             _FrameImage.Image = e.WebCamImage;
-            motionDetection.Detect(e.WebCamImage);
+            if (motionDetection.Detect(e.WebCamImage))
+            {
+
+            }
         }
 
         public void Start()

@@ -38,7 +38,6 @@
             this.timerGarbageCollection = new System.Windows.Forms.Timer(this.components);
             this.timerCaptureMode = new System.Windows.Forms.Timer(this.components);
             this.btnStopCaptureMode = new System.Windows.Forms.Button();
-            this.lblMotionDetection = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imgVideo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgCapture)).BeginInit();
             this.SuspendLayout();
@@ -116,21 +115,11 @@
             this.btnStopCaptureMode.UseVisualStyleBackColor = true;
             this.btnStopCaptureMode.Click += new System.EventHandler(this.btnStopCaptureMode_Click);
             // 
-            // lblMotionDetection
-            // 
-            this.lblMotionDetection.AutoSize = true;
-            this.lblMotionDetection.Location = new System.Drawing.Point(610, 316);
-            this.lblMotionDetection.Name = "lblMotionDetection";
-            this.lblMotionDetection.Size = new System.Drawing.Size(33, 13);
-            this.lblMotionDetection.TabIndex = 7;
-            this.lblMotionDetection.Text = "None";
-            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(830, 385);
-            this.Controls.Add(this.lblMotionDetection);
             this.Controls.Add(this.btnStopCaptureMode);
             this.Controls.Add(this.btnCaptureMode);
             this.Controls.Add(this.btnStopWebCam);
@@ -143,7 +132,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgVideo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgCapture)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -161,7 +149,6 @@
         private System.Windows.Forms.Timer timerGarbageCollection;
         private System.Windows.Forms.Timer timerCaptureMode;
         private System.Windows.Forms.Button btnStopCaptureMode;
-        private System.Windows.Forms.Label lblMotionDetection;
     }
 }
 
