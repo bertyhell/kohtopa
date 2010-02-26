@@ -13,9 +13,12 @@ namespace WinFormCharpWebCam
         private int tag;
         private string filename;
 
+        private bool valid;
+
         public ImageSaver()
         {
             this.tag = 1;
+            this.valid = true;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.DefaultExt = ".jpg";
@@ -46,6 +49,16 @@ namespace WinFormCharpWebCam
             {
                 return true;
             }
+        }
+
+        public void Invalidate()
+        {
+            valid = false;
+        }
+
+        public bool isValid()
+        {
+            return valid;
         }
 
     }

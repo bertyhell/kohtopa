@@ -15,8 +15,11 @@ namespace WinFormCharpWebCam
         private int FrameNumber = 30;
         private MotionDetection motionDetection;
 
-        public WebCam()
+        private Window parentWindow;
+
+        public WebCam(Window parentWindow)
         {
+            this.parentWindow = parentWindow;
             this.motionDetection = new MotionDetection();
         }
 
@@ -34,7 +37,7 @@ namespace WinFormCharpWebCam
             _FrameImage.Image = e.WebCamImage;
             if (motionDetection.Detect(e.WebCamImage))
             {
-
+                parentWindow.MotionDetectedAndSave();
             }
         }
 

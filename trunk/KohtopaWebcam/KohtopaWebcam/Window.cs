@@ -21,7 +21,7 @@ namespace WinFormCharpWebCam
 
         private void mainWinForm_Load(object sender, EventArgs e)
         {
-            webcam = new WebCam();
+            webcam = new WebCam(this);
             webcam.InitializeWebCam(ref imgVideo);
         }
 
@@ -29,6 +29,7 @@ namespace WinFormCharpWebCam
         {
             webcam.Start();
             timerGarbageCollection.Start();
+
             btnStart.Enabled = false;
             btnStopWebCam.Enabled = true;
             btnCaptureMode.Enabled = true;
@@ -39,6 +40,7 @@ namespace WinFormCharpWebCam
         {
             webcam.Stop();
             timerGarbageCollection.Stop();
+
             btnStart.Enabled = true;
             btnStopWebCam.Enabled = false;
             btnCaptureMode.Enabled = false;
@@ -58,6 +60,7 @@ namespace WinFormCharpWebCam
             if (imageSaver.FileSelected())
             {
                 timerCaptureMode.Start();
+
                 btnCaptureMode.Enabled = false;
                 btnStopCaptureMode.Enabled = true;
             }
@@ -66,6 +69,8 @@ namespace WinFormCharpWebCam
         private void btnStopCaptureMode_Click(object sender, EventArgs e)
         {
             timerCaptureMode.Stop();
+            imageSaver.Invalidate();
+
             btnCaptureMode.Enabled = true;
             btnStopCaptureMode.Enabled = false;
         }
@@ -95,6 +100,18 @@ namespace WinFormCharpWebCam
             imgCapture.Image = imgVideo.Image;
             imageSaver.Save(imgCapture.Image);
         }
-        
+
+        public void MotionDetectedAndSave()
+        {
+            if (imageSaver != null)
+            {
+                if (imageSaver.isValid())
+                {
+                    imgCapture.Image = imgVideo.Image;
+                    imageSaver.Save(imgCapture.Image);
+                }
+            }
+        }
+
     }
 }
