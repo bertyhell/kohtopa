@@ -21,7 +21,7 @@ namespace WinFormCharpWebCam
 
         private void mainWinForm_Load(object sender, EventArgs e)
         {
-            webcam = new WebCam(lblMotionDetection);
+            webcam = new WebCam();
             webcam.InitializeWebCam(ref imgVideo);
         }
 

@@ -10,63 +10,49 @@ namespace WinFormCharpWebCam
     class MotionDetection
     {
         private Color[] pictureValues;
+        // Bevat de kleurwaarden van de vorige image
         private const int NUMBER_TEST_PIXELS = 10;
+        // Dimensie van het raster
         private const int PIXEL_SENSIVITY = 30;
+        // Bepaalt hoeveel de kleurwaarden mogen afwijken vooraleer er beweging gedetecteerd wordt
         private const double MOTION_SENSIVITY = 0.1;
+        // Bepaalt hoeveel % van de punten van het raster moeten veranderen vooraleer er beweging gedetecteerd wordt
 
-        private Label lblMotionDetection;
-
-        public MotionDetection(Label lblMotionDetection)
+        public MotionDetection()
         {
             pictureValues = new Color[NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS];
-            this.lblMotionDetection = lblMotionDetection;
         }
 
         public bool Detect(Image image)
         {
-            //pictureValues bevatten de colorvalue van de vorige image
-            //NUMBER_TEST_PIXELS bepaald hoeveel pixels er vergeleken worden 10 wil
-            //zeggen dat er 10*10 = 100 pixels worden vergeleken
-            //PIXEL_SENSIVITY bepaald hoeveel de kleurwaarden mogen verschillen
-            //zonder als veranderd te beshouwen
-            //MOTION_SENSIVITY bepaald hoeveel % van de punten van het raster er
-            //moeten veranderd zijn
-            //hieronder de code:
-
-            //global variables
-
-            Bitmap bm = new Bitmap(image);
-            int widthStep = bm.Width / NUMBER_TEST_PIXELS;
-            int heightStep = bm.Height / NUMBER_TEST_PIXELS;
-            int posY = heightStep / 2;
-            int changed = 0;
+            Bitmap bitmap = new Bitmap(image);
+            int widthStep = bitmap.Width / NUMBER_TEST_PIXELS;
+            int heightStep = bitmap.Height / NUMBER_TEST_PIXELS;
+            int positionY = heightStep / 2;
+            int changedPixels = 0;
             for (int i = 0; i < NUMBER_TEST_PIXELS; i++)
             {
-                int posX = widthStep / 2;
+                int positionX = widthStep / 2;
                 for (int j = 0; j < NUMBER_TEST_PIXELS; j++)
                 {
-                    Color c = bm.GetPixel(posX, posY);
-                    Color previous = pictureValues[i *
-NUMBER_TEST_PIXELS + j];
-                    if (Math.Abs(c.B - previous.B) + Math.Abs(c.G -
-previous.G) + Math.Abs(c.R - previous.R) > PIXEL_SENSIVITY)
+                    Color currentColor = bitmap.GetPixel(positionX, positionY);
+                    Color previousColor = pictureValues[i * NUMBER_TEST_PIXELS + j];
+                    if (Math.Abs(currentColor.B - previousColor.B) + Math.Abs(currentColor.G - previousColor.G) + Math.Abs(currentColor.R - previousColor.R) > PIXEL_SENSIVITY)
                     {
-                        changed++;
+                        changedPixels++;
                     }
-                    pictureValues[i * NUMBER_TEST_PIXELS + j] = c;
-                    posX = posX + widthStep;
+                    pictureValues[i * NUMBER_TEST_PIXELS + j] = currentColor;
+                    positionX = positionX + widthStep;
                 }
-                posY = posY + heightStep;
+                positionY = positionY + heightStep;
             }
 
-            if ((1.0 * changed) /
-(NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_SENSIVITY)
+            if ((1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_SENSIVITY)
             {
-                lblMotionDetection.Text = "Detected : " + DateTime.Now.ToLongTimeString() + "\a";
                 //Console.Beep();
             }
-            return (1.0 * changed) /
-(NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_SENSIVITY;
+
+            return (1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_SENSIVITY;
         }
     }
 }
