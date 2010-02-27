@@ -16,9 +16,19 @@ namespace KohtopaWeb
 {
     public class Language
     {
-        private static Hashtable languages = new Hashtable();        
+        private static Hashtable languages = new Hashtable();
+        private static DataTable dtLanguages = new DataTable("languages");
 
-        public static void read(String language)
+        public static void read()
+        {
+            readLanguages();
+            foreach (DataRow dr in dtLanguages.Rows)
+            {
+                read((string)dr["id"]);
+            }
+        }
+
+        private static void read(string language)
         {
             if (languages[language] == null)
             {
@@ -26,26 +36,32 @@ namespace KohtopaWeb
                 {
                     Hashtable strings = new Hashtable();
                     XmlReader reader = new XmlTextReader("language_" + language + ".xml");
-                    while (reader.Read())
+                    try
                     {
-                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "entry")
+                        while (reader.Read())
                         {
-                            String name = reader.GetAttribute("name");
-                            if (reader.Read())
+                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "entry")
                             {
-                                strings.Add(name, reader.Value);
+                                string name = reader.GetAttribute("name");
+                                if (reader.Read())
+                                {
+                                    strings.Add(name, reader.Value);
+                                }
                             }
                         }
+                        languages.Add(language, strings);
                     }
-                    languages.Add(language, strings);
-                    reader.Close();
+                    finally
+                    {
+                        reader.Close();
+                    }                    
                 }
                 catch (Exception e)
                 {}
             }
         }
 
-        public static void add(String key, String value, String language)
+        public static void add(string key, string value, string language)
         {
             Hashtable h = (Hashtable)languages[languages];
             if (h == null)
@@ -56,37 +72,81 @@ namespace KohtopaWeb
             h.Add(key, value);
         }
 
-        public static String getString(String key,String language)
+        public static string getstring(string key,string language)
         {
-            Hashtable h = (Hashtable)languages[language];
-            if (h == null)
-            {
-                Language.read(language);
-                h = (Hashtable)languages[language];
-            }
-            return (String)h[key];            
+            Hashtable h = (Hashtable)languages[language];            
+            return (string)h[key];            
         }
 
-        public static void write(String language)
+        public static void write(string language)
         {
-            XmlTextWriter writer = new XmlTextWriter("language_" + language + ".xml" , System.Text.Encoding.UTF8);
-            writer.Formatting = Formatting.Indented;            
-            writer.Indentation = 4;
-            writer.IndentChar = ' ';
-            writer.WriteStartDocument(false);            
-            writer.WriteStartElement("Language");            
-            writer.WriteAttributeString("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");            
-            writer.WriteAttributeString("xsi:noNamespaceSchemaLocation", "language.xsd");
-            Hashtable h = (Hashtable)languages[language];
-            foreach (String s in h.Keys)
+            try
             {
-                writer.WriteStartElement("entry");
-                writer.WriteAttributeString("name", s);
-                writer.WriteValue((String)h[s]);
-                writer.WriteEndElement();
-            }            
-            writer.WriteEndElement();            
-            writer.Close();
-        }        
+                XmlTextWriter writer = new XmlTextWriter("language_" + language + ".xml", System.Text.Encoding.UTF8);
+                try
+                {
+                    writer.Formatting = Formatting.Indented;
+                    writer.Indentation = 4;
+                    writer.IndentChar = ' ';
+                    writer.WriteStartDocument(false);
+                    writer.WriteStartElement("Language");
+                    writer.WriteAttributeString("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                    writer.WriteAttributeString("xsi:noNamespaceSchemaLocation", "language.xsd");
+                    Hashtable h = (Hashtable)languages[language];
+                    foreach (string s in h.Keys)
+                    {
+                        writer.WriteStartElement("entry");
+                        writer.WriteAttributeString("name", s);
+                        writer.WriteValue((string)h[s]);
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                }
+                finally
+                {
+                    writer.Close();
+                }
+            }
+            catch (Exception exc){}
+        }
+
+        private static void readLanguages()
+        {
+            
+            dtLanguages.Columns.Add("id");
+            dtLanguages.Columns.Add("language");            
+            try
+            {                
+                XmlReader reader = new XmlTextReader("languages.xml");
+                try
+                {
+                    while (reader.Read())
+                    {
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "entry")
+                        {
+                            string id = reader.GetAttribute("id");
+                            if (reader.Read())
+                            {
+                                DataRow dr = dtLanguages.NewRow();
+                                dr["id"] = id;
+                                dr["language"] = reader.Value;
+                                dtLanguages.Rows.Add(dr);
+                            }
+                        }
+                    }                    
+                }
+                finally
+                {
+                    reader.Close();
+                }
+            }
+            catch (Exception e)
+            { }            
+        }
+
+        public static DataTable getLanguages()
+        {
+            return dtLanguages;
+        }
     }
 }

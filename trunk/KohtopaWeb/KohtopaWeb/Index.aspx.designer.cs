@@ -11,6 +11,6 @@
 namespace KohtopaWeb {
     
     
-    public partial class MyRoom {
+    public partial class Index {
     }
 }

@@ -15,12 +15,12 @@ namespace KohtopaWeb
 
         protected void Application_Start(object sender, EventArgs e)
         {
-
+            Language.read();
         }
 
         protected void Session_Start(object sender, EventArgs e)
         {
-
+            Session["language"] = ConfigurationManager.AppSettings["DefaultLanguage"];
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

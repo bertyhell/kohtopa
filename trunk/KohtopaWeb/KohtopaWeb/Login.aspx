@@ -1,37 +1,29 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="KohtopaWeb.Login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="KohtopaWeb.Login" MasterPageFile="~/master.Master"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<head runat="server">
-    <title>Untitled Page</title>
-</head>
-<body>
-    <form id="formLogin" runat="server">
-        <asp:Table runat="server">
-            <asp:TableRow>
-                <asp:TableCell>
-                    <asp:Label ID="lblLogin" runat="server"/>
-                </asp:TableCell>
-                <asp:TableCell>
-                    <asp:TextBox ID="txtLogin" runat="server"/>
-                </asp:TableCell>
-            </asp:TableRow>
-            <asp:TableRow>
-                <asp:TableCell>
-                    <asp:Label ID="lblPasswd" runat="server"/>
-                </asp:TableCell>
-                <asp:TableCell>
-                    <asp:TextBox ID="txtPasswd" runat="server"/>
-                </asp:TableCell>
-            </asp:TableRow>
-            <asp:TableRow>
-                <asp:TableCell>
-                    <asp:Button ID="btnLogin" runat="server" OnClientClick="btnLogin_Click"/>
-                </asp:TableCell>
-            </asp:TableRow>            
-        </asp:Table> 
-        
-    </form>
-</body>
-</html>
+<asp:Content ID="LoginPage" ContentPlaceHolderID="cphBody" Runat="server">    
+    <asp:Table runat="server">
+        <asp:TableRow>
+            <asp:TableCell>
+                <asp:Label ID="lblUsername" runat="server"/>             
+            </asp:TableCell>
+            <asp:TableCell>
+                <asp:TextBox ID="txtUsername" runat="server"/>
+                <asp:RequiredFieldValidator ID="rfvUsername" runat="server" ValidationGroup="localValidation" ControlToValidate="txtUsername"/>
+            </asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
+            <asp:TableCell>
+                <asp:Label ID="lblPassword" runat="server"/>
+            </asp:TableCell>
+            <asp:TableCell>
+                <asp:TextBox ID="txtPassword" runat="server"/>
+                <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ValidationGroup="localValidation" ControlToValidate="txtPassword"/>
+            </asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
+            <asp:TableCell>
+                <asp:Button ID="btnLogin" runat="server" ValidationGroup="localValidation" OnClick="btnLogin_Click"/>
+            </asp:TableCell>
+        </asp:TableRow>            
+    </asp:Table>                             
+</asp:Content>

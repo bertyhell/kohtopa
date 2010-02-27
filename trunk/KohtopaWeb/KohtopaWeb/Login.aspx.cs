@@ -16,16 +16,19 @@ namespace KohtopaWeb
     public partial class Login : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
-        {            
-            lblLogin.Text = Language.getString("Username", "EN");
-            lblPasswd.Text = Language.getString("Password", "EN");
-            btnLogin.Text = Language.getString("Login", "EN");
+        {
+            lblUsername.Text = Language.getstring("Username", (string)Session["Language"]);
+            lblPassword.Text = Language.getstring("Password", (string)Session["Language"]);
+            btnLogin.Text = Language.getstring("Login", "EN");
+            rfvUsername.ErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+            rfvPassword.ErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
         }
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if (txtLogin.Text.Equals(txtPasswd.Text))
+            if (txtUsername.Text.Equals(txtPassword.Text))
             {
+                Session["username"] = txtUsername.Text;                
                 FormsAuthentication.RedirectFromLoginPage("Renter", false);
             }
         }
