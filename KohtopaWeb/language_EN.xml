@@ -3,4 +3,15 @@
     <entry name="Username">Username</entry>
     <entry name="Password">Password</entry>
     <entry name="Login">Login</entry>
+    <entry name="RequiredField">This field is required.</entry>
+    <entry name="HomePage">Home</entry>
+    <entry name="Choose">Choose</entry>
+    <entry name="Language">Language</entry>
+    <entry name="Search">Search</entry>
+    <entry name="Logout">Logout</entry>
+    <entry name="MyRoom">My Room</entry>
+    <entry name="Filter">Filter</entry>
+    <entry name="Price">Price</entry>
+    <entry name="Internet">Internet</entry>
+    <entry name="Add">Add</entry>
 </Language>

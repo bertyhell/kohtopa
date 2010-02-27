@@ -11,69 +11,78 @@
 namespace KohtopaWeb {
     
     
-    public partial class Login {
+    public partial class Menu {
         
         /// <summary>
-        /// lblUsername control.
+        /// MenuTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsername;
+        protected global::System.Web.UI.WebControls.Table MenuTable;
         
         /// <summary>
-        /// txtUsername control.
+        /// lblLanguage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtUsername;
+        protected global::System.Web.UI.WebControls.Label lblLanguage;
         
         /// <summary>
-        /// rfvUsername control.
+        /// ddlLanguage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUsername;
+        protected global::System.Web.UI.WebControls.DropDownList ddlLanguage;
         
         /// <summary>
-        /// lblPassword control.
+        /// lbtnLanguage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPassword;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnLanguage;
         
         /// <summary>
-        /// txtPassword control.
+        /// tcLeft control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPassword;
+        protected global::System.Web.UI.WebControls.TableCell tcLeft;
         
         /// <summary>
-        /// rfvPassword control.
+        /// mnMain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
+        protected global::System.Web.UI.WebControls.Menu mnMain;
         
         /// <summary>
-        /// btnLogin control.
+        /// tcRight control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogin;
+        protected global::System.Web.UI.WebControls.TableCell tcRight;
+        
+        /// <summary>
+        /// mnUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Menu mnUser;
     }
 }

@@ -11,69 +11,60 @@
 namespace KohtopaWeb {
     
     
-    public partial class Login {
+    public partial class Search1 {
         
         /// <summary>
-        /// lblUsername control.
+        /// tblHeadTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUsername;
+        protected global::System.Web.UI.WebControls.Table tblHeadTable;
         
         /// <summary>
-        /// txtUsername control.
+        /// lblFilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtUsername;
+        protected global::System.Web.UI.WebControls.Label lblFilter;
         
         /// <summary>
-        /// rfvUsername control.
+        /// ddlFilters control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvUsername;
+        protected global::System.Web.UI.WebControls.DropDownList ddlFilters;
         
         /// <summary>
-        /// lblPassword control.
+        /// btnAdd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblPassword;
+        protected global::System.Web.UI.WebControls.Button btnAdd;
         
         /// <summary>
-        /// txtPassword control.
+        /// tblSearchTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtPassword;
+        protected global::System.Web.UI.WebControls.Table tblSearchTable;
         
         /// <summary>
-        /// rfvPassword control.
+        /// MinMax control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvPassword;
-        
-        /// <summary>
-        /// btnLogin control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnLogin;
+        protected global::System.Web.UI.WebControls.TableRow MinMax;
     }
 }

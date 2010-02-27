@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="language.xsd">
+    <entry name="Username">Gebruikersnaam</entry>
+    <entry name="Password">Passwoord</entry>
+    <entry name="Login">Inloggen</entry>
+    <entry name="RequiredField">Dit veld is vereist.</entry>
+    <entry name="Choose">Kies</entry>
+    <entry name="Language">Taal</entry>
+    <entry name="HomePage">Home</entry>
+    <entry name="Search">Zoeken</entry>
+    <entry name="Logout">Uitloggen</entry>
+    <entry name="MyRoom">Mijn kamer</entry>
+    <entry name="Filter">Filter</entry>
+    <entry name="Price">Prijs</entry>
+    <entry name="Internet">Internet</entry>
+    <entry name="Add">Toevoegen</entry>
+</Language>
