@@ -3,8 +3,7 @@
 <asp:TableRow>
     <asp:TableCell HorizontalAlign="Right" ColumnSpan="2">
         <asp:Label ID="lblLanguage" runat="server"/>
-        <asp:DropDownList ID="ddlLanguage" runat="server"/>        
-        <asp:LinkButton ID="lbtnLanguage" runat="server" OnClick="btnLanguage_Click"/>
+        <asp:DropDownList ID="ddlLanguage" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlLanguage_SelectedIndex_Changed"/>                
     </asp:TableCell>
 </asp:TableRow>
 <asp:TableRow>    

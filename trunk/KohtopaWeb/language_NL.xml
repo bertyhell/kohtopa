@@ -4,6 +4,8 @@
     <entry name="Password">Passwoord</entry>
     <entry name="Login">Inloggen</entry>
     <entry name="RequiredField">Dit veld is vereist.</entry>
+    <entry name="RequiredPositiveNumber">Dit veld moet een positief getal zijn.</entry>
+    <entry name="RequiredGreaterThanMin">Dit veld moet groter zijn dan de minimum waarde.</entry>
     <entry name="Choose">Kies</entry>
     <entry name="Language">Taal</entry>
     <entry name="HomePage">Home</entry>
@@ -14,4 +16,7 @@
     <entry name="Price">Prijs</entry>
     <entry name="Internet">Internet</entry>
     <entry name="Add">Toevoegen</entry>
+    <entry name="Min">Minimum</entry>
+    <entry name="Max">Maximum</entry>
+    <entry name="Required">Verplicht</entry>
 </Language>

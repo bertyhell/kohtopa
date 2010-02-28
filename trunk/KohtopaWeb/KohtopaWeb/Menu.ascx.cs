@@ -27,8 +27,7 @@ namespace KohtopaWeb
                 ddlLanguage.DataTextField = "language";
                 ddlLanguage.DataValueField = "id";
                 ddlLanguage.DataBind();
-                ddlLanguage.SelectedValue = (string)Session["Language"];
-                lbtnLanguage.Text = Language.getstring("Choose", (string)Session["Language"]);
+                ddlLanguage.SelectedValue = (string)Session["Language"];                
                 
                 //main menu                
                 MenuItem mni = new MenuItem(Language.getstring("HomePage",(string)Session["Language"]));
@@ -59,7 +58,7 @@ namespace KohtopaWeb
             }
         }
 
-        protected void btnLanguage_Click(object sender, EventArgs e)
+        protected void ddlLanguage_SelectedIndex_Changed(object sender, EventArgs e)
         {
             Session["Language"] = ddlLanguage.SelectedItem.Value;
             Session["LanguageChanged"] = true;
