@@ -4,6 +4,8 @@
     <entry name="Password">Password</entry>
     <entry name="Login">Login</entry>
     <entry name="RequiredField">This field is required.</entry>
+    <entry name="RequiredPositiveNumber">This field must be a positive number.</entry>
+    <entry name="RequiredGreaterThanMin">This field must be greater than minimum value.</entry>
     <entry name="HomePage">Home</entry>
     <entry name="Choose">Choose</entry>
     <entry name="Language">Language</entry>
@@ -14,4 +16,7 @@
     <entry name="Price">Price</entry>
     <entry name="Internet">Internet</entry>
     <entry name="Add">Add</entry>
+    <entry name="Min">Minimum</entry>
+    <entry name="Max">Maximum</entry>
+    <entry name="Required">Required</entry>
 </Language>

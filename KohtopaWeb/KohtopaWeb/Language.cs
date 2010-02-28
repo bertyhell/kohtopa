@@ -112,7 +112,7 @@ namespace KohtopaWeb
 
         private static void readLanguages()
         {
-            
+            dtLanguages.Clear();
             dtLanguages.Columns.Add("id");
             dtLanguages.Columns.Add("language");            
             try
