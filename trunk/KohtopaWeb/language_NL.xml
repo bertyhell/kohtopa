@@ -19,4 +19,11 @@
     <entry name="Min">Minimum</entry>
     <entry name="Max">Maximum</entry>
     <entry name="Required">Verplicht</entry>
+    <entry name="Between">Tussen</entry>
+    <entry name="Contains">Bevat</entry>
+    <entry name="Data">Data</entry>
+    <entry name="Operation">Operatie</entry>
+    <entry name="Value1">Waarde1</entry>
+    <entry name="Value2">Waarde2</entry>
+    <entry name="Street">Straat</entry>
 </Language>
