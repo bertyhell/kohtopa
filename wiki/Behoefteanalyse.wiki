@@ -59,7 +59,7 @@ De huurders zullen hier zelf de mogelijkheid krijgen om de meterstanden door te 
 
 Huurders kunnen via een contactformulier eenvoudig contact opnemen  met de kotbaas indien dit nodig is.
 
-Voor externen die op zoek zijn naar een kot zijn er zoekformulieren voorzien om vrijstaande koten en koten die vrijkomen de doorzoeken. Er kan gezocht worden op (straat)naam, afstand tot school, prijsklasse en oppervlakte. Er zijn foto's beschikbaar van het gebouw en de kamers(indien ingegeven door de kotbaas). Bij enkele grote koten zal er bovendien een plattegrond beschikbaar zijn met daarop de verschillende koten. Deze kan ingesteld worden door de kotbaas in de desktopapplicatie. Er worden bovendien bijkomende gegevens getoond, zoals internetaansluiting, aantal stopcontacten, ramen, ... Ook op deze gegevens zullen de externen hun zoekopdracht kunnen verfijnen.
+Voor externen die op zoek zijn naar een kot zijn er zoekformulieren voorzien om vrijstaande koten en koten die vrijkomen de doorzoeken. Er kan gezocht worden op (straat)naam, afstand tot school, prijsklasse en oppervlakte. Bij het zoeken kan de externe persoon extra zoekfilters toevoegen. Er zijn foto's beschikbaar van het gebouw en de kamers(indien ingegeven door de kotbaas). Bij enkele grote koten zal er bovendien een plattegrond beschikbaar zijn met daarop de verschillende koten. Deze kan ingesteld worden door de kotbaas in de desktopapplicatie. Er worden bovendien bijkomende gegevens getoond, zoals internetaansluiting, aantal stopcontacten, ramen, ... Ook op deze gegevens zullen de externen hun zoekopdracht kunnen verfijnen.
 
 Ook de externen kunnen via een contactformulier de kotbaas contacteren indien er vragen zijn of om concrete afspraken te maken in geval van interesse.
 
