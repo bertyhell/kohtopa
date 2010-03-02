@@ -1,4 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Search.ascx.cs" Inherits="KohtopaWeb.Search1" %>
+
+<asp:GridView ID="gvFilters" runat="server"/>
+
 <asp:Table ID="tblHeadTable" runat="server">
     <asp:TableRow>
         <asp:TableCell VerticalAlign="Top">
