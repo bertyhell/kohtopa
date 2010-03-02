@@ -22,7 +22,7 @@ Daartegenover is de desktopapplicatie bedoeld voor de kotbaas om zijn kamers te 
 
 Dit onderdeel wordt volledig geschreven in JavaSwing. De toegang tot de database wordt verzorgd door middel van Java Database Connectivity (JDBC).
 
-Kamers en gebouwen worden door de kotbaas toegevoegd aan de databank samen met alle bijhorende exacte informatie. Deze informatie omvat kostprijs, oppervlakte, grondplan gebouw en stad, locatie, meubilering, aantal ramen, aantal stopcontacten, internet, aanwezigheid distributie, oriëntatie ramen (windrichting), huidige staat, schade, foto’s kamer en gevel, meterstanden., bewakingsfoto’s van de gemeenschappelijke ruimten.
+Kamers en gebouwen worden door de kotbaas toegevoegd aan de databank samen met alle bijhorende exacte informatie. Deze informatie omvat kostprijs, oppervlakte, grondplan, gebouw en stad, locatie, meubilering, aantal ramen, aantal stopcontacten, internet, aanwezigheid distributie, oriëntatie ramen (windrichting), huidige staat, schade, foto’s kamer en gevel, meterstanden., bewakingsfoto’s van de gemeenschappelijke ruimten.
 
 Liggingen worden gescraped van Google Maps. Foto’s van de kamers en het gebouw kunnen door de kotbaas toegevoegd worden.
 
