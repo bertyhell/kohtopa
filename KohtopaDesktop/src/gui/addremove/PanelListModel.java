@@ -3,11 +3,11 @@ package gui.addremove;
 import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 
-public class BuildingListModel extends AbstractListModel {
+public class PanelListModel extends AbstractListModel {
 
-	private ArrayList<BuildingListPanel> items = new ArrayList<BuildingListPanel>();
+	private ArrayList<AbstractListPanel> items = new ArrayList<AbstractListPanel>();
 
-	public BuildingListModel() {
+	public PanelListModel() {
 	}
 
 	public void add(BuildingListPanel b){

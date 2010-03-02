@@ -6,23 +6,17 @@ import java.awt.GridBagLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class BuildingListPanel extends AbstractListPanel {
+public class RoomListPanel extends AbstractListPanel {
 
-	private String street;
-	private String zipcode;
-	private String city;
+	private String renter;
+	private int number;
 
-	public BuildingListPanel(int id,
+	public RoomListPanel(int id,
 			String title,
 			ImageIcon preview,
-			String street,
-			String zipcode,
-			String city) {
+			String renter,
+			int number) {
 		super(id, title, preview);
-		this.street = street;
-		this.zipcode = zipcode;
-		this.city = city;
-				
 		this.setMaximumSize(new Dimension(1000, 100));
 		this.setMinimumSize(new Dimension(300, 100));
 		this.setPreferredSize(new Dimension(300, 100));
@@ -31,7 +25,6 @@ public class BuildingListPanel extends AbstractListPanel {
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		setLayout(gbl);
-
 
 		//adding information labels
 
@@ -43,39 +36,28 @@ public class BuildingListPanel extends AbstractListPanel {
 
 		//name
 		JLabel lblName = new JLabel(title);
-		buildConstraints(gbc, 1, 0, 2, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
+		buildConstraints(gbc, 1, 0, 1, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblName, gbc);
 		this.add(lblName);
 
 		//street
-		JLabel lblStreet = new JLabel(street);
-		buildConstraints(gbc, 1, 1, 2, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
+		JLabel lblStreet = new JLabel(renter);
+		buildConstraints(gbc, 1, 1, 1, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblStreet, gbc);
 		this.add(lblStreet);
 
 		//postcode
-		JLabel lblZipcode = new JLabel(zipcode);
+		JLabel lblZipcode = new JLabel(Integer.toString(number));
 		buildConstraints(gbc, 1, 2, 1, 1, 100, 15, GridBagConstraints.EAST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblZipcode, gbc);
 		this.add(lblZipcode);
-
-
-		//city
-		JLabel lblCity = new JLabel(city);
-		buildConstraints(gbc, 2, 2, 1, 1, 100, 15, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblCity, gbc);
-		this.add(lblCity);
 	}
 
-	public String getCity() {
-		return city;
+	public int getNumber() {
+		return number;
 	}
 
-	public String getStreet() {
-		return street;
-	}
-
-	public String getZipcode() {
-		return zipcode;
+	public String getRenter() {
+		return renter;
 	}
 }

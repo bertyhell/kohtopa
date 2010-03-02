@@ -2,13 +2,16 @@ package gui;
 
 import Language.Language;
 import gui.actions.*;
-import gui.addremove.BuildingCellRenderer;
-import gui.addremove.BuildingListModel;
+import gui.addremove.PanelCellRenderer;
+import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -68,7 +71,7 @@ public class Main extends JFrame {
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 		this.setExtendedState(this.getExtendedState() | Main.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-		this.setMinimumSize(new Dimension(350, 300));
+		this.setMinimumSize(new Dimension(370, 300));
 		this.setLayout(new BorderLayout());
 		JTabbedPane tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		this.add(tabbed, BorderLayout.CENTER);
@@ -139,74 +142,139 @@ public class Main extends JFrame {
 		splitter.setDividerSize(10);
 
 
-		BuildingListModel lmod = new BuildingListModel();
-		JList listBuildings = new JList(lmod);
+		PanelListModel lmBuilding = new PanelListModel();
+		JList listBuildings = new JList(lmBuilding);
 		listBuildings.setBackground(new Color(217,217,217));
-		listBuildings.setCellRenderer(new BuildingCellRenderer());
+		listBuildings.setCellRenderer(new PanelCellRenderer());
 
-		lmod.add(new BuildingListPanel(675654,
-				new ImageIcon(getClass().getResource("/images/test.png")),
+		lmBuilding.add(new BuildingListPanel(675654,
 				"kot1",
+				new ImageIcon(getClass().getResource("/images/test.png")),
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot2",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmod.add(new BuildingListPanel(675654,
+		lmBuilding.add(new BuildingListPanel(675654,
+				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
-				"kot3",
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
 		scrolBuilding.setViewportView(listBuildings);
 
+		PanelListModel lmRoom = new PanelListModel();
+		JList listRooms = new JList(lmRoom);
+		listRooms.setBackground(new Color(217,217,217));
+		listRooms.setCellRenderer(new PanelCellRenderer());
 
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		lmRoom.add(new BuildingListPanel(675654,
+				"kamer1",
+				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
+				"voskeslaan 58",
+				"9000",
+				"Gent"));
+		scrolRoom.setViewportView(listRooms);
 
 		splitter.setPreferredSize(new Dimension(1000, 600));
 		pnlAddRemove.add(splitter, BorderLayout.CENTER);
