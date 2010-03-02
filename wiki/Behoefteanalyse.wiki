@@ -40,6 +40,7 @@ Bij een te late betaling van een factuur wordt door een SMS-server een bericht g
 
 Voor schetsen van de GUI zie documenten discussiegroep Kohtopa, idem voor het raadplegen van het klassendiagram.
 
+De kotbaas zal ook bij grote koten de mogelijkheid hebben om de aparte koten aan te duiden en te veranderen. Hierop kan hij ook de webcams aangeven. Indien hij op een van de webcams klikt krijgt hij de rechtstreekse beelden te zien. De coördinaten zullen opgeslagen worden in een XML bestand.
  
 
 ==Webapplicatie==
