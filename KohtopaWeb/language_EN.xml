@@ -19,4 +19,11 @@
     <entry name="Min">Minimum</entry>
     <entry name="Max">Maximum</entry>
     <entry name="Required">Required</entry>
+    <entry name="Between">Between</entry>
+    <entry name="Contains">Contains</entry>
+    <entry name="Data">Data</entry>
+    <entry name="Operation">Operation</entry>
+    <entry name="Value1">Value1</entry>
+    <entry name="Value2">Value2</entry>
+    <entry name="Street">Street</entry>
 </Language>

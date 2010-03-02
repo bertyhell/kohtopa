@@ -10,6 +10,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace KohtopaWeb
 {
@@ -60,6 +61,9 @@ namespace KohtopaWeb
                 lblRequired.Text = Language.getstring("Required", language);
                 btnRequired.Text = Language.getstring("Add", language);
 
+                lblContains.Text = Language.getstring("Contains", language);
+                btnContains.Text = Language.getstring("Add", language);
+
                 ddlFilters_Selected_Index_Changed(null, null);
             }            
         }        
@@ -74,29 +78,70 @@ namespace KohtopaWeb
         {
             tblBetween.Visible = type.Equals("Between");
             tblRequired.Visible = type.Equals("Required");
+            tblContains.Visible = type.Equals("Contains");
         }
 
         protected void btnBetween_Click(object sender, EventArgs e)
         {
             DataTable searchTable = getSearchTable();
-            DataRow dr = searchTable.NewRow();
+            DataView dv = new DataView(searchTable);
+            dv.RowFilter = ("data = '" + ddlFilters.SelectedValue) + "'";
+            DataRow dr;
+            if (dv.ToTable().Rows.Count > 0)
+            {
+                dr = dv.ToTable().Rows[0];
+                string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                dr = searchTable.Rows.Find(keys);
+            }
+            else
+            {
+                dr = searchTable.NewRow();
+            }        
             dr["data"] = ddlFilters.SelectedValue;
             dr["operation"] = "Between";
-            dr["value1"] = Double.Parse(txtMin.Text);
-            dr["value2"] = Double.Parse(txtMax.Text);
-            searchTable.Rows.Add(dr);
+            dr["value1"] = Double.Parse(txtMin.Text,CultureInfo.InvariantCulture);
+            dr["value2"] = Double.Parse(txtMax.Text, CultureInfo.InvariantCulture);
+            try
+            {
+                searchTable.Rows.Add(dr);
+            }
+            catch (Exception exc) { } //if dr is not a new row;
+
             updateFilterView();
         }
 
         protected void btnRequired_Click(object sender, EventArgs e)
         {
             DataTable searchTable = getSearchTable();
-            DataRow dr = searchTable.NewRow();
+            String[] keys = { "" + ddlFilters.SelectedValue, "" };
+            DataRow dr = searchTable.Rows.Find(keys);
+            if (dr == null)
+            {
+                dr = searchTable.NewRow();
+            }            
             dr["data"] = ddlFilters.SelectedValue;
             dr["operation"] = "Required";
-            //dr["value1"] = null;
-            //dr["value2"] = null;
-            searchTable.Rows.Add(dr);
+            dr["value1"] = "";
+            try
+            {
+                searchTable.Rows.Add(dr);
+            }
+            catch (Exception exc) { } //if dr is not a new row;
+            updateFilterView();
+        }
+
+        protected void btnContains_Click(object sender, EventArgs e)
+        {
+            DataTable searchTable = getSearchTable();            
+            DataRow dr = searchTable.NewRow();            
+            dr["data"] = ddlFilters.SelectedValue;
+            dr["operation"] = "Contains";
+            dr["value1"] = txtContains.Text;
+            try
+            {
+                searchTable.Rows.Add(dr);
+            }
+            catch (Exception exc) { } //if dr is not a new row;
             updateFilterView();
         }
 
@@ -106,10 +151,12 @@ namespace KohtopaWeb
             if (searchTable == null)
             {
                 searchTable = new DataTable();
-                searchTable.Columns.Add("data");
+                DataColumn primary = searchTable.Columns.Add("data");
                 searchTable.Columns.Add("operation");
-                searchTable.Columns.Add("value1");
-                searchTable.Columns.Add("value2");                
+                DataColumn secondary = searchTable.Columns.Add("value1");
+                searchTable.Columns.Add("value2");
+                DataColumn[] keys = {primary,secondary};
+                searchTable.PrimaryKey = keys;                
                 Session["searchTable"] = searchTable;
             }
             return searchTable;
@@ -122,27 +169,38 @@ namespace KohtopaWeb
             {
                 DataTable fv = new DataTable();
                 string language = "" + Session["Language"];
-                string data = Language.getstring("data", language);
-                string operation = Language.getstring("operation", language);
-                string value1 = Language.getstring("value1", language);
-                string value2 = Language.getstring("value2", language);
+                string data = Language.getstring("Data", language);
+                string operation = Language.getstring("Operation", language);
+                string value1 = Language.getstring("Value1", language);
+                string value2 = Language.getstring("Value2", language);
                 fv.Columns.Add(data);
                 fv.Columns.Add(operation);
                 fv.Columns.Add(value1);
-                fv.Columns.Add(value2);
-                fv.Columns.Add("rowNr");
+                fv.Columns.Add(value2);                
+                int i = 0;
                 foreach (DataRow dr in searchTable.Rows)
                 {
                     DataRow r = fv.NewRow();
                     r[data] = Language.getstring("" + dr["data"], language);
                     r[operation] = Language.getstring("" + dr["operation"], language);
                     r[value1] = dr["value1"];
-                    r[value2] = dr["value2"];
+                    r[value2] = dr["value2"];                    
                     fv.Rows.Add(r);
-                }
-                gvFilters.DataSource = fv;
-                gvFilters.DataBind();
+                    i++;
+                }                
+                gvFilters.DataSource = fv;                
+                gvFilters.DataBind();                
             }            
+        }
+
+        protected void gvFilters_RowDeleting(object sender, EventArgs e)
+        {
+            DataTable searchTable = (DataTable)Session["searchTable"];
+            if (searchTable != null)
+            {
+                searchTable.Rows[((GridViewDeleteEventArgs)e).RowIndex].Delete();
+            }
+            updateFilterView();
         }
     }
 }
