@@ -13,6 +13,7 @@ namespace Pinvoke
     /// </summary>
     public class CaptureDevice
     {
+        private static object locker = new object();
         private static int MAX_DEVICES = 9;
 
         private ushort deviceNumber;
@@ -112,9 +113,13 @@ namespace Pinvoke
         {
             if (deviceHandle.ToInt32() != 0)
             {
-                User32.SendMessage(deviceHandle, Constants.WM_CAP_GRAB_FRAME, (IntPtr)0, (IntPtr)0);                
-                User32.SendMessage(deviceHandle, Constants.WM_CAP_EDIT_COPY, (IntPtr)0, (IntPtr)0);                
-                IDataObject ido = Clipboard.GetDataObject();                
+                IDataObject ido;                
+                User32.SendMessage(deviceHandle, Constants.WM_CAP_GRAB_FRAME, (IntPtr)0, (IntPtr)0);
+                lock (locker)
+                {
+                    User32.SendMessage(deviceHandle, Constants.WM_CAP_EDIT_COPY, (IntPtr)0, (IntPtr)0);
+                    ido = Clipboard.GetDataObject();
+                }
                 if (ido.GetDataPresent(DataFormats.Bitmap))
                 {
                     Bitmap bitmap = (Bitmap)ido.GetData(DataFormats.Bitmap);
@@ -123,7 +128,6 @@ namespace Pinvoke
                     return bitmap;
                 }
             }
-
             return null;
         }
 
