@@ -6,7 +6,7 @@ using WebCam_Capture;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace WinFormCharpWebCam
+namespace KohtopaWebcam
 {
     class WebCam
     {
@@ -25,8 +25,8 @@ namespace WinFormCharpWebCam
 
         public void InitializeWebCam(ref System.Windows.Forms.PictureBox ImageControl)
         {
-            webcam = new WebCamCapture();
-            webcam.FrameNumber = ((ulong)(0ul));
+            webcam = new WebCamCapture();            
+            webcam.FrameNumber = ((ulong)(0ul));            
             webcam.TimeToCapture_milliseconds = FrameNumber;
             webcam.ImageCaptured += new WebCamCapture.WebCamEventHandler(webcam_ImageCaptured);
             _FrameImage = ImageControl;

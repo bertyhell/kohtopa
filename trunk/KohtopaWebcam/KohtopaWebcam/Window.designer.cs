@@ -1,4 +1,4 @@
-﻿namespace WinFormCharpWebCam
+﻿namespace KohtopaWebcam
 {
     //Design by Pongsakorn Poosankam
     partial class Window
@@ -35,9 +35,14 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.btnStopWebCam = new System.Windows.Forms.Button();
             this.btnCaptureMode = new System.Windows.Forms.Button();
-            this.timerGarbageCollection = new System.Windows.Forms.Timer(this.components);
+            this.timerMotionDetection = new System.Windows.Forms.Timer(this.components);
             this.timerCaptureMode = new System.Windows.Forms.Timer(this.components);
             this.btnStopCaptureMode = new System.Windows.Forms.Button();
+            this.cboDevices = new System.Windows.Forms.ComboBox();
+            this.btnStartThread = new System.Windows.Forms.Button();
+            this.btnStopThread = new System.Windows.Forms.Button();
+            this.lblMemory = new System.Windows.Forms.Label();
+            this.tmrMemory = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.imgVideo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgCapture)).BeginInit();
             this.SuspendLayout();
@@ -46,7 +51,7 @@
             // 
             this.imgVideo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.imgVideo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.imgVideo.Location = new System.Drawing.Point(50, 50);
+            this.imgVideo.Location = new System.Drawing.Point(12, 50);
             this.imgVideo.Name = "imgVideo";
             this.imgVideo.Size = new System.Drawing.Size(320, 240);
             this.imgVideo.TabIndex = 0;
@@ -94,10 +99,10 @@
             this.btnCaptureMode.UseVisualStyleBackColor = true;
             this.btnCaptureMode.Click += new System.EventHandler(this.btnCaptureMode_Click);
             // 
-            // timerGarbageCollection
+            // timerMotionDetection
             // 
-            this.timerGarbageCollection.Interval = 1000;
-            this.timerGarbageCollection.Tick += new System.EventHandler(this.timerGarbageCollector_Tick);
+            this.timerMotionDetection.Interval = 10;
+            this.timerMotionDetection.Tick += new System.EventHandler(this.timerMotionDetection_Tick);
             // 
             // timerCaptureMode
             // 
@@ -115,11 +120,57 @@
             this.btnStopCaptureMode.UseVisualStyleBackColor = true;
             this.btnStopCaptureMode.Click += new System.EventHandler(this.btnStopCaptureMode_Click);
             // 
+            // cboDevices
+            // 
+            this.cboDevices.FormattingEnabled = true;
+            this.cboDevices.Location = new System.Drawing.Point(12, 12);
+            this.cboDevices.Name = "cboDevices";
+            this.cboDevices.Size = new System.Drawing.Size(320, 21);
+            this.cboDevices.TabIndex = 7;
+            // 
+            // btnStartThread
+            // 
+            this.btnStartThread.Location = new System.Drawing.Point(162, 408);
+            this.btnStartThread.Name = "btnStartThread";
+            this.btnStartThread.Size = new System.Drawing.Size(75, 23);
+            this.btnStartThread.TabIndex = 8;
+            this.btnStartThread.Text = "start Thread";
+            this.btnStartThread.UseVisualStyleBackColor = true;
+            this.btnStartThread.Click += new System.EventHandler(this.btnStartThread_Click);
+            // 
+            // btnStopThread
+            // 
+            this.btnStopThread.Location = new System.Drawing.Point(269, 407);
+            this.btnStopThread.Name = "btnStopThread";
+            this.btnStopThread.Size = new System.Drawing.Size(75, 23);
+            this.btnStopThread.TabIndex = 9;
+            this.btnStopThread.Text = "stop Thread";
+            this.btnStopThread.UseVisualStyleBackColor = true;
+            this.btnStopThread.Click += new System.EventHandler(this.btnStopThread_Click);
+            // 
+            // lblMemory
+            // 
+            this.lblMemory.AutoSize = true;
+            this.lblMemory.Location = new System.Drawing.Point(464, 436);
+            this.lblMemory.Name = "lblMemory";
+            this.lblMemory.Size = new System.Drawing.Size(35, 13);
+            this.lblMemory.TabIndex = 10;
+            this.lblMemory.Text = "label1";
+            // 
+            // tmrMemory
+            // 
+            this.tmrMemory.Enabled = true;
+            this.tmrMemory.Tick += new System.EventHandler(this.tmrMemory_Tick);
+            // 
             // Window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(830, 385);
+            this.ClientSize = new System.Drawing.Size(830, 569);
+            this.Controls.Add(this.lblMemory);
+            this.Controls.Add(this.btnStopThread);
+            this.Controls.Add(this.btnStartThread);
+            this.Controls.Add(this.cboDevices);
             this.Controls.Add(this.btnStopCaptureMode);
             this.Controls.Add(this.btnCaptureMode);
             this.Controls.Add(this.btnStopWebCam);
@@ -132,6 +183,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.imgVideo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgCapture)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -146,9 +198,14 @@
         //private System.Windows.Forms.Button btnSave;
         //private System.Windows.Forms.Button btnVideoFormat;
         //private System.Windows.Forms.Button btnVideoSource;
-        private System.Windows.Forms.Timer timerGarbageCollection;
+        private System.Windows.Forms.Timer timerMotionDetection;
         private System.Windows.Forms.Timer timerCaptureMode;
         private System.Windows.Forms.Button btnStopCaptureMode;
+        private System.Windows.Forms.ComboBox cboDevices;
+        private System.Windows.Forms.Button btnStartThread;
+        private System.Windows.Forms.Button btnStopThread;
+        private System.Windows.Forms.Label lblMemory;
+        private System.Windows.Forms.Timer tmrMemory;
     }
 }
 
