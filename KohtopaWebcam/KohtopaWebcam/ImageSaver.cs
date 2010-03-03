@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WinFormCharpWebCam
+namespace KohtopaWebcam
 {
     class ImageSaver
     {
@@ -28,6 +28,13 @@ namespace WinFormCharpWebCam
             {
                 this.filename = saveFileDialog.FileName;
             }
+        }
+
+        public ImageSaver(string path)
+        {
+            filename = path;
+            tag = 1;
+            valid = true;
         }
 
         public void Save(Image image)

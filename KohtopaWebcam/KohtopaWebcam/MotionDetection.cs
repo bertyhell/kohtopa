@@ -5,22 +5,30 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WinFormCharpWebCam
+namespace KohtopaWebcam
 {
     class MotionDetection
     {
         private Color[] pictureValues;
         // Bevat de kleurwaarden van de vorige image
-        private const int NUMBER_TEST_PIXELS = 10;
+        private int NUMBER_TEST_PIXELS = 10;
         // Dimensie van het raster
-        private const int PIXEL_SENSIVITY = 30;
+        private int PIXEL_SENSIVITY = 30;
         // Bepaalt hoeveel de kleurwaarden mogen afwijken vooraleer er beweging gedetecteerd wordt
-        private const double MOTION_SENSIVITY = 0.1;
+        private double MOTION_SENSIVITY = 0.1;
         // Bepaalt hoeveel % van de punten van het raster moeten veranderen vooraleer er beweging gedetecteerd wordt
 
         public MotionDetection()
         {
             pictureValues = new Color[NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS];
+        }
+
+        public MotionDetection(int NUMBER_TEST_PIXELS, int PIXEL_SENSIVITY, double MOTION_SENSIVITY)
+        {
+            this.NUMBER_TEST_PIXELS = NUMBER_TEST_PIXELS;
+            this.PIXEL_SENSIVITY = PIXEL_SENSIVITY;
+            this.MOTION_SENSIVITY = MOTION_SENSIVITY;
+            pictureValues = new Color[NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS];            
         }
 
         public bool Detect(Image image)
