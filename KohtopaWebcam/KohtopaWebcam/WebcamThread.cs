@@ -11,7 +11,75 @@ namespace KohtopaWebcam
     class WebcamThread
     {
         private int deviceIndex;
-        private bool running;        
+        private bool running;
+        private string path;
+        private int numberTestPixels;        
+        private int pixelSensivity;        
+        private double motionSensivity;
+        private bool motionDetectionChanged;
+        private bool pathChanged;
+
+        public WebcamThread(string path)
+        {
+            this.path = path;
+            numberTestPixels = 10;        
+            pixelSensivity = 30;        
+            motionSensivity = 0.1;
+            motionDetectionChanged = false;
+            pathChanged = false;
+        }
+
+        public int NumberTestPixels
+        {
+            get
+            {
+                return numberTestPixels;
+            }
+            set
+            {
+                numberTestPixels = value;
+                motionDetectionChanged = true;
+            }
+        }
+
+        public int PixelSensivity
+        {
+            get
+            {
+                return pixelSensivity;
+            }
+            set
+            {
+                pixelSensivity = value;
+                motionDetectionChanged = true;
+            }
+        }
+
+        public double MotionSensivity
+        {
+            get
+            {
+                return motionSensivity;
+            }
+            set
+            {
+                motionSensivity = value;
+                motionDetectionChanged = true;
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                return path;
+            }
+            set
+            {
+                path = value;
+                pathChanged = true;
+            }
+        }
 
         public void start(int deviceIndex)
         {
@@ -22,7 +90,7 @@ namespace KohtopaWebcam
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
             }
-        }
+        }        
 
         public void stop()
         {
@@ -31,15 +99,25 @@ namespace KohtopaWebcam
 
         public void loop()
         {
-            CaptureDevice captureDevice = CaptureDevice.GetDevices()[deviceIndex];
-            ImageSaver imageSaver= new ImageSaver("c:/testWebcam/test.jpg");
-            MotionDetection motionDetection = new MotionDetection();
+            CaptureDevice captureDevice = CaptureDevice.GetDevices()[deviceIndex];            
+            ImageSaver imageSaver= new ImageSaver(path);
+            MotionDetection motionDetection = new MotionDetection(numberTestPixels,pixelSensivity,motionSensivity);
             DateTime than = DateTime.Now.AddSeconds(10);
             if (captureDevice.Attach2())
             {
                 running = true;
                 while (running)
                 {
+                    if (motionDetectionChanged)
+                    {
+                        motionDetection = new MotionDetection(numberTestPixels, pixelSensivity, motionSensivity);
+                        motionDetectionChanged = false;
+                    }
+                    if (pathChanged)
+                    {
+                        imageSaver = new ImageSaver(path);
+                        pathChanged = false;
+                    }
                     Image image = captureDevice.Capture();
                     if (image != null)
                     {

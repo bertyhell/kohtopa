@@ -131,7 +131,7 @@ namespace KohtopaWebcam
 
         private void btnStartThread_Click(object sender, EventArgs e)
         {
-            WebcamThread webcamThread = new WebcamThread();
+            WebcamThread webcamThread = new WebcamThread("c:/testWebcam/test.jpg");
             webcamThread.start(0);
             btnStartThread.Tag = webcamThread;
         }
