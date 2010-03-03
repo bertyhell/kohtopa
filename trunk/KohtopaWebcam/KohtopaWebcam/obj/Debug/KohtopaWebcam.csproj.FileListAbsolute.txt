@@ -32,4 +32,3 @@ J:\kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Window.resources
-J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
