@@ -9,4 +9,4 @@ Huurders kunnen hun meterstanden opgeven, hun facturen en de kalender raadplegen
 Externen die op zoek zijn naar een kot kunnen dit doen op de site doen. Ze kunnen extra zoekfilters toevoegen om zo hun keuzes te beperken. Er zijn foto's beschikbaar van het gebouw en de kamers(indien opgegeven door kotbaas). Bij grote koten zal er een plattegrond beschikbaar zijn met daarop de verschillende koten. Deze is ingesteld in de GUI. Er worden bovendien enkele detailgegevens getoond. Verdere beschrijving staat in behoeftenanalyse.
  
 
-Verdere uitwerking van alle punten staat in behoeftenanalyse.
+Verdere uitwerking van alle punten staat in de behoeftenanalyse.
