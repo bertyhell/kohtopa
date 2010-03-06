@@ -104,10 +104,10 @@ namespace KohtopaWebcam
             }
             else
             {
-                lblStatusValue.Text = "stopt";
+                lblStatusValue.Text = "stopt";                
             }
             btnStart.Enabled = !running;
-            btnStop.Enabled = running;
+            btnStop.Enabled = running;                                    
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -251,6 +251,37 @@ namespace KohtopaWebcam
                 }
             }
             catch (Exception exc){
+            }
+        }        
+
+        private void btnPreview_Click(object sender, EventArgs e)
+        {
+            WebcamThread wt = (WebcamThread)webcamThreads[cboDevices.SelectedIndex];
+            if (wt.Preview == null)
+            {
+                wt.Preview = pcbPreview;
+                btnPreview.Text = "stop";
+                cboDevices.Enabled = false;
+            }
+            else
+            {
+                wt.Preview = null;
+                btnPreview.Text = "preview";
+                cboDevices.Enabled = true;
+            }
+        }
+
+        private void tmrStatusCheck_Tick(object sender, EventArgs e)
+        {
+            WebcamThread wt = (WebcamThread)webcamThreads[cboDevices.SelectedIndex];
+            setStatus(wt.IsRunning);
+        }
+
+        private void MainWindow_Closing(object sender, FormClosingEventArgs e)
+        {
+            foreach (WebcamThread wt in webcamThreads)
+            {
+                wt.stop();
             }
         }
     }
