@@ -103,7 +103,7 @@ namespace KohtopaWebcam
         private void timerCaptureMode_Tick(object sender, EventArgs e)
         {
             Image image = ((CaptureDevice)btnStart.Tag).Capture();
-            imageSaver.Save(image);
+            imageSaver.Save(image,"t");
             //imgCapture.Image = image;
         }
 
@@ -114,7 +114,7 @@ namespace KohtopaWebcam
                 if (imageSaver.isValid())
                 {
                     imgCapture.Image = ((CaptureDevice)btnStart.Tag).Capture();                    
-                    imageSaver.Save(imgCapture.Image);
+                    imageSaver.Save(imgCapture.Image,"m");
                 }
             }
         }
@@ -124,21 +124,21 @@ namespace KohtopaWebcam
             Image image = ((CaptureDevice)btnStart.Tag).Capture();                    
             if (motionDetection.Detect(image))
             {
-                imageSaver.Save(image);                
+                imageSaver.Save(image,"m");                
             }
             imgCapture.Image = image;            
         }
 
         private void btnStartThread_Click(object sender, EventArgs e)
         {
-            WebcamThread webcamThread = new WebcamThread("c:/testWebcam/test.jpg");
-            webcamThread.start(0);
-            btnStartThread.Tag = webcamThread;
+            //WebcamThread webcamThread = new WebcamThread("c:/testWebcam/test.jpg");
+            //webcamThread.start(0);
+            //btnStartThread.Tag = webcamThread;
         }
 
         private void btnStopThread_Click(object sender, EventArgs e)
         {            
-            ((WebcamThread)btnStartThread.Tag).stop();
+            //((WebcamThread)btnStartThread.Tag).stop();
         }
 
         private void tmrMemory_Tick(object sender, EventArgs e)

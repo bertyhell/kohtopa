@@ -14,20 +14,21 @@ namespace KohtopaWebcam
         private bool running;
         private string path;
         private int numberTestPixels;        
-        private int pixelSensivity;        
-        private double motionSensivity;
+        private int colorTolerance;        
+        private double motionTolerance;
         private bool motionDetectionChanged;
         private bool pathChanged;
 
-        public WebcamThread(string path)
+        public WebcamThread(string path,int deviceIndex)
         {
             this.path = path;
+            this.deviceIndex = deviceIndex;
             numberTestPixels = 10;        
-            pixelSensivity = 30;        
-            motionSensivity = 0.1;
+            colorTolerance = 30;        
+            motionTolerance = 0.1;
             motionDetectionChanged = false;
             pathChanged = false;
-        }
+        }        
 
         public int NumberTestPixels
         {
@@ -42,28 +43,37 @@ namespace KohtopaWebcam
             }
         }
 
-        public int PixelSensivity
+        public string NameDescription
         {
             get
             {
-                return pixelSensivity;
+                CaptureDevice cd = CaptureDevice.GetDevices()[deviceIndex];
+                return cd.Name + cd.Description;
+            }
+        }
+
+        public int ColorTolerance
+        {
+            get
+            {
+                return colorTolerance;
             }
             set
             {
-                pixelSensivity = value;
+                colorTolerance = value;
                 motionDetectionChanged = true;
             }
         }
 
-        public double MotionSensivity
+        public double MotionTolerance
         {
             get
             {
-                return motionSensivity;
+                return motionTolerance;
             }
             set
             {
-                motionSensivity = value;
+                motionTolerance = value;
                 motionDetectionChanged = true;
             }
         }
@@ -81,11 +91,18 @@ namespace KohtopaWebcam
             }
         }
 
-        public void start(int deviceIndex)
+        public bool IsRunning
+        {
+            get
+            {
+                return running;
+            }         
+        }
+
+        public void start()
         {
             if (!running)
-            {
-                this.deviceIndex = deviceIndex;
+            {                
                 Thread t = new Thread(new ThreadStart(loop));
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
@@ -100,8 +117,10 @@ namespace KohtopaWebcam
         public void loop()
         {
             CaptureDevice captureDevice = CaptureDevice.GetDevices()[deviceIndex];            
-            ImageSaver imageSaver= new ImageSaver(path);
-            MotionDetection motionDetection = new MotionDetection(numberTestPixels,pixelSensivity,motionSensivity);
+            ImageSaver imageSaver = null;
+            pathChanged = true;
+            MotionDetection motionDetection = null;
+            motionDetectionChanged = true;            
             DateTime than = DateTime.Now.AddSeconds(10);
             if (captureDevice.Attach2())
             {
@@ -110,20 +129,25 @@ namespace KohtopaWebcam
                 {
                     if (motionDetectionChanged)
                     {
-                        motionDetection = new MotionDetection(numberTestPixels, pixelSensivity, motionSensivity);
+                        motionDetection = new MotionDetection(numberTestPixels, colorTolerance, motionTolerance);
                         motionDetectionChanged = false;
                     }
                     if (pathChanged)
                     {
-                        imageSaver = new ImageSaver(path);
+                        imageSaver = new ImageSaver(path + "/webcam" + deviceIndex + 1);
                         pathChanged = false;
                     }
                     Image image = captureDevice.Capture();
                     if (image != null)
                     {
-                        if (motionDetection.Detect(image) || DateTime.Now > than)
+                        if (motionDetection.Detect(image))
                         {
-                            imageSaver.Save(image);
+                            imageSaver.Save(image,"m");
+                            than = DateTime.Now.AddSeconds(10);
+                        }
+                        else if (DateTime.Now > than)
+                        {
+                            imageSaver.Save(image, "t");
                             than = DateTime.Now.AddSeconds(10);
                         }
                     }
