@@ -9,46 +9,48 @@ using System.Windows.Forms;
 namespace KohtopaWebcam
 {
     class ImageSaver
-    {
-        private int tag;
-        private string filename;
-
+    {           
+        private string path;
         private bool valid;
 
         public ImageSaver()
-        {
-            this.tag = 1;
-            this.valid = true;
-
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.DefaultExt = ".jpg";
-            saveFileDialog.Filter = "Image (.jpg)|*.jpg";
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+        {                        
+            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                this.filename = saveFileDialog.FileName;
-            }
+                this.path = folderBrowserDialog.SelectedPath.Replace('\\', '/');
+                this.valid = true;
+            }            
         }
 
         public ImageSaver(string path)
         {
-            filename = path;
-            tag = 1;
+            this.path = path;
+            Directory.CreateDirectory(path);
             valid = true;
         }
 
-        public void Save(Image image)
-        {            
+        public void Save(Image image, string tag)
+        {
+            try
+            {
+                string filename = path + "/" + tag + "_" + DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss_fff") + ".jpg";
+                FileStream fileStream = new FileStream(filename, FileMode.CreateNew);
+                image.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                fileStream.Close();
+            }
+            catch (IOException exc){}//filename already existed
+            
+            /*
             FileStream fileStream = new FileStream(filename.Insert(filename.IndexOf('.'), "_" + tag), FileMode.Create);
             image.Save(fileStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-            fileStream.Close();
-
-            tag++;
+            fileStream.Close();            
+            */ 
         }
 
         public bool FileSelected()
         {
-            if (filename == null)
+            if (path == null)
             {
                 return false;
             }
