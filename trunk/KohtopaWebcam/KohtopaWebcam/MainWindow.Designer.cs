@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.cboDevices = new System.Windows.Forms.ComboBox();
             this.lblTestPixels = new System.Windows.Forms.Label();
             this.tbTestPixels = new System.Windows.Forms.TrackBar();
@@ -46,9 +47,13 @@
             this.lblPathValue = new System.Windows.Forms.Label();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.btnSaveConfiguration = new System.Windows.Forms.Button();
+            this.pcbPreview = new System.Windows.Forms.PictureBox();
+            this.btnPreview = new System.Windows.Forms.Button();
+            this.tmrStatusCheck = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.tbTestPixels)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbColorTolerance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMotionTolerance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbPreview)).BeginInit();
             this.SuspendLayout();
             // 
             // cboDevices
@@ -226,11 +231,37 @@
             this.btnSaveConfiguration.UseVisualStyleBackColor = true;
             this.btnSaveConfiguration.Click += new System.EventHandler(this.btnSaveConfiguration_Click);
             // 
+            // pcbPreview
+            // 
+            this.pcbPreview.Location = new System.Drawing.Point(137, 324);
+            this.pcbPreview.Name = "pcbPreview";
+            this.pcbPreview.Size = new System.Drawing.Size(320, 240);
+            this.pcbPreview.TabIndex = 18;
+            this.pcbPreview.TabStop = false;
+            // 
+            // btnPreview
+            // 
+            this.btnPreview.Location = new System.Drawing.Point(44, 424);
+            this.btnPreview.Name = "btnPreview";
+            this.btnPreview.Size = new System.Drawing.Size(75, 21);
+            this.btnPreview.TabIndex = 19;
+            this.btnPreview.Text = "Preview";
+            this.btnPreview.UseVisualStyleBackColor = true;
+            this.btnPreview.Click += new System.EventHandler(this.btnPreview_Click);
+            // 
+            // tmrStatusCheck
+            // 
+            this.tmrStatusCheck.Enabled = true;
+            this.tmrStatusCheck.Interval = 1000;
+            this.tmrStatusCheck.Tick += new System.EventHandler(this.tmrStatusCheck_Tick);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1027, 753);
+            this.ClientSize = new System.Drawing.Size(609, 598);
+            this.Controls.Add(this.btnPreview);
+            this.Controls.Add(this.pcbPreview);
             this.Controls.Add(this.btnSaveConfiguration);
             this.Controls.Add(this.btnBrowse);
             this.Controls.Add(this.lblPathValue);
@@ -252,9 +283,11 @@
             this.Name = "MainWindow";
             this.Text = "KohtopaWebcam";
             this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             ((System.ComponentModel.ISupportInitialize)(this.tbTestPixels)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbColorTolerance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbMotionTolerance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pcbPreview)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -280,5 +313,8 @@
         private System.Windows.Forms.Label lblPathValue;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Button btnSaveConfiguration;
+        private System.Windows.Forms.PictureBox pcbPreview;
+        private System.Windows.Forms.Button btnPreview;
+        private System.Windows.Forms.Timer tmrStatusCheck;
     }
 }

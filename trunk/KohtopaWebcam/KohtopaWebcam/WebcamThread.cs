@@ -5,6 +5,7 @@ using System.Text;
 using Pinvoke;
 using System.Threading;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace KohtopaWebcam
 {
@@ -18,6 +19,7 @@ namespace KohtopaWebcam
         private double motionTolerance;
         private bool motionDetectionChanged;
         private bool pathChanged;
+        private PictureBox preview;
 
         public WebcamThread(string path,int deviceIndex)
         {
@@ -28,7 +30,20 @@ namespace KohtopaWebcam
             motionTolerance = 0.1;
             motionDetectionChanged = false;
             pathChanged = false;
-        }        
+            preview = null;
+        }
+
+        public PictureBox Preview
+        {
+            get
+            {
+                return preview;
+            }
+            set
+            {
+                preview = value;
+            }
+        }
 
         public int NumberTestPixels
         {
@@ -149,6 +164,10 @@ namespace KohtopaWebcam
                         {
                             imageSaver.Save(image, "t");
                             than = DateTime.Now.AddSeconds(10);
+                        }
+                        if (preview != null)
+                        {
+                            preview.Image = image;
                         }
                     }
                 }
