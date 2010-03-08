@@ -15,7 +15,7 @@ namespace KohtopaWeb
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            Language.read();
+            Language.read();            
         }
 
         protected void Session_Start(object sender, EventArgs e)
