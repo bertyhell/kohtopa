@@ -60,6 +60,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataConnector.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -121,6 +122,13 @@
     <Compile Include="Search.aspx.designer.cs">
       <DependentUpon>Search.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ShowPicture.aspx.cs">
+      <DependentUpon>ShowPicture.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ShowPicture.aspx.designer.cs">
+      <DependentUpon>ShowPicture.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logout.aspx" />
@@ -128,6 +136,7 @@
     <Content Include="Menu.ascx" />
     <Content Include="Search.ascx" />
     <Content Include="Search.aspx" />
+    <Content Include="ShowPicture.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
