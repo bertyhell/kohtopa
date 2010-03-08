@@ -12,6 +12,7 @@ public class DataBaseConstants {
 	public static String tableContracts = "contracts";
 	public static String tableConsumption = "consumption";
 	public static String tableMessages = "messages";
+        public static String tablePictures = "pictures";
 
 	//addresses column labels
 	public static String addressId = "addressid";
@@ -61,8 +62,9 @@ public class DataBaseConstants {
 	public static String dataSent = "date_sent";
 	public static String text = "text";
 
-
-
+        public static String pictureId = "pictureId";
+        public static String rentableId = "rentableId";
+        public static String pictureData = "data";
 
 	//dataconnector connection strings
         /*
@@ -82,4 +84,6 @@ public class DataBaseConstants {
 	//dataconnector statement strings
     public static String selectBuildingPreviews = "SELECT " + buildingId + "," + streetNumber + "," + street + "," + zipCode + "," + city + " FROM " + tableBuildings + " b join " + tableAddressess + " a on a." + addressId + " = b." + addressId;    
     public static String selectNextId = "with x as ( select columnName, rank() over(order by columnName)-2147483649 as rn from tableName), y as (select columnName, case  when rn <> columnName then rn else null end as rn from x) select case when min(rn) is null then case when count(1) is null then -2147483648 else count(1) - 2147483648 end else min(rn) end as id from y";
+    public static String selectPictureIds = ("select " + pictureId + " from " + tablePictures + " where " + rentableId + " = ?");
+    public static String selectPictureData = ("select " + pictureData + " from " + tablePictures + " where " + pictureId + " = ?");
 }
