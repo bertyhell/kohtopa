@@ -1,2 +1,2 @@
 scenario's: http://docs.google.com/Doc?docid=0AR3BQRWW3ESeZGR4Nmg4aDRfMTBjN2tmbmtjYw&hl=en <br>
-diagrammen: http://groups.google.com/group/kohtopa/web/diagrammen_v2.pdf?hl=nl
+diagrammen: http://kohtopa.googlegroups.com/web/diagrammen_aangepast.pdf?gda=XcUsbEsAAAAmH-zlJz15m4A43N0mub_8SKkLHiEvz8FgM_ZKUiW3JIkZiUCKhsMVR4mxMWcsVobD1uxRlQFWFhL_6NDVIA_vBkXa90K8pT5MNmkW1w_4BQ&gsc=NLXkFgsAAADpZFv66GcdjUjocvRJv64l
