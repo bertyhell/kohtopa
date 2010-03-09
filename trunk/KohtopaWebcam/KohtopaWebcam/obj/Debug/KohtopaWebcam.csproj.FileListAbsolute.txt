@@ -34,3 +34,12 @@ J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Window.resources
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
 J:\kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe.config
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Window.resources
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
