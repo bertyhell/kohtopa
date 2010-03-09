@@ -77,11 +77,11 @@ public class DataBaseConstants {
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
-	public static String pw = "admin";
+	public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
 
 	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:XE";
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 	//dataconnector statement strings
 	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + streetNumber + "," + street + "," + zipCode + "," + city + " FROM " + tableBuildings + " b join " + tableAddressess + " a on a." + addressId + " = b." + addressId;
 	public static String selectNextId = "with x as ( select columnName, rank() over(order by columnName)-2147483649 as rn from tableName), y as (select columnName, case  when rn <> columnName then rn else null end as rn from x) select case when min(rn) is null then case when count(1) is null then -2147483648 else count(1) - 2147483648 end else min(rn) end as id from y";
