@@ -17,12 +17,8 @@ public class Model {
 	private Model() {
 	}
 	
-	public void getBuildingPreviews(Component requesterFrame, ArrayList<Building> buildings){
-		try {
-			DataConnector.selectBuildingPreviews(buildings);
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(requesterFrame, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-		}
+	public void getBuildingPreviews(Component requesterFrame, ArrayList<Building> buildings) throws SQLException{
+		DataConnector.selectBuildingPreviews(buildings);
 	}
 
 
