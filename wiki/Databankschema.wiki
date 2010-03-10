@@ -1,2 +1,2 @@
-<a href="http://groups.google.com/group/kohtopa/web/databankschema.pdf">pdf versie</a> <br>
-<img src="http://groups.google.com/group/kohtopa/web/databankschema.png" />
+<a href="http://groups.google.be/group/kohtopa/web/databankschema_103.pdf">pdf versie</a> <br>
+<img src="http://groups.google.be/group/kohtopa/web/databankschema_103.png" />
