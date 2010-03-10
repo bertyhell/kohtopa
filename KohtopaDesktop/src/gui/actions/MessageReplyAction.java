@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import Language.Language;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -13,11 +14,16 @@ import Language.Language;
  */
 public class MessageReplyAction extends AbstractAction {
 
-	public MessageReplyAction(Icon img) {
-		super(Language.getString("addBuilding"), img);
-	}
+    public MessageReplyAction(Icon img) {
+        super(Language.getString("removeMessages"), img);
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-	}
+    public MessageReplyAction() {
+        super(Language.getString("removeMessages"));
+        this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(getClass().getResource("/images/message_reply_23.png")));
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
+    }
 }

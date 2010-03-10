@@ -3,9 +3,9 @@ package gui.actions;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
-import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import Language.Language;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -13,8 +13,9 @@ import Language.Language;
  */
 public class MessageNewAction extends AbstractAction {
 
-	public MessageNewAction(Icon img) {
-		super(Language.getString("addBuilding"), img);
+	public MessageNewAction() {
+		super(Language.getString("newMessage"));
+                this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(getClass().getResource("/images/message_new_23.png")));
 	}
 
 	public void actionPerformed(ActionEvent e) {

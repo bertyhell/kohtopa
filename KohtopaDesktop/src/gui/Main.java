@@ -7,11 +7,8 @@ import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -76,21 +73,31 @@ public class Main extends JFrame {
 		JTabbedPane tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		this.add(tabbed, BorderLayout.CENTER);
 
+                
 		//adding Add/Remove panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+
 
 		//adding Calendar panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_C);
 
+
 		//adding Invoices panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createInvoicesPanel(), Language.getString("descriptionInvoices"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_I);
 
+
+                //adding Messages Panel
+                tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/messages_64.png")), new MessagePane(), Language.getString("descriptionMesssages"));
+                tabbed.setMnemonicAt(0, KeyEvent.VK_M);
+
+
 		//adding Settings Panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_S);
+
 
 		pack();
 		this.setLocationRelativeTo(null);
@@ -110,10 +117,12 @@ public class Main extends JFrame {
 		btnAddBuilding.setHideActionText(true);
 		btnAddBuilding.setToolTipText(Language.getString("addBuilding"));
 		pnlButtonsAddRemove.add(btnAddBuilding);
+
 		JButton btnEditBuilding = new JButton(buildingEdit);
 		btnEditBuilding.setHideActionText(true);
 		btnEditBuilding.setToolTipText(Language.getString("editBuilding"));
 		pnlButtonsAddRemove.add(btnEditBuilding);
+
 		JButton btnRemoveBuilding = new JButton(buildingRemove);
 		btnRemoveBuilding.setHideActionText(true);
 		btnRemoveBuilding.setToolTipText(Language.getString("removeBuildings"));
@@ -124,10 +133,12 @@ public class Main extends JFrame {
 		btnAddRoom.setHideActionText(true);
 		btnAddRoom.setToolTipText(Language.getString("addRoom"));
 		pnlButtonsAddRemove.add(btnAddRoom);
+
 		JButton btnEditRoom = new JButton(roomEdit);
 		btnEditRoom.setHideActionText(true);
 		btnEditRoom.setToolTipText(Language.getString("editRoom"));
 		pnlButtonsAddRemove.add(btnEditRoom);
+
 		JButton btnRemoveRoom = new JButton(roomRemove);
 		btnRemoveRoom.setHideActionText(true);
 		btnRemoveRoom.setToolTipText(Language.getString("removeRooms"));
@@ -147,66 +158,15 @@ public class Main extends JFrame {
 		listBuildings.setBackground(new Color(217,217,217));
 		listBuildings.setCellRenderer(new PanelCellRenderer());
 
-		lmBuilding.add(new BuildingListPanel(675654,
+                for(int i=0 ; i<20 ; i++) {
+                    lmBuilding.add(new BuildingListPanel(675654,
 				"kot1",
 				new ImageIcon(getClass().getResource("/images/test.png")),
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmBuilding.add(new BuildingListPanel(675654,
-				"kot1",
-				new ImageIcon(getClass().getResource("/images/test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
+                }
+
 		scrolBuilding.setViewportView(listBuildings);
 
 		PanelListModel lmRoom = new PanelListModel();
@@ -214,66 +174,15 @@ public class Main extends JFrame {
 		listRooms.setBackground(new Color(217,217,217));
 		listRooms.setCellRenderer(new PanelCellRenderer());
 
-		lmRoom.add(new BuildingListPanel(675654,
+                for(int i=0 ; i<20 ; i++) {
+                    lmRoom.add(new BuildingListPanel(675654,
 				"kamer1",
 				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
 				"voskeslaan 58",
 				"9000",
 				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
-		lmRoom.add(new BuildingListPanel(675654,
-				"kamer1",
-				new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-				"voskeslaan 58",
-				"9000",
-				"Gent"));
+                }
+
 		scrolRoom.setViewportView(listRooms);
 
 		splitter.setPreferredSize(new Dimension(1000, 600));
