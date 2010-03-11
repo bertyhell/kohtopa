@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import Language.Language;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
@@ -13,12 +14,11 @@ import javax.swing.ImageIcon;
  */
 public class MessageNewAction extends AbstractAction {
 
-	public MessageNewAction() {
-		super(Language.getString("newMessage"));
-                this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(getClass().getResource("/images/message_new_23.png")));
-	}
+    public MessageNewAction(Icon img) {
+	super(Language.getString("newMessages"), img);
+    }
 
-	public void actionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-	}
+    public void actionPerformed(ActionEvent e) {
+	JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
+    }
 }
