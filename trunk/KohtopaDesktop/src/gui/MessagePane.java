@@ -6,9 +6,6 @@
 package gui;
 
 import Language.Language;
-import gui.actions.MessageNewAction;
-import gui.actions.MessageRemoveAction;
-import gui.actions.MessageReplyAction;
 import java.awt.BorderLayout;
 import java.util.Vector;
 import javax.swing.AbstractAction;
@@ -43,18 +40,18 @@ public class MessagePane extends JPanel {
      */
     public MessagePane() {
 
-        // create toolbar and add buttons
-        toolbar = new JPanel();
-
-        // add buttons
-        JButton newMessageBtn = getButton(new MessageNewAction(),"newMessage");
-        toolbar.add(newMessageBtn);
-
-        JButton repMessageBtn = getButton(new MessageReplyAction(), "replyMessage");
-        toolbar.add(repMessageBtn);
-
-        JButton remMessageBtn = getButton(new MessageRemoveAction(),"removeMessages");
-        toolbar.add(remMessageBtn);
+//        // create toolbar and add buttons
+//        toolbar = new JPanel();
+//
+//        // add buttons
+//        JButton newMessageBtn = new JButton(Main.getAction("newMessage"));
+//        toolbar.add(newMessageBtn);
+//
+//        JButton repMessageBtn = new JButton(Main.getAction("replyMessage"));
+//        toolbar.add(repMessageBtn);
+//
+//        JButton remMessageBtn = new JButton(Main.getAction("removeMessages"));
+//        toolbar.add(remMessageBtn);
 
 
 
@@ -125,7 +122,7 @@ public class MessagePane extends JPanel {
 
         this.setLayout(new BorderLayout());
         this.add(splitpane);
-        this.add(toolbar,BorderLayout.NORTH);
+        //this.add(toolbar,BorderLayout.NORTH);
 
     }
     

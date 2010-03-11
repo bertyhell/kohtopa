@@ -18,11 +18,6 @@ public class MessageReplyAction extends AbstractAction {
         super(Language.getString("removeMessages"), img);
     }
 
-    public MessageReplyAction() {
-        super(Language.getString("removeMessages"));
-        this.putValue(AbstractAction.SMALL_ICON, new ImageIcon(getClass().getResource("/images/message_reply_23.png")));
-    }
-
     public void actionPerformed(ActionEvent e) {
         JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
     }
