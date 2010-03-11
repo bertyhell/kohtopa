@@ -261,11 +261,7 @@ public class Main extends JFrame {
 	btnRemoveMessage.setToolTipText(Language.getString("removeMessages"));
 	pnlButtonsMessage.add(btnRemoveMessage);
 
-
-
-	
-
-	//replace by plugin panel:
+	//replace by plugin messagepanel by jelle:
 	MessagePane pnlMessagesInfo = new MessagePane();
 
 
