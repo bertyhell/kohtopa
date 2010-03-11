@@ -5,53 +5,62 @@ import java.util.ArrayList;
 
 public class Building {
 
-	private int id;
-	private String name;
-	private String street;
-	private String number;
-	private String zipcode;
-	private String city;
-	private int previewIndex;
-	private ArrayList<Image> images;
+    private int id;
+    private String name;
+    private String street;
+    private String number;
+    private String zipcode;
+    private String city;
+    private Image previewImage;
+    private ArrayList<Image> floors;
+    private ArrayList<Image> images;
 
-	public Building(int id, String name, String street, String number, String zipcode, String city) {
-		this.id = id;
-		this.name = name;
-		this.street = street;
-		this.number = number;
-		this.zipcode = zipcode;
-		this.city = city;
-	}
+    public Building(int id, String name, String street, String number, String zipcode, String city) {
+	this.id = id;
+	this.name = name;
+	this.street = street;
+	this.number = number;
+	this.zipcode = zipcode;
+	this.city = city;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public ArrayList<Image> getFloors() {
+	return floors;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Image getPreviewImage() {
+	return previewImage;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public int getId() {
+	return id;
+    }
 
-	public ArrayList<Image> getImages() {
-		return images;
-	}
+    public String getName() {
+	return name;
+    }
 
-	public String getNumber() {
-		return number;
-	}
+    public String getCity() {
+	return city;
+    }
 
-	public int getPreviewIndex() {
-		return previewIndex;
-	}
+    public ArrayList<Image> getImages() {
+	return images;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    public String getNumber() {
+	return number;
+    }
 
-	public String getZipcode() {
-		return zipcode;
-	}
+    public Image getPreviewIndex() {
+	return previewImage;
+    }
+
+    public String getStreet() {
+	return street;
+    }
+
+    public String getZipcode() {
+	return zipcode;
+    }
 }
