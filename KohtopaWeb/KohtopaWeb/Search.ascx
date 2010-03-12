@@ -74,5 +74,6 @@
     </asp:TableRow>    
 </asp:Table>
 
+<asp:GridView ID="gvRentables" runat="server"/>
 
 
