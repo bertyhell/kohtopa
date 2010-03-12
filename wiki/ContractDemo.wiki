@@ -1,7 +1,7 @@
 ==GUI:==
 Het uitzicht van de gui is zo goed als afgewerkt.
 De functionaliteit zal nog niet volledig af zijn.
-In de demo zal er mogelijkheid zijn om een grondplan te maken, om dit plan te maken kan de kotbaas punten aanduiden, hiertussen kan hij lijnen trekken. Hij krijgt ook de mogelijkheid om webcams op het grondplan te plaatsen. De coordinaten worden opgeslaan in een xml bestand.
+In de demo zal er mogelijkheid zijn om een grondplan te maken, om dit plan te maken kan de kotbaas punten aanduiden, hiertussen zullen lijnen getrokken worden zodat er een vorm ontstaat. Hij krijgt ook de mogelijkheid om webcams op het grondplan te plaatsen. Deze vormen worden vervolgens gelinkt aan de informatie over het kot. De coördinaten worden opgeslaan in een xml bestand.
 Bij de desktopapplicatie zal er enkel mogelijkheid zijn om gegevens op te halen, nog niet om toe te voegen/aan te passen.
 De kotbaas kan zijn berichten al lezen. Het verzenden van berichten komt later.
 Er zal ook mogelijkheid zijn om op 1 plattegrond de koten aan te duiden en deze te veranderen.
