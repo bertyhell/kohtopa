@@ -49,8 +49,7 @@ public class Main extends JFrame {
 		}
 
 		//splashscreen
-		SplashConnect splash = new SplashConnect();
-		splash.setVisible(true);
+		SplashConnect.showSplash();
 
 		//actions
 		actions = new HashMap<String, Action>();
@@ -106,7 +105,7 @@ public class Main extends JFrame {
 
 		pack();
 		this.setLocationRelativeTo(null);
-		splash.setVisible(false);
+		SplashConnect.hideSplash();
 	}
 
 	private JPanel createAddRemovePanel() {
