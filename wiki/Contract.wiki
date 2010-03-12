@@ -8,7 +8,7 @@ Ten laatste is er een kalender voorzien waarop de kotbaas belangrijke data kan a
 
 ==Webapplicatie==
 Deze is zowel bedoeld voor externe studenten die een kot zoeken als voor huurders. Indien de gebruiker een huurder is moet deze inloggen. De login en het paswoord worden meegeleverd bij het ondertekenen van het contract.
-Huurders kunnen hun meterstanden opgeven, hun facturen en de kalender raadplegen. Er is een contactformulier voorzien voor huurders en niet-huurders.
+Huurders kunnen hun meterstanden opgeven, hun facturen en de kalender raadplegen. De facturen zijn af te halen in PDF formaat. Er is een contactformulier voorzien voor huurders en niet-huurders.
 Externen die op zoek zijn naar een kot kunnen dit doen op de site doen. Ze kunnen extra zoekfilters toevoegen om zo hun keuzes te beperken. Er zijn foto's beschikbaar van het gebouw en de kamers(indien opgegeven door kotbaas). Bij grote koten zal er een plattegrond beschikbaar zijn met daarop de verschillende koten. Deze is ingesteld in de GUI. Er worden bovendien enkele detailgegevens getoond. Verdere beschrijving staat in behoeftenanalyse.
  
 
