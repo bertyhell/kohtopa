@@ -15,6 +15,7 @@ public class TaskAddAction extends AbstractAction {
 
 	public TaskAddAction(Icon img) {
 		super(Language.getString("addTask"), img);
+		super.putValue("SHORT_DESCRIPTION", Language.getString("addTask"));
 	}
 
 	public void actionPerformed(ActionEvent e) {

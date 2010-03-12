@@ -15,6 +15,7 @@ public class InvoiceAddAction extends AbstractAction {
 
 	public InvoiceAddAction(Icon img) {
 		super(Language.getString("addInvoice"), img);
+		super.putValue("SHORT_DESCRIPTION", Language.getString("addInvoice"));
 	}
 
 	public void actionPerformed(ActionEvent e) {

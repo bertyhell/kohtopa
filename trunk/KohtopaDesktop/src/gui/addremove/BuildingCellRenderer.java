@@ -5,7 +5,7 @@ import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-public class PanelCellRenderer implements ListCellRenderer {
+public class BuildingCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 		AbstractListPanel comp = (AbstractListPanel) list.getModel().getElementAt(index);
