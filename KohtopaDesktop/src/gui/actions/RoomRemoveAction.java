@@ -21,4 +21,10 @@ public class RoomRemoveAction extends AbstractAction{
 	public void actionPerformed(ActionEvent e) {
 		JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
 	}
+
+	@Override
+	public void setEnabled(boolean enable){
+		super.setEnabled(enable);
+		super.putValue("SHORT_DESCRIPTION", enable?Language.getString("removeRooms"):"");
+	}
 }

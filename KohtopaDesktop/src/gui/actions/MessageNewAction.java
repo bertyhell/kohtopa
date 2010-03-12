@@ -13,11 +13,18 @@ import javax.swing.Icon;
  */
 public class MessageNewAction extends AbstractAction {
 
-    public MessageNewAction(Icon img) {
-	super(Language.getString("newMessages"), img);
-    }
+	public MessageNewAction(Icon img) {
+		super(Language.getString("newMessage"), img);
+		System.out.println("test message text: " + Language.getString("newMessage"));
+	}
 
-    public void actionPerformed(ActionEvent e) {
-	JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-    }
+	public void actionPerformed(ActionEvent e) {
+		JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void setEnabled(boolean enable) {
+		super.setEnabled(enable);
+		super.putValue("SHORT_DESCRIPTION", enable ? Language.getString("newMessage") : "");
+	}
 }
