@@ -15,6 +15,7 @@ public class BuildingAddAction extends AbstractAction {
 
 	public BuildingAddAction(Icon img) {
 		super(Language.getString("addBuilding"), img);
+		super.putValue("SHORT_DESCRIPTION", Language.getString("addBuilding"));
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -15,6 +15,7 @@ public class RoomAddAction extends AbstractAction {
 
 	public RoomAddAction(Icon img) {
 		super(Language.getString("addRoom"), img);
+		super.putValue("SHORT_DESCRIPTION", Language.getString("addRoom"));
 	}
 
 	public void actionPerformed(ActionEvent e) {

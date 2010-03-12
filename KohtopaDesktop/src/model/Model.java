@@ -1,12 +1,15 @@
 package model;
 
-import Language.Language;
 import java.awt.Component;
+import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
+import java.util.HashMap;
 
 public class Model {
+
+	//this class is used to seperate betwean database and gui in case of change
+	//and it will also be used to cach certain data (like images and the global list of buildings
 
 	private static Model instance = new Model();
 
@@ -21,8 +24,11 @@ public class Model {
 		DataConnector.selectBuildingPreviews(buildings);
 	}
 
+	public void addDummyPictures(){
+		DataConnector.addDummyPictures();
+	}
 
-
-
-
+	public HashMap<Integer, BufferedImage> getPictures(int buildingId, boolean isBuilding) throws SQLException {
+		return DataConnector.getPictures(buildingId, isBuilding);
+	}
 }

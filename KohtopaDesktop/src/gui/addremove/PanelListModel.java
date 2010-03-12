@@ -5,6 +5,7 @@ import javax.swing.AbstractListModel;
 
 public class PanelListModel extends AbstractListModel {
 
+
 	private ArrayList<AbstractListPanel> items = new ArrayList<AbstractListPanel>();
 
 	public PanelListModel() {

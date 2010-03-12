@@ -15,7 +15,7 @@ public class MessageNewAction extends AbstractAction {
 
 	public MessageNewAction(Icon img) {
 		super(Language.getString("newMessage"), img);
-		System.out.println("test message text: " + Language.getString("newMessage"));
+		super.putValue("SHORT_DESCRIPTION", Language.getString("newMessage"));
 	}
 
 	public void actionPerformed(ActionEvent e) {
