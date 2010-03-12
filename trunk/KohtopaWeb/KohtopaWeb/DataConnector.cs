@@ -15,7 +15,7 @@ namespace KohtopaWeb
 {
     public class DataConnector
     {
-        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/XE;User Id=system;Password=admin;";        
+        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/KOHTOPA;User Id=system;Password=e=mc**2;";        
                         
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
@@ -35,6 +35,18 @@ namespace KohtopaWeb
             reader.Close();
             conn.Close();
             return data;
-        }        
+        }
+
+        public static DataTable getRentables()
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            string query = "select * from rentables";
+            OleDbDataAdapter da = new OleDbDataAdapter(query, conn);
+            DataSet ds = new DataSet();
+            da.Fill(ds);            
+            return ds.Tables[0];
+        }
+
     }
 }

@@ -64,7 +64,7 @@ namespace KohtopaWeb
                 lblContains.Text = Language.getstring("Contains", language);
                 btnContains.Text = Language.getstring("Add", language);
 
-                ddlFilters_Selected_Index_Changed(null, null);
+                ddlFilters_Selected_Index_Changed(null, null);                
             }            
         }        
 
@@ -176,21 +176,35 @@ namespace KohtopaWeb
                 fv.Columns.Add(data);
                 fv.Columns.Add(operation);
                 fv.Columns.Add(value1);
-                fv.Columns.Add(value2);                
+                fv.Columns.Add(value2);
                 int i = 0;
+                DataView dv = new DataView(DataConnector.getRentables());
                 foreach (DataRow dr in searchTable.Rows)
                 {
                     DataRow r = fv.NewRow();
                     r[data] = Language.getstring("" + dr["data"], language);
                     r[operation] = Language.getstring("" + dr["operation"], language);
                     r[value1] = dr["value1"];
-                    r[value2] = dr["value2"];                    
-                    fv.Rows.Add(r);
+                    r[value2] = dr["value2"];
+                    fv.Rows.Add(r);                    
                     i++;
-                }                
-                gvFilters.DataSource = fv;                
-                gvFilters.DataBind();                
-            }            
+                    if ((string)dr["operation"] == "Between")
+                    {
+                        dv.RowFilter += ("" + dr["data"] + " >=" + dr["value1"] + " AND " + dr["data"] + " <= " + dr["value2"] + ") ");
+                    }
+                }
+                gvFilters.DataSource = fv;
+                gvFilters.DataBind();
+                
+                gvRentables.DataSource = dv;
+                gvRentables.DataBind();
+            }
+            else
+            {
+                DataView dv = new DataView(DataConnector.getRentables());
+                gvRentables.DataSource = dv;
+                gvRentables.DataBind();                
+            }
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
