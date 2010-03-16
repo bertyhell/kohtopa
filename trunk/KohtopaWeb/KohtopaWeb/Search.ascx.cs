@@ -58,13 +58,15 @@ namespace KohtopaWeb
                 cvBetween.ErrorMessage = Language.getstring("RequiredGreaterThanMin", language);
                 btnBetween.Text = Language.getstring("Add", language);
 
-                lblRequired.Text = Language.getstring("Required", language);
-                btnRequired.Text = Language.getstring("Add", language);
+                btnRequired.Text = Language.getstring("Add", language);                
+                btnReject.Text = Language.getstring("Reject", language);
 
                 lblContains.Text = Language.getstring("Contains", language);
                 btnContains.Text = Language.getstring("Add", language);
 
-                ddlFilters_Selected_Index_Changed(null, null);                
+                ddlFilters_Selected_Index_Changed(null, null);
+                
+                
             }            
         }        
 
@@ -113,18 +115,34 @@ namespace KohtopaWeb
         protected void btnRequired_Click(object sender, EventArgs e)
         {
             DataTable searchTable = getSearchTable();
-            String[] keys = { "" + ddlFilters.SelectedValue, "" };
-            DataRow dr = searchTable.Rows.Find(keys);
-            if (dr == null)
+            DataView dv = new DataView(searchTable);
+            dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
+            
+            DataRow dr;
+            if (dv.ToTable().Rows.Count == 1)
+            {
+                dr = dv.ToTable().Rows[0];
+                string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                dr = searchTable.Rows.Find(keys);
+            }
+            else
             {
                 dr = searchTable.NewRow();
-            }            
+            }
+            
             dr["data"] = ddlFilters.SelectedValue;
             dr["operation"] = "Required";
-            dr["value1"] = "";
+            if (((Button)sender).Equals(btnRequired))
+            {
+                dr["value1"] = 1;
+            }
+            else
+            {
+                dr["value1"] = 0;
+            }            
             try
             {
-                searchTable.Rows.Add(dr);
+                searchTable.Rows.Add(dr);                
             }
             catch (Exception exc) { } //if dr is not a new row;
             updateFilterView();
@@ -163,48 +181,119 @@ namespace KohtopaWeb
         }
 
         private void updateFilterView()
-        {      
+        {
+            
+
             DataTable searchTable = (DataTable)Session["searchTable"];
-            if (searchTable != null)
+            try
             {
-                DataTable fv = new DataTable();
-                string language = "" + Session["Language"];
-                string data = Language.getstring("Data", language);
-                string operation = Language.getstring("Operation", language);
-                string value1 = Language.getstring("Value1", language);
-                string value2 = Language.getstring("Value2", language);
-                fv.Columns.Add(data);
-                fv.Columns.Add(operation);
-                fv.Columns.Add(value1);
-                fv.Columns.Add(value2);
-                int i = 0;
+                updateRentableColumns();
+
                 DataView dv = new DataView(DataConnector.getRentables());
-                foreach (DataRow dr in searchTable.Rows)
+                lblDatabaseError.Visible = false;
+                gvRentables.Visible = true;
+                if (searchTable != null)
                 {
-                    DataRow r = fv.NewRow();
-                    r[data] = Language.getstring("" + dr["data"], language);
-                    r[operation] = Language.getstring("" + dr["operation"], language);
-                    r[value1] = dr["value1"];
-                    r[value2] = dr["value2"];
-                    fv.Rows.Add(r);                    
-                    i++;
-                    if ((string)dr["operation"] == "Between")
+                    DataTable fv = new DataTable();
+                    string language = "" + Session["Language"];
+                    string data = Language.getstring("Data", language);
+                    string operation = Language.getstring("Operation", language);
+                    string value1 = Language.getstring("Value1", language);
+                    string value2 = Language.getstring("Value2", language);
+                    fv.Columns.Add(data);
+                    fv.Columns.Add(operation);
+                    fv.Columns.Add(value1);
+                    fv.Columns.Add(value2);
+                    int i = 0;
+                    dv.RowFilter = "1 = 1";
+                    foreach (DataRow dr in searchTable.Rows)
                     {
-                        dv.RowFilter += ("" + dr["data"] + " >=" + dr["value1"] + " AND " + dr["data"] + " <= " + dr["value2"] + ") ");
+                        DataRow r = fv.NewRow();
+                        r[data] = Language.getstring("" + dr["data"], language);
+                        r[operation] = Language.getstring("" + dr["operation"], language);
+                        r[value1] = dr["value1"];
+                        r[value2] = dr["value2"];
+                        fv.Rows.Add(r);
+                        i++;
+                        if ((string)dr["operation"] == "Between")
+                        {
+                            dv.RowFilter += (" AND " + dr["data"] + " >=" + dr["value1"] + " AND " + dr["data"] + " <= " + dr["value2"] );
+                        }
+                        else if ((string)dr["operation"] == "Required")
+                        {
+                            dv.RowFilter += (" AND " + dr["data"] + "= " + dr["value1"]);
+                        }
+                        else if ((string)dr["operation"] == "Contains")
+                        {
+                            dv.RowFilter += (" AND " + dr["data"] + " LIKE '%" + dr["value1"] + "%'" );
+                        }
                     }
+                    gvFilters.DataSource = fv;
+                    gvFilters.DataBind();
+
+                    gvRentables.DataSource = dv;
+                    gvRentables.DataBind();
                 }
-                gvFilters.DataSource = fv;
-                gvFilters.DataBind();
-                
-                gvRentables.DataSource = dv;
-                gvRentables.DataBind();
+                else
+                {
+                    gvRentables.DataSource = dv;
+                    gvRentables.DataBind();
+                }
             }
-            else
+            catch (Exception exception)
             {
-                DataView dv = new DataView(DataConnector.getRentables());
-                gvRentables.DataSource = dv;
-                gvRentables.DataBind();                
+                lblDatabaseError.Text = exception.Message + exception.StackTrace;
+                lblDatabaseError.Visible = true;
+                gvRentables.Visible = false;
             }
+        }
+
+        private void updateRentableColumns()
+        {
+            string language = "" + Session["Language"];
+            gvRentables.Columns.Clear();
+                        
+            BoundField bf = new BoundField();
+            bf.DataField = "Type";
+            bf.HeaderText = Language.getstring("Type", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Street";
+            bf.HeaderText = Language.getstring("Street", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Street_number";
+            bf.HeaderText = Language.getstring("Street_number", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Zipcode";
+            bf.HeaderText = Language.getstring("Zipcode", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "City";
+            bf.HeaderText = Language.getstring("City", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Price";
+            bf.HeaderText = Language.getstring("Price", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Internet";
+            bf.HeaderText = Language.getstring("Internet", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Cable";
+            bf.HeaderText = Language.getstring("Cable", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Floor";
+            bf.HeaderText = Language.getstring("Floor", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();
+            bf.DataField = "Area";
+            bf.HeaderText = Language.getstring("Area", language);
+            gvRentables.Columns.Add(bf);
+            bf = new BoundField();            
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
