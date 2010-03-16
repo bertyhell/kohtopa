@@ -5,6 +5,7 @@ package gui;
 import Language.Language;
 import gui.actions.*;
 import gui.addremove.BuildingCellRenderer;
+import gui.addremove.BuildingDialog;
 import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
 import java.awt.BorderLayout;
@@ -44,8 +45,8 @@ public class Main extends JFrame {
 //
 //
 //		Model.getInstance().addDummyPictures();
-
-
+		BuildingDialog bd = new BuildingDialog(this, -2147483648, false);
+		bd.setVisible(true);
 
 
 
