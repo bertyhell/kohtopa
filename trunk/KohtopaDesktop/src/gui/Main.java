@@ -45,8 +45,8 @@ public class Main extends JFrame {
 //
 //
 //		Model.getInstance().addDummyPictures();
-		BuildingDialog bd = new BuildingDialog(this, -2147483648, false);
-		bd.setVisible(true);
+//		BuildingDialog bd = new BuildingDialog(this, -2147483648, false);
+//		bd.setVisible(true);
 
 
 
