@@ -79,35 +79,18 @@ public class DataBaseConstants {
 	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 	//dataconnector statement strings
-
-
-
-
-	
-
-
-
 	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city
 			+ " FROM " + tableBuildings + " b"
 			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
 			+ " AND p." + pictureType + " = -3";
-
-
-
-
-
-
-
-
-
-
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
 	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId
-			+ " FROM " + tablePictures + " WHERE " + rentableId + " IN (SELECT " + rentableId
-			+ " FROM " + tableRentables + " WHERE " + buildingId + " = ?";
+			+ " FROM " + tablePictures
+			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -2";
 	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId
-			+ " FROM " + tablePictures + " WHERE " + rentableId + " = ?";
+			+ " FROM " + tablePictures
+			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";
 }
