@@ -24,7 +24,7 @@
                     <asp:TableCell>
                         <asp:TextBox ID="txtMin" runat="server"/>
                         <asp:RequiredFieldValidator ID="rfvMin" runat="server" ControlToValidate="txtMin" ValidationGroup="BetweenValidation" />                
-                        <asp:RangeValidator ID="rvMin" runat="server" ControlToValidate="txtMin" ValidationGroup="BetweenValidation" MinimumValue="0" MaximumValue="9999999" />
+                        <asp:RangeValidator ID="rvMin" runat="server" ControlToValidate="txtMin" ValidationGroup="BetweenValidation" MinimumValue="0" MaximumValue="9999999" Type="Double" />
                     </asp:TableCell>
                 </asp:TableRow>
                 <asp:TableRow>
@@ -34,8 +34,8 @@
                     <asp:TableCell>
                         <asp:TextBox ID="txtMax" runat="server"/>
                         <asp:RequiredFieldValidator ID="rfvMax" runat="server" ControlToValidate="txtMax" ValidationGroup="BetweenValidation" />
-                        <asp:RangeValidator ID="rvMax" runat="server" ControlToValidate="txtMax" ValidationGroup="BetweenValidation" MinimumValue="0" MaximumValue="9999999" />
-                        <asp:CompareValidator ID="cvBetween" runat="server" ControlToValidate="txtMax" ControlToCompare="txtMin" ValidationGroup="BetweenValidation" Operator="GreaterThanEqual"></asp:CompareValidator>
+                        <asp:RangeValidator ID="rvMax" runat="server" ControlToValidate="txtMax" ValidationGroup="BetweenValidation" MinimumValue="0" MaximumValue="9999999" type="Double"/>
+                        <asp:CompareValidator ID="cvBetween" runat="server" ControlToValidate="txtMax" ControlToCompare="txtMin" ValidationGroup="BetweenValidation" Operator="GreaterThanEqual" Type="Double"></asp:CompareValidator>
                     </asp:TableCell>    
                 </asp:TableRow>
                 <asp:TableRow>
@@ -46,12 +46,12 @@
             </asp:Table>
             
             <asp:Table ID="tblRequired" runat="server" Visible="false">
-                <asp:TableRow>
-                    <asp:TableCell>
-                        <asp:Label ID="lblRequired" runat="server" />
-                    </asp:TableCell>
+                <asp:TableRow>                    
                     <asp:TableCell>
                         <asp:Button ID="btnRequired" runat="server" OnClick="btnRequired_Click"/>
+                     </asp:TableCell>
+                     <asp:TableCell>
+                        <asp:Button ID="btnReject" runat="server" OnClick="btnRequired_Click" />
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
@@ -69,11 +69,11 @@
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
-
         </asp:TableCell>                
     </asp:TableRow>    
 </asp:Table>
 
-<asp:GridView ID="gvRentables" runat="server"/>
-
+<asp:GridView ID="gvRentables" runat="server" AutoGenerateColumns="false">
+</asp:GridView>
+<asp:Label ID="lblDatabaseError" runat="server" Text="" Visible="false"></asp:Label>
 

@@ -15,8 +15,8 @@ namespace KohtopaWeb
 {
     public class DataConnector
     {
-        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/KOHTOPA;User Id=system;Password=e=mc**2;";        
-                        
+        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/KOHTOPA;User Id=system;Password=e=mc**2;";
+        private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.area, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.street from rentables r join buildings b on b.buildingid = r.buildingid join addresses a on b.addressid = a.addressid";
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
         }
@@ -40,9 +40,8 @@ namespace KohtopaWeb
         public static DataTable getRentables()
         {
             OleDbConnection conn = getConnection();
-            OleDbCommand command = conn.CreateCommand();
-            string query = "select * from rentables";
-            OleDbDataAdapter da = new OleDbDataAdapter(query, conn);
+            OleDbCommand command = conn.CreateCommand();            
+            OleDbDataAdapter da = new OleDbDataAdapter(getRentablesSQL, conn);
             DataSet ds = new DataSet();
             da.Fill(ds);            
             return ds.Tables[0];

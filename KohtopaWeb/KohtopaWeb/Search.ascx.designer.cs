@@ -158,15 +158,6 @@ namespace KohtopaWeb {
         protected global::System.Web.UI.WebControls.Table tblRequired;
         
         /// <summary>
-        /// lblRequired control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRequired;
-        
-        /// <summary>
         /// btnRequired control.
         /// </summary>
         /// <remarks>
@@ -174,6 +165,15 @@ namespace KohtopaWeb {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnRequired;
+        
+        /// <summary>
+        /// btnReject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnReject;
         
         /// <summary>
         /// tblContains control.
@@ -219,5 +219,14 @@ namespace KohtopaWeb {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvRentables;
+        
+        /// <summary>
+        /// lblDatabaseError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDatabaseError;
     }
 }

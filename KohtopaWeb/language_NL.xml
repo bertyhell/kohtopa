@@ -27,4 +27,14 @@
     <entry name="Value1">Waarde1</entry>
     <entry name="Value2">Waarde2</entry>
     <entry name="Street">Straat</entry>
+    <entry name="Type">Type</entry>
+    <entry name="Street_number">Straat Nummer</entry>
+    <entry name="Zipcode">Postcode</entry>
+    <entry name="City">Stad</entry>
+    <entry name="Cable">Kabel</entry>
+    <entry name="Floor">Verdieping</entry>
+    <entry name="Reject">Weigeren</entry>
+    <entry name="Room">Kamer</entry>
+    <entry name="Appartment">Appartement</entry>
+    <entry name="House">Huis</entry>
 </Language>
