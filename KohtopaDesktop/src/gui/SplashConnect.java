@@ -18,7 +18,9 @@ public class SplashConnect extends JFrame {
 	}
 
     private SplashConnect() {
-        super("Connecting");
+        super("");
+
+		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 		this.setUndecorated(true);
         setSize(200, 200);
 		ImageIcon img = new ImageIcon(getClass().getResource("/images/connect.png"));

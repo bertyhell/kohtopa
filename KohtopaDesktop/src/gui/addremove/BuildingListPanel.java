@@ -3,7 +3,8 @@ package gui.addremove;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.image.BufferedImage;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -14,17 +15,13 @@ public class BuildingListPanel extends AbstractListPanel {
 	private String zipcode;
 	private String city;
 
-	public BuildingListPanel(int id,
-			ImageIcon preview,
-			String street,
-			String zipcode,
-			String city) {
+	public BuildingListPanel(int id, ImageIcon preview, String street, String zipcode, String city) {
 		super(id);
 		this.preview = preview;
 		this.street = street;
 		this.zipcode = zipcode;
 		this.city = city;
-				
+
 		this.setMaximumSize(new Dimension(1000, 100));
 		this.setMinimumSize(new Dimension(300, 100));
 		this.setPreferredSize(new Dimension(300, 100));
@@ -61,6 +58,27 @@ public class BuildingListPanel extends AbstractListPanel {
 		buildConstraints(gbc, 2, 2, 1, 1, 100, 15, GridBagConstraints.EAST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblCity, gbc);
 		this.add(lblCity);
+
+
+		//TODO add mouse listner
+		this.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+			}
+
+			
+
+
+		});
+
+
+
+	}
+
+	public ImageIcon getPreview() {
+		return preview;
 	}
 
 	public String getCity() {
