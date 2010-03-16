@@ -1,11 +1,10 @@
 package gui;
 
-//TODO add splash screen: connecting to database
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
 import Language.Language;
 import gui.actions.*;
-import gui.addremove.PanelCellRenderer;
+import gui.addremove.BuildingCellRenderer;
 import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
 import java.awt.BorderLayout;
@@ -15,18 +14,11 @@ import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
 import model.Building;
+import model.DataConnector;
 import model.Model;
 
 public class Main extends JFrame {
@@ -50,6 +42,18 @@ public class Main extends JFrame {
 
 		//splashscreen
 		SplashConnect.showSplash();
+
+
+		
+
+
+		Model.getInstance().addDummyPictures();
+
+
+
+
+
+
 
 		//actions
 		actions = new HashMap<String, Action>();
@@ -87,20 +91,20 @@ public class Main extends JFrame {
 
 		//adding Calendar panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
-		tabbed.setMnemonicAt(0, KeyEvent.VK_C);
+		tabbed.setMnemonicAt(1, KeyEvent.VK_C);
 
 
 		//adding Messages panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/messages_64.png")), createMessagesPanel(), Language.getString("descriptionMesssages"));
-		tabbed.setMnemonicAt(0, KeyEvent.VK_M);
+		tabbed.setMnemonicAt(2, KeyEvent.VK_M);
 
 		//adding Invoices panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createInvoicesPanel(), Language.getString("descriptionInvoices"));
-		tabbed.setMnemonicAt(0, KeyEvent.VK_I);
+		tabbed.setMnemonicAt(3, KeyEvent.VK_I);
 
 		//adding Settings Panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
-		tabbed.setMnemonicAt(0, KeyEvent.VK_S);
+		tabbed.setMnemonicAt(4, KeyEvent.VK_S);
 
 
 		pack();
@@ -156,11 +160,11 @@ public class Main extends JFrame {
 		PanelListModel lmBuilding = new PanelListModel();
 		JList listBuildings = new JList(lmBuilding);
 		listBuildings.setBackground(new Color(217, 217, 217));
-		listBuildings.setCellRenderer(new PanelCellRenderer());
+		listBuildings.setCellRenderer(new BuildingCellRenderer());
 
-		ArrayList<Building> buildingPreviews = new ArrayList<Building>();
+		ArrayList<Building> buildingPreviews = null;
 		try {
-			Model.getInstance().getBuildingPreviews(instance, buildingPreviews);
+			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 		}
@@ -192,7 +196,7 @@ public class Main extends JFrame {
 		PanelListModel lmRoom = new PanelListModel();
 		JList listRooms = new JList(lmRoom);
 		listRooms.setBackground(new Color(217, 217, 217));
-		listRooms.setCellRenderer(new PanelCellRenderer());
+		listRooms.setCellRenderer(new BuildingCellRenderer());
 
 		for (int i = 0; i < 20; i++) {
 			lmRoom.add(new BuildingListPanel(675654,

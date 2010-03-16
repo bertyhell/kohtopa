@@ -54,23 +54,27 @@ public class DataConnector {
 		return 1;
 	}
 
-	public static void selectBuildingPreviews(ArrayList<Building> buildings) throws SQLException {
-		Connection conn = geefVerbinding();
-		try {
-			Statement selectBuildings = conn.createStatement();
-			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
-			while (rsBuildings.next()) {
-				buildings.add(new Building(
-						rsBuildings.getInt(DataBaseConstants.buildingId),
-						rsBuildings.getString(DataBaseConstants.buildingName),
-						rsBuildings.getString(DataBaseConstants.street),
-						rsBuildings.getString(DataBaseConstants.streetNumber),
-						rsBuildings.getString(DataBaseConstants.zipCode),
-						rsBuildings.getString(DataBaseConstants.city)));
-			}
-		} finally {
-			conn.close();
-		}
+	public static ArrayList<Building> selectBuildingPreviews() throws SQLException {
+		System.out.println("start selection");
+		ArrayList<Building> buildings = new ArrayList<Building>();
+//		Connection conn = geefVerbinding();
+//		try {
+//			Statement selectBuildings = conn.createStatement();
+//			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
+//			while (rsBuildings.next()) {
+//				buildings.add(new Building(
+//						rsBuildings.getInt(DataBaseConstants.buildingId),
+//						rsBuildings.getString(DataBaseConstants.buildingName),
+//						rsBuildings.getString(DataBaseConstants.street),
+//						rsBuildings.getString(DataBaseConstants.streetNumber),
+//						rsBuildings.getString(DataBaseConstants.zipCode),
+//						rsBuildings.getString(DataBaseConstants.city)));
+//			}
+//		} finally {
+//			conn.close();
+//		}
+//		System.out.println("end selection");
+		return buildings;
 	}
 
 	public static void addPicture(int id, BufferedImage bufferedImage, int type) throws SQLException {
@@ -99,15 +103,12 @@ public class DataConnector {
 	}
 
 	public static void addDummyPictures() {
-		ArrayList<Building> buildings = new ArrayList<Building>();
+		ArrayList<Building> buildings = null;
 		BufferedImage img = new BufferedImage(520, 390, BufferedImage.TYPE_INT_RGB);
 		BufferedImage imgPreview = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
 		BufferedImage imgFloor = new BufferedImage(376, 414, BufferedImage.TYPE_INT_RGB);
-
-
-
 		try {
-			selectBuildingPreviews(buildings);
+			buildings = selectBuildingPreviews();
 			for (Building building : buildings) {
 				addPicture(building.getId(), img, 1);
 				addPicture(building.getId(), img, 1);
