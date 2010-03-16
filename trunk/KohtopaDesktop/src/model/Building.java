@@ -19,7 +19,7 @@ public class Building {
 	public Building(int id, ImageIcon previewImage, String street, String number, String zipcode, String city) {
 		this.id = id;
 		if (previewImage == null) {
-			this.previewImage = new ImageIcon(getClass().getResource("/image/dummy_building_preview.png"));
+			this.previewImage = new ImageIcon(getClass().getResource("/images/dummy_building_preview.png"));
 		} else {
 			this.previewImage = previewImage;
 		}

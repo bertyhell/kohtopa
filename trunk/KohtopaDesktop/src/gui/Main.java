@@ -7,17 +7,12 @@ import gui.actions.*;
 import gui.addremove.BuildingCellRenderer;
 import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
-import gui.addremove.RoomListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import model.Building;
 import model.Model;
@@ -166,6 +161,7 @@ public class Main extends JFrame {
 			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+			ex.printStackTrace();
 		}
 
 		try {

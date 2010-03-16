@@ -91,8 +91,8 @@ public class DataBaseConstants {
 			+ street + "," + streetNumber + "," + zipCode + "," + city
 			+ " FROM " + tableBuildings + " b"
 			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
-			+ " JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
-			+ " WHERE p." + pictureType + " = -3";
+			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
+			+ " AND p." + pictureType + " = -3";
 
 
 
