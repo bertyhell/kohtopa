@@ -20,8 +20,8 @@ public class Model {
 	private Model() {
 	}
 	
-	public void getBuildingPreviews(Component requesterFrame, ArrayList<Building> buildings) throws SQLException{
-		DataConnector.selectBuildingPreviews(buildings);
+	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException{
+		return DataConnector.selectBuildingPreviews();
 	}
 
 	public void addDummyPictures(){
