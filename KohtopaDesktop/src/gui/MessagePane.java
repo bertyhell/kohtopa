@@ -9,6 +9,7 @@ import Language.Language;
 import java.awt.BorderLayout;
 import java.util.Vector;
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,6 +17,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -77,17 +79,9 @@ public class MessagePane extends JPanel {
         }
 
         // make new JTable and add to panel
-        table = new JTable();
-        table.setModel(new TableModel(messagedata,cols));
+        table = new MessageTable(cols,messagedata);
         
-        table.setAutoCreateRowSorter(true);
-        table.setShowGrid(false);
 
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-
-        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        table.setCellSelectionEnabled(false);
-        table.setRowSelectionAllowed(true);
 
 
         leftpane.setViewportView(table);
@@ -125,27 +119,34 @@ public class MessagePane extends JPanel {
         //this.add(toolbar,BorderLayout.NORTH);
 
     }
-    
-    /**
-     * Make cells non editable
-     */
-    private class TableModel extends DefaultTableModel {
 
-        private TableModel(Vector<Vector<String>> messages, Vector<String> cols) {
-            super(messages,cols);
+    private class MessageTable extends JTable {
+
+        public MessageTable(Vector<String> cols, Vector<Vector<String>> messagedata) {
+            setModel(new DefaultTableModel(messagedata,cols));
+
+            setAutoCreateRowSorter(true);
+            setShowGrid(false);
+
+            setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
+            setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            setCellSelectionEnabled(false);
+            setRowSelectionAllowed(true);
         }
 
         @Override
-        public Object getValueAt(int row, int column) {
-            text.setText(messages.get(row));
-            //text.repaint();
-            return super.getValueAt(row, column);
+        public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+            //if(!leftpane.getValueIsAdjusting())
+            text.setText(messages.get(rowIndex));
+            super.changeSelection(rowIndex, columnIndex, toggle, extend);
         }
 
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
+
 
     }
 
