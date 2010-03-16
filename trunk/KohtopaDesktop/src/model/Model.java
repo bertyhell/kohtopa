@@ -2,6 +2,7 @@ package model;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class Model {
 	private Model() {
 	}
 	
-	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException{
+	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException{
 		return DataConnector.selectBuildingPreviews();
 	}
 

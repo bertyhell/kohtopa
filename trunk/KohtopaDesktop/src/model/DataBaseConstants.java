@@ -3,7 +3,7 @@ package model;
 public class DataBaseConstants {
 
 	//database table labels
-	public static String tableAddressess = "addresses";
+	public static String tableAddresses = "addresses";
 	public static String tableRoles = "roles";
 	public static String tablePersons = "persons";
 	public static String tableBuildings = "buildings";
@@ -35,14 +35,14 @@ public class DataBaseConstants {
 	public static String cellphone = "cellphone";
 	//buildings column labels
 	public static String buildingId = "buildingid";
-	public static String buildingName = "name";
 	//rentables column labels
-	public static String rentableType = "type";
+	public static String rentableTypeFloor = "type_floor";      //-1: rentable        -2: building      -3: building preview     0-n: building floor
 	public static String rentableArea = "area";
 	public static String windowDirection = "window_direction";
 	public static String windowsArea = "window_area";
 	public static String internet = "internet";
 	public static String cable = "cable";
+	public static String floor = "floor";
 	public static String outletCount = "outletcount";
 	//furniture column labels
 	public static String furnitureId = "furnitureId";
@@ -68,8 +68,9 @@ public class DataBaseConstants {
 	public static String contractEnd = "contract_end";
 	//pictures column labels
 	public static String pictureId = "pictureid";
-	public static String pictureType = "type";
-	public static String pictureData = "data";
+	public static String RentBuildId = "rentable_building_id";
+	public static String pictureType = "type_floor";
+	public static String pictureData = "picture";
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
@@ -78,12 +79,35 @@ public class DataBaseConstants {
 	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 	//dataconnector statement strings
-	public static String selectBuildingPreviews = "SELECT " + buildingId + " FROM " + tableBuildings;
-	//public static String selectBuildingPreviews = "SELECT " + buildingId + "," + street + "," + streetNumber + "," + zipCode + "," + city + " FROM " + tableBuildings + " b join " + tableAddressess + " a on a." + addressId + " = b." + addressId;
-	public static String selectNextId = "with x as ( select columnName, rank() over(order by columnName)-2147483649 as rn from tableName), y as (select columnName, case  when rn <> columnName then rn else null end as rn from x) select case when min(rn) is null then case when count(1) is null then -2147483648 else count(1) - 2147483648 end else min(rn) end as id from y";
-	public static String selectPictureIds = "select " + pictureId + " from " + tablePictures + " where " + rentableId + " = ?";
-	public static String selectPictureData = "select " + pictureData + " from " + tablePictures + " where " + pictureId + " = ?";
+
+
+
+
+	
+
+
+
+	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
+			+ street + "," + streetNumber + "," + zipCode + "," + city
+			+ " FROM " + tableBuildings + " b"
+			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
+			+ " JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
+			+ " WHERE p." + pictureType + " = -3";
+
+
+
+
+
+
+
+
+
+
+	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
-	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId + " FROM " + tablePictures + " WHERE " + rentableId + " IN (SELECT " + rentableId + " FROM " + tableRentables + " WHERE " + buildingId + " = ?";
-	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId + " FROM " + tablePictures + " WHERE " + rentableId + " = ?";
+	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId
+			+ " FROM " + tablePictures + " WHERE " + rentableId + " IN (SELECT " + rentableId
+			+ " FROM " + tableRentables + " WHERE " + buildingId + " = ?";
+	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId
+			+ " FROM " + tablePictures + " WHERE " + rentableId + " = ?";
 }

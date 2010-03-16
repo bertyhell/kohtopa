@@ -4,6 +4,8 @@ import gui.Main;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +15,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class DataConnector {
@@ -36,48 +39,47 @@ public class DataConnector {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
 	}
 
-	private static int getNextId(String tableName, String columnName) {
-		try {
-			Connection conn = geefVerbinding();
-			try {
-				Statement st = conn.createStatement();
-				String query = DataBaseConstants.selectNextId.replaceAll("tableName", tableName).replaceAll("columnName", columnName);
-				ResultSet rs = st.executeQuery(query);
-				rs.next();
-				return rs.getInt(1);
-			} finally {
-				conn.close();
-			}
-		} catch (Exception exc) {
-			System.out.println("getNextId: problems with connection: " + exc);
-		}
-		return 1;
-	}
-
-	public static ArrayList<Building> selectBuildingPreviews() throws SQLException {
+	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
 		System.out.println("start selection");
 		ArrayList<Building> buildings = new ArrayList<Building>();
-//		Connection conn = geefVerbinding();
-//		try {
-//			Statement selectBuildings = conn.createStatement();
-//			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
-//			while (rsBuildings.next()) {
-//				buildings.add(new Building(
-//						rsBuildings.getInt(DataBaseConstants.buildingId),
-//						rsBuildings.getString(DataBaseConstants.buildingName),
-//						rsBuildings.getString(DataBaseConstants.street),
-//						rsBuildings.getString(DataBaseConstants.streetNumber),
-//						rsBuildings.getString(DataBaseConstants.zipCode),
-//						rsBuildings.getString(DataBaseConstants.city)));
-//			}
-//		} finally {
-//			conn.close();
-//		}
-//		System.out.println("end selection");
+		Connection conn = geefVerbinding();
+		try {
+			Statement selectBuildings = conn.createStatement();
+			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
+			while (rsBuildings.next()) {
+				ImageIcon img = null;
+				byte[] imgData = rsBuildings.getBytes(DataBaseConstants.pictureData);
+				if (imgData != null) {
+					img = new ImageIcon(ImageIO.read(new ByteArrayInputStream(imgData)));
+				}
+				buildings.add(new Building(
+						rsBuildings.getInt(DataBaseConstants.buildingId),
+						img,
+						rsBuildings.getString(DataBaseConstants.street),
+						rsBuildings.getString(DataBaseConstants.streetNumber),
+						rsBuildings.getString(DataBaseConstants.zipCode),
+						rsBuildings.getString(DataBaseConstants.city)));
+			}
+		} finally {
+			conn.close();
+		}
+		System.out.println("end selection");
 		return buildings;
 	}
 
-	public static void addPicture(int id, BufferedImage bufferedImage, int type) throws SQLException {
+	public static void addBuildingPicture(int id, BufferedImage bufferedImage) throws SQLException {
+		addFloorPlan(id, bufferedImage, -2);
+	}
+
+	public static void addBuildingPreviewPicture(int id, BufferedImage bufferedImage) throws SQLException {
+		addFloorPlan(id, bufferedImage, -3);
+	}
+
+	public static void addRentablePicture(int id, BufferedImage bufferedImage) throws SQLException {
+		addFloorPlan(id, bufferedImage, -1);
+	}
+
+	public static void addFloorPlan(int id, BufferedImage bufferedImage, int floor) throws SQLException {
 		Connection conn = geefVerbinding();
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -86,10 +88,11 @@ public class DataConnector {
 			} catch (Exception exc) {
 				System.out.println("error in addPicture: encoding bufferedImage failed; " + exc);
 			}
-			PreparedStatement ps = conn.prepareStatement("insert into pictures values(?,?,?)");
+
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertPicture);
 			try {
 				ps.setInt(1, id);
-				ps.setInt(2, type);
+				ps.setInt(2, floor);
 				ps.setBytes(3, baos.toByteArray());
 				ps.executeUpdate();
 			} catch (SQLException ex) {
@@ -104,73 +107,57 @@ public class DataConnector {
 
 	public static void addDummyPictures() {
 		ArrayList<Building> buildings = null;
-		BufferedImage img = new BufferedImage(520, 390, BufferedImage.TYPE_INT_RGB);
-		BufferedImage imgPreview = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-		BufferedImage imgFloor = new BufferedImage(376, 414, BufferedImage.TYPE_INT_RGB);
 		try {
+			BufferedImage imgRentable = ImageIO.read(new File("dummy_room_preview.png"));
+			BufferedImage imgBuildingPreview = ImageIO.read(new File("dummy_building_preview.png"));
+			BufferedImage imgFloor = ImageIO.read(new File("dummy_building_floor.png"));
+
+
 			buildings = selectBuildingPreviews();
 			for (Building building : buildings) {
-				addPicture(building.getId(), img, 1);
-				addPicture(building.getId(), img, 1);
-				addPicture(building.getId(), img, 1);
-				addPicture(building.getId(), img, 1);
-				addPicture(building.getId(), imgPreview, 2);
-				addPicture(building.getId(), imgFloor, 3);
-				addPicture(building.getId(), imgFloor, 3);
-				addPicture(building.getId(), imgFloor, 3);
+				addRentablePicture(building.getId(), imgRentable);
+				addRentablePicture(building.getId(), imgRentable);
+				addRentablePicture(building.getId(), imgRentable);
+				addRentablePicture(building.getId(), imgRentable);
+				addBuildingPreviewPicture(building.getId(), imgBuildingPreview);
+				addFloorPlan(building.getId(), imgFloor, 0);
+				addFloorPlan(building.getId(), imgFloor, 1);
+				addFloorPlan(building.getId(), imgFloor, 2);
 			}
 			System.out.println("finiched adding dummy pictures");
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(null, "failed to read file:", "title", JOptionPane.ERROR_MESSAGE);
+
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "error getting buildings: \n" + ex.getMessage(), "error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
-	public static ArrayList<Integer> getPictureIds(int rentableId) {
-		ArrayList<Integer> ids = new ArrayList<Integer>();
-		try {
-			Connection conn = geefVerbinding();
-			try {
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPictureIds);
-				ps.setInt(1, rentableId);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
-					ids.add(rs.getInt(1));
-				}
-			} finally {
-				conn.close();
-			}
-		} catch (Exception exc) {
-			System.out.println("error in addPicture: problems with connection : " + exc);
-		}
-		return ids;
-	}
-
-	public static BufferedImage getPicture(int pictureId) {
-		BufferedImage bi = null;
-		try {
-			Connection conn = geefVerbinding();
-			try {
-				ByteArrayInputStream bais = null;
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPictureData);
-				ps.setInt(1, pictureId);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
-					bais = new ByteArrayInputStream(rs.getBytes(1));
-				}
-				if (bais != null) {
-					bi = ImageIO.read(bais);
-				} else {
-					System.out.println("error in getPicture: empty resultset");
-				}
-			} finally {
-				conn.close();
-			}
-		} catch (Exception exc) {
-			System.out.println("error in getPicture: problems with connection: " + exc);
-		}
-		return bi;
-	}
-
+//	public static BufferedImage getPicture(int pictureId) {
+//		BufferedImage bi = null;
+//		try {
+//			Connection conn = geefVerbinding();
+//			try {
+//				ByteArrayInputStream bais = null;
+//				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPictureData);
+//				ps.setInt(1, pictureId);
+//				ResultSet rs = ps.executeQuery();
+//				while (rs.next()) {
+//					bais = new ByteArrayInputStream(rs.getBytes(1));
+//				}
+//				if (bais != null) {
+//					bi = ImageIO.read(bais);
+//				} else {
+//					System.out.println("error in getPicture: empty resultset");
+//				}
+//			} finally {
+//				conn.close();
+//			}
+//		} catch (Exception exc) {
+//			System.out.println("error in getPicture: problems with connection: " + exc);
+//		}
+//		return bi;
+//	}
 	public static HashMap<Integer, BufferedImage> getPictures(int id, boolean isBuilding) throws SQLException {
 		HashMap<Integer, BufferedImage> images = new HashMap<Integer, BufferedImage>();
 		try {

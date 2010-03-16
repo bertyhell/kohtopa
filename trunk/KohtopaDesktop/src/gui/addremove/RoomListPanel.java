@@ -11,12 +11,10 @@ public class RoomListPanel extends AbstractListPanel {
 	private String renter;
 	private int number;
 
-	public RoomListPanel(int id,
-			String title,
-			ImageIcon preview,
-			String renter,
-			int number) {
-		super(id, title, preview);
+	public RoomListPanel(int id, String renter, int number) {
+		super(id);
+		this.renter = renter;
+		this.number = number;
 		this.setMaximumSize(new Dimension(1000, 100));
 		this.setMinimumSize(new Dimension(300, 100));
 		this.setPreferredSize(new Dimension(300, 100));
@@ -29,16 +27,10 @@ public class RoomListPanel extends AbstractListPanel {
 		//adding information labels
 
 		//preview
-		JLabel lblImage = new JLabel(preview);
+		JLabel lblImage = new JLabel(new ImageIcon(getClass().getResource("/images/dummy_room_preview.png")));
 		buildConstraints(gbc, 0, 0, 1, 3, 30, 30, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblImage, gbc);
 		this.add(lblImage);
-
-		//name
-		JLabel lblName = new JLabel(title);
-		buildConstraints(gbc, 1, 0, 1, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblName, gbc);
-		this.add(lblName);
 
 		//street
 		JLabel lblStreet = new JLabel(renter);
