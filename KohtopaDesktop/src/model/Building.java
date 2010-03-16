@@ -1,66 +1,63 @@
 package model;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 
 public class Building {
 
-    private int id;
-    private String name;
-    private String street;
-    private String number;
-    private String zipcode;
-    private String city;
-    private Image previewImage;
-    private ArrayList<Image> floors;
-    private ArrayList<Image> images;
+	private int id;
+	private String street;
+	private String number;
+	private String zipcode;
+	private String city;
+	private ImageIcon previewImage;
+	private ArrayList<BufferedImage> floors;
+	private ArrayList<BufferedImage> images;
 
-    public Building(int id, String name, String street, String number, String zipcode, String city) {
-	this.id = id;
-	this.name = name;
-	this.street = street;
-	this.number = number;
-	this.zipcode = zipcode;
-	this.city = city;
-    }
+	public Building(int id, ImageIcon previewImage, String street, String number, String zipcode, String city) {
+		this.id = id;
+		if (previewImage == null) {
+			this.previewImage = new ImageIcon(getClass().getResource("/image/dummy_building_preview.png"));
+		} else {
+			this.previewImage = previewImage;
+		}
+		this.street = street;
+		this.number = number;
+		this.zipcode = zipcode;
+		this.city = city;
+	}
 
-    public ArrayList<Image> getFloors() {
-	return floors;
-    }
+	public ArrayList<BufferedImage> getFloors() {
+		return floors;
+	}
 
-    public Image getPreviewImage() {
-	return previewImage;
-    }
+	public ImageIcon getPreviewImage() {
+		return previewImage;
+	}
 
-    public int getId() {
-	return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public String getCity() {
+		return city;
+	}
 
-    public String getCity() {
-	return city;
-    }
+	public ArrayList<BufferedImage> getImages() {
+		return images;
+	}
 
-    public ArrayList<Image> getImages() {
-	return images;
-    }
+	public String getNumber() {
+		return number;
+	}
 
-    public String getNumber() {
-	return number;
-    }
+	public String getStreet() {
+		return street;
+	}
 
-    public Image getPreviewIndex() {
-	return previewImage;
-    }
-
-    public String getStreet() {
-	return street;
-    }
-
-    public String getZipcode() {
-	return zipcode;
-    }
+	public String getZipcode() {
+		return zipcode;
+	}
 }

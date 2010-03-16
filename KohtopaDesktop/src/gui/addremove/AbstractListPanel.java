@@ -9,21 +9,9 @@ public abstract class AbstractListPanel extends JPanel {
 
 	private Color bgColor;
 	protected int id;
-	protected String title;
-	protected ImageIcon preview;
 
-	public AbstractListPanel(int id, String title, ImageIcon preview) {
+	public AbstractListPanel(int id) {
 		this.id = id;
-		this.title = title;
-		this.preview = preview;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public ImageIcon getPreview() {
-		return preview;
 	}
 
 	public Color getBgColor() {

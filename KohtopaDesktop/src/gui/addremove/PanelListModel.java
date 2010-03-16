@@ -11,7 +11,7 @@ public class PanelListModel extends AbstractListModel {
 	public PanelListModel() {
 	}
 
-	public void add(BuildingListPanel b){
+	public void add(AbstractListPanel b){
 		items.add(b);
 	}
 

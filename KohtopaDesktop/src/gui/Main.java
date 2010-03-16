@@ -7,10 +7,12 @@ import gui.actions.*;
 import gui.addremove.BuildingCellRenderer;
 import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
+import gui.addremove.RoomListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import model.Building;
-import model.DataConnector;
 import model.Model;
 
 public class Main extends JFrame {
@@ -43,11 +44,11 @@ public class Main extends JFrame {
 		//splashscreen
 		SplashConnect.showSplash();
 
-
-		
-
-
-		Model.getInstance().addDummyPictures();
+//
+//
+//
+//
+//		Model.getInstance().addDummyPictures();
 
 
 
@@ -88,11 +89,9 @@ public class Main extends JFrame {
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
 
-
 		//adding Calendar panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
 		tabbed.setMnemonicAt(1, KeyEvent.VK_C);
-
 
 		//adding Messages panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/messages_64.png")), createMessagesPanel(), Language.getString("descriptionMesssages"));
@@ -165,49 +164,39 @@ public class Main extends JFrame {
 		ArrayList<Building> buildingPreviews = null;
 		try {
 			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
-		} catch (SQLException ex) {
+		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 		}
 
-
-		System.out.println("aantal buildings: " + buildingPreviews.size());
+		try {
+			System.out.println("aantal buildings: " + buildingPreviews.size());
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+			ex.printStackTrace();
+		}
 
 		for (Building building : buildingPreviews) {
 			lmBuilding.add(new BuildingListPanel(
 					building.getId(),
-					building.getName(),
-					new ImageIcon(getClass().getResource("/images/test.png")),
+					building.getPreviewImage(),
 					building.getStreet() + " " + building.getNumber(),
 					building.getZipcode(),
 					building.getCity()));
 		}
-		for (int i = 0; i < 20; i++) {
-			lmBuilding.add(new BuildingListPanel(675654,
-					"kot1",
-					new ImageIcon(getClass().getResource("/images/test.png")),
-					"voskeslaan 58",
-					"9000",
-					"Gent"));
-		}
 
 		scrolBuilding.setViewportView(listBuildings);
 
-		//room preview list
-		PanelListModel lmRoom = new PanelListModel();
-		JList listRooms = new JList(lmRoom);
-		listRooms.setBackground(new Color(217, 217, 217));
-		listRooms.setCellRenderer(new BuildingCellRenderer());
-
-		for (int i = 0; i < 20; i++) {
-			lmRoom.add(new BuildingListPanel(675654,
-					"kamer1",
-					new ImageIcon(getClass().getResource("/images/kamer_test.png")),
-					"voskeslaan 58",
-					"9000",
-					"Gent"));
-		}
-
-		scrolRoom.setViewportView(listRooms);
+//		//room preview list
+//		PanelListModel lmRoom = new PanelListModel();
+//		JList listRooms = new JList(lmRoom);
+//		listRooms.setBackground(new Color(217, 217, 217));
+//		listRooms.setCellRenderer(new BuildingCellRenderer());
+//
+//		for (int i = 0; i < 20; i++) {
+//			lmRoom.add(new RoomListPanel(675654, "jannes", 12));
+//		}
+//
+//		scrolRoom.setViewportView(listRooms);
 
 		splitter.setPreferredSize(new Dimension(1000, 600));
 		pnlAddRemove.add(splitter, BorderLayout.CENTER);

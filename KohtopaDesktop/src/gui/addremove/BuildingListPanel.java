@@ -3,22 +3,24 @@ package gui.addremove;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 public class BuildingListPanel extends AbstractListPanel {
 
+	private ImageIcon preview;
 	private String street;
 	private String zipcode;
 	private String city;
 
 	public BuildingListPanel(int id,
-			String title,
 			ImageIcon preview,
 			String street,
 			String zipcode,
 			String city) {
-		super(id, title, preview);
+		super(id);
+		this.preview = preview;
 		this.street = street;
 		this.zipcode = zipcode;
 		this.city = city;
@@ -40,12 +42,6 @@ public class BuildingListPanel extends AbstractListPanel {
 		buildConstraints(gbc, 0, 0, 1, 3, 30, 30, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblImage, gbc);
 		this.add(lblImage);
-
-		//name
-		JLabel lblName = new JLabel(title);
-		buildConstraints(gbc, 1, 0, 2, 1, 100, 30, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblName, gbc);
-		this.add(lblName);
 
 		//street
 		JLabel lblStreet = new JLabel(street);
