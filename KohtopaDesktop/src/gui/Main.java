@@ -15,14 +15,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
-import model.Building;
+import model.data.Building;
 import model.Model;
 
 public class Main extends JFrame {
 
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
-	private static boolean btnText = false;
+	public final static boolean disableBtnText = true;
 
 	public static Main getInstance() {
 		return instance;
@@ -41,6 +41,36 @@ public class Main extends JFrame {
 		//splashscreen
 		SplashConnect.showSplash();
 
+		//actions
+		actions = new HashMap<String, Action>();
+
+		actions.put("buildingAdd", new BuildingAddAction("buildingAdd",new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
+		actions.put("buildingEdit", new BuildingEditAction("buildingEdit",new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
+		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove",new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
+		actions.put("rentableAdd", new RentableAddAction("rentableAdd",new ImageIcon(getClass().getResource("/images/rentable_add_23.png"))));
+		actions.put("rentableEdit", new RentableEditAction("rentableEdit", new ImageIcon(getClass().getResource("/images/rentable_edit_23.png"))));
+		actions.put("rentableRemove", new RentableRemoveAction("rentableRemove",new ImageIcon(getClass().getResource("/images/rentable_remove_23.png"))));
+		actions.put("taskAdd", new TaskAddAction("taskAdd", new ImageIcon(getClass().getResource("/images/task_add_23.png"))));
+		actions.put("taskEdit", new TaskEditAction("taskEdit", new ImageIcon(getClass().getResource("/images/task_edit_23.png"))));
+		actions.put("taskRemove", new TaskRemoveAction("taskRemove", new ImageIcon(getClass().getResource("/images/task_remove_23.png"))));
+		actions.put("messageNew", new MessageNewAction("messageNew", new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
+		actions.put("messageReply", new MessageReplyAction("messageReply", new ImageIcon(getClass().getResource("/images/message_reply_23.png"))));
+		actions.put("messageRemove", new MessageRemoveAction("messageRemove", new ImageIcon(getClass().getResource("/images/message_remove_23.png"))));
+		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd",new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
+		actions.put("invoiceEdit", new InvoiceEditAction("invoiceEdit", new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
+		actions.put("invoiceRemove", new InvoiceRemoveAction("invoiceRemove",new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
+		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
+		actions.put("floorEdit", new FloorEditAction("floorEdit",new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
+		actions.put("floorRemove", new FloorRemoveAction("floorRemove", new ImageIcon(getClass().getResource("/images/floor_remove_23.png"))));
+
+
+
+
+
+
+
+
+
 
 //
 //
@@ -54,27 +84,13 @@ public class Main extends JFrame {
 
 
 
-		//actions
-		actions = new HashMap<String, Action>();
 
-		actions.put("buildingAdd", new BuildingAddAction(new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
-		actions.put("buildingEdit", new BuildingEditAction(new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
-		actions.put("buildingRemove", new BuildingRemoveAction(new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
-		actions.put("roomAdd", new RoomAddAction(new ImageIcon(getClass().getResource("/images/room_add_23.png"))));
-		actions.put("roomEdit", new RoomEditAction(new ImageIcon(getClass().getResource("/images/room_edit_23.png"))));
-		actions.put("roomRemove", new RoomRemoveAction(new ImageIcon(getClass().getResource("/images/room_remove_23.png"))));
-		actions.put("taskAdd", new TaskAddAction(new ImageIcon(getClass().getResource("/images/task_add_23.png"))));
-		actions.put("taskEdit", new TaskEditAction(new ImageIcon(getClass().getResource("/images/task_edit_23.png"))));
-		actions.put("taskRemove", new TaskRemoveAction(new ImageIcon(getClass().getResource("/images/task_remove_23.png"))));
-		actions.put("messageNew", new MessageNewAction(new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
-		actions.put("messageReply", new MessageReplyAction(new ImageIcon(getClass().getResource("/images/message_reply_23.png"))));
-		actions.put("messageRemove", new MessageRemoveAction(new ImageIcon(getClass().getResource("/images/message_remove_23.png"))));
-		actions.put("invoiceAdd", new InvoiceAddAction(new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
-		actions.put("invoiceEdit", new InvoiceEditAction(new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
-		actions.put("invoiceRemove", new InvoiceRemoveAction(new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
-		actions.put("floorAdd", new FloorAddAction(new ImageIcon(getClass().getResource("/images/floor_add_32.png"))));
-		actions.put("floorEdit", new FloorEditAction(new ImageIcon(getClass().getResource("/images/floor_edit_32.png"))));
-		actions.put("floorRemove", new FloorRemoveAction(new ImageIcon(getClass().getResource("/images/floor_remove_32.png"))));
+
+
+
+
+
+
 
 		//jframe
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
@@ -123,34 +139,34 @@ public class Main extends JFrame {
 
 		//building operations
 		JButton btnAddBuilding = new JButton(actions.get("buildingAdd"));
-		btnAddBuilding.setHideActionText(btnText);
+		btnAddBuilding.setHideActionText(true);
 		pnlButtonsAddRemove.add(btnAddBuilding);
 
 		JButton btnEditBuilding = new JButton(actions.get("buildingEdit"));
-		btnEditBuilding.setHideActionText(btnText);
+		btnEditBuilding.setHideActionText(disableBtnText);
 		pnlButtonsAddRemove.add(btnEditBuilding);
 
 		JButton btnRemoveBuilding = new JButton(actions.get("buildingRemove"));
-		btnRemoveBuilding.setHideActionText(btnText);
+		btnRemoveBuilding.setHideActionText(disableBtnText);
 		pnlButtonsAddRemove.add(btnRemoveBuilding);
 
-		//room operations
-		JButton btnAddRoom = new JButton(actions.get("roomAdd"));
-		btnAddRoom.setHideActionText(btnText);
-		pnlButtonsAddRemove.add(btnAddRoom);
+		//rentable operations
+		JButton btnAddRentable = new JButton(actions.get("rentableAdd"));
+		btnAddRentable.setHideActionText(disableBtnText);
+		pnlButtonsAddRemove.add(btnAddRentable);
 
-		JButton btnEditRoom = new JButton(actions.get("roomEdit"));
-		btnEditRoom.setHideActionText(btnText);
-		pnlButtonsAddRemove.add(btnEditRoom);
+		JButton btnEditRentable = new JButton(actions.get("rentableEdit"));
+		btnEditRentable.setHideActionText(disableBtnText);
+		pnlButtonsAddRemove.add(btnEditRentable);
 
-		JButton btnRemoveRoom = new JButton(actions.get("roomRemove"));
-		btnRemoveRoom.setHideActionText(btnText);
-		pnlButtonsAddRemove.add(btnRemoveRoom);
+		JButton btnRemoveRentable = new JButton(actions.get("rentableRemove"));
+		btnRemoveRentable.setHideActionText(disableBtnText);
+		pnlButtonsAddRemove.add(btnRemoveRentable);
 
-		//add lists of buildings and rooms
+		//add lists of buildings and Rentables
 		JScrollPane scrolBuilding = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JScrollPane scrolRoom = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrolBuilding, scrolRoom);
+		JScrollPane scrolRentable = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrolBuilding, scrolRentable);
 		splitter.setDividerLocation(325);
 		splitter.setDividerSize(10);
 
@@ -188,22 +204,22 @@ public class Main extends JFrame {
 		scrolBuilding.setViewportView(listBuildings);
 
 
-		//room preview list
-		PanelListModel lmRoom = new PanelListModel();
-		JList listRooms = new JList(lmRoom);
-		listRooms.setBackground(new Color(217, 217, 217));
-		listRooms.setCellRenderer(new BuildingCellRenderer());
-		//		//room preview list
-		//		PanelListModel lmRoom = new PanelListModel();
-		//		JList listRooms = new JList(lmRoom);
-		//		listRooms.setBackground(new Color(217, 217, 217));
-		//		listRooms.setCellRenderer(new BuildingCellRenderer());
+		//Rentable preview list
+		PanelListModel lmRentable = new PanelListModel();
+		JList listRentables = new JList(lmRentable);
+		listRentables.setBackground(new Color(217, 217, 217));
+		listRentables.setCellRenderer(new BuildingCellRenderer());
+		//		//Rentable preview list
+		//		PanelListModel lmRentable = new PanelListModel();
+		//		JList listRentables = new JList(lmRentable);
+		//		listRentables.setBackground(new Color(217, 217, 217));
+		//		listRentables.setCellRenderer(new BuildingCellRenderer());
 		//
 		//		for (int i = 0; i < 20; i++) {
-		//			lmRoom.add(new RoomListPanel(675654, "jannes", 12));
+		//			lmRentable.add(new RentableListPanel(675654, "jannes", 12));
 		//		}
 		//
-		//		scrolRoom.setViewportView(listRooms);
+		//		scrolRentable.setViewportView(listRentables);
 		splitter.setPreferredSize(new Dimension(1000, 600));
 		pnlAddRemove.add(splitter, BorderLayout.CENTER);
 
@@ -221,13 +237,13 @@ public class Main extends JFrame {
 		pnlCalendar.add(pnlButtonsCalendar, BorderLayout.PAGE_START);
 
 		JButton btnAddTask = new JButton(actions.get("taskAdd"));
-		btnAddTask.setHideActionText(btnText);
+		btnAddTask.setHideActionText(disableBtnText);
 		pnlButtonsCalendar.add(btnAddTask);
 		JButton btnEditTask = new JButton(actions.get("taskEdit"));
-		btnEditTask.setHideActionText(btnText);
+		btnEditTask.setHideActionText(disableBtnText);
 		pnlButtonsCalendar.add(btnEditTask);
 		JButton btnRemoveTask = new JButton(actions.get("taskRemove"));
-		btnRemoveTask.setHideActionText(btnText);
+		btnRemoveTask.setHideActionText(disableBtnText);
 		pnlButtonsCalendar.add(btnRemoveTask);
 
 		JPanel pnlDays = new JPanel();
@@ -247,13 +263,13 @@ public class Main extends JFrame {
 		pnlMessages.add(pnlButtonsMessage, BorderLayout.PAGE_START);
 
 		JButton btnAddMessage = new JButton(actions.get("messageNew"));
-		btnAddMessage.setHideActionText(btnText);
+		btnAddMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnAddMessage);
 		JButton btnEditMessage = new JButton(actions.get("messageReply"));
-		btnEditMessage.setHideActionText(btnText);
+		btnEditMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnEditMessage);
 		JButton btnRemoveMessage = new JButton(actions.get("messageRemove"));
-		btnRemoveMessage.setHideActionText(btnText);
+		btnRemoveMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnRemoveMessage);
 
 		//replace by plugin messagepanel by jelle:
@@ -278,13 +294,13 @@ public class Main extends JFrame {
 		pnlInvoices.add(pnlButtonsInvoice, BorderLayout.PAGE_START);
 
 		JButton btnAddInvoice = new JButton(actions.get("invoiceAdd"));
-		btnAddInvoice.setHideActionText(btnText);
+		btnAddInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnAddInvoice);
 		JButton btnEditInvoice = new JButton(actions.get("invoiceEdit"));
-		btnEditInvoice.setHideActionText(btnText);
+		btnEditInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnEditInvoice);
 		JButton btnRemoveInvoice = new JButton(actions.get("invoiceRemove"));
-		btnRemoveInvoice.setHideActionText(btnText);
+		btnRemoveInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnRemoveInvoice);
 
 

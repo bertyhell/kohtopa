@@ -1,24 +1,14 @@
 package gui.actions;
 
-import Language.Language;
-import gui.Main;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Icon;
-import javax.swing.JOptionPane;
 
 /**
  *
  * @author bert
  */
-public class InvoiceAddAction extends AbstractAction {
+public class InvoiceAddAction extends AbstractIconAction {
 
-	public InvoiceAddAction(Icon img) {
-		super(Language.getString("addInvoice"), img);
-		super.putValue("SHORT_DESCRIPTION", Language.getString("addInvoice"));
-	}
-
-	public void actionPerformed(ActionEvent e) {
-		JOptionPane.showMessageDialog(Main.getInstance(), "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-	}
+    public InvoiceAddAction(String id, Icon img) {
+	super(id, img);
+    }
 }

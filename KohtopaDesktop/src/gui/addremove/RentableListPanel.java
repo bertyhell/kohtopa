@@ -6,12 +6,12 @@ import java.awt.GridBagLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class RoomListPanel extends AbstractListPanel {
+public class RentableListPanel extends AbstractListPanel {
 
 	private String renter;
 	private int number;
 
-	public RoomListPanel(int id, String renter, int number) {
+	public RentableListPanel(int id, String renter, int number) {
 		super(id);
 		this.renter = renter;
 		this.number = number;

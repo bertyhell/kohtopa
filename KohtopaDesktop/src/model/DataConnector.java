@@ -1,5 +1,6 @@
 package model;
 
+import model.data.Building;
 import gui.Main;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -108,7 +109,7 @@ public class DataConnector {
 	public static void addDummyPictures() {
 		ArrayList<Building> buildings = null;
 		try {
-			BufferedImage imgRentable = ImageIO.read(new File("dummy_room_preview.png"));
+			BufferedImage imgRentable = ImageIO.read(new File("dummy_rentable_preview.png"));
 			BufferedImage imgBuildingPreview = ImageIO.read(new File("dummy_building_preview.png"));
 			BufferedImage imgFloor = ImageIO.read(new File("dummy_building_floor.png"));
 
@@ -133,31 +134,6 @@ public class DataConnector {
 		}
 	}
 
-//	public static BufferedImage getPicture(int pictureId) {
-//		BufferedImage bi = null;
-//		try {
-//			Connection conn = geefVerbinding();
-//			try {
-//				ByteArrayInputStream bais = null;
-//				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPictureData);
-//				ps.setInt(1, pictureId);
-//				ResultSet rs = ps.executeQuery();
-//				while (rs.next()) {
-//					bais = new ByteArrayInputStream(rs.getBytes(1));
-//				}
-//				if (bais != null) {
-//					bi = ImageIO.read(bais);
-//				} else {
-//					System.out.println("error in getPicture: empty resultset");
-//				}
-//			} finally {
-//				conn.close();
-//			}
-//		} catch (Exception exc) {
-//			System.out.println("error in getPicture: problems with connection: " + exc);
-//		}
-//		return bi;
-//	}
 	public static HashMap<Integer, BufferedImage> getPictures(int id, boolean isBuilding) throws SQLException {
 		HashMap<Integer, BufferedImage> images = new HashMap<Integer, BufferedImage>();
 		try {
@@ -186,5 +162,34 @@ public class DataConnector {
 			throw new SQLException("error in getPicture: problems with connection: " + ex);
 		}
 		return images;
+	}
+
+	public static Building getBuilding(int buildingId) throws SQLException{
+	    Building building = null;
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				ByteArrayInputStream bais = null;
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectBuilding);
+				ps.setInt(1, buildingId);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					building = new Building(
+						buildingId,
+						null,
+						rs.getString(DataBaseConstants.street),
+						rs.getString(DataBaseConstants.streetNumber),
+						rs.getString(DataBaseConstants.zipCode),
+						rs.getString(DataBaseConstants.city),
+						rs.getString(DataBaseConstants.country));
+				}
+
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			throw new SQLException("error in getPicture: problems with connection: " + ex);
+		}
+		return building;
 	}
 }
