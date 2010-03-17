@@ -72,6 +72,9 @@ public class Main extends JFrame {
 		actions.put("invoiceAdd", new InvoiceAddAction(new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
 		actions.put("invoiceEdit", new InvoiceEditAction(new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
 		actions.put("invoiceRemove", new InvoiceRemoveAction(new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
+		actions.put("floorAdd", new FloorAddAction(new ImageIcon(getClass().getResource("/images/floor_add_32.png"))));
+		actions.put("floorEdit", new FloorEditAction(new ImageIcon(getClass().getResource("/images/floor_edit_32.png"))));
+		actions.put("floorRemove", new FloorRemoveAction(new ImageIcon(getClass().getResource("/images/floor_remove_32.png"))));
 
 		//jframe
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
