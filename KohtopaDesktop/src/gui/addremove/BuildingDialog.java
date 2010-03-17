@@ -3,6 +3,7 @@ package gui.addremove;
 import Language.Language;
 import Resources.RelativeLayout;
 import gui.Layout;
+import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -12,16 +13,7 @@ import java.awt.GridBagLayout;
 import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.HashMap;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 import model.Model;
 
 public class BuildingDialog extends JDialog {
@@ -152,9 +144,21 @@ public class BuildingDialog extends JDialog {
 		gbl.addLayoutComponent(scrolFloor, gbc);
 		pnlInformation.add(scrolFloor);
 
-		//buttons
+		//buttons floors
+		JButton btnAddFloor = new JButton(Main.getAction("floorAdd"));
+		Layout.buildConstraints(gbc, 1, row, 1, 1, 20, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
+		gbl.addLayoutComponent(btnAddFloor, gbc);
+		pnlInformation.add(btnAddFloor);
 
-		//TODO add buttons
+		JButton btnEditFloor = new JButton(Main.getAction("floorEdit"));
+		Layout.buildConstraints(gbc, 1, row+1, 1, 1, 20, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
+		gbl.addLayoutComponent(btnEditFloor, gbc);
+		pnlInformation.add(btnEditFloor);
+
+		JButton btnRemoveFloor = new JButton(Main.getAction("floorRemove"));
+		Layout.buildConstraints(gbc, 1, row+2, 1, 1, 20, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
+		gbl.addLayoutComponent(btnRemoveFloor, gbc);
+		pnlInformation.add(btnRemoveFloor);
 
 
 		pack();
