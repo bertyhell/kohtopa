@@ -1,5 +1,6 @@
 package model;
 
+import model.data.Building;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -31,5 +32,9 @@ public class Model {
 
 	public HashMap<Integer, BufferedImage> getPictures(int buildingId, boolean isBuilding) throws SQLException {
 		return DataConnector.getPictures(buildingId, isBuilding);
+	}
+
+	public Building getBuilding(int buildingId) throws SQLException{
+	    return DataConnector.getBuilding(buildingId);
 	}
 }

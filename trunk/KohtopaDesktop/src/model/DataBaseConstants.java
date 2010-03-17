@@ -86,6 +86,9 @@ public class DataBaseConstants {
 			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
 			+ " AND p." + pictureType + " = -3";
+	public static String selectBuilding = "SELECT " + street + "," + streetNumber + "," + zipCode + "," + city  + "," + country
+			+ " FROM " + tableAddresses
+			+ " WHERE " + addressId + " = ?";
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
 	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId
