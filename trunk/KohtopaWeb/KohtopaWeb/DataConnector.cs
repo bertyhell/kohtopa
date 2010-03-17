@@ -15,8 +15,17 @@ namespace KohtopaWeb
 {
     public class DataConnector
     {
-        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/KOHTOPA;User Id=system;Password=e=mc**2;";
+        private static string username = "system";
+        private static string password = "admin";
+        private static string databaseName = "XE";        
+        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + username + ";Password=" + password + ";";        
+        public static string rentableTypes = "Room;Appartment;House";
+
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.area, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.street from rentables r join buildings b on b.buildingid = r.buildingid join addresses a on b.addressid = a.addressid";
+        private static string getPersonsSQL = "select * from persons";
+        private static string getPasswordSQL = "select password from persons where username = ?";
+
+
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
         }
@@ -45,6 +54,29 @@ namespace KohtopaWeb
             DataSet ds = new DataSet();
             da.Fill(ds);            
             return ds.Tables[0];
+        }
+
+        public static bool isValidPerson(string username,string password)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getPasswordSQL;
+            OleDbParameter p = new OleDbParameter();
+            p.Value = username;
+            command.Parameters.Add(p);
+            //command.Parameters.Add(new OleDbParameter("@username",username));            
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            DataTable dt = ds.Tables[0];
+            if (dt.Rows.Count == 1)
+            {
+                return dt.Rows[0].ItemArray[0].ToString().Equals(password);
+            }
+            else
+            {
+                return false;
+            }            
         }
 
     }

@@ -25,5 +25,6 @@
                 <asp:Button ID="btnLogin" runat="server" ValidationGroup="localValidation" OnClick="btnLogin_Click"/>
             </asp:TableCell>
         </asp:TableRow>            
-    </asp:Table>                             
+    </asp:Table>
+    <asp:Label ID="lblError" ForeColor="Red" runat="server" Visible="false" />
 </asp:Content>

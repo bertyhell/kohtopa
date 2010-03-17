@@ -36,4 +36,6 @@
     <entry name="Room">Room</entry>
     <entry name="Appartment">Appartement</entry>
     <entry name="House">House</entry>
+    <entry name="Reject">Reject</entry>
+    <entry name="UsernamePasswordWrong">Username or password is wrong</entry>
 </Language>
