@@ -2,7 +2,7 @@
 
 <asp:GridView ID="gvFilters" runat="server" OnRowDeleting="gvFilters_RowDeleting">    
     <Columns>
-        <asp:CommandField HeaderText="X" runat="server" ShowDeleteButton="true" DeleteText="X"/>        
+        <asp:CommandField HeaderText="X" ShowDeleteButton="true" DeleteText="X"/>        
     </Columns>
 </asp:GridView>
 
@@ -35,7 +35,7 @@
                         <asp:TextBox ID="txtMax" runat="server"/>
                         <asp:RequiredFieldValidator ID="rfvMax" runat="server" ControlToValidate="txtMax" ValidationGroup="BetweenValidation" />
                         <asp:RangeValidator ID="rvMax" runat="server" ControlToValidate="txtMax" ValidationGroup="BetweenValidation" MinimumValue="0" MaximumValue="9999999" type="Double"/>
-                        <asp:CompareValidator ID="cvBetween" runat="server" ControlToValidate="txtMax" ControlToCompare="txtMin" ValidationGroup="BetweenValidation" Operator="GreaterThanEqual" Type="Double"></asp:CompareValidator>
+                        <asp:CompareValidator ID="cvBetween" runat="server" ControlToValidate="txtMax" ControlToCompare="txtMin" ValidationGroup="BetweenValidation" Operator="GreaterThanEqual" Type="Double"/>
                     </asp:TableCell>    
                 </asp:TableRow>
                 <asp:TableRow>

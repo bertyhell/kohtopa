@@ -26,10 +26,16 @@ namespace KohtopaWeb
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if (txtUsername.Text.Equals(txtPassword.Text))
+            if (DataConnector.isValidPerson(txtUsername.Text, txtPassword.Text))
             {
-                Session["username"] = txtUsername.Text;                
+                Session["username"] = txtUsername.Text;
                 FormsAuthentication.RedirectFromLoginPage("Renter", false);
+                lblError.Visible = false;
+            }
+            else
+            {
+                lblError.Visible = true;
+                lblError.Text = Language.getstring("UsernamePasswordWrong","" + Session["Language"]);
             }
         }
     }

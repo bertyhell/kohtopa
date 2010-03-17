@@ -37,4 +37,5 @@
     <entry name="Room">Kamer</entry>
     <entry name="Appartment">Appartement</entry>
     <entry name="House">Huis</entry>
+    <entry name="UsernamePasswordWrong">Gebruikersnaam of paswoord is verkeerd.</entry>
 </Language>

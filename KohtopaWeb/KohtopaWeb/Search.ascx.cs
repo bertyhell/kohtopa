@@ -20,20 +20,20 @@ namespace KohtopaWeb
         {
             if (!IsPostBack || Session["LanguageChanged"].Equals(true))
             {
-                Session["LanguageChanged"] = false;                
-                
+                Session["LanguageChanged"] = false;
+
                 string language = "" + Session["Language"];
                 lblFilter.Text = Language.getstring("Filter", language);
 
                 updateFilterView();
 
-                DataTable dtFilters = new DataTable();                
+                DataTable dtFilters = new DataTable();
                 dtFilters.Columns.Add("id");
                 dtFilters.Columns.Add("text");
                 dtFilters.Columns.Add("type");
                 DataColumn[] key = new DataColumn[1];
                 key[0] = dtFilters.Columns[0];
-                dtFilters.PrimaryKey = key ;
+                dtFilters.PrimaryKey = key;
                 string[] s = ConfigurationManager.AppSettings["Filters"].Split(';');
                 for (int i = 0; i < s.Length / 2; i++)
                 {
@@ -41,32 +41,34 @@ namespace KohtopaWeb
                     dr["id"] = s[i * 2];
                     dr["text"] = Language.getstring(s[i * 2], language);
                     dr["type"] = s[i * 2 + 1];
-                    dtFilters.Rows.Add(dr);                    
+                    dtFilters.Rows.Add(dr);
                 }
                 ViewState["filters"] = dtFilters;
                 ddlFilters.DataSource = dtFilters;
                 ddlFilters.DataTextField = "text";
                 ddlFilters.DataValueField = "id";
-                ddlFilters.DataBind();                                
+                ddlFilters.DataBind();
 
                 lblMin.Text = Language.getstring("Min", language);
                 rfvMin.ErrorMessage = Language.getstring("RequiredField", language);
                 rvMin.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
-                lblMax.Text = Language.getstring("Max", language);                
-                rfvMax.ErrorMessage = Language.getstring("RequiredField", language);                
+                lblMax.Text = Language.getstring("Max", language);
+                rfvMax.ErrorMessage = Language.getstring("RequiredField", language);
                 rvMax.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
                 cvBetween.ErrorMessage = Language.getstring("RequiredGreaterThanMin", language);
                 btnBetween.Text = Language.getstring("Add", language);
 
-                btnRequired.Text = Language.getstring("Add", language);                
+                btnRequired.Text = Language.getstring("Required", language);
                 btnReject.Text = Language.getstring("Reject", language);
 
                 lblContains.Text = Language.getstring("Contains", language);
                 btnContains.Text = Language.getstring("Add", language);
 
                 ddlFilters_Selected_Index_Changed(null, null);
-                
-                
+            }
+            else
+            {
+                updateFilterView();
             }            
         }        
 
@@ -231,7 +233,7 @@ namespace KohtopaWeb
                     gvFilters.DataSource = fv;
                     gvFilters.DataBind();
 
-                    gvRentables.DataSource = dv;
+                    gvRentables.DataSource = dv;                    
                     gvRentables.DataBind();
                 }
                 else
@@ -253,11 +255,26 @@ namespace KohtopaWeb
             string language = "" + Session["Language"];
             gvRentables.Columns.Clear();
                         
+            Label lbl = new Label();
+            lbl.Text="DataBind:RentableType:Type";            
+            TableCell tc = new TableCell();
+            tc.Controls.Add(lbl);
+            TableRow tr = new TableRow();
+            tr.Cells.Add(tc);
+            Table table = new Table();
+            table.Rows.Add(tr);                        
+            GridViewTemplate gvt = new GridViewTemplate(table,language);
+            TemplateField tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Type", language);
+            tf.ItemTemplate = gvt;
+            gvRentables.Columns.Add(tf);
+            /*
             BoundField bf = new BoundField();
             bf.DataField = "Type";
             bf.HeaderText = Language.getstring("Type", language);
             gvRentables.Columns.Add(bf);
-            bf = new BoundField();
+            */
+            BoundField bf = new BoundField();
             bf.DataField = "Street";
             bf.HeaderText = Language.getstring("Street", language);
             gvRentables.Columns.Add(bf);
@@ -293,7 +310,7 @@ namespace KohtopaWeb
             bf.DataField = "Area";
             bf.HeaderText = Language.getstring("Area", language);
             gvRentables.Columns.Add(bf);
-            bf = new BoundField();            
+            bf = new BoundField();          
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
@@ -305,5 +322,6 @@ namespace KohtopaWeb
             }
             updateFilterView();
         }
+        
     }
 }
