@@ -193,7 +193,6 @@ public class DataConnector {
                     // int recipient, String sender, String subject, String date, String text, boolean read)
 
                     messages.add(new Message(recipient,sender,subject,dateSent,text,read));
-
                 }
             } finally {
                 conn.close();
