@@ -7,13 +7,17 @@ package gui;
 import Language.Language;
 import gui.MessageTab.MessagePane;
 import gui.actions.*;
-import gui.addremove.BuildingCellRenderer;
-import gui.addremove.PanelListModel;
-import gui.addremove.BuildingListPanel;
+import gui.AddRemoveTab.BuildingCellRenderer;
+import gui.AddRemoveTab.BuildingDialog;
+import gui.AddRemoveTab.PanelListModel;
+import gui.AddRemoveTab.BuildingListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
@@ -25,6 +29,10 @@ public class Main extends JFrame {
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
 	public final static boolean disableBtnText = true;
+	private JList listBuildings;
+	private JList listRentables;
+	private ArrayList<Building> buildingPreviews;
+	private static int buildingIndex;
 
 	public static Main getInstance() {
 		return instance;
@@ -46,23 +54,23 @@ public class Main extends JFrame {
 		//actions
 		actions = new HashMap<String, Action>();
 
-		actions.put("buildingAdd", new BuildingAddAction("buildingAdd",new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
-		actions.put("buildingEdit", new BuildingEditAction("buildingEdit",new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
-		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove",new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
-		actions.put("rentableAdd", new RentableAddAction("rentableAdd",new ImageIcon(getClass().getResource("/images/rentable_add_23.png"))));
+		actions.put("buildingAdd", new BuildingAddAction("buildingAdd", new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
+		actions.put("buildingEdit", new BuildingEditAction("buildingEdit", new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
+		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove", new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
+		actions.put("rentableAdd", new RentableAddAction("rentableAdd", new ImageIcon(getClass().getResource("/images/rentable_add_23.png"))));
 		actions.put("rentableEdit", new RentableEditAction("rentableEdit", new ImageIcon(getClass().getResource("/images/rentable_edit_23.png"))));
-		actions.put("rentableRemove", new RentableRemoveAction("rentableRemove",new ImageIcon(getClass().getResource("/images/rentable_remove_23.png"))));
+		actions.put("rentableRemove", new RentableRemoveAction("rentableRemove", new ImageIcon(getClass().getResource("/images/rentable_remove_23.png"))));
 		actions.put("taskAdd", new TaskAddAction("taskAdd", new ImageIcon(getClass().getResource("/images/task_add_23.png"))));
 		actions.put("taskEdit", new TaskEditAction("taskEdit", new ImageIcon(getClass().getResource("/images/task_edit_23.png"))));
 		actions.put("taskRemove", new TaskRemoveAction("taskRemove", new ImageIcon(getClass().getResource("/images/task_remove_23.png"))));
 		actions.put("messageNew", new MessageNewAction("messageNew", new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
 		actions.put("messageReply", new MessageReplyAction("messageReply", new ImageIcon(getClass().getResource("/images/message_reply_23.png"))));
 		actions.put("messageRemove", new MessageRemoveAction("messageRemove", new ImageIcon(getClass().getResource("/images/message_remove_23.png"))));
-		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd",new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
+		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd", new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
 		actions.put("invoiceEdit", new InvoiceEditAction("invoiceEdit", new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
-		actions.put("invoiceRemove", new InvoiceRemoveAction("invoiceRemove",new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
+		actions.put("invoiceRemove", new InvoiceRemoveAction("invoiceRemove", new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
 		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
-		actions.put("floorEdit", new FloorEditAction("floorEdit",new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
+		actions.put("floorEdit", new FloorEditAction("floorEdit", new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
 		actions.put("floorRemove", new FloorRemoveAction("floorRemove", new ImageIcon(getClass().getResource("/images/floor_remove_23.png"))));
 
 
@@ -74,10 +82,7 @@ public class Main extends JFrame {
 
 
 
-//
-//
-//		Model.getInstance().addDummyPictures();
-		//		Model.getInstance().addDummyPictures();
+
 //		BuildingDialog bd = new BuildingDialog(this, -2147483648, false);
 //		bd.setVisible(true);
 
@@ -175,22 +180,16 @@ public class Main extends JFrame {
 
 		//building preview list
 		PanelListModel lmBuilding = new PanelListModel();
-		JList listBuildings = new JList(lmBuilding);
+		listBuildings = new JList(lmBuilding);
+		listBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		listBuildings.setBackground(new Color(217, 217, 217));
 		listBuildings.setCellRenderer(new BuildingCellRenderer());
 
-		ArrayList<Building> buildingPreviews = null;
+		buildingPreviews = null;
 		try {
 			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-			ex.printStackTrace();
-		}
-
-		try {
-			System.out.println("aantal buildings: " + buildingPreviews.size());
-		} catch (Exception ex) {
-			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
 
@@ -204,11 +203,35 @@ public class Main extends JFrame {
 		}
 
 		scrolBuilding.setViewportView(listBuildings);
+		listBuildings.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index = listBuildings.locationToIndex(e.getPoint());
+				if (e.getClickCount() == 1) {
+					//TODO show rentables in list next to buildings
+				}else{
+					BuildingDialog.show(instance, buildingPreviews.get(index).getId(), false);
+				}
+			}
+		});
+		buildingIndex = -1; //none selected
+		listBuildings.addMouseMotionListener(new MouseMotionAdapter() {
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				int index = listBuildings.locationToIndex(e.getPoint());
+				if (index != buildingIndex) {
+					buildingIndex = index;
+					listBuildings.repaint();
+				}
+			}
+		});
 
 
 		//Rentable preview list
 		PanelListModel lmRentable = new PanelListModel();
-		JList listRentables = new JList(lmRentable);
+		listRentables = new JList(lmRentable);
 		listRentables.setBackground(new Color(217, 217, 217));
 		listRentables.setCellRenderer(new BuildingCellRenderer());
 		//		//Rentable preview list
@@ -325,6 +348,20 @@ public class Main extends JFrame {
 	public static Action getAction(String type) {
 		return actions.get(type);
 	}
+
+	public static int getBuildingIndex() {
+		return buildingIndex;
+	}
+
+	public JList getListBuildings() {
+		return listBuildings;
+	}
+
+	public JList getListRentables() {
+		return listRentables;
+	}
+
+
 
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {

@@ -4,7 +4,7 @@
  */
 package gui.MessageTab;
 
-import gui.addremove.AbstractListPanel;
+import gui.AddRemoveTab.AbstractListPanel;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;

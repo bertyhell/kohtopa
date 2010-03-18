@@ -5,7 +5,7 @@
 package gui.MessageTab;
 
 import Language.Language;
-import gui.addremove.AbstractListPanel;
+import gui.AddRemoveTab.AbstractListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
