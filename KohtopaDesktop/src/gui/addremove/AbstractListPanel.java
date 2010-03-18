@@ -10,6 +10,10 @@ public abstract class AbstractListPanel extends JPanel {
 	private Color bgColor;
 	protected int id;
 
+        public AbstractListPanel() {
+            this.id = 0;
+        }
+
 	public AbstractListPanel(int id) {
 		this.id = id;
 	}
