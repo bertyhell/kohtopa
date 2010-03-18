@@ -2,10 +2,10 @@ package gui;
 
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
+//TODO when database not availible, make sure program doesn't crach
 import Language.Language;
 import gui.actions.*;
 import gui.addremove.BuildingCellRenderer;
-import gui.addremove.BuildingDialog;
 import gui.addremove.PanelListModel;
 import gui.addremove.BuildingListPanel;
 import java.awt.BorderLayout;
