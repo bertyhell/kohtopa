@@ -17,20 +17,24 @@ import model.data.Message;
  */
 public class MessageCellRenderer implements ListCellRenderer {
 
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        Message m = (Message) list.getModel().getElementAt(index);
-        MessageListPanel p = new MessageListPanel(m);
-        if(isSelected) {
-            p.setBgColor(new Color(0,102,204));
-        } else if(m.isRead()) {
-            if (index % 2 == 0) {
-                p.setBgColor(Color.LIGHT_GRAY);
-            } else {
-                p.setBgColor(new Color(170, 170, 170));
-            }
-        } else {
-            p.setBgColor(new Color(255,255,150));
-        }
-        return p;
-    }
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+		Message m = (Message) list.getModel().getElementAt(index);
+		MessageListPanel p = new MessageListPanel(m);
+		if (isSelected) {
+			p.setBgColor(new Color(150, 150, 150));
+		} else if (m.isRead()) {
+			if (index % 2 == 0) {
+				p.setBgColor(Color.LIGHT_GRAY);
+			} else {
+				p.setBgColor(new Color(170, 170, 170));
+			}
+		} else {
+			if (index % 2 == 0) {
+				p.setBgColor(new Color(255, 255, 150));
+			} else {
+				p.setBgColor(new Color(255, 255, 130));
+			}
+		}
+		return p;
+	}
 }
