@@ -89,9 +89,15 @@ public class DataBaseConstants {
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
 			+ " AND p." + pictureType + " = -3"
 			+ " ORDER BY " + street;
-	public static String selectBuilding = "SELECT " + street + "," + streetNumber + "," + zipCode + "," + city + "," + country
-			+ " FROM " + tableAddresses
-			+ " WHERE " + addressId + " = ?";
+	public static String selectBuilding = "SELECT"
+			+ " a." + street
+			+ ",a." + streetNumber
+			+ ",a." + zipCode
+			+ ",a." + city
+			+ ",a." + country
+			+ " FROM " + tableAddresses + " a"
+			+ " INNER JOIN " + tableBuildings + " b ON a." + addressId + " = b." + addressId
+			+ " WHERE b." + buildingId + " = ?";
 	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingId + " = ?"

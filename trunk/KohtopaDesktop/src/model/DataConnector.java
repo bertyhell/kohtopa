@@ -204,12 +204,12 @@ public class DataConnector {
     }
 
 	public static Building getBuilding(int buildingId) throws SQLException{
+		System.out.println("buildingid: " + buildingId);
 	    Building building = null;
 		try {
 			Connection conn = geefVerbinding();
 			try {
 			    //TODO get images for building
-				ByteArrayInputStream bais = null;
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectBuilding);
 				ps.setInt(1, buildingId);
 				ResultSet rs = ps.executeQuery();
@@ -228,7 +228,7 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			throw new SQLException("error in getPicture: problems with connection: " + ex);
+			throw new SQLException("error in getBuilding: " + ex);
 		}
 		return building;
 	}
