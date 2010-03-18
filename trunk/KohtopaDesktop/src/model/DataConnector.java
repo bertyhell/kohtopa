@@ -18,6 +18,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import model.data.Rentable;
 
 public class DataConnector {
 	/* this class gets/puts data from/to database */
@@ -169,6 +170,7 @@ public class DataConnector {
 		try {
 			Connection conn = geefVerbinding();
 			try {
+			    //TODO get images for building
 				ByteArrayInputStream bais = null;
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectBuilding);
 				ps.setInt(1, buildingId);
@@ -191,5 +193,27 @@ public class DataConnector {
 			throw new SQLException("error in getPicture: problems with connection: " + ex);
 		}
 		return building;
+	}
+
+	public static ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
+	    ArrayList<Rentable> rentables = new ArrayList<Rentable>();
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablesFromBuilding);
+				ps.setInt(1, buildingId);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					rentables.add(new Rentable(
+						rs.getInt(DataBaseConstants.rentableId),
+						rs.getInt(DataBaseConstants.floor)));
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			throw new SQLException("error in getPicture: problems with connection: " + ex);
+		}
+		return rentables;
 	}
 }

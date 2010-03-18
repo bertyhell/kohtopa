@@ -77,8 +77,8 @@ public class DataBaseConstants {
 	public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
 	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
-	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
 	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city
@@ -86,9 +86,13 @@ public class DataBaseConstants {
 			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
 			+ " AND p." + pictureType + " = -3";
-	public static String selectBuilding = "SELECT " + street + "," + streetNumber + "," + zipCode + "," + city  + "," + country
+	public static String selectBuilding = "SELECT " + street + "," + streetNumber + "," + zipCode + "," + city + "," + country
 			+ " FROM " + tableAddresses
 			+ " WHERE " + addressId + " = ?";
+	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor
+			+ " FROM " + tableRentables
+			+ " WHERE " + buildingId + " = ?"
+			+ " ORDER BY " + floor;
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
 	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId

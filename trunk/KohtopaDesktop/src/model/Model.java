@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import model.data.Rentable;
 
 public class Model {
 
@@ -36,5 +37,9 @@ public class Model {
 
 	public Building getBuilding(int buildingId) throws SQLException{
 	    return DataConnector.getBuilding(buildingId);
+	}
+
+	public ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
+		return DataConnector.getRentablesFromBuilding(buildingId);
 	}
 }
