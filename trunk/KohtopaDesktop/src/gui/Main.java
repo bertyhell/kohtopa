@@ -2,8 +2,10 @@ package gui;
 
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
-//TODO when database not availible, make sure program doesn't crach
+//TODO when database not availible, make sure program doesn't crash
+
 import Language.Language;
+import gui.MessageTab.MessagePane;
 import gui.actions.*;
 import gui.addremove.BuildingCellRenderer;
 import gui.addremove.PanelListModel;

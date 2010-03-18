@@ -13,11 +13,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import model.data.Message;
 import model.data.Rentable;
 
 public class DataConnector {
@@ -165,6 +168,43 @@ public class DataConnector {
 		return images;
 	}
 
+    public static Vector<Message> getMessageData() {
+        // create message vector
+        Vector<Message> messages = new Vector<Message>();
+        try {
+            Connection conn = geefVerbinding();
+            try {
+                Statement selectMessages = conn.createStatement();
+                ResultSet rsMessages = selectMessages.executeQuery(DataBaseConstants.selectMessages);
+                //PreparedStatement selectMessages = conn.prepareStatement(DataBaseConstants.selectMessages);
+		//selectMessages.setInt(1, 0);
+
+                //ResultSet rsMessages = selectMessages.executeQuery();
+
+                while (rsMessages.next()) {
+                    //text,subject,personName,firstName,dateSent,read,recipientId
+                    String text = rsMessages.getString(1);
+                    String subject = rsMessages.getString(2);
+                    String sender = rsMessages.getString(3)+" "+rsMessages.getString(4);
+                    String dateSent = DateFormat.getDateInstance().format(rsMessages.getDate(5))+" "+
+                            DateFormat.getTimeInstance().format(rsMessages.getTime(5));
+                    boolean read = rsMessages.getBoolean(6);
+                    int recipient = rsMessages.getInt(7);
+                    // int recipient, String sender, String subject, String date, String text, boolean read)
+
+                    messages.add(new Message(recipient,sender,subject,dateSent,text,read));
+
+                }
+            } finally {
+                conn.close();
+            }
+        } catch (Exception exc) {
+            System.out.println("error in getMessages: problems with connection : " + exc);
+        }
+        System.out.println("found " + messages.size() + " messages.");
+        return messages;
+    }
+
 	public static Building getBuilding(int buildingId) throws SQLException{
 	    Building building = null;
 		try {
@@ -217,3 +257,4 @@ public class DataConnector {
 		return rentables;
 	}
 }
+
