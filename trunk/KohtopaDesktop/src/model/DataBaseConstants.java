@@ -24,7 +24,6 @@ public class DataBaseConstants {
 	public static String roleId = "roleid";
 	public static String websiteAccess = "websiteAccess";
 	public static String guiAccess = "GUI_access";
-
 	//persons column labels
 	public static String personId = "personid";
 	public static String personName = "name";
@@ -34,7 +33,6 @@ public class DataBaseConstants {
 	public static String email = "email";
 	public static String telephone = "telephone";
 	public static String cellphone = "cellphone";
-
 	//buildings column labels
 	public static String buildingId = "buildingid";
 	//rentables column labels
@@ -62,9 +60,9 @@ public class DataBaseConstants {
 	public static String recipientId = "recipientid";
 	public static String dateSent = "date_sent";
 	public static String text = "text";
-        public static String subject = "subject";
+	public static String subject = "subject";
 	public static String rentableId = "rentableId";
-        public static String read = "message_read";
+	public static String read = "message_read";
 	//contracts column labels
 	public static String ownerId = "ownerid";
 	public static String renterId = "renterid";
@@ -106,23 +104,21 @@ public class DataBaseConstants {
 	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId
 			+ " FROM " + tablePictures
 			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";
+	public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
+			text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId, recipientId);
+	public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ ",
+			text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId);
 
-        public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
-                    text,subject,personName,firstName,dateSent,read,recipientId,tableMessages,tablePersons,personId,senderId,recipientId);
-        
-        public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ ",
-                    text,subject,personName,firstName,dateSent,read,recipientId,tableMessages,tablePersons,personId,senderId);
-
-        // create string, stuff to fill in: @
-        private static String buildString(String base, String... data) {
-            String[] parts = base.split("@");
-            //System.out.println(parts.length + ", " + data.length);
-            StringBuffer sb = new StringBuffer(parts[0]);
-            for(int i=1 ; i<parts.length ; i++) {
-                sb.append(data[i-1]);
-                sb.append(parts[i]);
-            }
-            System.out.println(sb);
-            return sb.toString();
-        }
+	// create string, stuff to fill in: @
+	private static String buildString(String base, String... data) {
+		String[] parts = base.split("@");
+		//System.out.println(parts.length + ", " + data.length);
+		StringBuffer sb = new StringBuffer(parts[0]);
+		for (int i = 1; i < parts.length; i++) {
+			sb.append(data[i - 1]);
+			sb.append(parts[i]);
+		}
+		//System.out.println(sb);
+		return sb.toString();
+	}
 }

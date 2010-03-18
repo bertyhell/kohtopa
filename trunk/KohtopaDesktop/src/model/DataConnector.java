@@ -45,7 +45,6 @@ public class DataConnector {
 	}
 
 	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
-		System.out.println("start selection");
 		ArrayList<Building> buildings = new ArrayList<Building>();
 		Connection conn = geefVerbinding();
 		try {
@@ -68,7 +67,7 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-		System.out.println("end selection");
+
 		return buildings;
 	}
 
@@ -129,7 +128,7 @@ public class DataConnector {
 				addFloorPlan(building.getId(), imgFloor, 1);
 				addFloorPlan(building.getId(), imgFloor, 2);
 			}
-			System.out.println("finiched adding dummy pictures");
+
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(null, "failed to read file:", "title", JOptionPane.ERROR_MESSAGE);
 
