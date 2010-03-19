@@ -79,8 +79,8 @@ public class DataBaseConstants {
 	public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
 	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
-	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
+	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
 	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city

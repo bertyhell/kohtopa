@@ -17,7 +17,7 @@ public class BuildingEditAction extends AbstractIconAction {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) { //TODO if no selected > do nothing (nullpointerexception)
 		int buildingId = ((BuildingListPanel)Main.getInstance().getListBuildings().getSelectedValue()).getId();
 		BuildingDialog.show(Main.getInstance(), buildingId, false); //TODO replce main with e.source or something like that
 	}
