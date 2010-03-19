@@ -64,7 +64,115 @@ namespace KohtopaWeb
                             {                                
                                 label.DataBinding += new EventHandler(lbl_DataBinding);
                             }                            
-                            tblc.Controls.Add(label);                            
+                            tblc.Controls.Add(label);
+                        }
+                        else if (control.GetType() == typeof(TextBox))
+                        {
+                            TextBox textbox = new TextBox();
+                            TextBox txt = (TextBox)control;
+                            textbox.AccessKey = txt.AccessKey;
+                            textbox.AppRelativeTemplateSourceDirectory = txt.AppRelativeTemplateSourceDirectory;
+                            textbox.AutoCompleteType = txt.AutoCompleteType;
+                            textbox.AutoPostBack = txt.AutoPostBack;
+                            textbox.BackColor = txt.BackColor;
+                            textbox.BorderColor = txt.BorderColor;
+                            textbox.BorderStyle = txt.BorderStyle;
+                            textbox.BorderWidth = txt.BorderWidth;
+                            textbox.CausesValidation = txt.CausesValidation;
+                            textbox.Columns = txt.Columns;
+                            textbox.CssClass = txt.CssClass;
+                            textbox.Enabled = txt.Enabled;
+                            textbox.EnableTheming = txt.EnableTheming;
+                            textbox.EnableViewState = txt.EnableViewState;
+                            textbox.ForeColor = txt.ForeColor;
+                            textbox.Height = txt.Height;
+                            textbox.ID = txt.ID;
+                            textbox.MaxLength = txt.MaxLength;
+                            textbox.ReadOnly = txt.ReadOnly;
+                            textbox.Rows = txt.Rows;
+                            textbox.SkinID = txt.SkinID;
+                            textbox.TabIndex = txt.TabIndex;
+                            textbox.TemplateControl = txt.TemplateControl;
+                            textbox.Text = txt.Text;
+                            textbox.TextMode = txt.TextMode;
+                            textbox.ToolTip = txt.ToolTip;
+                            textbox.ValidationGroup = txt.ValidationGroup;
+                            textbox.Visible = txt.Visible;
+                            textbox.Width = txt.Width;
+                            textbox.Wrap = txt.Wrap;
+                            if (textbox.Text.StartsWith("DataBind:"))
+                            {
+                                textbox.DataBinding += new EventHandler(txt_DataBinding);
+                            }
+                            tblc.Controls.Add(textbox);
+                        }
+                        else if (control.GetType() == typeof(Image))
+                        {                            
+                            Image image = new Image();
+                            Image img = (Image)control;
+                            image.AccessKey = img.AccessKey;
+                            image.AlternateText = img.AlternateText;
+                            image.AppRelativeTemplateSourceDirectory = img.AppRelativeTemplateSourceDirectory;
+                            image.BackColor = img.BackColor;
+                            image.BorderColor = img.BorderColor;
+                            image.BorderStyle = img.BorderStyle;
+                            image.BorderWidth = img.BorderWidth;
+                            image.CssClass = img.CssClass;
+                            image.DescriptionUrl = img.DescriptionUrl;
+                            image.EnableTheming = img.EnableTheming;
+                            image.EnableViewState = img.EnableViewState;
+                            image.ForeColor = img.ForeColor;
+                            image.GenerateEmptyAlternateText = img.GenerateEmptyAlternateText;
+                            image.Height = img.Height;
+                            image.ID = img.ID;
+                            image.ImageAlign = img.ImageAlign;
+                            image.ImageUrl = img.ImageUrl;
+                            image.SkinID = img.SkinID;
+                            image.TabIndex = img.TabIndex;
+                            image.TemplateControl = img.TemplateControl;
+                            image.ToolTip = img.ToolTip;
+                            image.Visible = img.Visible;
+                            image.Width = img.Width;
+                            if (image.ImageUrl.StartsWith("DataBind:"))
+                            {
+                                image.DataBinding += new EventHandler(img_DataBinding);                                
+                            }
+                            tblc.Controls.Add(image);
+                        }
+                        else if (control.GetType() == typeof(LinkButton))
+                        {
+                            LinkButton linkButton = new LinkButton();
+                            LinkButton lbtn = (LinkButton)control;
+                            linkButton.AccessKey = lbtn.AccessKey;
+                            linkButton.AppRelativeTemplateSourceDirectory = lbtn.AppRelativeTemplateSourceDirectory;
+                            linkButton.BackColor = lbtn.BackColor;
+                            linkButton.BorderColor = lbtn.BorderColor;
+                            linkButton.BorderStyle = lbtn.BorderStyle;
+                            linkButton.BorderWidth = lbtn.BorderWidth;
+                            linkButton.CausesValidation = lbtn.CausesValidation;
+                            linkButton.CommandArgument = lbtn.CommandArgument;
+                            linkButton.CommandName = lbtn.CommandName;
+                            linkButton.CssClass = lbtn.CssClass;
+                            linkButton.Enabled = lbtn.Enabled;
+                            linkButton.EnableTheming = lbtn.EnableTheming;
+                            linkButton.EnableViewState = lbtn.EnableViewState;
+                            linkButton.ForeColor = lbtn.ForeColor;
+                            linkButton.Height = lbtn.Height;
+                            linkButton.ID = lbtn.ID;                            
+                            linkButton.PostBackUrl = lbtn.PostBackUrl;
+                            linkButton.SkinID = lbtn.SkinID;
+                            linkButton.TabIndex = lbtn.TabIndex;
+                            linkButton.TemplateControl = lbtn.TemplateControl;
+                            linkButton.Text = lbtn.Text;
+                            linkButton.ToolTip = lbtn.ToolTip;
+                            linkButton.ValidationGroup = lbtn.ValidationGroup;
+                            linkButton.Visible = lbtn.Visible;
+                            linkButton.Width = lbtn.Width;
+                            if (linkButton.PostBackUrl.StartsWith("DataBind:"))
+                            {
+                                linkButton.DataBinding += new EventHandler(lbtn_DataBinding);
+                            }
+                            tblc.Controls.Add(linkButton);
                         }
                     }
                 }
@@ -104,6 +212,51 @@ namespace KohtopaWeb
                     }
                 }
             }
-        }        
+        }
+
+        void txt_DataBinding(object sender, EventArgs e)
+        {
+            TextBox txt = (TextBox)sender;
+            string[] data = txt.Text.Split(':');
+            GridViewRow container = (GridViewRow)txt.NamingContainer;
+            if (data[1].Equals("Normal"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    txt.Text = dataValue.ToString();
+                }
+            }            
+        }
+
+        void img_DataBinding(object sender, EventArgs e)
+        {
+            Image img = (Image)sender;
+            string[] data = img.ImageUrl.Split(':');
+            GridViewRow container = (GridViewRow)img.NamingContainer;
+            if (data[1].Equals("Normal"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    img.ImageUrl = dataValue.ToString();                    
+                }
+            }
+        }
+
+        void lbtn_DataBinding(object sender, EventArgs e)
+        {
+            LinkButton lbtn = (LinkButton)sender;
+            string[] data = lbtn.PostBackUrl.Split(':');
+            GridViewRow container = (GridViewRow)lbtn.NamingContainer;
+            if (data[1].Equals("Normal"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    lbtn.PostBackUrl = dataValue.ToString();
+                }
+            }
+        }
     }
 }

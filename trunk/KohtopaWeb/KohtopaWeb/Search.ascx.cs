@@ -256,9 +256,9 @@ namespace KohtopaWeb
             gvRentables.Columns.Clear();
                         
             Label lbl = new Label();
-            lbl.Text="DataBind:RentableType:Type";            
+            lbl.Text="DataBind:RentableType:Type";                        
             TableCell tc = new TableCell();
-            tc.Controls.Add(lbl);
+            tc.Controls.Add(lbl);            
             TableRow tr = new TableRow();
             tr.Cells.Add(tc);
             Table table = new Table();
@@ -267,13 +267,7 @@ namespace KohtopaWeb
             TemplateField tf = new TemplateField();
             tf.HeaderText = Language.getstring("Type", language);
             tf.ItemTemplate = gvt;
-            gvRentables.Columns.Add(tf);
-            /*
-            BoundField bf = new BoundField();
-            bf.DataField = "Type";
-            bf.HeaderText = Language.getstring("Type", language);
-            gvRentables.Columns.Add(bf);
-            */
+            gvRentables.Columns.Add(tf);           
             BoundField bf = new BoundField();
             bf.DataField = "Street";
             bf.HeaderText = Language.getstring("Street", language);
@@ -310,7 +304,7 @@ namespace KohtopaWeb
             bf.DataField = "Area";
             bf.HeaderText = Language.getstring("Area", language);
             gvRentables.Columns.Add(bf);
-            bf = new BoundField();          
+            bf = new BoundField();                        
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
