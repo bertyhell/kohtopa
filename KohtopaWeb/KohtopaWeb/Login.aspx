@@ -16,8 +16,8 @@
                 <asp:Label ID="lblPassword" runat="server"/>
             </asp:TableCell>
             <asp:TableCell>
-                <asp:TextBox ID="txtPassword" runat="server"/>
-                <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ValidationGroup="localValidation" ControlToValidate="txtPassword"/>
+                <asp:TextBox ID="txtPassword" runat="server" TextMode="Password"/>
+                <asp:RequiredFieldValidator ID="rfvPassword" runat="server" ValidationGroup="localValidation" ControlToValidate="txtPassword"/>                
             </asp:TableCell>
         </asp:TableRow>
         <asp:TableRow>

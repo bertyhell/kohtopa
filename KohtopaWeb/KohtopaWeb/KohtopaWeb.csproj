@@ -60,13 +60,6 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DatabaseNotFound.aspx.cs">
-      <DependentUpon>DatabaseNotFound.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="DatabaseNotFound.aspx.designer.cs">
-      <DependentUpon>DatabaseNotFound.aspx</DependentUpon>
-    </Compile>
     <Compile Include="DataConnector.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -139,7 +132,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DatabaseNotFound.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="master.Master" />
     <Content Include="Menu.ascx" />

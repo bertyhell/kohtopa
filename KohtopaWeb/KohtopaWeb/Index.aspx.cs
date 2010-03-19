@@ -17,9 +17,11 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            /*
             Image image = new Image();
             image.ImageUrl = "ShowPicture.aspx?imageId=-2147483642";
             this.Controls.Add(image);
+            */ 
         }
     }
 }
