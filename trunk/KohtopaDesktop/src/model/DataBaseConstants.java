@@ -36,14 +36,14 @@ public class DataBaseConstants {
 	//buildings column labels
 	public static String buildingId = "buildingid";
 	//rentables column labels
-	public static String rentableTypeFloor = "type_floor";      //-1: rentable        -2: building      -3: building preview     0-n: building floor
+	public static String rentableType = "type";
 	public static String rentableArea = "area";
 	public static String windowDirection = "window_direction";
 	public static String windowsArea = "window_area";
 	public static String internet = "internet";
 	public static String cable = "cable";
 	public static String floor = "floor";
-	public static String outletCount = "outletcount";
+	public static String outletCount = "outlet_count";
 	//furniture column labels
 	public static String furnitureId = "furnitureId";
 	public static String furnitureName = "name";
@@ -69,9 +69,9 @@ public class DataBaseConstants {
 	public static String contractStart = "contract_start";
 	public static String contractEnd = "contract_end";
 	//pictures column labels
+	public static String pictureType = "type_floor";      //-1: rentable        -2: building      -3: building preview     0-n: building floor
 	public static String pictureId = "pictureid";
 	public static String RentBuildId = "rentable_building_id";
-	public static String pictureType = "type_floor";
 	public static String pictureData = "picture";
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
@@ -98,6 +98,19 @@ public class DataBaseConstants {
 			+ " FROM " + tableAddresses + " a"
 			+ " INNER JOIN " + tableBuildings + " b ON a." + addressId + " = b." + addressId
 			+ " WHERE b." + buildingId + " = ?";
+	public static String selectRentable = "SELECT "
+			 + rentableType
+			+ "," + rentableArea
+			+ "," + windowsArea
+			+ "," + windowDirection
+			+ "," + internet
+			+ "," + cable
+			+ "," + outletCount
+			+ "," + floor
+			+ "," + price
+			+ " FROM " + tableRentables
+			+ " WHERE " + rentableId + " = ?";
+
 	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingId + " = ?"

@@ -42,4 +42,8 @@ public class Model {
 	public ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
 		return DataConnector.getRentablesFromBuilding(buildingId);
 	}
+
+	public Rentable getRentable(int rentableId) throws SQLException {
+		return DataConnector.getRentable(rentableId);
+	}
 }

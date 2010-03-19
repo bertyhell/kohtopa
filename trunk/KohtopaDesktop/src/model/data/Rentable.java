@@ -2,7 +2,7 @@ package model.data;
 
 public class Rentable {
 
-	private int rentableId;
+	private int Id;
 	private String type;
 	private int area;
 	private String windowsDirection;
@@ -15,7 +15,7 @@ public class Rentable {
 	private double price;
 
 	public Rentable(int rantableId, String type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price) {
-		this.rentableId = rantableId;
+		this.Id = rantableId;
 		this.type = type;
 		this.area = area;
 		this.windowsDirection = windowsDirection;
@@ -29,9 +29,11 @@ public class Rentable {
 	}
 
 	public Rentable(int rentableId, int floor) {
-		this.rentableId = rentableId;
+		this.Id = rentableId;
 		this.floor = floor;
 	}
+
+
 
 	public int getArea() {
 		return area;
@@ -57,8 +59,8 @@ public class Rentable {
 		return price;
 	}
 
-	public int getRantableId() {
-		return rentableId;
+	public int getId() {
+		return Id;
 	}
 
 	public boolean isRented() {
@@ -79,6 +81,6 @@ public class Rentable {
 
 	@Override
 	public String toString() {
-		return Integer.toString(rentableId); //TODO add name for rentable, return it here
+		return Integer.toString(Id); //TODO add name for rentable, return it here
 	}
 }
