@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="language.xsd">
+    <entry name="Username">Username</entry>
+    <entry name="Password">Password</entry>
+    <entry name="Login">Login</entry>
+    <entry name="RequiredField">This field is required.</entry>
+    <entry name="RequiredPositiveNumber">This field must be a positive number.</entry>
+    <entry name="RequiredGreaterThanMin">This field must be greater than minimum value.</entry>
+    <entry name="HomePage">Home</entry>
+    <entry name="Choose">Choose</entry>
+    <entry name="Language">Language</entry>
+    <entry name="Search">Search</entry>
+    <entry name="Logout">Logout</entry>
+    <entry name="MyRoom">My Room</entry>
+    <entry name="Filter">Filter</entry>
+    <entry name="Price">Price</entry>
+    <entry name="Area">Area</entry>
+    <entry name="Internet">Internet</entry>
+    <entry name="Add">Add</entry>
+    <entry name="Min">Minimum</entry>
+    <entry name="Max">Maximum</entry>
+    <entry name="Required">Required</entry>
+    <entry name="Between">Between</entry>
+    <entry name="Contains">Contains</entry>
+    <entry name="Data">Data</entry>
+    <entry name="Operation">Operation</entry>
+    <entry name="Value1">Value1</entry>
+    <entry name="Value2">Value2</entry>
+    <entry name="Street">Street</entry>
+    <entry name="Type">Type</entry>
+    <entry name="Street_number">Street Number</entry>
+    <entry name="Zipcode">Zipcode</entry>
+    <entry name="City">City</entry>
+    <entry name="Cable">Cable</entry>
+    <entry name="Floor">Floor</entry>
+    <entry name="Room">Room</entry>
+    <entry name="Appartment">Appartement</entry>
+    <entry name="House">House</entry>
+    <entry name="Reject">Reject</entry>
+    <entry name="UsernamePasswordWrong">Username or password is wrong</entry>
+    <entry name="Message">Message</entry>
+    <entry name="Messages">Messages</entry>
+    <entry name="Subject">Subject</entry>
+    <entry name="Send">Send</entry>
+</Language>
