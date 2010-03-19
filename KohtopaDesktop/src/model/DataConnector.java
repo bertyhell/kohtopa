@@ -204,7 +204,6 @@ public class DataConnector {
     }
 
 	public static Building getBuilding(int buildingId) throws SQLException{
-		System.out.println("buildingid: " + buildingId);
 	    Building building = null;
 		try {
 			Connection conn = geefVerbinding();
@@ -253,6 +252,39 @@ public class DataConnector {
 			throw new SQLException("error in getPicture: problems with connection: " + ex);
 		}
 		return rentables;
+	}
+
+	static Rentable getRentable(int rentableId) throws SQLException {
+		Rentable rentable = null;
+		try {
+			Connection conn = geefVerbinding();
+			try {
+			    //TODO get images for building
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentable);
+				ps.setInt(1, rentableId);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+					rentable = new Rentable(
+						rentableId,
+						rs.getString(DataBaseConstants.rentableType),
+						rs.getInt(DataBaseConstants.rentableArea),
+						rs.getString(DataBaseConstants.windowDirection),
+						rs.getInt(DataBaseConstants.windowsArea),
+						rs.getInt(DataBaseConstants.internet)==1?true:false,
+						rs.getInt(DataBaseConstants.cable)==1?true:false,
+						rs.getInt(DataBaseConstants.outletCount),
+						rs.getInt(DataBaseConstants.floor),
+						false,
+						rs.getDouble(DataBaseConstants.price));
+				}
+
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			throw new SQLException("error in getBuilding: " + ex);
+		}
+		return rentable;
 	}
 }
 
