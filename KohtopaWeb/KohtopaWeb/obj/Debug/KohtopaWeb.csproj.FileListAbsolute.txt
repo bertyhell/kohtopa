@@ -1,0 +1,10 @@
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.dll
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.pdb
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.dll
+C:\Users\Administrator\Documents\Kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.pdb
+G:\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.dll
+G:\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.pdb
+G:\KohtopaWeb\KohtopaWeb\obj\Debug\ResolveAssemblyReference.cache
+G:\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.dll
+G:\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.pdb
