@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Xml.Linq;
+using System.Web.Mail;
 
 namespace KohtopaWeb
 {
@@ -15,7 +16,8 @@ namespace KohtopaWeb
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            Language.read();            
+            Language.read();
+            SmtpMail.SmtpServer = "smtp.scarlet.be";
         }
 
         protected void Session_Start(object sender, EventArgs e)
