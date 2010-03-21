@@ -38,7 +38,7 @@ namespace KohtopaWeb
                 mnMain.Items.Add(mni);
 
                 //user menu
-                if (Session["username"] == null) //not logged in
+                if (Session["user"] == null) //not logged in
                 {
                     mni = new MenuItem(Language.getstring("Login", (string)Session["Language"]));
                     mni.NavigateUrl = "~/Login.aspx";

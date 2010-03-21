@@ -26,6 +26,20 @@ namespace KohtopaWeb
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            Person p = DataConnector.getPerson(txtUsername.Text);
+            if (p.Password.Equals(txtPassword.Text))
+            {
+                Session["user"] = p;
+                FormsAuthentication.RedirectFromLoginPage("Renter", false);
+                lblError.Visible = false;
+            }
+            else
+            {
+                lblError.Visible = true;
+                lblError.Text = Language.getstring("UsernamePasswordWrong", "" + Session["Language"]);
+            }
+            
+            /*
             if (DataConnector.isValidPerson(txtUsername.Text, txtPassword.Text))
             {
                 Session["username"] = txtUsername.Text;
@@ -39,6 +53,7 @@ namespace KohtopaWeb
                 lblError.Visible = true;
                 lblError.Text = Language.getstring("UsernamePasswordWrong","" + Session["Language"]);
             }
+            */ 
         }
     }
 }

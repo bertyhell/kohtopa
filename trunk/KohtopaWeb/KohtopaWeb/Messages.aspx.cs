@@ -10,6 +10,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
+using System.Web.Mail;
 
 namespace KohtopaWeb
 {
@@ -29,7 +30,30 @@ namespace KohtopaWeb
 
         protected void btnSend_Click(object sender, EventArgs e)
         {
-
+            Person user = (Person)Session["user"];
+            Message m = new Message();
+            m.DateSend = DateTime.Now;
+            m.RecipientId = user.Rentable.Owner.PersonId;
+            m.SenderId = user.PersonId;
+            m.Subject = txtSubject.Text;
+            m.Text = txtMessage.Text;
+            bool succeeded = m.sendMessage();
+            if (succeeded)
+            {
+                try
+                {
+                    MailMessage mail = new MailMessage();
+                    mail.From = user.Email;
+                    mail.To = user.Rentable.Owner.Email;
+                    mail.Subject = txtSubject.Text;
+                    mail.Body = txtMessage.Text;                    
+                    SmtpMail.Send(mail);
+                }
+                catch(Exception exc)
+                {
+                    int i = 0;
+                }
+            }
         }
     }
 }
