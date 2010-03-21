@@ -1,15 +1,10 @@
 package gui.MessageTab;
 
 import gui.AddRemoveTab.AbstractListPanel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import model.data.Message;
 
 public class MessageListPanel extends AbstractListPanel {
@@ -34,6 +29,8 @@ public class MessageListPanel extends AbstractListPanel {
 
         //subject
         JLabel lblSubject = new JLabel(subject);
+        if(!m.isRead())
+            lblSubject.setFont(lblSubject.getFont().deriveFont(Font.BOLD+Font.ITALIC));
 
         buildConstraints(gbc, 0, 0, 2, 1, 100, 40, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
         gbl.addLayoutComponent(lblSubject, gbc);
@@ -41,15 +38,20 @@ public class MessageListPanel extends AbstractListPanel {
 
         //from
         JLabel lblFrom = new JLabel(from);
-        buildConstraints(gbc, 0, 1, 1, 1, 48, 30, GridBagConstraints.WEST, GridBagConstraints.WEST);
+        if(!m.isRead())
+            lblFrom.setFont(lblFrom.getFont().deriveFont(Font.BOLD+Font.ITALIC));
+
+        buildConstraints(gbc, 0, 1, 1, 1, 49, 30, GridBagConstraints.WEST, GridBagConstraints.WEST);
         gbl.addLayoutComponent(lblFrom, gbc);
         this.add(lblFrom);
 
         //date
         JLabel lblDate = new JLabel(date);
-        buildConstraints(gbc, 1, 1, 1, 1, 48, 30, GridBagConstraints.EAST, GridBagConstraints.EAST);
+        if(!m.isRead())
+            lblDate.setFont(lblDate.getFont().deriveFont(Font.BOLD+Font.ITALIC));
+
+        buildConstraints(gbc, 1, 1, 1, 1, 49, 30, GridBagConstraints.EAST, GridBagConstraints.EAST);
         gbl.addLayoutComponent(lblDate, gbc);
         this.add(lblDate);
     }
-
 }

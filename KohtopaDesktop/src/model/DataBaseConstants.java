@@ -76,11 +76,11 @@ public class DataBaseConstants {
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
-	public static String pw = "e=mc**2";
+	public static String pw = "admin";
 	public static String driver = "oracle.jdbc.OracleDriver";
-	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
 	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
+	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
 	public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city
@@ -125,7 +125,7 @@ public class DataBaseConstants {
 			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";
 	public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
 			text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId, recipientId);
-	public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ ",
+	public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ order by "+read,
 			text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId);
 
 	// create string, stuff to fill in: @

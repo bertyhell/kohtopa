@@ -7,6 +7,7 @@ package gui.MessageTab;
 import gui.AddRemoveTab.AbstractListPanel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import model.data.Message;
@@ -22,17 +23,11 @@ public class MessageCellRenderer implements ListCellRenderer {
 		MessageListPanel p = new MessageListPanel(m);
 		if (isSelected) {
 			p.setBgColor(new Color(150, 150, 150));
-		} else if (m.isRead()) {
+		} else {
 			if (index % 2 == 0) {
 				p.setBgColor(Color.LIGHT_GRAY);
 			} else {
 				p.setBgColor(new Color(170, 170, 170));
-			}
-		} else {
-			if (index % 2 == 0) {
-				p.setBgColor(new Color(255, 255, 150));
-			} else {
-				p.setBgColor(new Color(255, 255, 130));
 			}
 		}
 		return p;
