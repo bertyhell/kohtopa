@@ -33,26 +33,25 @@ namespace KohtopaWeb
             Person user = (Person)Session["user"];
             Message m = new Message();
             m.DateSend = DateTime.Now;
-            m.RecipientId = user.Rentable.Owner.PersonId;
-            m.SenderId = user.PersonId;
+            m.Recipient = user.Rentable.Owner;
+            m.Sender = user;
             m.Subject = txtSubject.Text;
             m.Text = txtMessage.Text;
             bool succeeded = m.sendMessage();
             if (succeeded)
             {
-                try
-                {
-                    MailMessage mail = new MailMessage();
-                    mail.From = user.Email;
-                    mail.To = user.Rentable.Owner.Email;
-                    mail.Subject = txtSubject.Text;
-                    mail.Body = txtMessage.Text;                    
-                    SmtpMail.Send(mail);
-                }
-                catch(Exception exc)
-                {
-                    int i = 0;
-                }
+                lblSucceeded.Text = Language.getstring("MessageSendSucceeded", "" + Session["Language"]);
+                lblSucceeded.ForeColor = System.Drawing.Color.Black;
+                txtMessage.Text = "";
+                txtSubject.Text = "";
+                txtSubject.Focus();                
+                lblSucceeded.Visible = true;
+            }
+            else
+            {
+                lblSucceeded.Text = Language.getstring("MessageSendFailed", "" + Session["Language"]);
+                lblSucceeded.ForeColor = System.Drawing.Color.Red;
+                lblSucceeded.Visible = true;
             }
         }
     }

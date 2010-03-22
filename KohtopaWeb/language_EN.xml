@@ -42,4 +42,6 @@
     <entry name="Messages">Messages</entry>
     <entry name="Subject">Subject</entry>
     <entry name="Send">Send</entry>
+    <entry name="MessageSendSucceeded">The message has been sent</entry>
+    <entry name="MessageSendFailed">The message could not been sent</entry>
 </Language>

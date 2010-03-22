@@ -22,6 +22,11 @@
             <asp:TableCell>
                 <asp:Button runat="server" ID="btnSend" OnClick="btnSend_Click"/>
             </asp:TableCell>            
-        </asp:TableRow>
+        </asp:TableRow> 
+        <asp:TableRow>
+            <asp:TableCell>
+                <asp:Label runat="server" ID="lblSucceeded" Visible="false"/>
+            </asp:TableCell>
+        </asp:TableRow>       
     </asp:Table>
 </asp:Content>
