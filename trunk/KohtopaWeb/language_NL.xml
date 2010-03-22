@@ -42,4 +42,6 @@
     <entry name="Messages">Berichten</entry>
     <entry name="Subject">Onderwerp</entry>
     <entry name="Send">Verzenden</entry>
+    <entry name="MessageSendSucceeded">Het bericht is verzonden.</entry>
+    <entry name="MessageSendFailed">Het bericht kon niet verzonden worden</entry>
 </Language>

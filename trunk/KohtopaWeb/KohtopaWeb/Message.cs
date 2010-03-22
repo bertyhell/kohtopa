@@ -9,15 +9,16 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
-
+using System.Data.OleDb;
+using System.Web.Mail;
 namespace KohtopaWeb
 {
     public class Message
     {        
 
-        private int senderId, recipientId;
+        private Person sender, recipient;
         private string subject, text;
-        private DateTime dateSend;
+        private DateTime dateSend;        
 
         public Message()
         {
@@ -25,16 +26,16 @@ namespace KohtopaWeb
             text = "";            
         }
 
-        public int RecipientId
+        public Person Recipient
         {
-            get { return recipientId; }
-            set { recipientId = value; }
+            get { return recipient; }
+            set { recipient = value; }
         }
 
-        public int SenderId
+        public Person Sender
         {
-            get { return senderId; }
-            set { senderId = value; }
+            get { return sender; }
+            set { sender = value; }
         }        
 
         public string Text
@@ -60,13 +61,47 @@ namespace KohtopaWeb
         {
             try
             {
-                DataConnector.sendMessage(this);
-                return true;
+                OleDbTransaction transaction = DataConnector.sendMessage(this);
+                if (transaction != null)
+                {
+                    try
+                    {                        
+                        MailMessage mail = new MailMessage();
+                        mail.From = sender.Email;
+                        mail.To = recipient.Email;
+                        mail.Subject = subject;
+                        mail.Body = text;
+                        SmtpMail.Send(mail);
+                        try
+                        {
+                            transaction.Commit();                            
+                            return true;
+                        }
+                        catch
+                        {
+                            return false;
+                        }
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            transaction.Rollback();
+                            transaction.Connection.Close();
+                        }
+                        catch { }
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch
             {
                 return false;
             }
-        }
+        }               
     }
 }

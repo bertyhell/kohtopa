@@ -291,19 +291,20 @@ namespace KohtopaWeb
             throw new Exception("can't find rentableId");
         }
 
-        public static bool sendMessage(Message message)
-        {
+        public static OleDbTransaction sendMessage(Message message)
+        {            
             OleDbConnection conn = getConnection();
+            OleDbTransaction transaction = null;                  
             bool succeeded = false;
             try
             {
                 OleDbCommand command = conn.CreateCommand();
                 command.CommandText = addMessageSQL;
                 OleDbParameter p = new OleDbParameter();
-                p.Value = message.SenderId;
+                p.Value = message.Sender.PersonId;
                 command.Parameters.Add(p);
                 p = new OleDbParameter();
-                p.Value = message.RecipientId;
+                p.Value = message.Recipient.PersonId;
                 command.Parameters.Add(p);
                 p = new OleDbParameter();
                 p.Value = message.Subject;
@@ -316,16 +317,26 @@ namespace KohtopaWeb
                 command.Parameters.Add(p);
                 p = new OleDbParameter();
                 p.Value = message.Text;
-                command.Parameters.Add(p);
+                command.Parameters.Add(p);                
                 conn.Open();
+                transaction = conn.BeginTransaction();
+                command.Transaction = transaction;
                 command.ExecuteNonQuery();
                 succeeded = true;
             }
-            finally
+            catch(Exception exc)
             {
+                transaction.Rollback();
                 conn.Close();                
+            }            
+            if (succeeded)
+            {
+                return transaction;
             }
-            return succeeded;
+            else
+            {
+                return null;
+            }            
         }
     }
 }
