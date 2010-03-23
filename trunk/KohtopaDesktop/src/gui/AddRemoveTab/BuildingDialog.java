@@ -2,7 +2,6 @@ package gui.AddRemoveTab;
 
 import Language.CountryNotFoundException;
 import Language.Language;
-import Language.Language;
 import Resources.RelativeLayout;
 import gui.Layout;
 import gui.Main;
@@ -23,7 +22,6 @@ import java.util.TreeSet;
 import javax.swing.*;
 import model.Floor;
 import model.data.Building;
-import model.Model;
 import model.data.Rentable;
 
 public class BuildingDialog extends JDialog {
@@ -76,7 +74,7 @@ public class BuildingDialog extends JDialog {
 
 		HashMap<Integer, BufferedImage> buildingPictures = null;
 		try {
-			buildingPictures = Model.getInstance().getPictures(buildingId, true);
+			buildingPictures = Main.getDataObject().getPictures(buildingId, true);
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 		}
@@ -295,7 +293,7 @@ public class BuildingDialog extends JDialog {
 		} else {
 			try {
 				//fill building info
-				Building building = Model.getInstance().getBuilding(buildingId);
+				Building building = Main.getDataObject().getBuilding(buildingId);
 				txtStreet.setText(building.getStreet());
 				txtStreetNumber.setText(building.getNumber());
 				txtZip.setText(building.getZipcode());
@@ -306,7 +304,7 @@ public class BuildingDialog extends JDialog {
 					JOptionPane.showMessageDialog(this, ex.getMessage(), Language.getString("errAnalyseFailTitle"), JOptionPane.ERROR_MESSAGE);
 				}
 
-				rentables = Model.getInstance().getRentablesFromBuilding(buildingId);
+				rentables = Main.getDataObject().getRentablesFromBuilding(buildingId);
 				lstRentables.setListData(rentables.toArray());
 				TreeSet<Floor> floors = new TreeSet<Floor>();
 				for (Rentable rent : rentables) {

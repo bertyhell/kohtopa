@@ -2,9 +2,8 @@ package model.data;
 
 import Language.Language;
 
-public class Rentable {
+public class Rentable extends AbstractPlace {
 
-	private int id;
 	private String type;
 	private int area;
 	private String windowsDirection;
@@ -28,8 +27,8 @@ public class Rentable {
 		this.price = price;
 	}
 
-	public Rentable(int rentableId, int type, int floor) {
-		this.id = rentableId;
+	public Rentable(int id, int type, int floor) {
+		super(id);
 		this.type = Language.getString("rentableType" + type);
 		this.floor = floor;
 	}

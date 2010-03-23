@@ -17,6 +17,9 @@ public class BuildingListPanel extends AbstractListPanel {
 
 	public BuildingListPanel(int id, ImageIcon preview, String street, String zipcode, String city) {
 		super(id);
+		if(preview == null){
+
+		}
 		this.preview = preview;
 		this.street = street;
 		this.zipcode = zipcode;

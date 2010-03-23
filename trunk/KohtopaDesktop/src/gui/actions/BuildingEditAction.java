@@ -2,7 +2,6 @@ package gui.actions;
 
 import gui.Main;
 import gui.AddRemoveTab.BuildingDialog;
-import gui.AddRemoveTab.BuildingListPanel;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 
@@ -18,8 +17,7 @@ public class BuildingEditAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) { //TODO if no selected > do nothing (nullpointerexception)
-		int buildingId = ((BuildingListPanel)Main.getInstance().getListBuildings().getSelectedValue()).getId();
-		BuildingDialog.show(Main.getInstance(), buildingId, false); //TODO replce main with e.source or something like that
+		BuildingDialog.show(Main.getInstance(), Main.getDataObject().getSelectedBuildingId(), false); //TODO replce main with e.source or something like that
 	}
 
 

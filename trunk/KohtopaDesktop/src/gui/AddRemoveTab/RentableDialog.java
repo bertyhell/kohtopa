@@ -3,11 +3,11 @@ package gui.AddRemoveTab;
 import Language.Language;
 import Resources.RelativeLayout;
 import gui.Layout;
+import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.HashMap;
 import javax.swing.*;
-import model.Model;
 import model.data.Rentable;
 
 public class RentableDialog extends JDialog {
@@ -70,7 +69,7 @@ public class RentableDialog extends JDialog {
 
 		HashMap<Integer, BufferedImage> rentablePictures = null;
 		try {
-			rentablePictures = Model.getInstance().getPictures(rentableId, false); //TODO wss nog verkeerd, uitzoeken
+			rentablePictures = Main.getDataObject().getPictures(rentableId, false); //TODO wss nog verkeerd, uitzoeken
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 		}
@@ -264,7 +263,7 @@ public class RentableDialog extends JDialog {
 		} else {
 			try {
 				//fill building info
-				Rentable rentable = Model.getInstance().getRentable(rentableId);
+				Rentable rentable = Main.getDataObject().getRentable(rentableId);
 				txtType.setText(Language.getString("rentableType" + rentable.getType()));
 				txtArea.setText(Integer.toString(rentable.getArea()));
 				txtWindowDir.setText(rentable.getWindowsDirection());

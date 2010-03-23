@@ -7,25 +7,17 @@ import gui.MessageTab.MessagePane;
 import gui.actions.*;
 import gui.AddRemoveTab.BuildingCellRenderer;
 import gui.AddRemoveTab.BuildingDialog;
-import gui.AddRemoveTab.PanelListModel;
-import gui.AddRemoveTab.BuildingListPanel;
 import gui.AddRemoveTab.RentableCellRenderer;
-import gui.AddRemoveTab.RentableListPanel;
 import gui.MessageTab.MessageListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import model.data.Building;
-import model.Model;
-import model.data.Rentable;
+import model.DataModel;
 
 public class Main extends JFrame {
 
@@ -34,18 +26,13 @@ public class Main extends JFrame {
 	public final static boolean disableBtnText = true;
 	private JList lstBuildings;
 	private JList lstRentables;
-	private ArrayList<Building> buildingPreviews;
-	private ArrayList<Rentable> rentablePreviews;
-	private PanelListModel lmBuilding;
-	private PanelListModel lmRentable;
-	private static int buildingIndex;
-	private static int rentableIndex;
+	private static DataModel data;
+	private JPanel pnlMessages;
+	private JTabbedPane tabbed;
 
 	public static Main getInstance() {
 		return instance;
 	}
-	private JPanel pnlMessages;
-	private final JTabbedPane tabbed;
 
 	private Main() {
 		try {
@@ -56,6 +43,7 @@ public class Main extends JFrame {
 		}
 		Language.read(); //reads strings in specific language from xml file
 		setTitle(Language.getString("titleJFrameDesktopMain"));
+		data = new DataModel();
 
 		//actions
 		actions = new HashMap<String, Action>();
@@ -86,11 +74,21 @@ public class Main extends JFrame {
 		this.setMinimumSize(new Dimension(370, 300));
 		this.setLayout(new BorderLayout());
 		tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
-
-		//fetchaddremove
-
-
 		this.add(tabbed, BorderLayout.CENTER);
+		tabbed.addChangeListener(new ChangeListener() {
+
+			public void stateChanged(ChangeEvent e) {
+				int tab = tabbed.getSelectedIndex();
+				if (tab == 0) {
+					System.out.println("fetching buildings");
+					data.fetchAddRemove();
+				} else if (tab == 2) {
+					fetchMessages();
+				}
+				//TODO add rest off fetch methods
+			}
+		});
+
 		//adding Add/Remove panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 
@@ -159,49 +157,39 @@ public class Main extends JFrame {
 		splitter.setDividerLocation(325);
 		splitter.setDividerSize(10);
 
-
 		//building preview list
-		lmBuilding = new PanelListModel();
-		lstBuildings = new JList();
-		lstBuildings.setBackground(Color.red);
+		lstBuildings = new JList(data.getLmBuilding());
 		lstBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstBuildings.setBackground(new Color(217, 217, 217));
 		lstBuildings.setCellRenderer(new BuildingCellRenderer());
+
 
 		scrolBuilding.setViewportView(lstBuildings);
 		lstBuildings.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int index = lstBuildings.locationToIndex(e.getPoint());
+				int buildingIndex = lstBuildings.locationToIndex(e.getPoint());
 				if (e.getClickCount() == 1) {
 					try {
-						rentablePreviews = Model.getInstance().getRentablePreviews(buildingPreviews.get(index).getId());
+						lstRentables.setModel(data.updateRentables(buildingIndex));
 					} catch (Exception ex) {
 						//FIXME exception opsplitsen, translation messages
 						JOptionPane.showMessageDialog(instance, "Couldn't connect to database\n" + ex.getMessage(), "connection failed", JOptionPane.ERROR_MESSAGE);
 					}
-					lmRentable.clear();
-					for (Rentable rentable : rentablePreviews) {
-						lmRentable.addElement(new RentableListPanel(
-								rentable.getId(), null, rentable.getType(), rentable.getFloor()));
-					}
-					lstRentables.setModel(lmRentable);
 					System.out.println("rentables updated");
 				} else {
 					//open building dialog
-					BuildingDialog.show(instance, buildingPreviews.get(index).getId(), false);
+					BuildingDialog.show(instance, data.getSelectedBuildingId(), false);
 				}
 			}
 		});
-		buildingIndex = -1; //none selected
 		lstBuildings.addMouseMotionListener(new MouseMotionAdapter() {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				int index = lstBuildings.locationToIndex(e.getPoint());
-				if (index != buildingIndex) {
-					buildingIndex = index;
+				//if mouse moves over new building > update list backgroundcolors
+				if (data.mouseOver(lstBuildings.locationToIndex(e.getPoint()), true)) {
 					lstBuildings.repaint();
 				}
 			}
@@ -209,8 +197,7 @@ public class Main extends JFrame {
 
 
 		//Rentable preview list
-		lmRentable = new PanelListModel();
-		lstRentables = new JList(lmRentable);
+		lstRentables = new JList(data.getLmRentable());
 		lstRentables.setBackground(Color.red);
 		//listRentables.setBackground(new Color(217, 217, 217));
 		lstRentables.setCellRenderer(new RentableCellRenderer());
@@ -218,15 +205,13 @@ public class Main extends JFrame {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				int index = lstRentables.locationToIndex(e.getPoint());
-				if (index != rentableIndex) {
-					rentableIndex = index;
-					lstRentables.repaint();
+				int index = lstBuildings.locationToIndex(e.getPoint());
+				if (data.mouseOver(index, false)) {
+					lstBuildings.repaint();
 				}
 			}
 		});
 
-		rentableIndex = -1; //none selected
 		splitter.setPreferredSize(new Dimension(1000, 600));
 		pnlAddRemove.add(splitter, BorderLayout.CENTER);
 
@@ -326,76 +311,16 @@ public class Main extends JFrame {
 		return actions.get(type);
 	}
 
-	public static int getBuildingIndex() {
-		return buildingIndex;
-	}
-
-	public static int getRentableIndex() {
-		return rentableIndex;
-	}
-
-	public JList getListBuildings() {
-		return lstBuildings;
-	}
-
-	public JList getListRentables() {
-		return lstRentables;
-	}
-
-	public boolean fetchDatabaseInformation() {
-		tabbed.addChangeListener(new ChangeListener() {
-
-			public void stateChanged(ChangeEvent e) {
-				int tab = tabbed.getSelectedIndex();
-				if (tab == 0) {
-					System.out.println("fetching buildings");
-					fetchAddRemove();
-				} else if (tab == 2) {
-					fetchMessages();
-				}
-				System.out.println("Tab=" + tabbed.getSelectedIndex());
-				//add fetch methods
-			}
-		});
-		return fetchAddRemove();
-	}
-
-	public boolean fetchAddRemove() {
-		try {
-			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
-
-			lmBuilding.clear();
-			for (Building building : buildingPreviews) {
-				lmBuilding.addElement(new BuildingListPanel(
-						building.getId(),
-						building.getPreviewImage(),
-						building.getStreet() + " " + building.getNumber(),
-						building.getZipcode(),
-						building.getCity()));
-			}
-			lstBuildings.setModel(lmBuilding);
-			return true;
-		} catch (SQLException ex) {
-			System.out.println("fetch failed(listener)");
-			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-			//TODO add connection string settings
-
-			return false;
-		} catch (IOException ex) {
-			System.out.println("fetch failed io (listener)");
-			JOptionPane.showMessageDialog(instance, Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), Language.getString("errImagesFetchFailTitle"), JOptionPane.ERROR_MESSAGE);
-			//TODO add connection string settings
-
-			return false;
-		}
-	}
-
+	//TODO move dataconnection of messages to model class and make sure it only connects to database outside constructor
 	public void fetchMessages() {
-		//plugin messagepanel by jelle:
 		MessagePane pnlMessagesInfo = new MessagePane();
 
 		pnlMessagesInfo.setPreferredSize(new Dimension(500, 600));
 		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
+	}
+
+	public static DataModel getDataObject(){
+		return data;
 	}
 
 	public static void main(String args[]) {
@@ -408,7 +333,7 @@ public class Main extends JFrame {
 				SplashConnect.showSplash();
 				System.out.println("start database connection");
 				//TODO change to while with possibility to abort
-				while (!instance.fetchDatabaseInformation()) {
+				while (!data.fetchAddRemove()) {
 					//database connection failed
 					//TODO show connection string dialog
 					JOptionPane.showMessageDialog(instance, "here comes connection string dialog", "connection", JOptionPane.INFORMATION_MESSAGE);
