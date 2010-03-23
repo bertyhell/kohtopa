@@ -1,25 +1,33 @@
 package gui.AddRemoveTab;
 
-import gui.Main;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import model.DataModel;
+import model.data.Building;
 
 public class BuildingCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		AbstractListPanel comp = (AbstractListPanel) list.getModel().getElementAt(index);
-		int buildingIndex = Main.getBuildingIndex();
-		if (index != buildingIndex) {
+		//TODO split so it converts building to panelbuildinglist
+
+		Building building = (Building)list.getModel().getElementAt(index);
+		BuildingListPanel pnlBuilding = new BuildingListPanel(
+				building.getId(),
+				building.getPreviewImage(),
+				building.getStreetLine(),
+				building.getZipcode(),
+				building.getCity());
+		if (index != DataModel.getBuildingIndex()) {
 			if (index % 2 == 0) {
-				comp.setBgColor(Color.LIGHT_GRAY);
+				pnlBuilding.setBgColor(Color.LIGHT_GRAY);
 			} else {
-				comp.setBgColor(new Color(170, 170, 170));
+				pnlBuilding.setBgColor(new Color(170, 170, 170));
 			}
 		} else {
-			comp.setBgColor(new Color(150, 150, 150));
+			pnlBuilding.setBgColor(new Color(150, 150, 150));
 		}
-		return comp;
+		return pnlBuilding;
 	}
 }

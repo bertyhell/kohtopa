@@ -45,6 +45,7 @@ public class DataConnector {
 	}
 
 	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
+		System.out.println("getting buildings from database");
 		ArrayList<Building> buildings = new ArrayList<Building>();
 		Connection conn = geefVerbinding();
 		try {

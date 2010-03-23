@@ -1,25 +1,32 @@
 package gui.AddRemoveTab;
 
-import gui.Main;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import model.DataModel;
+import model.data.Rentable;
 
 public class RentableCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		AbstractListPanel comp = (AbstractListPanel) list.getModel().getElementAt(index);
-		int rentableIndex = Main.getRentableIndex();
-		if (index != rentableIndex) {
+		//TODO split so it converts building to panelbuildinglist
+
+		Rentable rentable = (Rentable)list.getModel().getElementAt(index);
+		RentableListPanel pnlRentable = new RentableListPanel(
+				rentable.getId(),
+				rentable.getType(),
+				null,
+				rentable.getFloor());
+		if (index != DataModel.getBuildingIndex()) {
 			if (index % 2 == 0) {
-				comp.setBgColor(Color.LIGHT_GRAY);
+				pnlRentable.setBgColor(Color.LIGHT_GRAY);
 			} else {
-				comp.setBgColor(new Color(170, 170, 170));
+				pnlRentable.setBgColor(new Color(170, 170, 170));
 			}
 		} else {
-			comp.setBgColor(new Color(150, 150, 150));
+			pnlRentable.setBgColor(new Color(150, 150, 150));
 		}
-		return comp;
+		return pnlRentable;
 	}
 }
