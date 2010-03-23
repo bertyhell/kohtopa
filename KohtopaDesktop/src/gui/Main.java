@@ -11,6 +11,7 @@ import gui.AddRemoveTab.PanelListModel;
 import gui.AddRemoveTab.BuildingListPanel;
 import gui.AddRemoveTab.RentableCellRenderer;
 import gui.AddRemoveTab.RentableListPanel;
+import gui.MessageTab.MessageListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -277,6 +278,10 @@ public class Main extends JFrame {
 		JButton btnRemoveMessage = new JButton(actions.get("messageRemove"));
 		btnRemoveMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnRemoveMessage);
+
+                MessageListPanel.addIcon("0", new ImageIcon(getClass().getResource("/images/message_new_23.png")));
+		MessageListPanel.addIcon("1", new ImageIcon(getClass().getResource("/images/message_read_23.png")));
+		MessageListPanel.addIcon("2", new ImageIcon(getClass().getResource("/images/message_reply_23.png")));
 
 		return pnlMessages;
 	}

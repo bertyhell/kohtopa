@@ -15,9 +15,9 @@ public class Message {
     String subject;
     String date;
     String text;
-    boolean read;
+    String read;
 
-    public Message(int recipient, String sender, String subject, String date, String text, boolean read) {
+    public Message(int recipient, String sender, String subject, String date, String text, String read) {
         this.recipient = recipient;
         this.sender = sender;
         if(subject == null || subject.equals(""))
@@ -29,7 +29,7 @@ public class Message {
         this.read = read;
     }
 
-    public void setRead(boolean read) {
+    public void setRead(String read) {
         this.read = read;
     }
 
@@ -37,7 +37,7 @@ public class Message {
         return date;
     }
 
-    public boolean isRead() {
+    public String getRead() {
         return read;
     }
 
