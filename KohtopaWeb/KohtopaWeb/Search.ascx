@@ -73,7 +73,10 @@
     </asp:TableRow>    
 </asp:Table>
 
-<asp:GridView ID="gvRentables" runat="server" AutoGenerateColumns="false">
+<asp:GridView ID="gvRentables" runat="server" AutoGenerateColumns="false" 
+    AllowPaging="True" AllowSorting="True" 
+    onpageindexchanging="gvRentables_PageIndexChanging" 
+    onsorting="gvRentables_Sorting">
 </asp:GridView>
 <asp:Label ID="lblDatabaseError" runat="server" Text="" Visible="false"></asp:Label>
 

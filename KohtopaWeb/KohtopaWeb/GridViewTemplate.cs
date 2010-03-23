@@ -9,6 +9,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
+using System.Globalization;
 
 namespace KohtopaWeb
 {
@@ -33,6 +34,7 @@ namespace KohtopaWeb
                 foreach (TableCell tc in tr.Cells)
                 {
                     TableCell tblc = new TableCell();
+                    tblc.HorizontalAlign = tc.HorizontalAlign;
                     tblr.Cells.Add(tblc);
                     foreach (Control control in tc.Controls)
                     {                           
@@ -207,9 +209,33 @@ namespace KohtopaWeb
                         int i = Int32.Parse(dataValue.ToString());
                         lbl.Text = Language.getstring(DataConnector.rentableTypes.Split(';')[i],language);
                     }
-                    catch (Exception exc)
+                    catch{}
+                }
+            }
+            else if (data[1].Equals("DateType"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value){
+                    try
+                    {
+                        DateTime d = (DateTime)dataValue;
+                        lbl.Text = d.ToShortDateString();
+                    }
+                    catch
                     {
                     }
+                }
+            }
+            else if (data[1].Equals("CountryType"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    try
+                    {
+                        
+                    }
+                    catch{}
                 }
             }
         }

@@ -26,8 +26,8 @@ namespace KohtopaWeb
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            Person p = DataConnector.getPerson(txtUsername.Text);
-            if (p.Password.Equals(txtPassword.Text))
+            Person p = DataConnector.getPerson(txtUsername.Text);            
+            if (p != null && p.Password.Equals(txtPassword.Text))
             {
                 Session["user"] = p;
                 FormsAuthentication.RedirectFromLoginPage("Renter", false);

@@ -14,14 +14,18 @@ using System.Data.OleDb;
 namespace KohtopaWeb
 {
     public class DataConnector
-    {
+    {        
         private static string username = "system";
-        private static string password = "admin";
-        private static string databaseName = "XE";        
+        private static string password = "e=mc**2";
+        private static string databaseName = "kohtopa";        
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + username + ";Password=" + password + ";";        
-        public static string rentableTypes = "Room;Appartment;House";
-
-        private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.area, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.street from rentables r join buildings b on b.buildingid = r.buildingid join addresses a on b.addressid = a.addressid";
+        public static string rentableTypes = "Room;Appartment;House";        
+        private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
+                                                    + "from rentables r "
+                                                    + "join buildings b on b.buildingid = r.buildingid "
+                                                    + "join addresses a on b.addressid = a.addressid "
+                                                    + "join contract c on c.rentableid = r.rentableid "
+                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";
         private static string getPersonIdSQL = "select personId from persons where username = ? and password = ?";
         private static string getPasswordSQL = "select password from persons where username = ?";
         private static string getPersonByUsernameSQL = "select * from persons where userName = ?";
@@ -118,7 +122,7 @@ namespace KohtopaWeb
             DataSet ds = new DataSet();
             da.Fill(ds);
             DataTable dt = ds.Tables[0];
-            if (dt.Rows.Count == 1)
+            if (dt.Rows.Count > 0)
             {
                 Person person = new Person();
                 DataRow dr = dt.Rows[0];
@@ -179,7 +183,7 @@ namespace KohtopaWeb
             p.Value = addressId;
             command.Parameters.Add(p);            
             OleDbDataAdapter da = new OleDbDataAdapter(command);
-            DataSet ds = new DataSet();
+            DataSet ds = new DataSet();            
             da.Fill(ds);
             DataTable dt = ds.Tables[0];
             if (dt.Rows.Count == 1)

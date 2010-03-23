@@ -237,7 +237,7 @@ namespace KohtopaWeb
                     gvRentables.DataBind();
                 }
                 else
-                {
+                {                    
                     gvRentables.DataSource = dv;
                     gvRentables.DataBind();
                 }
@@ -254,57 +254,120 @@ namespace KohtopaWeb
         {
             string language = "" + Session["Language"];
             gvRentables.Columns.Clear();
-                        
             Label lbl = new Label();
-            lbl.Text="DataBind:RentableType:Type";                        
+            lbl.Text = "DataBind:DateType:Free";
             TableCell tc = new TableCell();
-            tc.Controls.Add(lbl);            
+            tc.Controls.Add(lbl);
             TableRow tr = new TableRow();
             tr.Cells.Add(tc);
             Table table = new Table();
-            table.Rows.Add(tr);                        
-            GridViewTemplate gvt = new GridViewTemplate(table,language);
+            table.Rows.Add(tr);
+            GridViewTemplate gvt = new GridViewTemplate(table, language);
             TemplateField tf = new TemplateField();
+            tf.HeaderText = Language.getstring("FreeFrom",language);
+            tf.ItemTemplate = gvt;
+            gvRentables.Columns.Add(tf);
+
+            lbl = new Label();
+            lbl.Text="DataBind:RentableType:Type";                        
+            tc = new TableCell();
+            tc.Controls.Add(lbl);            
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Rows.Add(tr);                        
+            gvt = new GridViewTemplate(table,language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Type", language);
+            tf.ItemTemplate = gvt;            
+            gvRentables.Columns.Add(tf);
+
+            table = new Table();
+            tr = new TableRow();
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:Street";            
+            tc = new TableCell();
+            tc.Controls.Add(lbl);
+            lbl = new Label();
+            lbl.Text = " ";
+            tc.Controls.Add(lbl);
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:Street_Number";            
+            tc.Controls.Add(lbl);
+            tr.Cells.Add(tc);
+            table.Rows.Add(tr);
+            tr = new TableRow();            
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:ZipCode";
+            tc = new TableCell();            
+            tc.Controls.Add(lbl);
+            lbl = new Label();
+            lbl.Text = " ";
+            tc.Controls.Add(lbl);
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:City";            
+            tc.Controls.Add(lbl);
+            tr.Cells.Add(tc);
+            table.Rows.Add(tr);
+            tr = new TableRow();
+            lbl = new Label();
+            lbl.Text = "DataBind:CountryType:Country";
+            tc = new TableCell();
+            tc.Controls.Add(lbl);
+            tr.Cells.Add(tc);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
             tf.HeaderText = Language.getstring("Type", language);
             tf.ItemTemplate = gvt;
-            gvRentables.Columns.Add(tf);           
+            gvRentables.Columns.Add(tf);
+
+            /*
             BoundField bf = new BoundField();
             bf.DataField = "Street";
             bf.HeaderText = Language.getstring("Street", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Street_number";
             bf.HeaderText = Language.getstring("Street_number", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Zipcode";
             bf.HeaderText = Language.getstring("Zipcode", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "City";
             bf.HeaderText = Language.getstring("City", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Price";
             bf.HeaderText = Language.getstring("Price", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Internet";
             bf.HeaderText = Language.getstring("Internet", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Cable";
             bf.HeaderText = Language.getstring("Cable", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Floor";
             bf.HeaderText = Language.getstring("Floor", language);
             gvRentables.Columns.Add(bf);
+
             bf = new BoundField();
             bf.DataField = "Area";
             bf.HeaderText = Language.getstring("Area", language);
             gvRentables.Columns.Add(bf);
-            bf = new BoundField();                        
+            */ 
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
@@ -315,6 +378,17 @@ namespace KohtopaWeb
                 searchTable.Rows[((GridViewDeleteEventArgs)e).RowIndex].Delete();
             }
             updateFilterView();
+        }
+
+        protected void gvRentables_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvRentables.PageIndex = e.NewPageIndex;
+            updateFilterView();
+        }
+
+        protected void gvRentables_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            
         }
         
     }

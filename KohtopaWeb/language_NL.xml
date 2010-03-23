@@ -44,4 +44,5 @@
     <entry name="Send">Verzenden</entry>
     <entry name="MessageSendSucceeded">Het bericht is verzonden.</entry>
     <entry name="MessageSendFailed">Het bericht kon niet verzonden worden</entry>
+    <entry name="FreeFrom">Vrij vanaf</entry>
 </Language>
