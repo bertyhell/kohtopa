@@ -17,7 +17,7 @@ namespace KohtopaWeb
         protected void Application_Start(object sender, EventArgs e)
         {
             Language.read();
-            SmtpMail.SmtpServer = "smtp.scarlet.be";
+            SmtpMail.SmtpServer = "mail-out.hogent.be";
         }
 
         protected void Session_Start(object sender, EventArgs e)

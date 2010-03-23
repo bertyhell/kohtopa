@@ -44,4 +44,5 @@
     <entry name="Send">Send</entry>
     <entry name="MessageSendSucceeded">The message has been sent</entry>
     <entry name="MessageSendFailed">The message could not been sent</entry>
+    <entry name="FreeFrom">Free from</entry>
 </Language>
