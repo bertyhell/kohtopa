@@ -187,7 +187,7 @@ public class DataConnector {
                     String sender = rsMessages.getString(3)+" "+rsMessages.getString(4);
                     String dateSent = DateFormat.getDateInstance().format(rsMessages.getDate(5))+" "+
                             DateFormat.getTimeInstance().format(rsMessages.getTime(5));
-                    boolean read = rsMessages.getBoolean(6);
+                    String read = rsMessages.getString(6);
                     int recipient = rsMessages.getInt(7);
                     // int recipient, String sender, String subject, String date, String text, boolean read)
 

@@ -8,6 +8,7 @@ import gui.AddRemoveTab.AbstractListPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import model.data.Message;
@@ -30,6 +31,7 @@ public class MessageCellRenderer implements ListCellRenderer {
 				p.setBgColor(new Color(170, 170, 170));
 			}
 		}
+                p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		return p;
 	}
 }

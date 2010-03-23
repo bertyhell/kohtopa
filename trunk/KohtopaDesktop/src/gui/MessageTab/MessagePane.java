@@ -63,7 +63,7 @@ public class MessagePane extends JPanel {
                 if(list.getSelectedValue() != null) {
                     Message m = (Message)list.getSelectedValue();
                     text.setText(m.getText());
-                    m.setRead(true);
+                    m.setRead("1");
                 }
 
             }
@@ -93,9 +93,10 @@ public class MessagePane extends JPanel {
 
         // make splitpane, set resizeweight to 20% left
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftpane, rightpane);
-        splitpane.setResizeWeight(0.2);
         splitpane.setDividerSize(5);
-        splitpane.setDividerLocation(200);
+        splitpane.setResizeWeight(0.2);
+        splitpane.setDividerLocation(350);
+        //splitpane.setDividerLocation();
 
 
 
