@@ -1,8 +1,10 @@
 package model.data;
 
+import Language.Language;
+
 public class Rentable {
 
-	private int Id;
+	private int id;
 	private String type;
 	private int area;
 	private String windowsDirection;
@@ -14,26 +16,23 @@ public class Rentable {
 	private boolean rented;
 	private double price;
 
-	public Rentable(int rantableId, String type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price) {
-		this.Id = rantableId;
-		this.type = type;
+	public Rentable(int id, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price) {
+		this(id,type, floor);
 		this.area = area;
 		this.windowsDirection = windowsDirection;
 		this.windowArea = windowArea;
 		this.internet = internet;
 		this.cable = cable;
 		this.outletCount = outletCount;
-		this.floor = floor;
 		this.rented = rented;
 		this.price = price;
 	}
 
-	public Rentable(int rentableId, int floor) {
-		this.Id = rentableId;
+	public Rentable(int rentableId, int type, int floor) {
+		this.id = rentableId;
+		this.type = Language.getString("rentableType" + type);
 		this.floor = floor;
 	}
-
-
 
 	public int getArea() {
 		return area;
@@ -60,7 +59,7 @@ public class Rentable {
 	}
 
 	public int getId() {
-		return Id;
+		return id;
 	}
 
 	public boolean isRented() {
@@ -81,6 +80,6 @@ public class Rentable {
 
 	@Override
 	public String toString() {
-		return Integer.toString(Id); //TODO add name for rentable, return it here
+		return Integer.toString(id); //TODO add name for rentable, return it here
 	}
 }

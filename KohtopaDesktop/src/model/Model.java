@@ -1,5 +1,6 @@
 package model;
 
+import gui.Main;
 import model.data.Building;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
@@ -13,21 +14,24 @@ public class Model {
 
 	//this class is used to seperate betwean database and gui in case of change
 	//and it will also be used to cach certain data (like images and the global list of buildings
-
 	private static Model instance = new Model();
 
-	public static Model getInstance(){
+	public static Model getInstance() {
 		return instance;
 	}
 
 	private Model() {
 	}
-	
-	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException{
+
+	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException {
 		return DataConnector.selectBuildingPreviews();
 	}
 
-	public void addDummyPictures(){
+	public ArrayList<Rentable> getRentablePreviews(int buildingId) throws SQLException, IOException {
+		return DataConnector.getRentablesFromBuilding(buildingId);
+	}
+
+	public void addDummyPictures() {
 		DataConnector.addDummyPictures();
 	}
 
@@ -35,11 +39,11 @@ public class Model {
 		return DataConnector.getPictures(buildingId, isBuilding);
 	}
 
-	public Building getBuilding(int buildingId) throws SQLException{
-	    return DataConnector.getBuilding(buildingId);
+	public Building getBuilding(int buildingId) throws SQLException {
+		return DataConnector.getBuilding(buildingId);
 	}
 
-	public ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
+	public ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException {
 		return DataConnector.getRentablesFromBuilding(buildingId);
 	}
 

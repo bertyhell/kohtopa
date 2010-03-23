@@ -243,6 +243,7 @@ public class DataConnector {
 				while (rs.next()) {
 					rentables.add(new Rentable(
 						rs.getInt(DataBaseConstants.rentableId),
+						rs.getInt(DataBaseConstants.rentableType),
 						rs.getInt(DataBaseConstants.floor)));
 				}
 			} finally {
@@ -266,7 +267,7 @@ public class DataConnector {
 				while (rs.next()) {
 					rentable = new Rentable(
 						rentableId,
-						rs.getString(DataBaseConstants.rentableType),
+						rs.getInt(DataBaseConstants.rentableType),
 						rs.getInt(DataBaseConstants.rentableArea),
 						rs.getString(DataBaseConstants.windowDirection),
 						rs.getInt(DataBaseConstants.windowsArea),
