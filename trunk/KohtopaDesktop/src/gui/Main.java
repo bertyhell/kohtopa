@@ -2,7 +2,6 @@ package gui;
 
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
-//TODO when database not availible, make sure program doesn't crash
 import Language.Language;
 import gui.MessageTab.MessagePane;
 import gui.actions.*;
@@ -10,47 +9,52 @@ import gui.AddRemoveTab.BuildingCellRenderer;
 import gui.AddRemoveTab.BuildingDialog;
 import gui.AddRemoveTab.PanelListModel;
 import gui.AddRemoveTab.BuildingListPanel;
+import gui.AddRemoveTab.RentableCellRenderer;
+import gui.AddRemoveTab.RentableListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import model.data.Building;
 import model.Model;
+import model.data.Rentable;
 
 public class Main extends JFrame {
 
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
 	public final static boolean disableBtnText = true;
-	private JList listBuildings;
-	private JList listRentables;
+	private JList lstBuildings;
+	private JList lstRentables;
 	private ArrayList<Building> buildingPreviews;
+	private ArrayList<Rentable> rentablePreviews;
+	private PanelListModel lmBuilding;
+	private PanelListModel lmRentable;
 	private static int buildingIndex;
+	private static int rentableIndex;
 
 	public static Main getInstance() {
 		return instance;
 	}
+	private JPanel pnlMessages;
+	private final JTabbedPane tabbed;
 
 	private Main() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception ex) {
+			System.out.println("");
 			JOptionPane.showMessageDialog(this, "Look and Feel not found, make sure you have latest java version\n" + ex.getMessage(), "Look and Feel not found", JOptionPane.ERROR_MESSAGE);
 		}
 		Language.read(); //reads strings in specific language from xml file
 		setTitle(Language.getString("titleJFrameDesktopMain"));
-
-
-		//splashscreen
-		SplashConnect.showSplash();
 
 		//actions
 		actions = new HashMap<String, Action>();
@@ -80,43 +84,39 @@ public class Main extends JFrame {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(370, 300));
 		this.setLayout(new BorderLayout());
-		JTabbedPane tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+		tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
+
+		//fetchaddremove
+
+
 		this.add(tabbed, BorderLayout.CENTER);
-		try {
-			//adding Add/Remove panel
-			tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
+		//adding Add/Remove panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 
-			tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
 
-			//adding Calendar panel
-			tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
-			tabbed.setMnemonicAt(1, KeyEvent.VK_C);
+		//adding Calendar panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
+		tabbed.setMnemonicAt(1, KeyEvent.VK_C);
 
-			//adding Messages panel
-			tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/messages_64.png")), createMessagesPanel(), Language.getString("descriptionMesssages"));
-			tabbed.setMnemonicAt(2, KeyEvent.VK_M);
+		//adding Messages panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/messages_64.png")), createMessagesPanel(), Language.getString("descriptionMesssages"));
+		tabbed.setMnemonicAt(2, KeyEvent.VK_M);
 
-			//adding Invoices panel
-			tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createInvoicesPanel(), Language.getString("descriptionInvoices"));
-			tabbed.setMnemonicAt(3, KeyEvent.VK_I);
+		//adding Invoices panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createInvoicesPanel(), Language.getString("descriptionInvoices"));
+		tabbed.setMnemonicAt(3, KeyEvent.VK_I);
 
-			//adding Settings Panel
-			tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
-			tabbed.setMnemonicAt(4, KeyEvent.VK_S);
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-			System.exit(1); //fatal error
-		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(instance, Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), Language.getString("errImagesFetchFailTitle"), JOptionPane.ERROR_MESSAGE);
-			System.exit(1); //fatal error
-		}
+		//adding Settings Panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
+		tabbed.setMnemonicAt(4, KeyEvent.VK_S);
+
 
 		pack();
 		this.setLocationRelativeTo(null);
-		SplashConnect.hideSplash();
 	}
 
-	private JPanel createAddRemovePanel() throws SQLException, IOException {
+	private JPanel createAddRemovePanel() {
 		//Add / Remove tab
 		JPanel pnlAddRemove = new JPanel();
 		pnlAddRemove.setLayout(new BorderLayout());
@@ -160,66 +160,72 @@ public class Main extends JFrame {
 
 
 		//building preview list
-		PanelListModel lmBuilding = new PanelListModel();
-		listBuildings = new JList(lmBuilding);
-		listBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		listBuildings.setBackground(new Color(217, 217, 217));
-		listBuildings.setCellRenderer(new BuildingCellRenderer());
+		lmBuilding = new PanelListModel();
+		lstBuildings = new JList();
+		lstBuildings.setBackground(Color.red);
+		lstBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstBuildings.setBackground(new Color(217, 217, 217));
+		lstBuildings.setCellRenderer(new BuildingCellRenderer());
 
-		buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
-
-		for (Building building : buildingPreviews) {
-			lmBuilding.add(new BuildingListPanel(
-					building.getId(),
-					building.getPreviewImage(),
-					building.getStreet() + " " + building.getNumber(),
-					building.getZipcode(),
-					building.getCity()));
-		}
-
-		scrolBuilding.setViewportView(listBuildings);
-		listBuildings.addMouseListener(new MouseAdapter() {
+		scrolBuilding.setViewportView(lstBuildings);
+		lstBuildings.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int index = listBuildings.locationToIndex(e.getPoint());
+				int index = lstBuildings.locationToIndex(e.getPoint());
 				if (e.getClickCount() == 1) {
-					//TODO show rentables in list next to buildings
+					try {
+						rentablePreviews = Model.getInstance().getRentablePreviews(buildingPreviews.get(index).getId());
+					} catch (Exception ex) {
+						//FIXME exception opsplitsen, translation messages
+						JOptionPane.showMessageDialog(instance, "Couldn't connect to database\n" + ex.getMessage(), "connection failed", JOptionPane.ERROR_MESSAGE);
+					}
+					lmRentable.clear();
+					for (Rentable rentable : rentablePreviews) {
+						lmRentable.addElement(new RentableListPanel(
+								rentable.getId(), null, rentable.getType(), rentable.getFloor()));
+					}
+					lstRentables.setModel(lmRentable);
+					System.out.println("rentables updated");
 				} else {
+					//open building dialog
 					BuildingDialog.show(instance, buildingPreviews.get(index).getId(), false);
 				}
 			}
 		});
 		buildingIndex = -1; //none selected
-		listBuildings.addMouseMotionListener(new MouseMotionAdapter() {
+		lstBuildings.addMouseMotionListener(new MouseMotionAdapter() {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				int index = listBuildings.locationToIndex(e.getPoint());
+				int index = lstBuildings.locationToIndex(e.getPoint());
 				if (index != buildingIndex) {
 					buildingIndex = index;
-					listBuildings.repaint();
+					lstBuildings.repaint();
 				}
 			}
 		});
 
 
 		//Rentable preview list
-		PanelListModel lmRentable = new PanelListModel();
-		listRentables = new JList(lmRentable);
-		listRentables.setBackground(new Color(217, 217, 217));
-		listRentables.setCellRenderer(new BuildingCellRenderer());
-		listRentables.addMouseMotionListener(new MouseMotionAdapter() {
+		lmRentable = new PanelListModel();
+		lstRentables = new JList(lmRentable);
+		lstRentables.setBackground(Color.red);
+		//listRentables.setBackground(new Color(217, 217, 217));
+		lstRentables.setCellRenderer(new RentableCellRenderer());
+		lstRentables.addMouseMotionListener(new MouseMotionAdapter() {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				int index = listRentables.locationToIndex(e.getPoint());
-				if (index != buildingIndex) {
-					buildingIndex = index;
-					listBuildings.repaint();
+				int index = lstRentables.locationToIndex(e.getPoint());
+				if (index != rentableIndex) {
+					rentableIndex = index;
+					lstRentables.repaint();
 				}
 			}
 		});
+
+		rentableIndex = -1; //none selected
 		splitter.setPreferredSize(new Dimension(1000, 600));
 		pnlAddRemove.add(splitter, BorderLayout.CENTER);
 
@@ -255,7 +261,7 @@ public class Main extends JFrame {
 
 	private JPanel createMessagesPanel() {
 		//Messages tab
-		JPanel pnlMessages = new JPanel();
+		pnlMessages = new JPanel();
 		pnlMessages.setLayout(new BorderLayout());
 
 		JPanel pnlButtonsMessage = new JPanel();
@@ -271,15 +277,6 @@ public class Main extends JFrame {
 		JButton btnRemoveMessage = new JButton(actions.get("messageRemove"));
 		btnRemoveMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnRemoveMessage);
-
-		//replace by plugin messagepanel by jelle:
-		MessagePane pnlMessagesInfo = new MessagePane();
-
-
-
-
-		pnlMessagesInfo.setPreferredSize(new Dimension(500, 600));
-		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 
 		return pnlMessages;
 	}
@@ -328,19 +325,91 @@ public class Main extends JFrame {
 		return buildingIndex;
 	}
 
+	public static int getRentableIndex() {
+		return rentableIndex;
+	}
+
 	public JList getListBuildings() {
-		return listBuildings;
+		return lstBuildings;
 	}
 
 	public JList getListRentables() {
-		return listRentables;
+		return lstRentables;
+	}
+
+	public boolean fetchDatabaseInformation() {
+		tabbed.addChangeListener(new ChangeListener() {
+
+			public void stateChanged(ChangeEvent e) {
+				int tab = tabbed.getSelectedIndex();
+				if (tab == 0) {
+					System.out.println("fetching buildings");
+					fetchAddRemove();
+				} else if (tab == 2) {
+					fetchMessages();
+				}
+				System.out.println("Tab=" + tabbed.getSelectedIndex());
+				//add fetch methods
+			}
+		});
+		return fetchAddRemove();
+	}
+
+	public boolean fetchAddRemove() {
+		try {
+			buildingPreviews = Model.getInstance().getBuildingPreviews(instance);
+
+			lmBuilding.clear();
+			for (Building building : buildingPreviews) {
+				lmBuilding.addElement(new BuildingListPanel(
+						building.getId(),
+						building.getPreviewImage(),
+						building.getStreet() + " " + building.getNumber(),
+						building.getZipcode(),
+						building.getCity()));
+			}
+			lstBuildings.setModel(lmBuilding);
+			return true;
+		} catch (SQLException ex) {
+			System.out.println("fetch failed(listener)");
+			JOptionPane.showMessageDialog(instance, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+			//TODO add connection string settings
+
+			return false;
+		} catch (IOException ex) {
+			System.out.println("fetch failed io (listener)");
+			JOptionPane.showMessageDialog(instance, Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), Language.getString("errImagesFetchFailTitle"), JOptionPane.ERROR_MESSAGE);
+			//TODO add connection string settings
+
+			return false;
+		}
+	}
+
+	public void fetchMessages() {
+		//plugin messagepanel by jelle:
+		MessagePane pnlMessagesInfo = new MessagePane();
+
+		pnlMessagesInfo.setPreferredSize(new Dimension(500, 600));
+		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 	}
 
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
+				System.out.println("start construction");
 				instance.setVisible(true);
+				System.out.println("end const. show splash");
+				SplashConnect.showSplash();
+				System.out.println("start database connection");
+				//TODO change to while with possibility to abort
+				while (!instance.fetchDatabaseInformation()) {
+					//database connection failed
+					//TODO show connection string dialog
+					JOptionPane.showMessageDialog(instance, "here comes connection string dialog", "connection", JOptionPane.INFORMATION_MESSAGE);
+				}
+				System.out.println("finich database, hide splash");
+				SplashConnect.hideSplash();
 			}
 		});
 	}
