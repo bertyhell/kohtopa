@@ -124,7 +124,7 @@ for(1..$nostreets) {
 
    #print "INSERT INTO addresses(addressid, street_number, street, zipcode, city, country) VALUES (1,$nr,$street,$zipcode, $city, Belgie)";
    #if(defined $street && $street != '' ) {
-      $asth->execute(1,$nr,$street,$zipcode, $city, "Belgie");
+      $asth->execute(1,$nr,$street,$zipcode, $city, "BE");
    #}
    
 }
@@ -219,7 +219,7 @@ for(@rentables) {
          next;
    }
    # insert address
-   $asth->execute(1,$_->[4],$_->[0],$zipcodes{$_->[1]}, $_->[1] , "Belgie");
+   $asth->execute(1,$_->[4],$_->[0],$zipcodes{$_->[1]}, $_->[1] , "BE");
    
    # get id of address
    $getaddress->execute($_->[0]);
