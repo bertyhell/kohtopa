@@ -11,15 +11,19 @@ public class PanelListModel extends AbstractListModel {
 	public PanelListModel() {
 	}
 
-	public void add(AbstractListPanel b){
-		items.add(b);
-	}
-
 	public int getSize() {
 		return items.size();
 	}
 
 	public Object getElementAt(int index) {
 		return items.get(index);
+	}
+
+	public void clear() {
+		items = new ArrayList<AbstractListPanel>();
+	}
+
+	public void addElement(AbstractListPanel i) {
+		items.add(i);
 	}
 }

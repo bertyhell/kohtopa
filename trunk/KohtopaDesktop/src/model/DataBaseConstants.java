@@ -36,6 +36,7 @@ public class DataBaseConstants {
 	//buildings column labels
 	public static String buildingId = "buildingid";
 	//rentables column labels
+	public static String rentableId = "rentableid";
 	public static String rentableType = "type";
 	public static String rentableArea = "area";
 	public static String windowDirection = "window_direction";
@@ -61,7 +62,6 @@ public class DataBaseConstants {
 	public static String dateSent = "date_sent";
 	public static String text = "text";
 	public static String subject = "subject";
-	public static String rentableId = "rentableId";
 	public static String read = "message_read";
 	//contracts column labels
 	public static String ownerId = "ownerid";
@@ -78,7 +78,9 @@ public class DataBaseConstants {
 	public static String un = "system";
 	public static String pw = "admin";
 	public static String driver = "oracle.jdbc.OracleDriver";
-	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
@@ -111,7 +113,7 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentables
 			+ " WHERE " + rentableId + " = ?";
 
-	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor
+	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor  + "," + rentableType
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingId + " = ?"
 			+ " ORDER BY " + floor;
