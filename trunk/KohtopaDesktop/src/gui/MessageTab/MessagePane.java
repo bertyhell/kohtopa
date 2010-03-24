@@ -26,8 +26,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import model.DataConnector;
-import model.data.Message;
+import data.DataConnector;
+import data.entities.Message;
 
 /**
  * An implementation for a messagepane

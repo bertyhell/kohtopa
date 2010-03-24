@@ -1,4 +1,4 @@
-package model.data;
+package data.entities;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

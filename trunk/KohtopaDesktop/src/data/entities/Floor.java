@@ -1,4 +1,4 @@
-package model;
+package data.entities;
 
 import Language.Language;
 

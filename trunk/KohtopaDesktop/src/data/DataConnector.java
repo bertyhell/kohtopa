@@ -1,6 +1,6 @@
-package model;
+package data;
 
-import model.data.Building;
+import data.entities.Building;
 import gui.Main;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -20,8 +20,8 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import model.data.Message;
-import model.data.Rentable;
+import data.entities.Message;
+import data.entities.Rentable;
 
 public class DataConnector {
 	/* this class gets/puts data from/to database */

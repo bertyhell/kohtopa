@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import model.DataModel;
-import model.data.Rentable;
+import data.DataModel;
+import data.entities.Rentable;
 
 public class RentableCellRenderer implements ListCellRenderer {
 

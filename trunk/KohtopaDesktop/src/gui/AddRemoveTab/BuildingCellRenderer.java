@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import model.DataModel;
-import model.data.Building;
+import data.DataModel;
+import data.entities.Building;
 
 public class BuildingCellRenderer implements ListCellRenderer {
 
