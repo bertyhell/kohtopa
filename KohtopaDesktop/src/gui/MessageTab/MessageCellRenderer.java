@@ -11,7 +11,7 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import model.data.Message;
+import data.entities.Message;
 
 /**
  *

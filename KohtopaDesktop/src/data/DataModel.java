@@ -1,11 +1,10 @@
-package model;
+package data;
 
+import data.addremove.BuildingListModel;
+import data.addremove.RentableListModel;
 import Language.Language;
-import gui.AddRemoveTab.BuildingListModel;
-import gui.AddRemoveTab.RentableListModel;
-import gui.AddRemoveTab.RentableListPanel;
 import gui.Main;
-import model.data.Building;
+import data.entities.Building;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -13,15 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
-import model.data.Rentable;
+import data.entities.Rentable;
 
 public class DataModel {
 
 	//this class is used to seperate betwean database and gui in case of change
 	//and it will also be used to cach certain data (like images and the global list of buildings
 	//TODO add caching + options on timeout in settings
-	private ArrayList<Building> buildingPreviews;
-	private ArrayList<Rentable> rentablePreviews;
 	private BuildingListModel lmBuilding;
 	private RentableListModel lmRentable;
 	private static int buildingIndex;
@@ -33,8 +30,6 @@ public class DataModel {
 
 		lmBuilding = new BuildingListModel();
 		lmRentable = new RentableListModel();
-		buildingPreviews = new ArrayList<Building>();
-		rentablePreviews = new ArrayList<Rentable>();
 	}
 
 	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException {
@@ -73,10 +68,6 @@ public class DataModel {
 		DataModel.buildingIndex = buildingIndex;
 	}
 
-	public void setBuildingPreviews(ArrayList<Building> buildingPreviews) {
-		this.buildingPreviews = buildingPreviews;
-	}
-
 	public BuildingListModel getLmBuilding() {
 		return lmBuilding;
 	}
@@ -85,26 +76,17 @@ public class DataModel {
 		return lmRentable;
 	}
 
-	public ArrayList<Rentable> getRentablePreviews() {
-		return rentablePreviews;
-	}
-
-	public void setRentablePreviews(ArrayList<Rentable> rentablePreviews) {
-		this.rentablePreviews = rentablePreviews;
-	}
-
 	public RentableListModel updateRentables(int buildingIndex) throws IOException, SQLException {
-		rentablePreviews = getRentablePreviews(buildingPreviews.get(buildingIndex).getId());
-		lmRentable.setData(rentablePreviews);
+		lmRentable.updateItems(buildingIndex);
 		return lmRentable;
 	}
 
 	public int getSelectedBuildingId() {
-		return buildingPreviews.get(buildingIndex).getId();
+		return lmBuilding.getElementAt(buildingIndex).getId();
 	}
 
 	public int getSelectedRentableId() {
-		return rentablePreviews.get(rentableIndex).getId();
+		return lmRentable.getElementAt(rentableIndex).getId();
 	}
 
 	public boolean mouseOver(int index, boolean isBuilding) {
@@ -127,9 +109,8 @@ public class DataModel {
 
 	public boolean fetchAddRemove() {
 		try {
-			buildingPreviews = DataConnector.selectBuildingPreviews();
-			//lmBuilding.setData(buildingPreviews);
-
+			System.out.println("fetching buildings");
+			lmBuilding.updateItems();
 			return true;
 		} catch (SQLException ex) {
 			System.out.println("fetch failed(listener)");

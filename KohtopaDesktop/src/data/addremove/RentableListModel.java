@@ -1,8 +1,11 @@
-package gui.AddRemoveTab;
+package data.addremove;
 
+import data.DataConnector;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.AbstractListModel;
-import model.data.Rentable;
+import data.entities.Rentable;
 
 public class RentableListModel extends AbstractListModel{
 
@@ -25,8 +28,8 @@ public class RentableListModel extends AbstractListModel{
 		items.add(Rentable);
 	}
 
-	public void setData(ArrayList<Rentable> items) {
-		this.items = items;
+	public void updateItems(int buildingId) throws SQLException, IOException{
+		items = DataConnector.getRentablesFromBuilding(buildingId);
 	}
 
 }

@@ -1,5 +1,6 @@
 package gui.AddRemoveTab;
 
+import data.addremove.PicturesListModel;
 import Language.Language;
 import Resources.RelativeLayout;
 import gui.Layout;
@@ -16,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.sql.SQLException;
 import java.util.HashMap;
 import javax.swing.*;
-import model.data.Rentable;
+import data.entities.Rentable;
 
 public class RentableDialog extends JDialog {
 

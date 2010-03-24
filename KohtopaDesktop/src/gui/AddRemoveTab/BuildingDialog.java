@@ -1,5 +1,6 @@
 package gui.AddRemoveTab;
 
+import data.addremove.PicturesListModel;
 import Language.CountryNotFoundException;
 import Language.Language;
 import Resources.RelativeLayout;
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 import javax.swing.*;
-import model.Floor;
-import model.data.Building;
-import model.data.Rentable;
+import data.entities.Floor;
+import data.entities.Building;
+import data.entities.Rentable;
 
 public class BuildingDialog extends JDialog {
 

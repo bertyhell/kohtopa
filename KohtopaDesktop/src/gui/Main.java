@@ -17,7 +17,7 @@ import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import model.DataModel;
+import data.DataModel;
 
 public class Main extends JFrame {
 
