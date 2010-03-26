@@ -234,7 +234,6 @@ public class DataConnector {
 	}
 
 	public static ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
-            System.out.println("rentable getting from database, buildingid: " + buildingId);
 	    ArrayList<Rentable> rentables = new ArrayList<Rentable>();
 		try {
 			Connection conn = geefVerbinding();
@@ -243,7 +242,6 @@ public class DataConnector {
 				ps.setInt(1, buildingId);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
-                                    System.out.println("getting rentable");
 					rentables.add(new Rentable(
 						rs.getInt(DataBaseConstants.rentableId),
 						rs.getInt(DataBaseConstants.rentableType),
@@ -268,6 +266,7 @@ public class DataConnector {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentable);
 				ps.setInt(1, rentableId);
 				ResultSet rs = ps.executeQuery();
+				   System.out.println("command: " + DataBaseConstants.selectRentable);
 				while (rs.next()) {
 					rentable = new Rentable(
 						rentableId,
@@ -288,7 +287,7 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			throw new SQLException("error in getBuilding: " + ex);
+			throw new SQLException("error in getRentable: " + ex);
 		}
 		return rentable;
 	}

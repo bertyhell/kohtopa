@@ -109,6 +109,7 @@ public class DataBaseConstants {
 			+ "," + outletCount
 			+ "," + floor
 			+ "," + price
+			+ "," + rentableDescription
 			+ " FROM " + tableRentables
 			+ " WHERE " + rentableId + " = ?";
 
