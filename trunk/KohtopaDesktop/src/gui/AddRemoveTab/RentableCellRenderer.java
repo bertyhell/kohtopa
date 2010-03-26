@@ -10,14 +10,14 @@ import data.entities.Rentable;
 public class RentableCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		//TODO split so it converts building to panelbuildinglist
 
 		Rentable rentable = (Rentable)list.getModel().getElementAt(index);
 		RentableListPanel pnlRentable = new RentableListPanel(
 				rentable.getId(),
 				rentable.getType(),
 				null,
-				rentable.getFloor());
+				rentable.getFloor(),
+				rentable.getDescription());
 		if (index != DataModel.getBuildingIndex()) {
 			if (index % 2 == 0) {
 				pnlRentable.setBgColor(Color.LIGHT_GRAY);

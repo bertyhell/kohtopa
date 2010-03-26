@@ -5,27 +5,18 @@
 package gui.MessageTab;
 
 import Language.Language;
-import gui.AddRemoveTab.AbstractListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.Vector;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import data.DataConnector;
 import data.entities.Message;
 
@@ -38,7 +29,6 @@ public class MessagePane extends JPanel {
     private JSplitPane splitpane;
     private JScrollPane leftpane;
     private JScrollPane rightpane;
-    private JPanel toolbar;
     private Vector<String> messages;
     private JList list;
     private JTextArea text;

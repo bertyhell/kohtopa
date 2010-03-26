@@ -1,11 +1,11 @@
 package gui;
 
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-public class SplashConnect extends JFrame {
+public class SplashConnect extends JDialog {
 
 	public static SplashConnect instance = new SplashConnect();
 
@@ -18,8 +18,7 @@ public class SplashConnect extends JFrame {
 	}
 
     private SplashConnect() {
-        super("");
-
+		super(Main.getInstance(), "", false);
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 		this.setUndecorated(true);
         setSize(200, 200);

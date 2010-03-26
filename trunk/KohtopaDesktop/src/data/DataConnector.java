@@ -24,7 +24,7 @@ import data.entities.Message;
 import data.entities.Rentable;
 
 public class DataConnector {
-	/* this class gets/puts data from/to database */
+	/* this class gets/puts data from/to database + caches information (rentables, buildings) */
 
 	private static DataConnector instance = new DataConnector();
 
@@ -234,6 +234,7 @@ public class DataConnector {
 	}
 
 	public static ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException{
+            System.out.println("rentable getting from database, buildingid: " + buildingId);
 	    ArrayList<Rentable> rentables = new ArrayList<Rentable>();
 		try {
 			Connection conn = geefVerbinding();
@@ -242,10 +243,12 @@ public class DataConnector {
 				ps.setInt(1, buildingId);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
+                                    System.out.println("getting rentable");
 					rentables.add(new Rentable(
 						rs.getInt(DataBaseConstants.rentableId),
 						rs.getInt(DataBaseConstants.rentableType),
-						rs.getInt(DataBaseConstants.floor)));
+						rs.getInt(DataBaseConstants.floor),
+						rs.getString(DataBaseConstants.rentableDescription)));
 				}
 			} finally {
 				conn.close();
@@ -277,7 +280,8 @@ public class DataConnector {
 						rs.getInt(DataBaseConstants.outletCount),
 						rs.getInt(DataBaseConstants.floor),
 						false,
-						rs.getDouble(DataBaseConstants.price));
+						rs.getDouble(DataBaseConstants.price),
+						rs.getString(DataBaseConstants.rentableDescription));
 				}
 
 			} finally {
