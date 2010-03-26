@@ -31,7 +31,7 @@
     <entry name="Street_number">Street Number</entry>
     <entry name="Zipcode">Zipcode</entry>
     <entry name="City">City</entry>
-    <entry name="Cable">Cable</entry>
+    <entry name="Cable">Cable(TV)</entry>
     <entry name="Floor">Floor</entry>
     <entry name="Room">Room</entry>
     <entry name="Appartment">Appartement</entry>
@@ -45,4 +45,6 @@
     <entry name="MessageSendSucceeded">The message has been sent</entry>
     <entry name="MessageSendFailed">The message could not been sent</entry>
     <entry name="FreeFrom">Free from</entry>
+    <entry name="Address">Address</entry>
+    <entry name="OutletCount">Outlet count</entry>
 </Language>

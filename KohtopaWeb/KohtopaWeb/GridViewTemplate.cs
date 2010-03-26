@@ -26,10 +26,12 @@ namespace KohtopaWeb
         void ITemplate.InstantiateIn(System.Web.UI.Control container)
         {
             Table tbl = new Table();
+            tbl.Width = table.Width;
             container.Controls.Add(tbl);
             foreach (TableRow tr in table.Rows)
             {
                 TableRow tblr = new TableRow();
+                tblr.HorizontalAlign = tr.HorizontalAlign;
                 tbl.Rows.Add(tblr);
                 foreach (TableCell tc in tr.Cells)
                 {
@@ -233,11 +235,36 @@ namespace KohtopaWeb
                 {
                     try
                     {
-                        
+                        RegionInfo ri = new RegionInfo("" + dataValue);
+                        lbl.Text = ri.NativeName;
                     }
                     catch{}
                 }
             }
+            else if (data[1].Equals("Currency"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    try
+                    {
+                        lbl.Text = "€ " + dataValue;
+                    }
+                    catch { }
+                }
+            }
+            else if (data[1].Equals("Area"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    try
+                    {
+                        lbl.Text = "" + dataValue + " m²";
+                    }
+                    catch { }
+                }
+            }            
         }
 
         void txt_DataBinding(object sender, EventArgs e)
@@ -266,6 +293,21 @@ namespace KohtopaWeb
                 if (dataValue != DBNull.Value)
                 {
                     img.ImageUrl = dataValue.ToString();                    
+                }
+            }
+            if (data[1].Equals("Boolean"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    if (("" + dataValue).Equals("0"))
+                    {                        
+                        img.ImageUrl = "Images/cancel.png";
+                    }
+                    else
+                    {
+                        img.ImageUrl = "Images/ok.png";
+                    }                    
                 }
             }
         }

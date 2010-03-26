@@ -56,8 +56,7 @@ namespace KohtopaWeb
                         reader.Close();
                     }                    
                 }
-                catch (Exception e)
-                {}
+                catch {}
             }
         }
 
@@ -107,7 +106,7 @@ namespace KohtopaWeb
                     writer.Close();
                 }
             }
-            catch (Exception exc){}
+            catch {}
         }
 
         private static void readLanguages()
@@ -140,8 +139,7 @@ namespace KohtopaWeb
                     reader.Close();
                 }
             }
-            catch (Exception e)
-            { }            
+            catch {}            
         }
 
         public static DataTable getLanguages()
