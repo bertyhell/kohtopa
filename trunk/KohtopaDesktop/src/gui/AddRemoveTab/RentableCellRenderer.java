@@ -5,20 +5,25 @@ import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import data.DataModel;
+import data.addremove.RentableListModel;
 import data.entities.Rentable;
 
 public class RentableCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-		Rentable rentable = (Rentable)list.getModel().getElementAt(index);
+	    System.out.println("value item: " + value);
+	    System.out.println("jlist: " + list.getModel().getClass());
+	    System.out.println("index of item: " + index);
+		((RentableListModel)list.getModel()).printItems();
+		Rentable rentable = (Rentable)value;
 		RentableListPanel pnlRentable = new RentableListPanel(
 				rentable.getId(),
 				rentable.getType(),
 				null,
 				rentable.getFloor(),
 				rentable.getDescription());
-		if (index != DataModel.getBuildingIndex()) {
+		if (index != DataModel.getRentableIndex()) {
 			if (index % 2 == 0) {
 				pnlRentable.setBgColor(Color.LIGHT_GRAY);
 			} else {

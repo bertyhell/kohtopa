@@ -307,8 +307,6 @@ public class Main extends JFrame {
                     try {
                         //get rentables from the selected building
                         lstRentables.setModel(data.updateRentables(lstBuildings.locationToIndex(e.getPoint())));
-                        lstRentables.revalidate();
-			lstRentables.repaint();
                     } catch (Exception ex) {
                         //FIXME exception opsplitsen, translation messages
                         JOptionPane.showMessageDialog(instance, "Couldn't connect to database\n" + ex.getMessage(), "connection failed", JOptionPane.ERROR_MESSAGE);
@@ -336,7 +334,7 @@ public class Main extends JFrame {
         this.setVisible(true);
     }
 
-    public void updateLists() {
+    public void updateList() {
         lstBuildings.setModel(data.getLmBuilding());
     }
 
@@ -344,12 +342,9 @@ public class Main extends JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                //SplashConnect.showSplash();
-
-//				System.out.println("end const. show splash");
-//				System.out.println("start database connection");
-//
-//				SplashConnect.hideSplash();
+		//TODO show splash with different tread?
+//		SplashConnect.showSplash();
+//		SplashConnect.hideSplash();
 
                 //TODO change to while with possibility to abort
                 while (!data.fetchAddRemove()) {
@@ -358,7 +353,7 @@ public class Main extends JFrame {
                     JOptionPane.showMessageDialog(instance, "connecting", "connection", JOptionPane.INFORMATION_MESSAGE);
                 }
                 instance.init();
-                instance.updateLists();
+                instance.updateList();
             }
         });
     }

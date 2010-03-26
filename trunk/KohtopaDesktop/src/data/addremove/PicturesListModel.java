@@ -1,6 +1,5 @@
 package data.addremove;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 

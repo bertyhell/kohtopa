@@ -4,38 +4,38 @@ import data.DataConnector;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.AbstractListModel;
 import data.entities.Rentable;
+import javax.swing.DefaultListModel;
 
-public class RentableListModel extends AbstractListModel {
-
-    protected ArrayList<Rentable> items = new ArrayList<Rentable>();
-
-    public int getSize() {
-        return items.size();
-    }
-
-    public Rentable getElementAt(int index) {
-        return items.get(index);
-    }
-
-    public void clear() {
-        items.clear();
-    }
+public class RentableListModel extends DefaultListModel {
 
     public void addElement(Rentable Rentable) {
-        items.add(Rentable);
+        super.addElement(Rentable);
+    }
+
+    public Rentable getRentableAt(int index){
+	return (Rentable)super.getElementAt(index);
     }
 
     public void updateItems(int buildingId) throws SQLException, IOException {
-        items = DataConnector.getRentablesFromBuilding(buildingId);
-        System.out.println("rentables items: " + items.size());
+        ArrayList<Rentable> items = DataConnector.getRentablesFromBuilding(buildingId);
+	super.clear();
+	for (Rentable rentable : items) {
+	    super.addElement(rentable);
+	}
     }
 
     public void printItems() {
+	try{
         System.out.println("items:");
-        for (Rentable rentable : items) {
-            System.out.println("\t" + rentable.getId());
-        }
+	Rentable item = getRentableAt(0);
+	int tel = 1;
+	while(true){
+	    System.out.println("\t" + item.getId());
+	    item = getRentableAt(tel);
+	    tel++;
+	}
+	}catch(ArrayIndexOutOfBoundsException ex){
+	}
     }
 }
