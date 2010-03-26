@@ -45,6 +45,7 @@ public class DataBaseConstants {
 	public static String cable = "cable";
 	public static String floor = "floor";
 	public static String outletCount = "outlet_count";
+	public static String rentableDescription = "description";
 	//furniture column labels
 	public static String furnitureId = "furnitureId";
 	public static String furnitureName = "name";
@@ -111,7 +112,7 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentables
 			+ " WHERE " + rentableId + " = ?";
 
-	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor  + "," + rentableType
+	public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor  + "," + rentableType  + "," + rentableDescription
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingId + " = ?"
 			+ " ORDER BY " + floor;

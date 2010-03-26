@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 import data.entities.Building;
 
-public class BuildingListModel extends AbstractListModel{
+public class BuildingListModel extends AbstractListModel {
 
 
 	protected ArrayList<Building> items = new ArrayList<Building>();
@@ -31,5 +31,9 @@ public class BuildingListModel extends AbstractListModel{
 	public void updateItems() throws SQLException, IOException{
 		items = DataConnector.selectBuildingPreviews();
 	}
+
+    public int getId(int buildingIndex) {
+        return items.get(buildingIndex).getId();
+    }
 
 }
