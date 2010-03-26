@@ -64,6 +64,10 @@ public class DataModel {
         return buildingIndex;
     }
 
+    public static int getRentableIndex() {
+        return rentableIndex;
+    }
+
     public static void setBuildingIndex(int buildingIndex) {
         DataModel.buildingIndex = buildingIndex;
     }
@@ -86,7 +90,7 @@ public class DataModel {
     }
 
     public int getSelectedRentableId() {
-        return lmRentable.getElementAt(rentableIndex).getId();
+        return lmRentable.getRentableAt(rentableIndex).getId();
     }
 
     public boolean mouseOver(int index, boolean isBuilding) {
