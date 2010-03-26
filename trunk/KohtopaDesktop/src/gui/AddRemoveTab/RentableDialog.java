@@ -13,9 +13,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.sql.SQLException;
-import java.util.HashMap;
 import javax.swing.*;
 import data.entities.Rentable;
 
@@ -34,11 +32,11 @@ public class RentableDialog extends JDialog {
 	private JTextField txtPrice;
 	private JButton btnConfirm;
 
-	public static void show(JDialog owner, int rentableId, boolean newRentable) {
+	public static void show(int rentableId, boolean newRentable) {
 		if (instance == null) {
-			instance = new RentableDialog(owner);
+			instance = new RentableDialog();
 		}
-		instance.setLocationRelativeTo(owner);
+		instance.setLocationRelativeTo(null);
 		instance.setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 
 		instance.setBuildingId(rentableId);
@@ -46,8 +44,7 @@ public class RentableDialog extends JDialog {
 		instance.setVisible(true);
 	}
 
-	private RentableDialog(JDialog owner) {
-		super(owner);
+	private RentableDialog() {
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setModal(true);
 		this.setPreferredSize(new Dimension(500, 500));
@@ -68,15 +65,15 @@ public class RentableDialog extends JDialog {
 		listPictures.setBackground(new Color(217, 217, 217));
 		listPictures.setCellRenderer(new PictureCellRenderer());
 
-		HashMap<Integer, BufferedImage> rentablePictures = null;
-		try {
-			rentablePictures = Main.getDataObject().getPictures(rentableId, false); //TODO wss nog verkeerd, uitzoeken
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-		}
-		for (Integer id : rentablePictures.keySet()) {
-			listModelBuildingPictures.add(id, rentablePictures.get(id));
-		}
+//		HashMap<Integer, BufferedImage> rentablePictures = null;
+//		try {
+//			rentablePictures = Main.getDataObject().getPictures(rentableId, false); //TODO wss nog verkeerd, uitzoeken
+//		} catch (SQLException ex) {
+//			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+//		}
+//		for (Integer id : rentablePictures.keySet()) {
+//			listModelBuildingPictures.add(id, rentablePictures.get(id));
+//		}
 
 		//info
 		GridBagLayout gbl = new GridBagLayout();
@@ -240,7 +237,7 @@ public class RentableDialog extends JDialog {
 		pack();
 	}
 
-	public int getBuildingId() {
+	public int getRentableId() {
 		return rentableId;
 	}
 
@@ -265,7 +262,7 @@ public class RentableDialog extends JDialog {
 			try {
 				//fill building info
 				Rentable rentable = Main.getDataObject().getRentable(rentableId);
-				txtType.setText(Language.getString("rentableType" + rentable.getType()));
+				txtType.setText(rentable.getType());
 				txtArea.setText(Integer.toString(rentable.getArea()));
 				txtWindowDir.setText(rentable.getWindowsDirection());
 				txtWindowArea.setText(Integer.toString(rentable.getWindowArea()));

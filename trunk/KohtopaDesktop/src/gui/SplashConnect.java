@@ -9,6 +9,8 @@ public class SplashConnect extends JDialog {
 
 	public static SplashConnect instance = new SplashConnect();
 
+
+
 	public static void showSplash(){
 		instance.setVisible(true);
 	}

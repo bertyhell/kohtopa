@@ -72,6 +72,10 @@ public class DataModel {
         DataModel.buildingIndex = buildingIndex;
     }
 
+    public static void setRentableIndex(int index) {
+	DataModel.rentableIndex = index;
+    }
+
     public BuildingListModel getLmBuilding() {
         return lmBuilding;
     }
@@ -129,13 +133,5 @@ public class DataModel {
 
             return false;
         }
-    }
-
-    public void printNumberLines() {
-        System.out.println("aantal buildings: " + lmBuilding.getSize());
-    }
-
-    public void printRentables() {
-        lmRentable.printItems();
     }
 }

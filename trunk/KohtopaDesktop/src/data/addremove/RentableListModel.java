@@ -24,18 +24,4 @@ public class RentableListModel extends DefaultListModel {
 	    super.addElement(rentable);
 	}
     }
-
-    public void printItems() {
-	try{
-        System.out.println("items:");
-	Rentable item = getRentableAt(0);
-	int tel = 1;
-	while(true){
-	    System.out.println("\t" + item.getId());
-	    item = getRentableAt(tel);
-	    tel++;
-	}
-	}catch(ArrayIndexOutOfBoundsException ex){
-	}
-    }
 }

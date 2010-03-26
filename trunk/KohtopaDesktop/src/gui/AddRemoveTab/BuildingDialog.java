@@ -10,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
@@ -39,11 +38,11 @@ public class BuildingDialog extends JDialog {
 	private ArrayList<Rentable> rentables; //TODO put rentables in model (out of gui)
 	private JButton btnConfirm;
 
-	public static void show(Frame owner, int buildingId, boolean newBuilding) {
+	public static void show(int buildingId, boolean newBuilding) {
 		if (instance == null) {
-			instance = new BuildingDialog(owner);
+			instance = new BuildingDialog();
 		}
-		instance.setLocationRelativeTo(owner);
+		instance.setLocationRelativeTo(null);
 		instance.setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 
 		instance.setBuildingId(buildingId);
@@ -51,8 +50,7 @@ public class BuildingDialog extends JDialog {
 		instance.setVisible(true);
 	}
 
-	private BuildingDialog(Frame owner) {
-		super(owner);
+	private BuildingDialog() {
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setModal(true);
 		this.setPreferredSize(new Dimension(500, 500));
@@ -211,7 +209,7 @@ public class BuildingDialog extends JDialog {
 				if (e.getClickCount() == 1) {
 					//TODO show rentables in list next to buildings
 				} else {
-					RentableDialog.show(instance, rentables.get(index).getId(), false);
+					RentableDialog.show(rentables.get(index).getId(), false);
 				}
 			}
 		});
