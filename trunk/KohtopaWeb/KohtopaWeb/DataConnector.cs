@@ -15,10 +15,10 @@ namespace KohtopaWeb
 {
     public class DataConnector
     {        
-        private static string username = "system";
+        private static string usernameDB = "system";
         private static string password = "e=mc**2";
         private static string databaseName = "kohtopa";        
-        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + username + ";Password=" + password + ";";        
+        private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
         public static string rentableTypes = "Room;Appartment;House";        
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
                                                     + "from rentables r "
@@ -56,11 +56,11 @@ namespace KohtopaWeb
             return data;
         }
 
-        public static DataTable getRentables()
+        public static DataTable getRentables(string order)
         {
             OleDbConnection conn = getConnection();
             OleDbCommand command = conn.CreateCommand();            
-            OleDbDataAdapter da = new OleDbDataAdapter(getRentablesSQL, conn);
+            OleDbDataAdapter da = new OleDbDataAdapter(getRentablesSQL + " " + order, conn);
             DataSet ds = new DataSet();
             da.Fill(ds);            
             return ds.Tables[0];
@@ -135,7 +135,7 @@ namespace KohtopaWeb
                 person.PersonId = Int32.Parse("" + dr["personId"]);
                 person.RoleId = "" + dr["RoleId"];
                 person.Telephone = "" + dr["Telephone"];
-                person.Username = username;
+                person.Username = userName;
                 person.Rentable = getCurrentRentable(person.PersonId);
                 return person;
             }
@@ -328,7 +328,7 @@ namespace KohtopaWeb
                 command.ExecuteNonQuery();
                 succeeded = true;
             }
-            catch(Exception exc)
+            catch
             {
                 transaction.Rollback();
                 conn.Close();                
@@ -341,6 +341,18 @@ namespace KohtopaWeb
             {
                 return null;
             }            
+        }
+
+        public static class RentableOrder
+        {
+            public static string TYPE = "order by r.type";            
+            public static string AREA = "order by r.area";            
+            public static string PRICE = "order by r.price";            
+            public static string FREE = "order by free";            
+            public static string INTERNET = "order by r.internet";
+            public static string CABLE = "order by r.cable";
+            public static string FLOOR = "order by r.floor";
+            public static string OUTLET_COUNT = "order by r.outlet_count";
         }
     }
 }

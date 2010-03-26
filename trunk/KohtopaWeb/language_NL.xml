@@ -31,7 +31,7 @@
     <entry name="Street_number">Straat Nummer</entry>
     <entry name="Zipcode">Postcode</entry>
     <entry name="City">Stad</entry>
-    <entry name="Cable">Kabel</entry>
+    <entry name="Cable">Kabel(TV)</entry>
     <entry name="Floor">Verdieping</entry>
     <entry name="Reject">Weigeren</entry>
     <entry name="Room">Kamer</entry>
@@ -45,4 +45,6 @@
     <entry name="MessageSendSucceeded">Het bericht is verzonden.</entry>
     <entry name="MessageSendFailed">Het bericht kon niet verzonden worden</entry>
     <entry name="FreeFrom">Vrij vanaf</entry>
+    <entry name="Address">Adres</entry>
+    <entry name="OutletCount">#stopcontact</entry>
 </Language>

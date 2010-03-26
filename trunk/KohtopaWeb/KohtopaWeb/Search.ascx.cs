@@ -25,6 +25,7 @@ namespace KohtopaWeb
                 string language = "" + Session["Language"];
                 lblFilter.Text = Language.getstring("Filter", language);
 
+                ViewState["rentableOrder"] = DataConnector.RentableOrder.PRICE;
                 updateFilterView();
 
                 DataTable dtFilters = new DataTable();
@@ -65,6 +66,8 @@ namespace KohtopaWeb
                 btnContains.Text = Language.getstring("Add", language);
 
                 ddlFilters_Selected_Index_Changed(null, null);
+
+                
             }
             else
             {
@@ -109,7 +112,7 @@ namespace KohtopaWeb
             {
                 searchTable.Rows.Add(dr);
             }
-            catch (Exception exc) { } //if dr is not a new row;
+            catch {} //if dr is not a new row;
 
             updateFilterView();
         }
@@ -146,7 +149,7 @@ namespace KohtopaWeb
             {
                 searchTable.Rows.Add(dr);                
             }
-            catch (Exception exc) { } //if dr is not a new row;
+            catch {} //if dr is not a new row;
             updateFilterView();
         }
 
@@ -161,7 +164,7 @@ namespace KohtopaWeb
             {
                 searchTable.Rows.Add(dr);
             }
-            catch (Exception exc) { } //if dr is not a new row;
+            catch {} //if dr is not a new row;
             updateFilterView();
         }
 
@@ -190,8 +193,8 @@ namespace KohtopaWeb
             try
             {
                 updateRentableColumns();
-
-                DataView dv = new DataView(DataConnector.getRentables());
+                string test = "" + ViewState["rentableOrder"];
+                DataView dv = new DataView(DataConnector.getRentables("" + ViewState["rentableOrder"]));
                 lblDatabaseError.Visible = false;
                 gvRentables.Visible = true;
                 if (searchTable != null)
@@ -254,36 +257,44 @@ namespace KohtopaWeb
         {
             string language = "" + Session["Language"];
             gvRentables.Columns.Clear();
+
             Label lbl = new Label();
             lbl.Text = "DataBind:DateType:Free";
             TableCell tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
             tc.Controls.Add(lbl);
             TableRow tr = new TableRow();
             tr.Cells.Add(tc);
             Table table = new Table();
+            table.Width = Unit.Percentage(100);
             table.Rows.Add(tr);
             GridViewTemplate gvt = new GridViewTemplate(table, language);
             TemplateField tf = new TemplateField();
             tf.HeaderText = Language.getstring("FreeFrom",language);
             tf.ItemTemplate = gvt;
-            gvRentables.Columns.Add(tf);
+            tf.SortExpression = DataConnector.RentableOrder.FREE;
+            gvRentables.Columns.Add(tf);            
 
             lbl = new Label();
             lbl.Text="DataBind:RentableType:Type";                        
             tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
             tc.Controls.Add(lbl);            
             tr = new TableRow();
             tr.Cells.Add(tc);
             table = new Table();
+            table.Width = Unit.Percentage(100);
             table.Rows.Add(tr);                        
             gvt = new GridViewTemplate(table,language);
             tf = new TemplateField();
             tf.HeaderText = Language.getstring("Type", language);
-            tf.ItemTemplate = gvt;            
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.TYPE;
             gvRentables.Columns.Add(tf);
 
             table = new Table();
-            tr = new TableRow();
+            table.Width = Unit.Percentage(100);
+            tr = new TableRow();            
             lbl = new Label();
             lbl.Text = "DataBind:Normal:Street";            
             tc = new TableCell();
@@ -318,56 +329,131 @@ namespace KohtopaWeb
             table.Rows.Add(tr);
             gvt = new GridViewTemplate(table, language);
             tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Type", language);
+            tf.HeaderText = Language.getstring("Address", language);
             tf.ItemTemplate = gvt;
             gvRentables.Columns.Add(tf);
 
+            lbl = new Label();
+            lbl.Text = "DataBind:Currency:Price";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbl);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Price", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.PRICE;
+            gvRentables.Columns.Add(tf);
+
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:Floor";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbl);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Floor", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.FLOOR;
+            gvRentables.Columns.Add(tf);
+
+            lbl = new Label();
+            lbl.Text = "DataBind:Area:Area";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbl);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Area", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.AREA;
+            gvRentables.Columns.Add(tf);
+
+            Image img = new Image();            
+            img.ImageUrl = "DataBind:Boolean:Internet";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(img);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();            
+            tf.HeaderText = Language.getstring("Internet", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.INTERNET;
+            gvRentables.Columns.Add(tf);
+
+            img = new Image();
+            img.ImageUrl = "DataBind:Boolean:Cable";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(img);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Cable", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.CABLE;
+            gvRentables.Columns.Add(tf);
+
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:Outlet_count";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbl);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("OutletCount", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.OUTLET_COUNT;
+            gvRentables.Columns.Add(tf);
+
             /*
-            BoundField bf = new BoundField();
-            bf.DataField = "Street";
-            bf.HeaderText = Language.getstring("Street", language);
-            gvRentables.Columns.Add(bf);
+            lbl = new Label();
+            lbl.Text = "DataBind:Normal:Window_Area";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbl);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("WindowArea", language);
+            tf.ItemTemplate = gvt;
+            tf.SortExpression = DataConnector.RentableOrder.WINDOW_AREA;
+            gvRentables.Columns.Add(tf);
+             */ 
 
-            bf = new BoundField();
-            bf.DataField = "Street_number";
-            bf.HeaderText = Language.getstring("Street_number", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Zipcode";
-            bf.HeaderText = Language.getstring("Zipcode", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "City";
-            bf.HeaderText = Language.getstring("City", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Price";
-            bf.HeaderText = Language.getstring("Price", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Internet";
-            bf.HeaderText = Language.getstring("Internet", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Cable";
-            bf.HeaderText = Language.getstring("Cable", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Floor";
-            bf.HeaderText = Language.getstring("Floor", language);
-            gvRentables.Columns.Add(bf);
-
-            bf = new BoundField();
-            bf.DataField = "Area";
-            bf.HeaderText = Language.getstring("Area", language);
-            gvRentables.Columns.Add(bf);
-            */ 
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
@@ -388,7 +474,15 @@ namespace KohtopaWeb
 
         protected void gvRentables_Sorting(object sender, GridViewSortEventArgs e)
         {
-            
+            if (ViewState["rentableOrder"].Equals(e.SortExpression))
+            {
+                ViewState["rentableOrder"] = e.SortExpression + " desc";
+            }
+            else
+            {
+                ViewState["rentableOrder"] = e.SortExpression;
+            }
+            updateFilterView();
         }
         
     }
