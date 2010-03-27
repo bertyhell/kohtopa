@@ -1,7 +1,8 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="KohtopaWeb.Login" MasterPageFile="~/master.Master"%>
 
 <asp:Content ID="LoginPage" ContentPlaceHolderID="cphBody" Runat="server">    
-    <asp:Table runat="server">
+<asp:Login ID="login" runat="server" onauthenticate="login_Authenticate"/>
+    <%-- <asp:Table runat="server">
         <asp:TableRow>
             <asp:TableCell>
                 <asp:Label ID="lblUsername" runat="server"/>             
@@ -26,5 +27,5 @@
             </asp:TableCell>
         </asp:TableRow>            
     </asp:Table>
-    <asp:Label ID="lblError" ForeColor="Red" runat="server" Visible="false" />
+    <asp:Label ID="lblError" ForeColor="Red" runat="server" Visible="false" />--%>
 </asp:Content>

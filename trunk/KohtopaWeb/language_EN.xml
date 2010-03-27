@@ -40,6 +40,8 @@
     <entry name="UsernamePasswordWrong">Username or password is wrong</entry>
     <entry name="Message">Message</entry>
     <entry name="Messages">Messages</entry>
+	<entry name="NewMessage">Compose message</entry>
+	<entry name="ReadMessages">Read messages</entry>
     <entry name="Subject">Subject</entry>
     <entry name="Send">Send</entry>
     <entry name="MessageSendSucceeded">The message has been sent</entry>

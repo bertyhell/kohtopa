@@ -20,6 +20,19 @@ namespace KohtopaWeb
             if (!IsPostBack || Session["LanguageChanged"].Equals(true))
             {
                 Session["LanguageChanged"] = false;
+                status.LoginText = Language.getstring("Login", (string)Session["Language"]);
+                status.LogoutText = Language.getstring("Logout", (string)Session["Language"]);
+                
+                
+                string lang = (string)Session["Language"];
+                if (lang.Equals("NL"))
+                {
+                    SiteMap.SiteMapProvider = "NL";
+                }
+                else
+                {
+                    SiteMap.SiteMapProvider = "EN";
+                }
 
                 //languages menu
                 lblLanguage.Text = Language.getstring("Language", (string)Session["Language"]);
@@ -27,15 +40,24 @@ namespace KohtopaWeb
                 ddlLanguage.DataTextField = "language";
                 ddlLanguage.DataValueField = "id";
                 ddlLanguage.DataBind();
-                ddlLanguage.SelectedValue = (string)Session["Language"];                
-                
-                //main menu                
+                ddlLanguage.SelectedValue = (string)Session["Language"];
+
+                if (Session["user"] == null)
+                {
+                    SiteMap.StartingNodeUrl = "Extern";
+                }
+                else
+                {
+                    SiteMap.StartingNodeUrl = "User";
+                }
+                /*//main menu                
                 MenuItem mni = new MenuItem(Language.getstring("HomePage",(string)Session["Language"]));
                 mni.NavigateUrl = "~/Index.aspx";
                 mnMain.Items.Add(mni);
                 mni = new MenuItem(Language.getstring("Search", (string)Session["Language"]));
                 mni.NavigateUrl = "~/Search.aspx";
                 mnMain.Items.Add(mni);
+
 
                 //user menu
                 if (Session["user"] == null) //not logged in
@@ -51,13 +73,22 @@ namespace KohtopaWeb
                     mnUser.Items.Add(mni);
 
                     mni = new MenuItem(Language.getstring("Messages", (string)Session["Language"]));
-                    mni.NavigateUrl = "~/Messages.aspx";
+                    //mni.NavigateUrl = "~/Messages.aspx";
+                    
+                    MenuItem sub = new MenuItem(Language.getstring("NewMessage",(string)Session["Language"]));
+                    
+                    sub.NavigateUrl = "~/Messages.aspx";
+                    mni.ChildItems.Add(sub);
+                    sub = new MenuItem(Language.getstring("ReadMessages", (string)Session["Language"]));
+                    sub.NavigateUrl = "~/GetMessages.aspx";
+                    mni.ChildItems.Add(sub);
                     mnUser.Items.Add(mni);
+
 
                     mni = new MenuItem(Language.getstring("Logout", (string)Session["Language"]));
                     mni.NavigateUrl = "~/Logout.aspx";
                     mnUser.Items.Add(mni);
-                }
+                }*/
 
             }
         }

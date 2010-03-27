@@ -17,43 +17,36 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            lblUsername.Text = Language.getstring("Username", (string)Session["Language"]);
-            lblPassword.Text = Language.getstring("Password", (string)Session["Language"]);
-            btnLogin.Text = Language.getstring("Login", "EN");
-            rfvUsername.ErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
-            rfvPassword.ErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+            login.UserNameLabelText = Language.getstring("Username", (string)Session["Language"]);
+            login.PasswordLabelText = Language.getstring("Password", (string)Session["Language"]);
+            login.LoginButtonText = Language.getstring("Login", "EN");
+            login.UserNameRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+            login.PasswordRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+            login.FailureText = Language.getstring("UsernamePasswordWrong", (string)Session["Language"]);
+
+            if (!User.Identity.IsAuthenticated)
+            {
+                Session["user"] = null;
+            }
         }
 
-        protected void btnLogin_Click(object sender, EventArgs e)
+        protected void login_Authenticate(object sender, AuthenticateEventArgs e)
         {
-            Person p = DataConnector.getPerson(txtUsername.Text);            
-            if (p != null && p.Password.Equals(txtPassword.Text))
+            Person p = DataConnector.getPerson(login.UserName);
+            if (p != null && p.Password.Equals(login.Password))
             {
                 Session["user"] = p;
-                FormsAuthentication.RedirectFromLoginPage("Renter", false);
-                lblError.Visible = false;
+                
+                e.Authenticated = true;
             }
             else
             {
-                lblError.Visible = true;
-                lblError.Text = Language.getstring("UsernamePasswordWrong", "" + Session["Language"]);
+                e.Authenticated = false;
+
             }
-            
-            /*
-            if (DataConnector.isValidPerson(txtUsername.Text, txtPassword.Text))
-            {
-                Session["username"] = txtUsername.Text;
-                int test = DataConnector.getPersonId(txtUsername.Text, txtPassword.Text);
-                Session["userId"] = test;
-                FormsAuthentication.RedirectFromLoginPage("Renter", false);
-                lblError.Visible = false;
-            }
-            else
-            {
-                lblError.Visible = true;
-                lblError.Text = Language.getstring("UsernamePasswordWrong","" + Session["Language"]);
-            }
-            */ 
+
         }
+
+
     }
 }

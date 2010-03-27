@@ -18,13 +18,19 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack || Session["LanguageChanged"].Equals(true))
+            if (!IsPostBack || (bool)Session["LanguageChanged"])
             {
                 Session["LanguageChanged"] = false;
                 string language = "" + Session["Language"];
                 lblSubject.Text = Language.getstring("Subject", language);
                 lblMessage.Text = Language.getstring("Message", language);
                 btnSend.Text = Language.getstring("Send",language);
+
+                Person user = (Person)Session["user"];
+                if (user != null && user.RoleId != "user")
+                {
+                    sendMessageTable.Visible = false;
+                }
             }
         }
 
@@ -32,7 +38,7 @@ namespace KohtopaWeb
         {
             Person user = (Person)Session["user"];
             Message m = new Message();
-            m.DateSend = DateTime.Now;
+            m.DateSent = DateTime.Now;
             m.Recipient = user.Rentable.Owner;
             m.Sender = user;
             m.Subject = txtSubject.Text;

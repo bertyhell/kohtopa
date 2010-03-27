@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode title="root"  description="root node" >
+      <siteMapNode title="user"  description="User" url="User">
+        <siteMapNode title="Index" url="~/Index.aspx#" description="index"/>
+        <siteMapNode title="Zoek kot" url="~/Search.aspx#" description="Zoek kot"/>
+        <siteMapNode title="Mijn kamer" url="~/MyRoom.aspx" description="Mijn kamer"/>
+        <siteMapNode title="Boodschappen" description="Boodschappen">
+          <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees boodschappen"/>
+          <siteMapNode title="Schrijf" url="~/Messages.aspx" description="Schrijf een boodschap"/>
+        </siteMapNode>
+        <!--<siteMapNode title="Log uit" url="~/Logout.asp" description="log uit" />-->
+      </siteMapNode>
+      <siteMapNode title="extern"  description="Extern" url="Extern" >
+          <siteMapNode title="Index" url="~/Index.aspx" description="index"/>
+          <siteMapNode title="Zoek kot" url="~/Search.aspx" description="Zoek kot"/>
+          <!--<siteMapNode title="Login" url="~/Login.aspx" description="log in"/>-->
+       
+      </siteMapNode>
+    </siteMapNode>
+</siteMap>

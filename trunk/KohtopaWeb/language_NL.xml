@@ -40,6 +40,8 @@
     <entry name="UsernamePasswordWrong">Gebruikersnaam of paswoord is verkeerd.</entry>
     <entry name="Message">Bericht</entry>
     <entry name="Messages">Berichten</entry>
+	<entry name="NewMessage">Schrijf bericht</entry>
+	<entry name="ReadMessages">Lees berichten</entry>
     <entry name="Subject">Onderwerp</entry>
     <entry name="Send">Verzenden</entry>
     <entry name="MessageSendSucceeded">Het bericht is verzonden.</entry>
