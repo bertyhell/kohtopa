@@ -11,13 +11,14 @@ using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Data.OleDb;
+using System.Collections.Generic;
 namespace KohtopaWeb
 {
     public class DataConnector
     {        
         private static string usernameDB = "system";
-        private static string password = "e=mc**2";
-        private static string databaseName = "kohtopa";        
+        private static string password = "admin";
+        private static string databaseName = "XE";        
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
         public static string rentableTypes = "Room;Appartment;House";        
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
@@ -32,14 +33,47 @@ namespace KohtopaWeb
         private static string getPersonByIdSQL = "select * from persons where personId = ?";
         private static string getAddressSQL = "select * from addresses where addressId = ?";
         private static string getRentableByIdSQL = "select * from rentables where rentableId = ?";
-        private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contract where renterid = ? and contract_start < ? and contract_end > ?";                
+        private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contract where renterid = ? and contract_start < ? and contract_end > ?";
+        private static string getMessagesByIdSQL = "select * from messages where recipientId = ?";
 
+        private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
+        
         private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";        
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
         }
-        
+
+        public static List<Message> getMessages(int id)
+        {
+            List<Message> messages = new List<Message>();
+
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getMessagesByIdSQL;
+            OleDbParameter p = new OleDbParameter();
+            p.OleDbType = OleDbType.Integer;
+            p.Value = id;
+            command.Parameters.Add(p);
+            conn.Open();
+            OleDbDataReader r = command.ExecuteReader();
+            while (r.Read())
+            {
+                Message m = new Message();
+                m.Subject = r.GetString(2);
+                m.DateSent = r.GetDateTime(3);
+                m.Read = r.GetString(4).Equals("1");
+                m.Text = r.GetString(5);
+
+                messages.Add(m);
+            }
+            conn.Close();
+
+            messages.Sort(delegate(Message m1, Message m2) { return m2.DateSent.CompareTo(m1.DateSent); });
+            return messages;
+
+        }
+
         public static byte[] getPicture(int ImageId){
             OleDbConnection conn = getConnection();
             OleDbCommand command = conn.CreateCommand();
@@ -294,7 +328,34 @@ namespace KohtopaWeb
             }
             throw new Exception("can't find rentableId");
         }
+        public static void setRead(Message message, Person person)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand c = conn.CreateCommand();
+            c.CommandText = updateMessageSQL;
+            //"update messages set message_read = 1 where Date_Sent = ? and subject = ? and recipientid = ?";
+            OleDbParameter p = new OleDbParameter();
+            p.ParameterName = "date_sent";
+            p.Value = message.DateSent;
+            p.OleDbType = OleDbType.DBTimeStamp;
+            c.Parameters.Add(p);
 
+            p = new OleDbParameter();
+            p.ParameterName = "subject";
+            p.Value = message.Subject;
+            p.OleDbType = OleDbType.VarChar;
+            c.Parameters.Add(p);
+
+            p = new OleDbParameter();
+            p.ParameterName = "recipientid";
+            p.Value = person.PersonId;
+            p.OleDbType = OleDbType.Integer;
+            c.Parameters.Add(p);
+
+            conn.Open();
+            int i = c.ExecuteNonQuery();
+            conn.Close();
+        }
         public static OleDbTransaction sendMessage(Message message)
         {            
             OleDbConnection conn = getConnection();
@@ -314,7 +375,7 @@ namespace KohtopaWeb
                 p.Value = message.Subject;
                 command.Parameters.Add(p);
                 p = new OleDbParameter();
-                p.Value = message.DateSend;
+                p.Value = message.DateSent;
                 command.Parameters.Add(p);
                 p = new OleDbParameter();
                 p.Value = 0;

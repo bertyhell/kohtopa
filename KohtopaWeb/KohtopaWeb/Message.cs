@@ -18,7 +18,8 @@ namespace KohtopaWeb
 
         private Person sender, recipient;
         private string subject, text;
-        private DateTime dateSend;        
+        private bool read;
+        private DateTime dateSend; 
 
         public Message()
         {
@@ -51,12 +52,25 @@ namespace KohtopaWeb
         }
         
 
-        public DateTime DateSend
+        public DateTime DateSent
         {
             get { return dateSend; }
             set { dateSend = value; }
         }
 
+        public bool Read
+        {
+            get { return read; }
+            set { read = value; }
+        }
+
+        public override string ToString()
+        {
+            if (!read) return "(NEW) " + subject;
+            
+            return subject;
+        }
+        
         public bool sendMessage()
         {
             try
