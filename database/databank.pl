@@ -3,6 +3,9 @@ use DBI;
 use LWP::Simple;
 use Data::Dumper;
 
+# set this to 1 for simulation
+my $sim = 0;
+
 #zipcodesite
 my $zipcodesite = "http://www.postcode.be/?q=";
 
@@ -114,6 +117,7 @@ print "Connection succeeded!\nExecuting insert statements for addresses...\n";
 my $ainsert = "INSERT INTO addresses(addressid, street_number, street, zipcode, city, country) VALUES (?, ?, ?, ?, ?, ?)";
 my $asth = $dbh->prepare($ainsert) or die "insert prepare failed ($ainsert)";
 
+my %addresses;
 for(1..$nostreets) {
    my $city = $city[rand($#city)];
    my $index = $#{$streets{$city}};
@@ -124,9 +128,19 @@ for(1..$nostreets) {
 
    #print "INSERT INTO addresses(addressid, street_number, street, zipcode, city, country) VALUES (1,$nr,$street,$zipcode, $city, Belgie)";
    #if(defined $street && $street != '' ) {
-      $asth->execute(1,$nr,$street,$zipcode, $city, "BE");
+      $addresses{$street.$nr} = [1,$nr,$street,$zipcode, $city, "BE"];
+      
    #}
    
+}
+if($sim) {
+   for my $data ( keys %addresses ) {
+       print "@{ $addresses{$data} })\n";
+   }   
+} else {
+   for my $data ( keys %addresses ) {
+       $asth->execute(@{ $addresses{$data} });
+   }
 }
 
 # address ids
@@ -138,6 +152,7 @@ print "Inserted all addresses!\nExecuting insert statements for persons...\n";
 my $pinsert = "INSERT INTO persons(personid, addressid, roleid, name, first_name, email, telephone, cellphone, username, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 my $psth = $dbh->prepare($pinsert) or die "insert prepare failed ($pinsert)";
 
+my %users;
 my @extensions = ("hotmail.com","telenet.be","gmail.com","skynet.be");
 for(1..($nousers+$noowners)) {   
    my $addressid = ${ $addresses[int(rand($#addresses))] }[0];
@@ -169,12 +184,23 @@ for(1..($nousers+$noowners)) {
    $uname =~ s/ //g;
    $uname =~ s/(.{20}).*/$1/;
    
-   #print "$addressid, $roleid, $name, $firstname, $email, $telephone, $gsm, $uname, $pass\n";
+   
    if(defined $addressid) {
-      $psth->execute(1,$addressid,$roleid,$name,$firstname,$email,$telephone,$gsm,$uname,$pass);
+      $users{$firstname} = [1,$addressid,$roleid,$name,$firstname,$email,$telephone,$gsm,$uname,$pass];
+   }
+}
+   #print "$addressid, $roleid, $name, $firstname, $email, $telephone, $gsm, $uname, $pass\n";
+   if($sim) {
+      for my $data ( keys %users ) {
+          print "@{ $users{$data} }\n";
+      }
+   } else {
+      for my $data ( keys %users ) {
+         $psth->execute(@{ $users{$data} });
+      }
    }
    
-}
+   
 
 
 # owner ids
@@ -210,7 +236,7 @@ my $msth = $dbh->prepare($minsert);
 
 my $getaddress = $dbh->prepare("SELECT addressid from addresses where street = ?");
 my $getbuilding = $dbh->prepare("SELECT buildingid from buildings where addressid = ?");
-my $getrentable = $dbh->prepare("SELECT rentableid from rentables where buildingid = ?");
+my $getrentable = $dbh->prepare("SELECT rentableid from rentables where buildingid = ? and description = ?");
 
 for(@rentables) {
    
@@ -218,22 +244,42 @@ for(@rentables) {
    if(!defined $_->[4]) {
          next;
    }
-   # insert address
-   $asth->execute(1,$_->[4],$_->[0],$zipcodes{$_->[1]}, $_->[1] , "BE");
+   # insert address if needed   
+   $getaddress->execute($_->[0]);
+   my $aid = $getaddress->fetchrow();
+   $getaddress->finish();
+   
+   if(!defined $aid) {
+      if($sim) {
+         print "1,$_->[4],$_->[0],$zipcodes{$_->[1]}, $_->[1] , 'BE'\n"
+      } else {
+         $asth->execute(1,$_->[4],$_->[0],$zipcodes{$_->[1]}, $_->[1] , "BE");
+      }
+   }
    
    # get id of address
    $getaddress->execute($_->[0]);
-   my $aid = $getaddress->fetchrow();   
+   $aid = $getaddress->fetchrow();   
    $getaddress->finish();
    
-   # insert building
-   if(defined $aid) {
-      $bsth->execute(1,$aid,undef,undef);
+   # insert building if needed   
+   $getbuilding->execute($aid);
+   my $building = $getbuilding->fetchrow();
+   $getbuilding->finish();
+   
+   if(!defined $building) {
+      if(defined $aid) {
+         if($sim) {
+            print "1,$aid,undef,undef\n";
+         } else {            
+            $bsth->execute(1,$aid,undef,undef);
+         }
+      }
    }
    
    # get id of building
    $getbuilding->execute($aid);
-   my $building = $getbuilding->fetchrow();
+   $building = $getbuilding->fetchrow();
    $getbuilding->finish();
    
    my $area = int(($_->[3]/15)+int(rand(5)));
@@ -257,10 +303,14 @@ for(@rentables) {
    # insert rentable
    #rentableid, buildingid, ownerid, description, type, area, window_direction, window_area, internet, cable, outlet_count, floor, rented, price)
    if(defined $owner && defined $building) {
-      $rsth->execute(1,$building,$owner, $desc, $type, $area,undef,undef,$internet,$cable,$outletcount,$floor,undef,$_->[3]);
+      if($sim) {
+         print "1,$building,$owner, $desc, $type, $area,undef,undef,$internet,$cable,$outletcount,$floor,undef,".$_->[3].")\n";
+      } else {
+         $rsth->execute(1,$building,$owner, $desc, $type, $area,undef,undef,$internet,$cable,$outletcount,$floor,undef,$_->[3]);
+      }
    }
    # get id of rentable
-   $getrentable->execute($building);
+   $getrentable->execute($building,$desc);
    my $rentable = $getrentable->fetchrow();
    $getrentable->finish();
    
@@ -270,7 +320,7 @@ for(@rentables) {
    
    # insert contracts, datum van vorm yyyy-mm-dd   
    # contractid, rentableid, renterid, contract_start, contract_end, price, monthly_cost, guarantee
-   my $year = 2009;
+   my $year = 2000;
    my $end = $year+1;
    my $month = int(rand(12))+1;
    my $day = int(rand(28))+1;
@@ -281,12 +331,21 @@ for(@rentables) {
    my $r = $renter;
    
    for my $i (1..int(rand(10))) {
-      
-         $csth->execute(1,$rentable,$r, "$year-$month-$day", "$end-$month-$day",$_->[3],$monthcost,$guarantee);
-      
+            print "1,$rentable,$r, '$year-$month-$day', '$end-$month-$day',$_->[3],$monthcost,$guarantee\n";
+         if($sim) {
+         } else {
+            $csth->execute(1,$rentable,$r, "$year-$month-$day", "$end-$month-$day",$_->[3],$monthcost,$guarantee);
+         }
       # geschiedenis simuleren
-      $end = $year;
-      $year--;
+      $year= $end;
+      $end++;
+      
+      $month++;
+      if($month>12) {
+         $end++;
+         $year++;
+         $month = 1;
+      }
       
       #huurder wisselt eventueel
       if(int(rand(2))) {
@@ -294,9 +353,10 @@ for(@rentables) {
       }
       
       # inflatie :)
-      $monthcost -= int(rand(5));
-      $guarantee -= int(rand(5));
+      $monthcost += int(rand(5));
+      $guarantee += int(rand(5));
    }
+   print "_______________\n";
    
    
    # contract id
@@ -306,7 +366,11 @@ for(@rentables) {
    # insert furniture (0-10)
    # furnitureid, rentableid, name, price, damaged
       for(0..int(rand(10))) {
-         $fsth->execute(1,$rentable,undef,int(rand(50))+50,undef);
+         if($sim) {
+            print "1,$rentable,undef,".(int(rand(50))+50).",undef\n";
+         } else {
+            $fsth->execute(1,$rentable,undef,int(rand(50))+50,undef);
+         }
       }
    
    
@@ -326,9 +390,11 @@ for(@rentables) {
          $m = 1;
       }
       
-      
+      if($sim) {
+         print "1,$rentable,$gas,$water,$el,'$y-$m-$day'\n";
+      } else {
          $consth->execute(1,$rentable,$gas,$water,$el,"$y-$m-$day");
-      
+      }
       $gas += int(rand(5000));
       $water +=int(rand(5000));
       $el += int(rand(5000));
@@ -358,7 +424,11 @@ for(@rentables) {
       }
       
       if(defined $contracts[0][0]) {
-         $isth->execute(1,$contracts[0][0],"$y-$m-$day",$paid);
+         if($sim) {
+            print "1,$contracts[0][0],'$y-$m-$day',$paid\n";
+         } else {
+            $isth->execute(1,$contracts[0][0],"$y-$m-$day",$paid);
+         }
       }
    }
    
@@ -407,8 +477,11 @@ for(@rentables) {
       }
       
       # senderid, recipientid, subject, message_read, date_sent, text
-      $msth->execute($owner,$renter,$subject, $read, "$y-$m-$day $hour:$min:$sec",$msg);
-      
+      if($sim) {
+         print "$owner,$renter,$subject, $read, '$y-$m-$day $hour:$min:$sec',$msg\n";
+      } else {
+         $msth->execute($owner,$renter,$subject, $read, "$y-$m-$day $hour:$min:$sec",$msg);
+      }
    }
    
    
