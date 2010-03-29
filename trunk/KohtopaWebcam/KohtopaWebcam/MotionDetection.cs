@@ -31,9 +31,8 @@ namespace KohtopaWebcam
             pictureValues = new Color[NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS];            
         }
 
-        public bool Detect(Image image)
-        {
-            Bitmap bitmap = new Bitmap(image);
+        public bool Detect(Bitmap bitmap)
+    {                            
             int widthStep = bitmap.Width / NUMBER_TEST_PIXELS;
             int heightStep = bitmap.Height / NUMBER_TEST_PIXELS;
             int positionY = heightStep / 2;
@@ -54,13 +53,13 @@ namespace KohtopaWebcam
                 }
                 positionY = positionY + heightStep;
             }
-
+            /*
             if ((1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_TOLERANCE)
             {
-                //Console.Beep();
+                Console.Beep();
             }
-
-            return (1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_TOLERANCE;
+            */ 
+            return (1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_TOLERANCE;            
         }
     }
 }

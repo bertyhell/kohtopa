@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Pinvoke;
 using System.Threading;
 using System.Drawing;
 using System.Windows.Forms;
@@ -19,7 +18,7 @@ namespace KohtopaWebcam
         private double motionTolerance;
         private bool motionDetectionChanged;
         private bool pathChanged;
-        private PictureBox preview;
+        private PictureBox preview;        
 
         public WebcamThread(string path,int deviceIndex)
         {
@@ -31,6 +30,14 @@ namespace KohtopaWebcam
             motionDetectionChanged = false;
             pathChanged = false;
             preview = null;
+        }
+
+        public int DeviceIndex
+        {
+            get
+            {
+                return deviceIndex;
+            }
         }
 
         public PictureBox Preview
@@ -45,6 +52,7 @@ namespace KohtopaWebcam
             }
         }
 
+
         public int NumberTestPixels
         {
             get
@@ -56,16 +64,7 @@ namespace KohtopaWebcam
                 numberTestPixels = value;
                 motionDetectionChanged = true;
             }
-        }
-
-        public string NameDescription
-        {
-            get
-            {
-                CaptureDevice cd = CaptureDevice.GetDevices()[deviceIndex];
-                return cd.Name + cd.Description;
-            }
-        }
+        }       
 
         public int ColorTolerance
         {
@@ -131,17 +130,18 @@ namespace KohtopaWebcam
 
         public void loop()
         {
-            CaptureDevice captureDevice = CaptureDevice.GetDevices()[deviceIndex];            
-            ImageSaver imageSaver = null;
-            pathChanged = true;
-            MotionDetection motionDetection = null;
-            motionDetectionChanged = true;            
-            DateTime than = DateTime.Now.AddSeconds(10);
-            if (captureDevice.Attach2())
+            WebCamService.Capture capture = null;
+            try
             {
+                capture = new WebCamService.Capture(deviceIndex);
+                ImageSaver imageSaver = null;
+                pathChanged = true;
+                MotionDetection motionDetection = null;
+                motionDetectionChanged = true;
+                DateTime than = DateTime.Now.AddSeconds(10);
                 running = true;
                 while (running)
-                {
+                {                    
                     if (motionDetectionChanged)
                     {
                         motionDetection = new MotionDetection(numberTestPixels, colorTolerance, motionTolerance);
@@ -149,29 +149,44 @@ namespace KohtopaWebcam
                     }
                     if (pathChanged)
                     {
-                        imageSaver = new ImageSaver(path + "/webcam" + deviceIndex + 1);
+                        imageSaver = new ImageSaver(path + "/webcam" + deviceIndex);
                         pathChanged = false;
                     }
-                    Image image = captureDevice.Capture();
-                    if (image != null)
+                    try
                     {
-                        if (motionDetection.Detect(image))
-                        {
-                            imageSaver.Save(image,"m");
-                            than = DateTime.Now.AddSeconds(10);
-                        }
-                        else if (DateTime.Now > than)
-                        {
-                            imageSaver.Save(image, "t");
-                            than = DateTime.Now.AddSeconds(10);
-                        }
-                        if (preview != null)
-                        {
-                            preview.Image = image;
+                        Bitmap bmp = capture.GetBitMap();
+                        if (bmp != null)
+                        {                                   
+                            if (motionDetection.Detect(bmp))
+                            {
+                                imageSaver.Save(bmp, "m");
+                                than = DateTime.Now.AddSeconds(10);
+                            }                             
+                            else if (DateTime.Now > than)
+                            {
+                                imageSaver.Save(bmp, "t");
+                                than = DateTime.Now.AddSeconds(10);
+                            }                             
+                            if (preview != null)                           
+                            {
+                                preview.Image = bmp;
+                            }                              
                         }
                     }
+                    catch (Exception) {}
                 }
-                captureDevice.Detach2();
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show("error in webcamthread: " + exc.Message);
+            }
+            finally
+            {
+                try
+                {
+                    capture.Dispose();
+                }
+                catch(Exception exc){}                
             }
         }
     }
