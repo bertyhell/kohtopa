@@ -7,37 +7,40 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Collections;
-using Pinvoke;
 using System.Xml;
 using System.Globalization;
+using DirectShowLib;
 
 namespace KohtopaWebcam
 {
     public partial class MainWindow : Form
     {
-        ArrayList webcamThreads;
-
+        ArrayList webcamThreads;        
+        
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private void MainWindow_Load(object sender, EventArgs e)
+        private void MainWindow_Load(object sender, EventArgs e)        
         {                                    
             webcamThreads = new ArrayList();
-            int i = 1;
-            foreach (CaptureDevice device in CaptureDevice.GetDevices())
+            DsDevice[] capDevices;            
+            capDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
+
+
+            for (int i = 0; i < capDevices.Length; i++)
             {
-                cboDevices.Items.Add("" + i + ": " + device.Name + " " + device.Description);                
-                webcamThreads.Add(new WebcamThread("c:/testWebcam",i-1));
-                i++;
+                cboDevices.Items.Add("Device number: " + i);
+                webcamThreads.Add(new WebcamThread("c:/testWebcam", i));
             }            
+                        
             lblPathValue.Text = "c:/testWebcam";
             readConfiguration();
             if (cboDevices.Items.Count > 0)
             {
                 cboDevices.SelectedIndex = 0;
-            }
+            }            
         }       
 
         private void tbTestPixels_MouseUp(object sender, MouseEventArgs e)
@@ -144,19 +147,14 @@ namespace KohtopaWebcam
                     writer.IndentChar = ' ';
                     writer.WriteStartDocument(true);
                     writer.WriteStartElement("Configuration");
-                    for(int i = 0; i < webcamThreads.Count; i++){
-                        CaptureDevice cd = CaptureDevice.GetDevices()[i];
+                    for(int i = 0; i < webcamThreads.Count; i++){                        
                         WebcamThread wt = (WebcamThread)webcamThreads[i];
                         writer.WriteStartElement("webcam");
 
-                        writer.WriteStartElement("name");
-                        writer.WriteValue(cd.Name);
+                        writer.WriteStartElement("number");
+                        writer.WriteValue(i);
                         writer.WriteEndElement();
-                        
-                        writer.WriteStartElement("description");
-                        writer.WriteValue(cd.Description);
-                        writer.WriteEndElement();
-
+                                                
                         writer.WriteStartElement("testPixels");
                         writer.WriteValue(wt.NumberTestPixels);
                         writer.WriteEndElement();
@@ -205,16 +203,11 @@ namespace KohtopaWebcam
                             {
                                 if (reader.NodeType == XmlNodeType.Element)
                                 {
-                                    if (reader.Name == "name")
+                                    if (reader.Name == "number")
                                     {
                                         reader.Read();
                                         name = reader.Value;
-                                    }
-                                    else if (reader.Name == "description")
-                                    {
-                                        reader.Read();
-                                        description = reader.Value;
-                                    }
+                                    }                                    
                                     else if (reader.Name == "testPixels")
                                     {
                                         reader.Read();
@@ -235,7 +228,7 @@ namespace KohtopaWebcam
                             }
                             foreach (WebcamThread wt in webcamThreads)
                             {
-                                if (wt.NameDescription == name + description)
+                                if ("" + wt.DeviceIndex == name)
                                 {
                                     wt.NumberTestPixels = testPixels;
                                     wt.ColorTolerance = colorTolerance;
@@ -248,7 +241,7 @@ namespace KohtopaWebcam
                 finally
                 {
                     reader.Close();
-                }
+                }                
             }
             catch (Exception exc){
             }
@@ -273,8 +266,11 @@ namespace KohtopaWebcam
 
         private void tmrStatusCheck_Tick(object sender, EventArgs e)
         {
-            WebcamThread wt = (WebcamThread)webcamThreads[cboDevices.SelectedIndex];
-            setStatus(wt.IsRunning);
+            if (webcamThreads.Count > 0)
+            {
+                WebcamThread wt = (WebcamThread)webcamThreads[cboDevices.SelectedIndex];
+                setStatus(wt.IsRunning);
+            }
         }
 
         private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -283,6 +279,6 @@ namespace KohtopaWebcam
             {
                 wt.stop();
             }
-        }
+        }       
     }
 }
