@@ -12,20 +12,22 @@ using System.Xml.Linq;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using System.Collections.Generic;
+using System.Globalization;
+
 namespace KohtopaWeb
 {
     public class DataConnector
     {        
         private static string usernameDB = "system";
-        private static string password = "admin";
-        private static string databaseName = "XE";        
+        private static string password = "e=mc**2";
+        private static string databaseName = "Kohtopa";        
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
         public static string rentableTypes = "Room;Appartment;House";        
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
                                                     + "from rentables r "
                                                     + "join buildings b on b.buildingid = r.buildingid "
                                                     + "join addresses a on b.addressid = a.addressid "
-                                                    + "join contract c on c.rentableid = r.rentableid "
+                                                    + "join contracts c on c.rentableid = r.rentableid "
                                                     + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";
         private static string getPersonIdSQL = "select personId from persons where username = ? and password = ?";
         private static string getPasswordSQL = "select password from persons where username = ?";
@@ -35,10 +37,11 @@ namespace KohtopaWeb
         private static string getRentableByIdSQL = "select * from rentables where rentableId = ?";
         private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contract where renterid = ? and contract_start < ? and contract_end > ?";
         private static string getMessagesByIdSQL = "select * from messages where recipientId = ?";
+        private static string getLongLatByRentableIdSQL = "select b.longitude, b.latitude from rentables r join buildings b on b.buildingid = r.buildingid where r.rentableid = ?";
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
         
-        private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";        
+        private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";                 
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
@@ -74,6 +77,7 @@ namespace KohtopaWeb
 
         }
 
+        //todo parameters
         public static byte[] getPicture(int ImageId){
             OleDbConnection conn = getConnection();
             OleDbCommand command = conn.CreateCommand();
@@ -414,6 +418,30 @@ namespace KohtopaWeb
             public static string CABLE = "order by r.cable";
             public static string FLOOR = "order by r.floor";
             public static string OUTLET_COUNT = "order by r.outlet_count";
+        }
+
+        public static Pair getLongLat(int rentableId)
+        {
+            Pair pair = null;
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getLongLatByRentableIdSQL;
+            OleDbParameter p = new OleDbParameter();
+            p.Value = rentableId;
+            command.Parameters.Add(p);            
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            DataTable dt = ds.Tables[0];
+            if (dt.Rows.Count > 0)
+            {
+                try{
+                    double longtitude = Double.Parse("" + dt.Rows[0],CultureInfo.InvariantCulture);
+                    double latitude =   Double.Parse("" + dt.Rows[1],CultureInfo.InvariantCulture);
+                    pair = new Pair(longtitude,latitude);  
+                }catch{}
+            }
+            return pair;
         }
     }
 }

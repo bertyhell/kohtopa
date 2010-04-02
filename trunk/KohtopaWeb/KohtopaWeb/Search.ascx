@@ -69,6 +69,57 @@
                     </asp:TableCell>
                 </asp:TableRow>
             </asp:Table>
+            
+            <asp:Table ID="tblDistance" runat="server" Visible="false">
+                <asp:TableRow>                    
+                    <asp:TableCell>
+                        <asp:Label ID="lblStreet" runat="server"/>
+                    </asp:TableCell>
+                    <asp:TableCell>
+                        <asp:TextBox ID="txtStreet" runat="server"/>
+                     </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow>
+                     <asp:TableCell>
+                        <asp:Label ID="lblStreetNumber" runat="server"/>
+                     </asp:TableCell>
+                     <asp:TableCell>
+                        <asp:TextBox ID="txtStreetNumber" runat="server"/>
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow>
+                    <asp:TableCell>
+                        <asp:Label ID="lblCity" runat="server"/>
+                    </asp:TableCell>
+                    <asp:TableCell>
+                        <asp:TextBox ID="txtCity" runat="server"/>
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow>
+                    <asp:TableCell>
+                        <asp:Label ID="lblCountry" runat="server" />
+                    </asp:TableCell>
+                    <asp:TableCell>
+                        <asp:TextBox ID="txtCountry" runat="server" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow>
+                    <asp:TableCell>
+                        <asp:Label ID="lblMaxDistance" runat="server" />
+                    </asp:TableCell>
+                    <asp:TableCell>
+                        <asp:TextBox ID="txtMaxDistance" runat="server" />
+                        <asp:RequiredFieldValidator ID="rfvMaxDistance" runat="server" ControlToValidate="txtMaxDistance"/>
+                        <asp:RangeValidator ID="rvMaxDistance" runat="server" ControlToValidate="txtMaxDistance" MinimumValue="0" MaximumValue="100" Type="Double" />
+                    </asp:TableCell>
+                </asp:TableRow>
+                <asp:TableRow>
+                    <asp:TableCell>
+                        <asp:Button ID="btnMaxDistance" runat="server" OnClick="btnMaxDistance_Click"/>
+                    </asp:TableCell>                    
+                </asp:TableRow>
+            </asp:Table>
+            
         </asp:TableCell>                
     </asp:TableRow>    
 </asp:Table>
