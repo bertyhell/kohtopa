@@ -1,6 +1,6 @@
 package gui.actions;
 
-import gui.AddRemoveTab.BuildingDialog;
+import gui.addremovetab1.BuildingDialog;
 import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;

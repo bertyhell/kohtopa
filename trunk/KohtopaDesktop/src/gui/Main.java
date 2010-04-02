@@ -3,12 +3,12 @@ package gui;
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
 import Language.Language;
-import gui.MessageTab.MessagePane;
+import gui.messagetab1.MessagePane;
 import gui.actions.*;
-import gui.AddRemoveTab.BuildingCellRenderer;
-import gui.AddRemoveTab.BuildingDialog;
-import gui.AddRemoveTab.RentableCellRenderer;
-import gui.MessageTab.MessageListPanel;
+import gui.addremovetab1.BuildingCellRenderer;
+import gui.addremovetab1.BuildingDialog;
+import gui.addremovetab1.RentableCellRenderer;
+import gui.messagetab1.MessageListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
-import gui.AddRemoveTab.RentableDialog;
+import gui.addremovetab1.RentableDialog;
 
 public class Main extends JFrame {
 
@@ -360,7 +360,11 @@ public class Main extends JFrame {
 	java.awt.EventQueue.invokeLater(new Runnable() {
 
 	    public void run() {
-		new LoginDialog(instance).setVisible(true);
+		new LoginDialog(instance, data).setVisible(true);
+		//check login
+		if(data.isLoggedIn()){
+
+
 		System.out.println("should wait");
 
 		//TODO show splash with different tread?
@@ -376,6 +380,9 @@ public class Main extends JFrame {
 		SplashConnect.hideSplash();
 		instance.init();
 		instance.updateList();
+		}else{
+		    Main.getInstance().dispose();
+		}
 	    }
 	});
     }

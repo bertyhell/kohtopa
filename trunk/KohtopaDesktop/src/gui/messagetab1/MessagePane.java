@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.MessageTab;
+package gui.messagetab1;
 
 import Language.Language;
 import java.awt.BorderLayout;
