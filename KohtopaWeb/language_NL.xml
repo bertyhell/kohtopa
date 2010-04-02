@@ -49,4 +49,9 @@
     <entry name="FreeFrom">Vrij vanaf</entry>
     <entry name="Address">Adres</entry>
     <entry name="OutletCount">#stopcontact</entry>
+    <entry name="Distance">Afstand</entry>
+    <entry name="StreetNumber">Straat nummer</entry>
+    <entry name="Country">Land</entry>
+    <entry name="MaxDistanceKM">Maximale afstand (km)</entry>    
+    <entry name="NumberBetween0_100">Dit veld moet een getal bevatten tussen 0 en 100</entry>        
 </Language>

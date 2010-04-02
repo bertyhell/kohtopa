@@ -65,6 +65,15 @@ namespace KohtopaWeb
                 lblContains.Text = Language.getstring("Contains", language);
                 btnContains.Text = Language.getstring("Add", language);
 
+                lblStreet.Text = Language.getstring("Street", language);
+                lblStreetNumber.Text = Language.getstring("StreetNumber", language);
+                lblCity.Text = Language.getstring("City", language);
+                lblCountry.Text = Language.getstring("Country", language);
+                lblMaxDistance.Text = Language.getstring("MaxDistanceKM", language);
+                rfvMaxDistance.ErrorMessage = Language.getstring("RequiredField", language);
+                rvMaxDistance.ErrorMessage = Language.getstring("NumberBetween0_100", language);
+                btnMaxDistance.Text = Language.getstring("Add", language);
+
                 ddlFilters_Selected_Index_Changed(null, null);
 
                 
@@ -86,6 +95,7 @@ namespace KohtopaWeb
             tblBetween.Visible = type.Equals("Between");
             tblRequired.Visible = type.Equals("Required");
             tblContains.Visible = type.Equals("Contains");
+            tblDistance.Visible = type.Equals("Distance");
         }
 
         protected void btnBetween_Click(object sender, EventArgs e)
@@ -168,6 +178,10 @@ namespace KohtopaWeb
             updateFilterView();
         }
 
+        protected void btnMaxDistance_Click(object sender, EventArgs e)
+        {
+        }
+
         private DataTable getSearchTable()
         {
             DataTable searchTable = (DataTable)Session["searchTable"];
@@ -186,9 +200,7 @@ namespace KohtopaWeb
         }
 
         private void updateFilterView()
-        {
-            
-
+        {            
             DataTable searchTable = (DataTable)Session["searchTable"];
             try
             {
