@@ -1,4 +1,4 @@
-package gui.AddRemoveTab;
+package gui.addremovetab1;
 
 import data.addremove.PicturesListModel;
 import Language.CountryNotFoundException;

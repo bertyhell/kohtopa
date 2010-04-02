@@ -1,4 +1,4 @@
-package gui.AddRemoveTab;
+package gui.addremovetab1;
 
 import java.awt.Component;
 import java.awt.Image;
