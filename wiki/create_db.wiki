@@ -1,3 +1,6 @@
-<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeZTA2OTFlZjQtNDdiNi00OTI3LTg3N2YtNzg0ZjFiMWI0OGY0&hl=en">nieuwe databank, constraints moeten blijkbaar niet meer af(geen idee wrom :) mss vanwege nieuwe sql developer dat hij ze voor de verandering op juiste moment invoegt)</a>
+<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeZWM5MTJhZDktNmU3Zi00MjI1LWFlZmQtZDBhMjI3YTdhZjU5&hl=en">nieuwe databank</a>
 
-als het niet werkt bij jullie kan ik ze weer afzetten.
+aangepast:
+contract => contracts
+buildings => latitude en longitude ingevuld
+dat is het denk ik
