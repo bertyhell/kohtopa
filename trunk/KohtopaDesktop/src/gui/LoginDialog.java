@@ -98,6 +98,13 @@ public class LoginDialog extends JDialog implements ActionListener {
 	gbl.addLayoutComponent(lblLoginFailed2, gbc);
 	pnlLogin.add(lblLoginFailed2);
 
+	//FIXME remove this after iterations?
+	JLabel lblLoginTip = new JLabel("Username: Adil , Password: Koop");
+	lblLoginTip.setForeground(Color.DARK_GRAY);
+	Layout.buildConstraints(gbc, 0, 5, 2, 1, 60, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+	gbl.addLayoutComponent(lblLoginTip, gbc);
+	pnlLogin.add(lblLoginTip);
+
 	JButton btnLogin = new JButton(null, new ImageIcon(getClass().getResource("/images/next_16.png")));
 	Layout.buildConstraints(gbc, 1, 1, 1, 1, 20, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 	gbl.addLayoutComponent(btnLogin, gbc);
