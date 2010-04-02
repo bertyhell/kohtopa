@@ -3,12 +3,12 @@ package gui;
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
 import Language.Language;
-import gui.messagetab1.MessagePane;
+import gui.messagetab.MessagePane;
 import gui.actions.*;
-import gui.addremovetab1.BuildingCellRenderer;
-import gui.addremovetab1.BuildingDialog;
-import gui.addremovetab1.RentableCellRenderer;
-import gui.messagetab1.MessageListPanel;
+import gui.addremovetab.BuildingCellRenderer;
+import gui.addremovetab.BuildingDialog;
+import gui.addremovetab.RentableCellRenderer;
+import gui.messagetab.MessageListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,7 +18,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
-import gui.addremovetab1.RentableDialog;
+import gui.addremovetab.RentableDialog;
 
 public class Main extends JFrame {
 
