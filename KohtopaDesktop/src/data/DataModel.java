@@ -123,6 +123,7 @@ public class DataModel {
 	    return true;
 	} catch (SQLException ex) {
 	    System.out.println("fetch failed(listener)");
+            ex.printStackTrace();
 	    JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 	    //TODO add connection string settings
 

@@ -35,6 +35,8 @@ public class DataBaseConstants {
     public static String cellphone = "cellphone";
     //buildings column labels
     public static String buildingId = "buildingid";
+    public static String latitude = "latitude";
+    public static String longitude = "longitude";
     //rentables column labels
     public static String rentableId = "rentableid";
     public static String rentableType = "type";
@@ -77,6 +79,7 @@ public class DataBaseConstants {
     //dataconnector connection strings
     //driver and connectionstring for oracle express
     public static String un = "system";
+    //public static String pw = "admin";
     public static String pw = "e=mc**2";
     public static String driver = "oracle.jdbc.OracleDriver";
     //public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
@@ -84,68 +87,71 @@ public class DataBaseConstants {
     //public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
     //dataconnector statement strings
     public static String checkLogin = "SELECT " + personId
-	    + " FROM " + tablePersons
-	    + " WHERE " + username + " = ? AND " + password + " = ?";
+            + " FROM " + tablePersons
+            + " WHERE " + username + " = ? AND " + password + " = ?";
     public static String selectOwners = "SELECT " + personId + "," + personName + ","
-	    + firstName + "," + email + "," + telephone + "," + cellphone
-	    + " FROM " + tablePersons + " b"
-	    + " WHERE " + roleId + " = owner";
+            + firstName + "," + email + "," + telephone + "," + cellphone
+            + " FROM " + tablePersons + " b"
+            + " WHERE " + roleId + " = owner";
     public static String selectBuildingPreviews = "SELECT " + buildingId + "," + pictureData + ","
-	    + street + "," + streetNumber + "," + zipCode + "," + city
-	    + " FROM " + tableBuildings + " b"
-	    + " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
-	    + " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
-	    + " AND p." + pictureType + " = -3"
-	    + " ORDER BY " + street;
+            + street + "," + streetNumber + "," + zipCode + "," + city + "," 
+            + latitude + "," + longitude + "," + country
+            + " FROM " + tableBuildings + " b"
+            + " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
+            + " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
+            + " AND p." + pictureType + " = -3"
+            + " ORDER BY " + street;
     public static String selectBuilding = "SELECT"
-	    + " a." + street
-	    + ",a." + streetNumber
-	    + ",a." + zipCode
-	    + ",a." + city
-	    + ",a." + country
-	    + " FROM " + tableAddresses + " a"
-	    + " INNER JOIN " + tableBuildings + " b ON a." + addressId + " = b." + addressId
-	    + " WHERE b." + buildingId + " = ?";
+            + " a." + street
+            + ",a." + streetNumber
+            + ",a." + zipCode
+            + ",a." + city
+            + ",a." + country
+            + ",b." + latitude
+            + ",b." + longitude
+            + " FROM " + tableAddresses + " a"
+            + " INNER JOIN " + tableBuildings + " b ON a." + addressId + " = b." + addressId
+            + " WHERE b." + buildingId + " = ?";
     public static String selectRentable = "SELECT "
-	    + rentableType
-	    + "," + rentableArea
-	    + "," + windowsArea
-	    + "," + windowDirection
-	    + "," + internet
-	    + "," + cable
-	    + "," + outletCount
-	    + "," + floor
-	    + "," + price
-	    + "," + rentableDescription
-	    + " FROM " + tableRentables
-	    + " WHERE " + rentableId + " = ?";
+            + rentableType
+            + "," + rentableArea
+            + "," + windowsArea
+            + "," + windowDirection
+            + "," + internet
+            + "," + cable
+            + "," + outletCount
+            + "," + floor
+            + "," + price
+            + "," + rentableDescription
+            + " FROM " + tableRentables
+            + " WHERE " + rentableId + " = ?";
     public static String selectRentablesFromBuilding = "SELECT " + rentableId + "," + floor + "," + rentableType + "," + rentableDescription
-	    + " FROM " + tableRentables
-	    + " WHERE " + buildingId + " = ?"
-	    + " ORDER BY " + floor;
+            + " FROM " + tableRentables
+            + " WHERE " + buildingId + " = ?"
+            + " ORDER BY " + floor;
     //pictures
     public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
     public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId
-	    + " FROM " + tablePictures
-	    + " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -2";
+            + " FROM " + tablePictures
+            + " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -2";
     public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId
-	    + " FROM " + tablePictures
-	    + " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";
+            + " FROM " + tablePictures
+            + " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";
     public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
-	    text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId, recipientId);
+            text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId, recipientId);
     public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ order by " + read,
-	    text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId);
+            text, subject, personName, firstName, dateSent, read, recipientId, tableMessages, tablePersons, personId, senderId);
 
     // create string, stuff to fill in: @
     private static String buildString(String base, String... data) {
-	String[] parts = base.split("@");
-	//System.out.println(parts.length + ", " + data.length);
-	StringBuffer sb = new StringBuffer(parts[0]);
-	for (int i = 1; i < parts.length; i++) {
-	    sb.append(data[i - 1]);
-	    sb.append(parts[i]);
-	}
-	//System.out.println(sb);
-	return sb.toString();
+        String[] parts = base.split("@");
+        //System.out.println(parts.length + ", " + data.length);
+        StringBuffer sb = new StringBuffer(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            sb.append(data[i - 1]);
+            sb.append(parts[i]);
+        }
+        //System.out.println(sb);
+        return sb.toString();
     }
 }

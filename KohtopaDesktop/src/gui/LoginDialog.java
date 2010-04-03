@@ -1,6 +1,7 @@
 package gui;
 
 import Language.Language;
+import data.DataConnector;
 import data.DataModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -99,7 +100,7 @@ public class LoginDialog extends JDialog implements ActionListener {
 	pnlLogin.add(lblLoginFailed2);
 
 	//FIXME remove this after iterations?
-	JLabel lblLoginTip = new JLabel("Username: Adil , Password: Koop");
+	JLabel lblLoginTip = new JLabel(DataConnector.getShortLogin());
 	lblLoginTip.setForeground(Color.DARK_GRAY);
 	Layout.buildConstraints(gbc, 0, 5, 2, 1, 60, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 	gbl.addLayoutComponent(lblLoginTip, gbc);
