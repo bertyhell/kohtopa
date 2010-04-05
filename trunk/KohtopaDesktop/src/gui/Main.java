@@ -72,6 +72,7 @@ public class Main extends JFrame {
 	this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 	this.setExtendedState(this.getExtendedState() | Main.MAXIMIZED_BOTH);
 	setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+	//TODO add onclose handler > check if dialogs have changed data if so ask if user wants to save
 	this.setMinimumSize(new Dimension(370, 300));
 	this.setLayout(new BorderLayout());
 	tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
@@ -302,7 +303,7 @@ public class Main extends JFrame {
 	    public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 		    //open building dialog
-		    BuildingDialog.show(data.getSelectedBuildingId(), false);
+		    (new BuildingDialog(instance, data.getSelectedBuildingId(), false)).setVisible(true);
 		} else {
 		    try {
 			//get rentables from the selected building
@@ -323,7 +324,8 @@ public class Main extends JFrame {
 	    public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
 		    //open rentable dialog
-		    RentableDialog.show(data.getSelectedRentableId(), false);
+
+		    new RentableDialog(instance, data.getSelectedRentableId(), false).setVisible(true);
 		} else {
 		    try {
 			//select rentable
@@ -360,12 +362,12 @@ public class Main extends JFrame {
 	java.awt.EventQueue.invokeLater(new Runnable() {
 
 	    public void run() {
-		new LoginDialog(instance, data).setVisible(true);
-		//check login
-		if(data.isLoggedIn()){
+//		new LoginDialog(instance, data).setVisible(true);
+//		//check login
+//		if(data.isLoggedIn()){
 
 
-		System.out.println("should wait");
+
 
 		//TODO show splash with different tread?
 		//SplashConnect.showSplash();
@@ -380,9 +382,17 @@ public class Main extends JFrame {
 		SplashConnect.hideSplash();
 		instance.init();
 		instance.updateList();
-		}else{
-		    Main.getInstance().dispose();
-		}
+
+
+
+
+
+
+
+
+//		}else{
+//		    Main.getInstance().dispose();
+//		}
 	    }
 	});
     }

@@ -40,6 +40,8 @@ public class LoginDialog extends JDialog implements ActionListener {
 	instance = this;
 	tries = 0;
 
+	this.setAlwaysOnTop(true);
+
 	GridBagLayout gbl = new GridBagLayout();
 	GridBagConstraints gbc = new GridBagConstraints();
 	JPanel pnlLogin = new JPanel(gbl);
