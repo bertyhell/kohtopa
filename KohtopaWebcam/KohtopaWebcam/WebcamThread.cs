@@ -166,12 +166,18 @@ namespace KohtopaWebcam
                             {
                                 imageSaver.Save(bmp, "t");
                                 than = DateTime.Now.AddSeconds(10);
-                            }                             
-                            if (preview != null)                           
+                            }
+                            if (preview != null)
                             {
+                                Image image = preview.Image;                                
                                 preview.Image = bmp;
-                            }                              
-                        }
+                                image.Dispose();
+                            }
+                            else
+                            {
+                                bmp.Dispose();                                
+                            }
+                        }                        
                     }
                     catch (Exception) {}
                 }
