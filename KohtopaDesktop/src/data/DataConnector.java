@@ -23,10 +23,13 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.Message;
+import data.entities.Picture;
 import data.entities.Rentable;
 
 public class DataConnector {
     /* this class gets/puts data from/to database + caches information (rentables, buildings) */
+
+    //TODO add aspectJ for dataconnection to avoid duplicate code
 
     private static DataConnector instance = new DataConnector();
 
@@ -161,34 +164,44 @@ public class DataConnector {
         }
     }
 
-    public static HashMap<Integer, BufferedImage> getPictures(int id, boolean isBuilding) throws SQLException {
-        HashMap<Integer, BufferedImage> images = new HashMap<Integer, BufferedImage>();
-        try {
-            Connection conn = geefVerbinding();
-            try {
-                ByteArrayInputStream bais = null;
-                PreparedStatement ps;
-                if (isBuilding) {
-                    ps = conn.prepareStatement(DataBaseConstants.selectBuildingPictures);
-                } else {
-                    ps = conn.prepareStatement(DataBaseConstants.selectRentablePictures);
-                }
-                ps.setInt(1, id);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.pictureData));
-                    if (bais != null) {
-                        images.put(rs.getInt(DataBaseConstants.pictureId), ImageIO.read(bais));
-                    }
-                }
+    public static ArrayList<Picture> getBuildingPictures(int id) throws SQLException {
+	return getPictures(id, true);
+    }
 
-            } finally {
-                conn.close();
-            }
-        } catch (Exception ex) {
-            throw new SQLException("error in getPicture: problems with connection: " + ex);
-        }
-        return images;
+    public static ArrayList<Picture> getRentablePictures(int id) throws SQLException {
+	return getPictures(id, false);
+    }
+
+    private static ArrayList<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
+	ArrayList<Picture> pictures = new ArrayList<Picture>();
+	try {
+	    Connection conn = geefVerbinding();
+	    try {
+		ByteArrayInputStream bais = null;
+		PreparedStatement ps;
+		if (isBuilding) {
+		    ps = conn.prepareStatement(DataBaseConstants.selectBuildingPictures);
+		} else {
+		    ps = conn.prepareStatement(DataBaseConstants.selectRentablePictures);
+		}
+		ps.setInt(1, id);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+		    bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.pictureData));
+		    if (bais != null) {
+			pictures.add(new Picture(
+				rs.getInt(DataBaseConstants.pictureId),
+				new ImageIcon(ImageIO.read(bais))));
+		    }
+		}
+
+	    } finally {
+		conn.close();
+	    }
+	} catch (Exception ex) {
+	    throw new SQLException("error in getPicture: problems with connection: " + ex);
+	}
+	return pictures;
     }
 
     public static Vector<Message> getMessageData() {
@@ -260,54 +273,56 @@ public class DataConnector {
     }
 
     public static ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException {
-        ArrayList<Rentable> rentables = new ArrayList<Rentable>();
-        try {
-            Connection conn = geefVerbinding();
-            try {
-                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablesFromBuilding);
-                ps.setInt(1, buildingId);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    rentables.add(new Rentable(
-                            rs.getInt(DataBaseConstants.rentableId),
-                            rs.getInt(DataBaseConstants.rentableType),
-                            rs.getInt(DataBaseConstants.floor),
-                            rs.getString(DataBaseConstants.rentableDescription)));
-                }
-            } finally {
-                conn.close();
-            }
-        } catch (Exception ex) {
-            throw new SQLException("error in getPicture: problems with connection: " + ex);
-        }
-        return rentables;
+	ArrayList<Rentable> rentables = new ArrayList<Rentable>();
+	try {
+	    Connection conn = geefVerbinding();
+	    try {
+		PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablesFromBuilding);
+		ps.setInt(1, buildingId);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+		    rentables.add(new Rentable(
+			    rs.getInt(DataBaseConstants.rentableId),
+				null, //TODO add preview image for rooms
+			    rs.getInt(DataBaseConstants.rentableType),
+			    rs.getInt(DataBaseConstants.floor),
+			    rs.getString(DataBaseConstants.rentableDescription)));
+		}
+	    } finally {
+		conn.close();
+	    }
+	} catch (Exception ex) {
+	    throw new SQLException("error in getPicture: problems with connection: " + ex);
+	}
+	return rentables;
     }
 
     static Rentable getRentable(int rentableId) throws SQLException {
-        Rentable rentable = null;
-        try {
-            Connection conn = geefVerbinding();
-            try {
-                //TODO get images for building
-                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentable);
-                ps.setInt(1, rentableId);
-                ResultSet rs = ps.executeQuery();
-                System.out.println("command: " + DataBaseConstants.selectRentable);
-                while (rs.next()) {
-                    rentable = new Rentable(
-                            rentableId,
-                            rs.getInt(DataBaseConstants.rentableType),
-                            rs.getInt(DataBaseConstants.rentableArea),
-                            rs.getString(DataBaseConstants.windowDirection),
-                            rs.getInt(DataBaseConstants.windowsArea),
-                            rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
-                            rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
-                            rs.getInt(DataBaseConstants.outletCount),
-                            rs.getInt(DataBaseConstants.floor),
-                            false,
-                            rs.getDouble(DataBaseConstants.price),
-                            rs.getString(DataBaseConstants.rentableDescription));
-                }
+	Rentable rentable = null;
+	try {
+	    Connection conn = geefVerbinding();
+	    try {
+		//TODO get images for building
+		PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentable);
+		ps.setInt(1, rentableId);
+		ResultSet rs = ps.executeQuery();
+		System.out.println("command: " + DataBaseConstants.selectRentable);
+		while (rs.next()) {
+		    rentable = new Rentable(
+			    rentableId,
+				null, //TODO add preview image for rooms
+			    rs.getInt(DataBaseConstants.rentableType),
+			    rs.getInt(DataBaseConstants.rentableArea),
+			    rs.getString(DataBaseConstants.windowDirection),
+			    rs.getInt(DataBaseConstants.windowsArea),
+			    rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
+			    rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
+			    rs.getInt(DataBaseConstants.outletCount),
+			    rs.getInt(DataBaseConstants.floor),
+			    false,
+			    rs.getDouble(DataBaseConstants.price),
+			    rs.getString(DataBaseConstants.rentableDescription));
+		}
 
             } finally {
                 conn.close();

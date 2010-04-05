@@ -1,9 +1,7 @@
 package gui.addremovetab;
 
-import data.addremove.PicturesListModel;
 import Language.CountryNotFoundException;
 import Language.Language;
-import Resources.RelativeLayout;
 import gui.Layout;
 import gui.Main;
 import java.awt.BorderLayout;
@@ -14,11 +12,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import data.entities.Floor;
 import data.entities.Building;
@@ -26,7 +25,7 @@ import data.entities.Rentable;
 
 public class BuildingDialog extends JDialog {
 
-	private static BuildingDialog instance;
+	private BuildingDialog instance;
 	private int buildingId;
 	private JTextField txtStreet;
 	private JTextField txtStreetNumber;
@@ -35,51 +34,43 @@ public class BuildingDialog extends JDialog {
 	private JComboBox cbbCountry;
 	private JList lstFloors;
 	private JList lstRentables;
-	private ArrayList<Rentable> rentables; //TODO put rentables in model (out of gui)
+	private ArrayList<Rentable> rentables;
 	private JButton btnConfirm;
+	private JLabel lblPreview;
+	private JList lstPicture;
 
-	public static void show(int buildingId, boolean newBuilding) {
-		if (instance == null) {
-			instance = new BuildingDialog();
-		}
-		instance.setLocationRelativeTo(null);
-		instance.setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
+	public BuildingDialog(Main parent, int buildingId, boolean newBuilding) {
+		//TODO fix layout, make 2 panels add them with border layout so that floors and rentables are equal size
 
-		instance.setBuildingId(buildingId);
-		instance.fillInfo(newBuilding);
-		instance.setVisible(true);
-	}
-
-	private BuildingDialog() {
+		this.buildingId = buildingId;
+		instance = this;
+		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
-		this.setModal(true);
-		this.setPreferredSize(new Dimension(500, 500));
-		this.setMinimumSize(new Dimension(290, 405));
+		this.setModal(false);
+		this.setPreferredSize(new Dimension(700, 600));
+		this.setMinimumSize(new Dimension(400, 405));
 		this.setLayout(new BorderLayout());
 
 		//images
-		JPanel pnlImages = new JPanel(new RelativeLayout(RelativeLayout.Y_AXIS, 5));
+		JPanel pnlImages = new JPanel(new BorderLayout(10, 10));
+		pnlImages.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
+		
+		pnlImages.setPreferredSize(new Dimension(120,10000));
+		pnlImages.setMinimumSize(new Dimension(120,120));
 		this.add(pnlImages, BorderLayout.LINE_START);
 
 		//preview
-		JLabel lblPreview = new JLabel();
-		pnlImages.add(lblPreview);
+		lblPreview = new JLabel();
+		pnlImages.add(lblPreview, BorderLayout.PAGE_START);
+
 
 		//pictures
-		PicturesListModel listModelBuildingPictures = new PicturesListModel();
-		JList listPictures = new JList(listModelBuildingPictures);
-		listPictures.setBackground(new Color(217, 217, 217));
-		listPictures.setCellRenderer(new PictureCellRenderer());
+		lstPicture = new JList();
+		lstPicture.setBackground(new Color(217, 217, 217));
+		lstPicture.setCellRenderer(new PictureCellRenderer());
+		JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		pnlImages.add(picScroller, BorderLayout.CENTER);
 
-		HashMap<Integer, BufferedImage> buildingPictures = null;
-		try {
-			buildingPictures = Main.getDataObject().getPictures(buildingId, true);
-		} catch (SQLException ex) {
-			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-		}
-		for (Integer id : buildingPictures.keySet()) {
-			listModelBuildingPictures.add(id, buildingPictures.get(id));
-		}
 
 		//info
 		JPanel pnlInformation = new JPanel(new BorderLayout());
@@ -209,7 +200,7 @@ public class BuildingDialog extends JDialog {
 				if (e.getClickCount() == 1) {
 					//TODO show rentables in list next to buildings
 				} else {
-					RentableDialog.show(rentables.get(index).getId(), false);
+					new RentableDialog(instance, rentables.get(index).getId(), false).setVisible(true);
 				}
 			}
 		});
@@ -265,7 +256,12 @@ public class BuildingDialog extends JDialog {
 		});
 		pnlButtons.add(btnConfirm);
 
+		//info opvullen:
+		fillInfo(newBuilding);
+
 		pack();
+
+		setLocationRelativeTo(parent);
 	}
 
 	public int getBuildingId() {
@@ -303,6 +299,8 @@ public class BuildingDialog extends JDialog {
 					JOptionPane.showMessageDialog(this, ex.getMessage(), Language.getString("errAnalyseFailTitle"), JOptionPane.ERROR_MESSAGE);
 				}
 
+				lblPreview.setIcon(building.getPreviewImage());
+
 				rentables = Main.getDataObject().getRentablesFromBuilding(buildingId);
 				lstRentables.setListData(rentables.toArray());
 				TreeSet<Floor> floors = new TreeSet<Floor>();
@@ -314,6 +312,16 @@ public class BuildingDialog extends JDialog {
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), Language.getString("errDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 			}
+
+			try {
+				//TODO make multihreaded
+				lstPicture.setModel(Main.getDataObject().updateBuildingPictures(buildingId));
+			} catch (IOException ex) {
+				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);//TODO change message?
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+			}
+
 		}
 	}
 }

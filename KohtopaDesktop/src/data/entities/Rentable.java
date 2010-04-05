@@ -1,90 +1,102 @@
 package data.entities;
 
 import Language.Language;
+import javax.swing.ImageIcon;
 
 public class Rentable extends AbstractPlace {
 
-    private String type;
-    private int area;
-    private String windowsDirection;
-    private int windowArea;
-    private boolean internet;
-    private boolean cable;
-    private int outletCount;
-    private int floor;
-    private boolean rented;
-    private double price;
-    private String description;
+	private String type;
+	private int area;
+	private String windowsDirection;
+	private int windowArea;
+	private boolean internet;
+	private boolean cable;
+	private int outletCount;
+	private int floor;
+	private boolean rented;
+	private double price;
+	private String description;
+	private ImageIcon previewImage;
 
-    public Rentable(int id, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
-	this(id, type, floor, description);
-	this.area = area;
-	this.windowsDirection = windowsDirection;
-	this.windowArea = windowArea;
-	this.internet = internet;
-	this.cable = cable;
-	this.outletCount = outletCount;
-	this.rented = rented;
-	this.price = price;
-    }
+	public Rentable(int id, ImageIcon previewImage, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
+		this(id, previewImage, type, floor, description);
+		this.area = area;
+		this.windowsDirection = windowsDirection;
+		this.windowArea = windowArea;
+		this.internet = internet;
+		this.cable = cable;
+		this.outletCount = outletCount;
+		this.rented = rented;
+		this.price = price;
+	}
 
-    public Rentable(int id, int type, int floor, String description) {
-	super(id);
-	this.type = Language.getString("rentableType" + type);
-	this.floor = floor;
-	this.description = description;
-    }
+	public Rentable(int id, ImageIcon previewImage, int type, int floor, String description) {
+		super(id);
+		if (previewImage == null) {
+			this.previewImage = new ImageIcon(getClass().getResource("/images/dummy_rentable_preview.png"));
+		} else {
+			this.previewImage = previewImage;
+		}
+		this.type = Language.getString("rentableType" + type) != null ? Language.getString("rentableType" + type) : "";
+		System.out.println("type2 : " + this.type);
+		this.floor = floor;
+		this.description = description;
+	}
 
-    public int getArea() {
-	return area;
-    }
+	public int getArea() {
+		return area;
+	}
 
-    public boolean isCable() {
-	return cable;
-    }
+	public boolean isCable() {
+		return cable;
+	}
 
-    public int getFloor() {
-	return floor;
-    }
+	public int getFloor() {
+		return floor;
+	}
 
-    public boolean isInternet() {
-	return internet;
-    }
+	public boolean isInternet() {
+		return internet;
+	}
 
-    public int getOutletCount() {
-	return outletCount;
-    }
+	public int getOutletCount() {
+		return outletCount;
+	}
 
-    public double getPrice() {
-	return price;
-    }
+	public double getPrice() {
+		return price;
+	}
 
-    public boolean isRented() {
-	return rented;
-    }
+	public boolean isRented() {
+		return rented;
+	}
 
-    public String getType() {
-	return type;
-    }
+	public String getType() {
+		return type;
+	}
 
-    public int getWindowArea() {
-	return windowArea;
-    }
+	public int getWindowArea() {
+		return windowArea;
+	}
 
-    public String getWindowsDirection() {
-	return windowsDirection;
-    }
+	public String getWindowsDirection() {
+		return windowsDirection;
+	}
 
-    public String getDescription() {
-	return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-	this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    @Override
-    public String toString() {
-	return Integer.toString(id); //TODO add name for rentable, return it here
-    }
+	public ImageIcon getPreviewImage() {
+		return previewImage;
+	}
+
+	@Override
+	public String toString() {
+		return Integer.toString(id); //TODO add name for rentable, return it here
+	}
 }
