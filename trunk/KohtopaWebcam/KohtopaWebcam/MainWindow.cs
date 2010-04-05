@@ -258,6 +258,7 @@ namespace KohtopaWebcam
             }
             else
             {
+                pcbPreview.Image.Dispose();
                 wt.Preview = null;
                 btnPreview.Text = "preview";
                 cboDevices.Enabled = true;

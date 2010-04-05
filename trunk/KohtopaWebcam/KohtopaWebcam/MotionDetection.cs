@@ -48,17 +48,13 @@ namespace KohtopaWebcam
                     {
                         changedPixels++;
                     }
-                    pictureValues[i * NUMBER_TEST_PIXELS + j] = currentColor;
+                     
+                    pictureValues[i * NUMBER_TEST_PIXELS + j] = currentColor;                    
                     positionX = positionX + widthStep;
                 }
                 positionY = positionY + heightStep;
             }
-            /*
-            if ((1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_TOLERANCE)
-            {
-                Console.Beep();
-            }
-            */ 
+            
             return (1.0 * changedPixels) / (NUMBER_TEST_PIXELS * NUMBER_TEST_PIXELS) > MOTION_TOLERANCE;            
         }
     }
