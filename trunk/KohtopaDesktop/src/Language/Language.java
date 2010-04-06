@@ -83,4 +83,11 @@ public class Language {
     public static String getString(String key) {
 	return strings.get(key);
     }
+
+    public static String[] getDaysOfWeek(boolean isEnglish){
+        if(isEnglish)
+            return new String[] {"Mo","Tu","We","Th","Fr","Sa","Su"};
+        else
+            return new String[] {"ma","di","wo","do","vr","za","zo"};
+    }
 }
