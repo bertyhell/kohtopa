@@ -19,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
 import gui.addremovetab.RentableDialog;
+import gui.calendartab.CalendarPanel;
 
 public class Main extends JFrame {
 
@@ -215,8 +216,9 @@ public class Main extends JFrame {
 	btnRemoveTask.setHideActionText(disableBtnText);
 	pnlButtonsCalendar.add(btnRemoveTask);
 
-	JPanel pnlDays = new JPanel();
+	JPanel pnlDays = new CalendarPanel();
 	pnlDays.setPreferredSize(new Dimension(500, 600));
+        pnlDays.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 	pnlCalendar.add(pnlDays, BorderLayout.CENTER);
 
 	return pnlCalendar;
