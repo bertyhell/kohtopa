@@ -42,7 +42,7 @@ public class RentableDialog extends JDialog {
 		setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setModal(true);
-		this.setPreferredSize(new Dimension(500, 500));
+		this.setPreferredSize(new Dimension(700, 500));
 		this.setMinimumSize(new Dimension(290, 405));
 		this.setLayout(new BorderLayout());
 
@@ -50,14 +50,38 @@ public class RentableDialog extends JDialog {
 		JPanel pnlImages = new JPanel(new BorderLayout(10, 10));
 		pnlImages.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 
-		pnlImages.setPreferredSize(new Dimension(120, 10000));
-		pnlImages.setMinimumSize(new Dimension(120, 120));
+		pnlImages.setPreferredSize(new Dimension(200,10000));
+		pnlImages.setMinimumSize(new Dimension(200,120));
 		this.add(pnlImages, BorderLayout.LINE_START);
 
 		//preview
-		lblPreview = new JLabel();
-		pnlImages.add(lblPreview, BorderLayout.PAGE_START);
+		GridBagLayout gbl1 = new GridBagLayout();
+		GridBagConstraints gbc1 = new GridBagConstraints();
+		JPanel pnlPictureButtons = new JPanel(gbl1);
+		pnlImages.add(pnlPictureButtons, BorderLayout.PAGE_START);
 
+		lblPreview = new JLabel();
+		Layout.buildConstraints(gbc1, 0, 0, 3, 1, 3, 3, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(lblPreview, gbc1);
+		pnlPictureButtons.add(lblPreview);
+
+		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
+		btnPictureAdd.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
+		pnlPictureButtons.add(btnPictureAdd);
+
+		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
+		btnPicturePreview.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
+		pnlPictureButtons.add(btnPicturePreview);
+
+		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
+		btnPictureRemove.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPictureRemove, gbc1);
+		pnlPictureButtons.add(btnPictureRemove);
 
 		//pictures
 		lstPicture = new JList();
@@ -65,22 +89,6 @@ public class RentableDialog extends JDialog {
 		lstPicture.setCellRenderer(new PictureCellRenderer());
 		JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		pnlImages.add(picScroller, BorderLayout.CENTER);
-
-		//pictures
-		PictureListModel listModelBuildingPictures = new PictureListModel();
-		JList listPictures = new JList(listModelBuildingPictures);
-		listPictures.setBackground(new Color(217, 217, 217));
-		listPictures.setCellRenderer(new PictureCellRenderer());
-
-//		HashMap<Integer, BufferedImage> rentablePictures = null;
-//		try {
-//			rentablePictures = Main.getDataObject().getPictures(rentableId, false); //TODO wss nog verkeerd, uitzoeken
-//		} catch (SQLException ex) {
-//			JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
-//		}
-//		for (Integer id : rentablePictures.keySet()) {
-//			listModelBuildingPictures.add(id, rentablePictures.get(id));
-//		}
 
 		//info
 		GridBagLayout gbl = new GridBagLayout();

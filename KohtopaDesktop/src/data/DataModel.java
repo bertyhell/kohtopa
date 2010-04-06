@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
+import gui.SplashConnect;
 
 public class DataModel {
 
@@ -146,12 +147,14 @@ public class DataModel {
 			return true;
 		} catch (SQLException ex) {
 			System.out.println("fetch failed(listener)");
+			SplashConnect.hideSplash();
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
 			//TODO add connection string settings
 
 			return false;
 		} catch (IOException ex) {
 			System.out.println("fetch failed io (listener)");
+			SplashConnect.hideSplash();
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), Language.getString("errImagesFetchFailTitle"), JOptionPane.ERROR_MESSAGE);
 			//TODO add connection string settings
 
