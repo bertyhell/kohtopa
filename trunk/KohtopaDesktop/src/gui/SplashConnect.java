@@ -19,6 +19,7 @@ public class SplashConnect extends JDialog {
 
     private SplashConnect() {
 	super(Main.getInstance(), "", false);
+	this.setAlwaysOnTop(true);
 	setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 	setUndecorated(true);
 	setAlwaysOnTop(true);

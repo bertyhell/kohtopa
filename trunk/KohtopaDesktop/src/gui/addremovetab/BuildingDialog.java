@@ -16,8 +16,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import data.entities.Floor;
 import data.entities.Building;
@@ -55,14 +53,38 @@ public class BuildingDialog extends JDialog {
 		JPanel pnlImages = new JPanel(new BorderLayout(10, 10));
 		pnlImages.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 		
-		pnlImages.setPreferredSize(new Dimension(120,10000));
-		pnlImages.setMinimumSize(new Dimension(120,120));
+		pnlImages.setPreferredSize(new Dimension(200,10000));
+		pnlImages.setMinimumSize(new Dimension(200,120));
 		this.add(pnlImages, BorderLayout.LINE_START);
 
 		//preview
-		lblPreview = new JLabel();
-		pnlImages.add(lblPreview, BorderLayout.PAGE_START);
+		GridBagLayout gbl1 = new GridBagLayout();
+		GridBagConstraints gbc1 = new GridBagConstraints();
+		JPanel pnlPictureButtons = new JPanel(gbl1);
+		pnlImages.add(pnlPictureButtons, BorderLayout.PAGE_START);
 
+		lblPreview = new JLabel();
+		Layout.buildConstraints(gbc1, 0, 0, 3, 1, 3, 3, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(lblPreview, gbc1);
+		pnlPictureButtons.add(lblPreview);
+
+		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
+		btnPictureAdd.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
+		pnlPictureButtons.add(btnPictureAdd);
+
+		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
+		btnPicturePreview.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
+		pnlPictureButtons.add(btnPicturePreview);
+
+		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
+		btnPictureRemove.setName("building"); //for identification in the action (building pic or rentable pic)
+		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+		gbl1.addLayoutComponent(btnPictureRemove, gbc1);
+		pnlPictureButtons.add(btnPictureRemove);
 
 		//pictures
 		lstPicture = new JList();
@@ -76,88 +98,94 @@ public class BuildingDialog extends JDialog {
 		JPanel pnlInformation = new JPanel(new BorderLayout());
 		this.add(pnlInformation, BorderLayout.CENTER);
 
+		//top info (not scaling)
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
-		JPanel pnlBuildingInfo = new JPanel(gbl);
-		pnlBuildingInfo.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
-		pnlInformation.add(pnlBuildingInfo, BorderLayout.PAGE_START);
+		JPanel pnlTopInformation = new JPanel(gbl);
+		pnlTopInformation.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+		pnlInformation.add(pnlTopInformation, BorderLayout.PAGE_START);
 
 		int row = 0; //first row
 
 		JLabel lblStreet = new JLabel(Language.getString("street") + ":");
 		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
 		gbl.addLayoutComponent(lblStreet, gbc);
-		pnlBuildingInfo.add(lblStreet);
+		pnlTopInformation.add(lblStreet);
 
 		txtStreet = new JTextField();
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtStreet, gbc);
-		pnlBuildingInfo.add(txtStreet);
+		pnlTopInformation.add(txtStreet);
 
 		JLabel lblStreetNumber = new JLabel(Language.getString("streetNumber") + ":");
 		Layout.buildConstraints(gbc, 4, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
 		gbl.addLayoutComponent(lblStreetNumber, gbc);
-		pnlBuildingInfo.add(lblStreetNumber);
+		pnlTopInformation.add(lblStreetNumber);
 
 		txtStreetNumber = new JTextField();
 		Layout.buildConstraints(gbc, 5, row, 2, 1, 50, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtStreetNumber, gbc);
-		pnlBuildingInfo.add(txtStreetNumber);
+		pnlTopInformation.add(txtStreetNumber);
 
 		row++; //next row
 
 		JLabel lblZip = new JLabel(Language.getString("zipCode") + ":");
 		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
 		gbl.addLayoutComponent(lblZip, gbc);
-		pnlBuildingInfo.add(lblZip);
+		pnlTopInformation.add(lblZip);
 
 		txtZip = new JTextField();
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtZip, gbc);
-		pnlBuildingInfo.add(txtZip);
+		pnlTopInformation.add(txtZip);
 
 		row++; //next row
 
 		JLabel lblCity = new JLabel(Language.getString("city") + ":");
 		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
 		gbl.addLayoutComponent(lblCity, gbc);
-		pnlBuildingInfo.add(lblCity);
+		pnlTopInformation.add(lblCity);
 
 		txtCity = new JTextField();
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtCity, gbc);
-		pnlBuildingInfo.add(txtCity);
+		pnlTopInformation.add(txtCity);
 
 		row++; //next row
 
 		JLabel lblCountry = new JLabel(Language.getString("country") + ":");
 		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
 		gbl.addLayoutComponent(lblCountry, gbc);
-		pnlBuildingInfo.add(lblCountry);
+		pnlTopInformation.add(lblCountry);
 
 		cbbCountry = Language.getCountryComboBox();
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(cbbCountry, gbc);
-		pnlBuildingInfo.add(cbbCountry);
+		pnlTopInformation.add(cbbCountry);
 
 
+
+
+
+
+		//center info (scaling)
 
 		//floors
 		row = 0;
 
 		GridBagLayout gbl2 = new GridBagLayout();
-		JPanel pnlRentablesInfo = new JPanel(gbl);
+		JPanel pnlRentablesInfo = new JPanel(gbl2);
 		pnlRentablesInfo.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		pnlInformation.add(pnlRentablesInfo, BorderLayout.CENTER);
 
 		JLabel lblFloors = new JLabel(Language.getString("floors") + ":");
 		Layout.buildConstraints(gbc, 0, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblFloors, gbc);
+		gbl2.addLayoutComponent(lblFloors, gbc);
 		pnlRentablesInfo.add(lblFloors);
 
 		JLabel lblRentable = new JLabel(Language.getString("rentables") + ":");
 		Layout.buildConstraints(gbc, 3, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblRentable, gbc);
+		gbl2.addLayoutComponent(lblRentable, gbc);
 		pnlRentablesInfo.add(lblRentable);
 
 		row++; //next row
@@ -167,14 +195,14 @@ public class BuildingDialog extends JDialog {
 		lstFloors = new JList(testFloors);
 		JScrollPane scrolFloor = new JScrollPane(lstFloors, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		Layout.buildConstraints(gbc, 0, row, 1, 2, 120, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(scrolFloor, gbc);
+		gbl2.addLayoutComponent(scrolFloor, gbc);
 		pnlRentablesInfo.add(scrolFloor);
 
 		//buttons floor
 		JPanel pnlFloorBtns = new JPanel();
 		pnlFloorBtns.setPreferredSize(new Dimension(50, 120));
 		Layout.buildConstraints(gbc, 2, row, 1, 1, 10, 1, GridBagConstraints.NONE, GridBagConstraints.PAGE_START);
-		gbl.addLayoutComponent(pnlFloorBtns, gbc);
+		gbl2.addLayoutComponent(pnlFloorBtns, gbc);
 		pnlRentablesInfo.add(pnlFloorBtns);
 
 		JButton btnAddFloor = new JButton(Main.getAction("floorAdd"));
@@ -206,14 +234,14 @@ public class BuildingDialog extends JDialog {
 		});
 		JScrollPane scrolRentable = new JScrollPane(lstRentables, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		Layout.buildConstraints(gbc, 3, row, 1, 2, 120, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(scrolRentable, gbc);
+		gbl2.addLayoutComponent(scrolRentable, gbc);
 		pnlRentablesInfo.add(scrolRentable);
 
 		//buttons rentables
 		JPanel pnlRentableBtns = new JPanel();
 		pnlRentableBtns.setPreferredSize(new Dimension(50, 120));
 		Layout.buildConstraints(gbc, 6, row, 1, 1, 10, 1, GridBagConstraints.NONE, GridBagConstraints.PAGE_START);
-		gbl.addLayoutComponent(pnlRentableBtns, gbc);
+		gbl2.addLayoutComponent(pnlRentableBtns, gbc);
 		pnlRentablesInfo.add(pnlRentableBtns);
 
 		JButton btnAddRentable = new JButton(Main.getAction("rentableAdd"));

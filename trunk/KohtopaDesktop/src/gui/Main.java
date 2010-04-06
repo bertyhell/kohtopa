@@ -52,6 +52,9 @@ public class Main extends JFrame {
 	actions.put("buildingAdd", new BuildingAddAction("buildingAdd", new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
 	actions.put("buildingEdit", new BuildingEditAction("buildingEdit", new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
 	actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove", new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
+	actions.put("pictureAdd", new BuildingAddAction("pictureAdd", new ImageIcon(getClass().getResource("/images/picture_add_23.png"))));
+	actions.put("picturePreview", new BuildingEditAction("picturePreview", new ImageIcon(getClass().getResource("/images/picture_preview_23.png"))));
+	actions.put("pictureRemove", new BuildingRemoveAction("pictureRemove", new ImageIcon(getClass().getResource("/images/picture_remove_23.png"))));
 	actions.put("rentableAdd", new RentableAddAction("rentableAdd", new ImageIcon(getClass().getResource("/images/rentable_add_23.png"))));
 	actions.put("rentableEdit", new RentableEditAction("rentableEdit", new ImageIcon(getClass().getResource("/images/rentable_edit_23.png"))));
 	actions.put("rentableRemove", new RentableRemoveAction("rentableRemove", new ImageIcon(getClass().getResource("/images/rentable_remove_23.png"))));
@@ -80,7 +83,6 @@ public class Main extends JFrame {
 
 	//adding Add/Remove panel
 	tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
-
 	tabbed.setMnemonicAt(0, KeyEvent.VK_A);
 
 	//adding Calendar panel
@@ -119,9 +121,11 @@ public class Main extends JFrame {
 	pnlButtonsAddRemove.add(btnAddBuilding);
 
 	JButton btnEditBuilding = new JButton(actions.get("buildingEdit"));
-	btnEditBuilding.setHideActionText(disableBtnText);
+	btnEditBuilding.setHideActionText(disableBtnText); //replace disableBtnText by setting in settings tab
 	pnlButtonsAddRemove.add(btnEditBuilding);
 
+	//remove selected buildings > make it remove all selected buildings
+	//also multiple selection on buildings > show multiple rentables
 	JButton btnRemoveBuilding = new JButton(actions.get("buildingRemove"));
 	btnRemoveBuilding.setHideActionText(disableBtnText);
 	pnlButtonsAddRemove.add(btnRemoveBuilding);
@@ -366,7 +370,7 @@ public class Main extends JFrame {
 //		//check login
 //		if(data.isLoggedIn()){
 
-
+		SplashConnect.showSplash();
 
 
 		//TODO show splash with different tread?
@@ -376,7 +380,11 @@ public class Main extends JFrame {
 		while (!data.fetchAddRemove()) {
 		    //database connection failed
 		    //TODO show connection string dialog
+
+			SplashConnect.hideSplash();
 		    JOptionPane.showMessageDialog(instance, "connecting", "connection", JOptionPane.INFORMATION_MESSAGE);
+
+			SplashConnect.showSplash();
 		}
 
 		SplashConnect.hideSplash();
