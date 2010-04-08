@@ -1,9 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Search.ascx.cs" Inherits="KohtopaWeb.Search1" %>
 
-<asp:GridView ID="gvFilters" runat="server" OnRowDeleting="gvFilters_RowDeleting">    
-    <Columns>
-        <asp:CommandField HeaderText="X" ShowDeleteButton="true" DeleteText="X"/>        
-    </Columns>
+<asp:GridView ID="gvFilters" runat="server" AutoGenerateColumns="false" OnRowDeleting="gvFilters_RowDeleting">    
+    
 </asp:GridView>
 
 <asp:Table ID="tblHeadTable" runat="server">
@@ -77,6 +75,7 @@
                     </asp:TableCell>
                     <asp:TableCell>
                         <asp:TextBox ID="txtStreet" runat="server"/>
+                        <asp:RequiredFieldValidator ID="rfvStreet" runat="server" ControlToValidate="txtMaxDistance"/>
                      </asp:TableCell>
                 </asp:TableRow>
                 <asp:TableRow>
@@ -84,7 +83,7 @@
                         <asp:Label ID="lblStreetNumber" runat="server"/>
                      </asp:TableCell>
                      <asp:TableCell>
-                        <asp:TextBox ID="txtStreetNumber" runat="server"/>
+                        <asp:TextBox ID="txtStreetNumber" runat="server"/>                        
                     </asp:TableCell>
                 </asp:TableRow>
                 <asp:TableRow>

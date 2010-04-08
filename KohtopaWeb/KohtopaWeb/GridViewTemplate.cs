@@ -264,7 +264,44 @@ namespace KohtopaWeb
                     }
                     catch { }
                 }
-            }            
+            }
+            else if (data[1].Equals("FilterType"))
+            {
+                string dataValue = "" + DataBinder.Eval(container.DataItem, "Data");
+                string operation = "" + DataBinder.Eval(container.DataItem, "Operation");
+                string value1 = "" + DataBinder.Eval(container.DataItem, "Value1");
+                string value2 = "" + DataBinder.Eval(container.DataItem, "Value2");                                
+                try
+                {
+                    if (operation.Equals("Between"))
+                    {
+                        lbl.Text = Language.getstring(dataValue,language) + " " + Language.getstring("Between",language).ToLower() + " " + value1 + " " + Language.getstring("And",language).ToLower() + " " + value2;
+                    }
+                    else if (operation.Equals("Required"))
+                    {
+                        
+                        if (value1.Equals("1"))
+                        {
+                            lbl.Text = Language.getstring("MustHave", language);                            
+                        }
+                        else
+                        {
+                            lbl.Text = Language.getstring("NoReject", language);
+                        }
+                        lbl.Text += " " + Language.getstring(dataValue, language).ToLower();
+                    }
+                    else if (operation.Equals("Contains"))
+                    {
+                        lbl.Text = Language.getstring(dataValue, language) + " " + Language.getstring("Contains", language).ToLower() + " " + value1;
+                    }
+                    else if (operation.Equals("Distance"))
+                    {
+                        string km = value2.Split(';')[2];
+                        lbl.Text = Language.getstring("WithinRadiusOf",language) + " " + km + " km " + Language.getstring("From",language).ToLower() + " " + value1;
+                    }                    
+                }
+                catch{}                
+            }        
         }
 
         void txt_DataBinding(object sender, EventArgs e)
