@@ -19,8 +19,8 @@ namespace KohtopaWeb
     public class DataConnector
     {        
         private static string usernameDB = "system";
-        private static string password = "e=mc**2";
-        private static string databaseName = "Kohtopa";        
+        private static string password = "admin";
+        private static string databaseName = "XE";        
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
         public static string rentableTypes = "Room;Appartment;House";        
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
@@ -41,7 +41,9 @@ namespace KohtopaWeb
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
         
-        private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";                 
+        private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";
+
+        public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
@@ -101,6 +103,29 @@ namespace KohtopaWeb
             OleDbDataAdapter da = new OleDbDataAdapter(getRentablesSQL + " " + order, conn);
             DataSet ds = new DataSet();
             da.Fill(ds);            
+            return ds.Tables[0];
+        }
+
+        public static DataTable getRentables(double longitude, double latitude, double distance, string order)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getRentablesSQL.Insert(getRentablesSQL.IndexOf(" group by")," " + distanceFilterSQL) + " " + order;
+            OleDbParameter p = new OleDbParameter();
+            p.Value = latitude;
+            command.Parameters.Add(p);
+            p = new OleDbParameter();
+            p.Value = latitude;
+            command.Parameters.Add(p);
+            p = new OleDbParameter();
+            p.Value = longitude;
+            command.Parameters.Add(p);
+            p = new OleDbParameter();
+            p.Value = distance;
+            command.Parameters.Add(p);
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
             return ds.Tables[0];
         }
 

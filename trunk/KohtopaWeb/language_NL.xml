@@ -53,5 +53,10 @@
     <entry name="StreetNumber">Straat nummer</entry>
     <entry name="Country">Land</entry>
     <entry name="MaxDistanceKM">Maximale afstand (km)</entry>    
-    <entry name="NumberBetween0_100">Dit veld moet een getal bevatten tussen 0 en 100</entry>        
+    <entry name="NumberBetween0_100">Dit veld moet een getal bevatten tussen 0 en 100</entry>
+    <entry name="And">En</entry>
+    <entry name="MustHave">Moet beschikken over</entry>       
+    <entry name="NoReject">Geen</entry>
+    <entry name="WithinRadiusOf">Binnen een straal van</entry>
+    <entry name="From">Van</entry>
 </Language>

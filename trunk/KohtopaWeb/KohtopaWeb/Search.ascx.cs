@@ -71,11 +71,11 @@ namespace KohtopaWeb
                 lblCountry.Text = Language.getstring("Country", language);
                 lblMaxDistance.Text = Language.getstring("MaxDistanceKM", language);
                 rfvMaxDistance.ErrorMessage = Language.getstring("RequiredField", language);
+                rfvStreet.ErrorMessage = Language.getstring("RequiredField", language);                
                 rvMaxDistance.ErrorMessage = Language.getstring("NumberBetween0_100", language);
                 btnMaxDistance.Text = Language.getstring("Add", language);
 
                 ddlFilters_Selected_Index_Changed(null, null);
-
                 
             }
             else
@@ -180,6 +180,37 @@ namespace KohtopaWeb
 
         protected void btnMaxDistance_Click(object sender, EventArgs e)
         {
+            DataTable searchTable = getSearchTable();
+            DataView dv = new DataView(searchTable);
+            dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
+            DataRow dr;
+            if (dv.ToTable().Rows.Count == 1)
+            {
+                dr = dv.ToTable().Rows[0];
+                string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                dr = searchTable.Rows.Find(keys);
+            }
+            else
+            {
+                dr = searchTable.NewRow();
+            }
+            dr["data"] = ddlFilters.SelectedValue;
+            dr["operation"] = "Distance";
+            string address = txtStreet.Text + " " + txtStreetNumber.Text + " , " + txtCity.Text + " , " + txtCountry.Text;
+            Pair longLat = GoogleGeocoding.getLongLat(address);            
+            if (longLat != null)
+            {                
+                try
+                {                    
+                    dr["value1"] = address;
+                    string longLatDist = "" + longLat.First + ";" + longLat.Second + ";" + txtMaxDistance.Text;
+                    longLatDist = longLatDist.Replace(',', '.');
+                    dr["value2"] = longLatDist;
+                    searchTable.Rows.Add(dr);
+                }
+                catch { } //if dr is not a new row;
+                updateFilterView();
+            }
         }
 
         private DataTable getSearchTable()
@@ -200,38 +231,39 @@ namespace KohtopaWeb
         }
 
         private void updateFilterView()
-        {            
+        {                        
             DataTable searchTable = (DataTable)Session["searchTable"];
             try
             {
                 updateRentableColumns();
+                updateFilterColumns();
                 string test = "" + ViewState["rentableOrder"];
                 DataView dv = new DataView(DataConnector.getRentables("" + ViewState["rentableOrder"]));
                 lblDatabaseError.Visible = false;
                 gvRentables.Visible = true;
                 if (searchTable != null)
                 {
-                    DataTable fv = new DataTable();
-                    string language = "" + Session["Language"];
-                    string data = Language.getstring("Data", language);
-                    string operation = Language.getstring("Operation", language);
-                    string value1 = Language.getstring("Value1", language);
-                    string value2 = Language.getstring("Value2", language);
-                    fv.Columns.Add(data);
-                    fv.Columns.Add(operation);
-                    fv.Columns.Add(value1);
-                    fv.Columns.Add(value2);
-                    int i = 0;
+                    //DataTable fv = new DataTable();
+                    //string language = "" + Session["Language"];
+                    //string data = Language.getstring("Data", language);
+                    //string operation = Language.getstring("Operation", language);
+                    //string value1 = Language.getstring("Value1", language);
+                    //string value2 = Language.getstring("Value2", language);
+                    //fv.Columns.Add(data);
+                    //fv.Columns.Add(operation);
+                    //fv.Columns.Add(value1);
+                    //fv.Columns.Add(value2);
+                    //int i = 0;
                     dv.RowFilter = "1 = 1";
                     foreach (DataRow dr in searchTable.Rows)
                     {
-                        DataRow r = fv.NewRow();
-                        r[data] = Language.getstring("" + dr["data"], language);
-                        r[operation] = Language.getstring("" + dr["operation"], language);
-                        r[value1] = dr["value1"];
-                        r[value2] = dr["value2"];
-                        fv.Rows.Add(r);
-                        i++;
+                     //   DataRow r = fv.NewRow();
+                     //   r[data] = Language.getstring("" + dr["data"], language);
+                     //   r[operation] = Language.getstring("" + dr["operation"], language);
+                     //   r[value1] = dr["value1"];
+                     //   r[value2] = dr["value2"];
+                     //   fv.Rows.Add(r);
+                     //   i++;
                         if ((string)dr["operation"] == "Between")
                         {
                             dv.RowFilter += (" AND " + dr["data"] + " >=" + dr["value1"] + " AND " + dr["data"] + " <= " + dr["value2"] );
@@ -244,9 +276,18 @@ namespace KohtopaWeb
                         {
                             dv.RowFilter += (" AND " + dr["data"] + " LIKE '%" + dr["value1"] + "%'" );
                         }
+                        else if ((string)dr["operation"] == "Distance")
+                        {                                                        
+                            string[] values = ("" + dr["value2"]).Split(';');
+                            try
+                            {
+                                dv.Table = DataConnector.getRentables(double.Parse(values[0],CultureInfo.InvariantCulture), double.Parse(values[1],CultureInfo.InvariantCulture) , double.Parse(values[2],CultureInfo.InvariantCulture), "" + ViewState["rentableOrder"]);
+                            }
+                            catch{}
+                        }
                     }
-                    gvFilters.DataSource = fv;
-                    gvFilters.DataBind();
+                    //gvFilters.DataSource = fv;
+                    //gvFilters.DataBind();
 
                     gvRentables.DataSource = dv;                    
                     gvRentables.DataBind();
@@ -263,10 +304,49 @@ namespace KohtopaWeb
                 lblDatabaseError.Visible = true;
                 gvRentables.Visible = false;
             }
+
+
+        }
+
+        private void updateFilterColumns()
+        {
+            DataTable searchTable = (DataTable)Session["searchTable"];
+            try
+            {
+                string language = "" + Session["Language"];
+                gvFilters.Columns.Clear();
+                gvFilters.DataSource = searchTable;
+
+                CommandField cf = new CommandField();
+                cf.HeaderText = "X";
+                cf.ShowDeleteButton = true;
+                cf.DeleteText = "X";
+                gvFilters.Columns.Add(cf);
+
+                Label lbl = new Label();
+                lbl.Text = "DataBind:FilterType:None";
+                TableCell tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                TableRow tr = new TableRow();
+                tr.Cells.Add(tc);
+                Table table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                GridViewTemplate gvt = new GridViewTemplate(table, language);
+                TemplateField tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Filter", language);
+                tf.ItemTemplate = gvt;            
+                gvFilters.Columns.Add(tf);
+
+                gvFilters.DataBind();
+            }
+            catch{}
         }
 
         private void updateRentableColumns()
         {
+
             string language = "" + Session["Language"];
             gvRentables.Columns.Clear();
 
@@ -445,26 +525,7 @@ namespace KohtopaWeb
             tf.HeaderText = Language.getstring("OutletCount", language);
             tf.ItemTemplate = gvt;
             tf.SortExpression = DataConnector.RentableOrder.OUTLET_COUNT;
-            gvRentables.Columns.Add(tf);
-
-            /*
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:Window_Area";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("WindowArea", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.WINDOW_AREA;
-            gvRentables.Columns.Add(tf);
-             */ 
+            gvRentables.Columns.Add(tf);            
 
         }
 

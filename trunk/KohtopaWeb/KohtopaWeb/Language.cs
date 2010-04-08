@@ -45,7 +45,11 @@ namespace KohtopaWeb
                                 string name = reader.GetAttribute("name");
                                 if (reader.Read())
                                 {
-                                    strings.Add(name, reader.Value);
+                                    try
+                                    {
+                                        strings.Add(name, reader.Value);
+                                    }
+                                    catch{}//item already added;
                                 }
                             }
                         }

@@ -17,6 +17,8 @@ namespace KohtopaWeb
 {
     public class GoogleGeocoding
     {
+        private static string googleKey = ConfigurationManager.AppSettings["GoogleMapsKey"];
+
         private static double deg2rad(double deg)
         {
             return (deg * Math.PI / 180.0);
@@ -37,12 +39,12 @@ namespace KohtopaWeb
             return dist;                        
         }
 
-        public static Pair getLongLat(string address,string key)
+        public static Pair getLongLat(string address)
         {
             Pair p = null;
             try
             {
-                string xml = GetXml(address, key);
+                string xml = GetXml(address);
                 int start = xml.IndexOf("<coordinates>") + 13;
                 int end = xml.IndexOf("</coordinates>");
                 string[] values = xml.Substring(start, end - start).Split(',');
@@ -54,9 +56,9 @@ namespace KohtopaWeb
             return p;
         }
 
-        private static string GetXml(string address, string key)
-        {
-            string url = string.Format("http://maps.google.com/maps/geo?output=xml&q={0}&key={1}", HttpUtility.UrlEncode(address), key);
+        private static string GetXml(string address)
+        {            
+            string url = string.Format("http://maps.google.com/maps/geo?output=xml&q={0}&key={1}", HttpUtility.UrlEncode(address), googleKey);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             using (Stream stream = request.GetResponse().GetResponseStream())
@@ -66,6 +68,49 @@ namespace KohtopaWeb
                     return reader.ReadToEnd();
                 }
             }
+        }
+    }
+
+    public class GoogleAddress
+    {
+        private string address;
+        private Pair longLat;
+
+        public GoogleAddress(string address, Pair longLat)
+        {
+            this.address = address;
+            this.longLat = longLat;
+        }
+
+        public GoogleAddress() {}
+
+        public string Address
+        {
+            get
+            {
+                return address;
+            }
+            set
+            {
+                address = value;
+            }
+        }
+
+        public Pair LongLat
+        {
+            get
+            {
+                return longLat;
+            }
+            set
+            {
+                longLat = value;
+            }
+        }
+
+        public override string ToString()
+        {
+            return address;
         }
     }
 }

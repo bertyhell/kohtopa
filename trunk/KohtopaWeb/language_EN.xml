@@ -50,8 +50,13 @@
     <entry name="Address">Address</entry>
     <entry name="Distance">Distance</entry>    
     <entry name="StreetNumber">Street number</entry>
-    <entry name="Distance">Distance</entry>    
     <entry name="Country">Country</entry>
     <entry name="MaxDistanceKM">Maximum distance (km)</entry>    
-    <entry name="NumberBetween0_100">This field must be a number between 0 and 100</entry>        
+    <entry name="NumberBetween0_100">This field must be a number between 0 and 100</entry>
+    <entry name="And">And</entry>
+    <entry name="MustHave">Must have</entry>
+    <entry name="NoReject">No</entry>
+    <entry name="MustContain">Must contain</entry>
+    <entry name="WithinRadiusOf">Within a radius of</entry>
+    <entry name="From">From</entry>
 </Language>
