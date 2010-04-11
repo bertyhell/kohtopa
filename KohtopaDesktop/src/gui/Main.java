@@ -26,6 +26,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 public class Main extends JFrame {
@@ -113,6 +115,10 @@ public class Main extends JFrame {
 		//adding Settings Panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
 		tabbed.setMnemonicAt(4, KeyEvent.VK_S);
+
+		//adding Language Panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/language_64.png")), createLanguagePanel(), Language.getString("descriptionLanguage"));
+		tabbed.setMnemonicAt(4, KeyEvent.VK_L);
 
 
 		pack();
@@ -315,13 +321,28 @@ public class Main extends JFrame {
 		tabSettings.setTabComponentAt(tabSettings.getTabCount() - 1, lblConfirm);
 
 		//adding settings tab
-		JLabel lblConnection = new JLabel(Language.getString("connectionSettings"),new ImageIcon(getClass().getResource("/images/connection_32.png")), SwingConstants.RIGHT);
+		JLabel lblConnection = new JLabel(Language.getString("connectionSettings"), new ImageIcon(getClass().getResource("/images/connection_32.png")), SwingConstants.RIGHT);
 		JPanel pnlConnection = new JPanel();
 		pnlConnection.add(new JLabel("this is the connection settings dialog"));
 		tabSettings.addTab("", pnlConnection);
 		tabSettings.setTabComponentAt(tabSettings.getTabCount() - 1, lblConnection);
 
 		return pnlSettings;
+	}
+
+	private JPanel createLanguagePanel() {
+		//Language tab
+		JPanel pnlLanguage = new JPanel();
+		FilenameFilter filter = new FilenameFilter() {
+
+			public boolean accept(File dir, String name) {
+				return name.matches("language_[A-Z]{2}_.*\\.xml");
+			}
+		};
+		String[] children = new File(".").list(filter);
+		JComboBox cbbLanguages = new JComboBox(children);
+		pnlLanguage.add(cbbLanguages);
+		return pnlLanguage;
 	}
 
 	public static Action getAction(String type) {
@@ -482,7 +503,7 @@ public class Main extends JFrame {
 				}
 
 				if (loginChecked) {
-				//logged in
+					//logged in
 					SplashConnect.showSplash();
 					//TODO show splash with different tread?
 					//SplashConnect.showSplash();
