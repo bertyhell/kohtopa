@@ -1,22 +1,22 @@
 package data.entities;
 
-import javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
 
 public class Picture {
 
-    private ImageIcon picture;
-    private int id;
+	private BufferedImage picture;
+	private int id;
 
-    public Picture(int id, ImageIcon picture) {
-	this.id = id;
-	this.picture = picture;
-    }
+	public Picture(int id, BufferedImage picture) {
+		this.id = id;
+		this.picture = picture;
+	}
 
-    public int getId() {
-	return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public ImageIcon getPicture() {
-	return picture;
-    }
+	public BufferedImage getPicture() {
+		return picture;
+	}
 }

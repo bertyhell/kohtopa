@@ -38,7 +38,6 @@ public class Rentable extends AbstractPlace {
 			this.previewImage = previewImage;
 		}
 		this.type = Language.getString("rentableType" + type) != null ? Language.getString("rentableType" + type) : "";
-		System.out.println("type2 : " + this.type);
 		this.floor = floor;
 		this.description = description;
 	}

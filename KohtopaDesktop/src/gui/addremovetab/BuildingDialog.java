@@ -16,12 +16,16 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import data.entities.Floor;
 import data.entities.Building;
 import data.entities.Rentable;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class BuildingDialog extends JDialog {
+public class BuildingDialog extends JFrame implements IdentifiableI {
 
 	private BuildingDialog instance;
 	private int buildingId;
@@ -37,14 +41,18 @@ public class BuildingDialog extends JDialog {
 	private JLabel lblPreview;
 	private JList lstPicture;
 
-	public BuildingDialog(Main parent, int buildingId, boolean newBuilding) {
-		//TODO fix layout, make 2 panels add them with border layout so that floors and rentables are equal size
-
+	public BuildingDialog(JRootPane parent, int buildingId, boolean newBuilding) {
 		this.buildingId = buildingId;
 		instance = this;
+		this.addWindowFocusListener(new WindowAdapter() {
+
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				Main.setFocusedDialog(instance);
+			}
+		});
 		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
-		this.setModal(false);
 		this.setPreferredSize(new Dimension(700, 600));
 		this.setMinimumSize(new Dimension(400, 405));
 		this.setLayout(new BorderLayout());
@@ -52,9 +60,9 @@ public class BuildingDialog extends JDialog {
 		//images
 		JPanel pnlImages = new JPanel(new BorderLayout(10, 10));
 		pnlImages.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
-		
-		pnlImages.setPreferredSize(new Dimension(200,10000));
-		pnlImages.setMinimumSize(new Dimension(200,120));
+
+		pnlImages.setPreferredSize(new Dimension(200, 10000));
+		pnlImages.setMinimumSize(new Dimension(200, 120));
 		this.add(pnlImages, BorderLayout.LINE_START);
 
 		//preview
@@ -69,26 +77,24 @@ public class BuildingDialog extends JDialog {
 		pnlPictureButtons.add(lblPreview);
 
 		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
-		btnPictureAdd.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
 		pnlPictureButtons.add(btnPictureAdd);
 
 		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
-		btnPicturePreview.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
 		pnlPictureButtons.add(btnPicturePreview);
 
 		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
-		btnPictureRemove.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureRemove, gbc1);
 		pnlPictureButtons.add(btnPictureRemove);
 
 		//pictures
 		lstPicture = new JList();
-		lstPicture.setBackground(new Color(217, 217, 217));
+		lstPicture.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstPicture.setBackground(Color.DARK_GRAY);
 		lstPicture.setCellRenderer(new PictureCellRenderer());
 		JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		pnlImages.add(picScroller, BorderLayout.CENTER);
@@ -228,7 +234,7 @@ public class BuildingDialog extends JDialog {
 				if (e.getClickCount() == 1) {
 					//TODO show rentables in list next to buildings
 				} else {
-					new RentableDialog(instance, rentables.get(index).getId(), false).setVisible(true);
+					new RentableDialog(instance.getRootPane(), rentables.get(index).getId(), false).setVisible(true);
 				}
 			}
 		});
@@ -261,43 +267,68 @@ public class BuildingDialog extends JDialog {
 		pnlButtons.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
 		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		this.add(pnlButtons, BorderLayout.PAGE_END);
-
-
 		JButton btnCancel = new JButton(Language.getString("cancel"), new ImageIcon(getClass().getResource("/images/cancel.png")));
 		btnCancel.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				instance.setVisible(false);
+				instance.dispose();
 			}
 		});
 		pnlButtons.add(btnCancel);
 
 		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/OK.png")));
-		btnConfirm.addMouseListener(new MouseAdapter() {
+		if (newBuilding) {
+			//add building to database
+			System.out.println("adding add handler");
+			btnConfirm.addMouseListener(new MouseAdapter() {
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if(CheckInput()){
+						try {
+							Main.getDataObject().addBuilding(txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText());
+							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+						} catch (SQLException ex) {
+							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errAddBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
+		} else {
+			//update database
+			System.out.println("adding update handler");
+			btnConfirm.addMouseListener(new MouseAdapter() {
 
-				JOptionPane.showMessageDialog(null, "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-			}
-		});
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					System.out.println("click");
+					if(CheckInput()){
+						System.out.println("input checkes out");
+						try {
+							Main.getDataObject().updateBuilding(instance.getId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText());
+						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+						} catch (SQLException ex) {
+							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
+		}
 		pnlButtons.add(btnConfirm);
 
 		//info opvullen:
 		fillInfo(newBuilding);
-
 		pack();
-
 		setLocationRelativeTo(parent);
 	}
 
-	public int getBuildingId() {
+	public int getId() {
 		return buildingId;
 	}
 
-	public void setBuildingId(int buildingId) {
-		this.buildingId = buildingId;
+	public String getType() {
+		return "BuildingDialog";
 	}
 
 	public void fillInfo(boolean isNew) {
@@ -310,7 +341,7 @@ public class BuildingDialog extends JDialog {
 			try {
 				cbbCountry.setSelectedIndex(Language.getIndexByCountryCode("BE"));
 			} catch (CountryNotFoundException ex) {
-				JOptionPane.showMessageDialog(this, ex.getMessage(), Language.getString("errAnalyseFailTitle"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			btnConfirm.setText(Language.getString("add"));
 		} else {
@@ -324,7 +355,7 @@ public class BuildingDialog extends JDialog {
 				try {
 					cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getCountry()));
 				} catch (CountryNotFoundException ex) {
-					JOptionPane.showMessageDialog(this, ex.getMessage(), Language.getString("errAnalyseFailTitle"), JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 
 				lblPreview.setIcon(building.getPreviewImage());
@@ -338,18 +369,72 @@ public class BuildingDialog extends JDialog {
 				lstFloors.setListData(floors.toArray());
 				btnConfirm.setText(Language.getString("update"));
 			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), Language.getString("errDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 
 			try {
 				//TODO make multihreaded
 				lstPicture.setModel(Main.getDataObject().updateBuildingPictures(buildingId));
 			} catch (IOException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);//TODO change message?
+				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
 			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
+	}
+
+	public boolean CheckInput() {
+		String errorMessage = Language.getString("faultyInput") + ":\n";
+		boolean error = false;
+		if (txtStreet.getText().isEmpty()) {
+			errorMessage += "   * " + Language.getString("errStreet") + "\n";
+			error = true;
+			txtStreet.setBackground(Color.pink);
+		} else {
+			txtStreet.setBackground(Color.white);
+		}
+		if (!txtStreetNumber.getText().matches("[0-9]+.*")) {
+			errorMessage += "   * " + Language.getString("errStreetNumber") + "\n";
+			error = true;
+			txtStreet.setBackground(Color.pink);
+		} else {
+			txtStreet.setBackground(Color.white);
+		}
+		if (!txtCity.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errCity") + "\n";
+			error = true;
+			txtCity.setBackground(Color.pink);
+		} else {
+			txtCity.setBackground(Color.white);
+		}
+		if (!txtZip.getText().matches("[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errZip") + "\n";
+			error = true;
+			txtCity.setBackground(Color.pink);
+		} else {
+			txtCity.setBackground(Color.white);
+		}
+		if (error) {
+			JOptionPane.showMessageDialog(this, errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+		return !error;
+	}
+
+	public void UpdateData() {
+		fillInfo(false);
+	}
+
+	public void UpdatePictures() {
+		lstPicture.repaint();
+	}
+
+	public void UpdateDataLists() {
+		lstFloors.repaint();
+		lstRentables.repaint();
+	}
+
+	public int[] getSelectedPictures() {
+		return lstPicture.getSelectedIndices();
 	}
 }

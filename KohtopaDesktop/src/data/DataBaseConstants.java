@@ -79,11 +79,11 @@ public class DataBaseConstants {
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
-	public static String pw = "admin";
-	//public static String pw = "e=mc**2";
+	//public static String pw = "admin";
+	public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
-	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
-	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personId
@@ -99,8 +99,13 @@ public class DataBaseConstants {
 			+ " FROM " + tableBuildings + " b"
 			+ " JOIN " + tableAddresses + " a on a." + addressId + " = b." + addressId
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = b." + buildingId
-			+ " AND p." + pictureType + " = -3"
+			+ " AND p." + pictureType + " = -4"
 			+ " ORDER BY " + street;
+	public static String selectRentablePreviewsFromBuilding = "SELECT " + rentableId + "," + pictureData + "," + floor + "," + rentableType + "," + rentableDescription
+			+ " FROM " + tableRentables + " r"
+			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildId + " = r." + rentableId
+			+ " AND p." + pictureType + " = -2"
+			+ " WHERE r." + buildingId + " = ?";
 	public static String selectBuilding = "SELECT"
 			+ " a." + street
 			+ ",a." + streetNumber
@@ -129,11 +134,18 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingId + " = ?"
 			+ " ORDER BY " + floor;
+	public static String addBuilding = "INSERT INTO " + tableBuildings + " VALUES (0,?,0,0)";
+	public static String updateBuilding = "UPDATE " + tableBuildings + " SET " + addressId + " = ? WHERE " + buildingId + " = ?";
+	public static String checkAddress = "SELECT " + addressId
+			+ " FROM " + tableAddresses
+			+ " WHERE " + street + "= ? AND " + streetNumber + "=? AND " + zipCode + "=? AND " + city + "=?";
+	public static String addAddress = "INSERT INTO " + tableAddresses + " VALUES (0,?,?,?,?,'BE')"; //TODO add country
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePictures + " VALUES (0,?,?,?)";
+	public static String deletePicture = "DELETE FROM " + tablePictures + " WHERE " + pictureId + " = ?";
 	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureId
 			+ " FROM " + tablePictures
-			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -2";
+			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -3";
 	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureId
 			+ " FROM " + tablePictures
 			+ " WHERE " + RentBuildId + " = ? AND " + pictureType + " = -1";

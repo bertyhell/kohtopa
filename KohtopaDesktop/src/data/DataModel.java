@@ -6,12 +6,12 @@ import Language.Language;
 import data.addremove.PictureListModel;
 import gui.Main;
 import data.entities.Building;
+import data.entities.Picture;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import gui.SplashConnect;
@@ -22,6 +22,8 @@ public class DataModel {
 	//and it will also be used to cach certain data (like images and the global list of buildings
 	//TODO add caching + options on timeout in settings
 	private Integer userId;
+	private int lastPictureDialogId;
+	private int lastPictureDialogType;
 	private BuildingListModel lmBuilding;
 	private RentableListModel lmRentable;
 	private PictureListModel lmPicture;
@@ -104,12 +106,21 @@ public class DataModel {
 		return lmRentable;
 	}
 
+	public void updatePictures() throws IOException, SQLException {
+		System.out.println("updating pictures");
+		lmPicture.updateItems(lastPictureDialogId, lastPictureDialogType == 0);
+	}
+
 	public PictureListModel updateBuildingPictures(int buildingId) throws IOException, SQLException {
+		lastPictureDialogId = buildingId;
+		lastPictureDialogType = 0; //building  //TODO change ints by enums
 		lmPicture.updateItems(buildingId, true);
 		return lmPicture;
 	}
 
 	public PictureListModel updateRentablePictures(int rentableId) throws IOException, SQLException {
+		lastPictureDialogId = rentableId;
+		lastPictureDialogId = 1; //rentable
 		lmPicture.updateItems(rentableId, false);
 		return lmPicture;
 	}
@@ -142,20 +153,17 @@ public class DataModel {
 
 	public boolean fetchAddRemove() {
 		try {
-			System.out.println("fetching buildings");
 			lmBuilding.updateItems();
 			return true;
 		} catch (SQLException ex) {
-			System.out.println("fetch failed(listener)");
 			SplashConnect.hideSplash();
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			//TODO add connection string settings
 
 			return false;
 		} catch (IOException ex) {
-			System.out.println("fetch failed io (listener)");
 			SplashConnect.hideSplash();
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), Language.getString("errImagesFetchFailTitle"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			//TODO add connection string settings
 
 			return false;
@@ -170,11 +178,48 @@ public class DataModel {
 		this.userId = userId;
 	}
 
-	public Integer checkLogin(String username, String password) throws SQLException {
-		return DataConnector.checkLogin(username, password);
+	public boolean checkLogin(String username, String password) {
+		try{
+		userId = DataConnector.checkLogin(username, password);
+		}catch(SQLException ex){
+			JOptionPane.showMessageDialog(Main.getInstance(), "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+		return userId != null;
 	}
 
 	public boolean isLoggedIn() {
 		return userId != null;
+	}
+
+	public void addImage(int id, String type, BufferedImage img) throws SQLException, IOException {
+		if (type.equals("BuildingDialog")) {
+			DataConnector.addBuildingPicture(id, img);
+		} else {
+			DataConnector.addRentablePicture(id, img);
+		}
+		//lists verwittigen
+		lmPicture.addElement(new Picture(id, img));
+		Main.updatePictureLists();//TODO observer pattern toepassen
+	}
+
+	public void deleteSelectedPictures(int[] indexs) throws SQLException {
+		lmPicture.removeSelectedPictures(indexs);
+	}
+
+	public void addBuildingPreviewPicture(int id, int index) throws SQLException {
+		DataConnector.addBuildingPreviewPicture(id, lmPicture.getElementAt(index).getPicture());
+	}
+
+	public void addRentablePreviewPicture(int id, int index) throws SQLException {
+		DataConnector.addRentablePreviewPicture(id, lmPicture.getElementAt(index).getPicture());
+	}
+
+	public void addBuilding(String street, String streetNumber, String zip, String city) throws SQLException {
+		DataConnector.addBuilding(street, streetNumber, zip, city);
+	}
+
+	public void updateBuilding(int id,String street, String streetNumber, String zip, String city) throws SQLException {
+		DataConnector.updateBuilding(id, street, streetNumber, zip, city);
 	}
 }
