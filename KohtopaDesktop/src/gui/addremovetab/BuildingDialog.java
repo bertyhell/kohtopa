@@ -17,10 +17,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import data.entities.Building;
-import data.entities.Rentable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Collections;
 
 public class BuildingDialog extends JFrame implements IdentifiableI {
 
@@ -33,7 +31,6 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 	private JComboBox cbbCountry;
 	private JList lstFloors;
 	private JList lstRentables;
-	private ArrayList<Rentable> rentables;
 	private JButton btnConfirm;
 	private JLabel lblPreview;
 	private JList lstPicture;
@@ -245,7 +242,10 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 			public void mouseClicked(MouseEvent e) {
 				int index = lstRentables.locationToIndex(e.getPoint());
 				if (e.getClickCount() > 1) {
-					new RentableDialog(instance.getRootPane(), rentables.get(index).getId(), false).setVisible(true);
+					if(instance == null){
+						System.out.println("instance == 0");
+					}
+					new RentableDialog(instance.getRootPane(), Main.getDataObject().getSelectedRentableId(index), false).setVisible(true);
 				}
 			}
 		});

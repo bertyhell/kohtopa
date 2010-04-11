@@ -65,6 +65,8 @@ public class DataModel {
 		return DataConnector.getRentable(rentableId);
 	}
 
+
+
 	public static int getBuildingIndex() {
 		return buildingIndex;
 	}
@@ -130,6 +132,11 @@ public class DataModel {
 	}
 
 	public int getSelectedRentableId() {
+		return lmRentable.getRentableAt(rentableIndex).getId();
+	}
+
+	public int getSelectedRentableId(int index) {
+		rentableIndex = index;
 		return lmRentable.getRentableAt(rentableIndex).getId();
 	}
 
