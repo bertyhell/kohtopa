@@ -222,4 +222,8 @@ public class DataModel {
 	public void updateBuilding(int id,String street, String streetNumber, String zip, String city) throws SQLException {
 		DataConnector.updateBuilding(id, street, streetNumber, zip, city);
 	}
+
+	public ArrayList<Integer> getFloors(){
+		return lmRentable.getFloors();
+	}
 }
