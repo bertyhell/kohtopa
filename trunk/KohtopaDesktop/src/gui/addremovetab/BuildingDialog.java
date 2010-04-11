@@ -15,15 +15,12 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
-import data.entities.Floor;
 import data.entities.Building;
 import data.entities.Rentable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 
 public class BuildingDialog extends JFrame implements IdentifiableI {
 
@@ -40,6 +37,7 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 	private JButton btnConfirm;
 	private JLabel lblPreview;
 	private JList lstPicture;
+	private ArrayList<Integer> floors;
 
 	public BuildingDialog(JRootPane parent, int buildingId, boolean newBuilding) {
 		this.buildingId = buildingId;
@@ -53,8 +51,8 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 		});
 		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
-		this.setPreferredSize(new Dimension(700, 600));
-		this.setMinimumSize(new Dimension(400, 405));
+		this.setPreferredSize(new Dimension(1000, 600));
+		this.setMinimumSize(new Dimension(600, 405));
 		this.setLayout(new BorderLayout());
 
 		//images
@@ -199,14 +197,27 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 		//lijst met floors
 		String[] testFloors = {"testFloor1", "testFloor2", "testFloor3"};
 		lstFloors = new JList(testFloors);
+		lstFloors.setBackground(new Color(217, 217, 217));
+		lstFloors.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index = lstFloors.locationToIndex(e.getPoint());
+				if (e.getClickCount() > 1) {
+					new FloorDialog(instance.getRootPane(), instance.getId(), floors.get(index), false).setVisible(true);
+				}
+			}
+		});
 		JScrollPane scrolFloor = new JScrollPane(lstFloors, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		Layout.buildConstraints(gbc, 0, row, 1, 2, 120, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
+		Layout.buildConstraints(gbc, 0, row, 1, 2, 20, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
 		gbl2.addLayoutComponent(scrolFloor, gbc);
 		pnlRentablesInfo.add(scrolFloor);
 
 		//buttons floor
 		JPanel pnlFloorBtns = new JPanel();
 		pnlFloorBtns.setPreferredSize(new Dimension(50, 120));
+		pnlFloorBtns.setMaximumSize(new Dimension(50, 120));
+		pnlFloorBtns.setMinimumSize(new Dimension(50, 120));
 		Layout.buildConstraints(gbc, 2, row, 1, 1, 10, 1, GridBagConstraints.NONE, GridBagConstraints.PAGE_START);
 		gbl2.addLayoutComponent(pnlFloorBtns, gbc);
 		pnlRentablesInfo.add(pnlFloorBtns);
@@ -226,14 +237,14 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 
 		//lijst met rentables
 		lstRentables = new JList();
+		lstRentables.setBackground(new Color(217, 217, 217));
+		lstRentables.setCellRenderer(new RentableCellRenderer());
 		lstRentables.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int index = lstRentables.locationToIndex(e.getPoint());
-				if (e.getClickCount() == 1) {
-					//TODO show rentables in list next to buildings
-				} else {
+				if (e.getClickCount() > 1) {
 					new RentableDialog(instance.getRootPane(), rentables.get(index).getId(), false).setVisible(true);
 				}
 			}
@@ -246,6 +257,8 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 		//buttons rentables
 		JPanel pnlRentableBtns = new JPanel();
 		pnlRentableBtns.setPreferredSize(new Dimension(50, 120));
+		pnlRentableBtns.setMaximumSize(new Dimension(50, 120));
+		pnlRentableBtns.setMinimumSize(new Dimension(50, 120));
 		Layout.buildConstraints(gbc, 6, row, 1, 1, 10, 1, GridBagConstraints.NONE, GridBagConstraints.PAGE_START);
 		gbl2.addLayoutComponent(pnlRentableBtns, gbc);
 		pnlRentablesInfo.add(pnlRentableBtns);
@@ -304,7 +317,6 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 				public void mouseReleased(MouseEvent e) {
 					System.out.println("click");
 					if(CheckInput()){
-						System.out.println("input checkes out");
 						try {
 							Main.getDataObject().updateBuilding(instance.getId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText());
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
@@ -360,12 +372,10 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 
 				lblPreview.setIcon(building.getPreviewImage());
 
-				rentables = Main.getDataObject().getRentablesFromBuilding(buildingId);
-				lstRentables.setListData(rentables.toArray());
-				TreeSet<Floor> floors = new TreeSet<Floor>();
-				for (Rentable rent : rentables) {
-					floors.add(new Floor(rent.getFloor()));
-				}
+				lstRentables.setModel(Main.getDataObject().getLmRentable());
+
+				
+				floors = Main.getDataObject().getFloors();
 				lstFloors.setListData(floors.toArray());
 				btnConfirm.setText(Language.getString("update"));
 			} catch (SQLException ex) {

@@ -1,0 +1,11 @@
+<Settings>
+<username>Adil</username>
+<password>Koop</password>
+<savePass>true</savePass>
+<confirmDeleteBuildings>true</confirmDeleteBuildings>
+<confirmDeletePictures>true</confirmDeletePictures>
+<confirmDeleteRentables>true</confirmDeleteRentables>
+<confirmDeleteTasks>true</confirmDeleteTasks>
+<confirmDeleteInvoices>true</confirmDeleteInvoices>
+<confirmDeleteFloors>true</confirmDeleteFloors>
+</Settings>
