@@ -1,8 +1,6 @@
 package gui.addremovetab;
 
-import data.addremove.PictureListModel;
 import Language.Language;
-import Resources.RelativeLayout;
 import gui.Layout;
 import gui.Main;
 import java.awt.BorderLayout;
@@ -13,13 +11,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import javax.swing.*;
 import data.entities.Rentable;
-import java.awt.Window;
+import java.awt.event.WindowAdapter;
 import java.io.IOException;
 
-public class RentableDialog extends JDialog {
+public class RentableDialog extends JFrame implements IdentifiableI {
 
 	private RentableDialog instance;
 	private int rentableId;
@@ -36,12 +35,18 @@ public class RentableDialog extends JDialog {
 	private JLabel lblPreview;
 	private JList lstPicture;
 
-	public RentableDialog(Window parent, int rentableId, boolean newRentable) {
+	public RentableDialog(JRootPane parent, int rentableId, boolean newRentable) {
 		this.rentableId = rentableId;
 		instance = this;
+		this.addWindowFocusListener(new WindowAdapter() {
+
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				Main.setFocusedDialog(instance);
+			}
+		});
 		setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
-		this.setModal(true);
 		this.setPreferredSize(new Dimension(700, 500));
 		this.setMinimumSize(new Dimension(290, 405));
 		this.setLayout(new BorderLayout());
@@ -50,8 +55,8 @@ public class RentableDialog extends JDialog {
 		JPanel pnlImages = new JPanel(new BorderLayout(10, 10));
 		pnlImages.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 0));
 
-		pnlImages.setPreferredSize(new Dimension(200,10000));
-		pnlImages.setMinimumSize(new Dimension(200,120));
+		pnlImages.setPreferredSize(new Dimension(200, 10000));
+		pnlImages.setMinimumSize(new Dimension(200, 120));
 		this.add(pnlImages, BorderLayout.LINE_START);
 
 		//preview
@@ -66,26 +71,23 @@ public class RentableDialog extends JDialog {
 		pnlPictureButtons.add(lblPreview);
 
 		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
-		btnPictureAdd.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
 		pnlPictureButtons.add(btnPictureAdd);
 
 		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
-		btnPicturePreview.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
 		pnlPictureButtons.add(btnPicturePreview);
 
 		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
-		btnPictureRemove.setName("building"); //for identification in the action (building pic or rentable pic)
 		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureRemove, gbc1);
 		pnlPictureButtons.add(btnPictureRemove);
 
 		//pictures
 		lstPicture = new JList();
-		lstPicture.setBackground(new Color(217, 217, 217));
+		lstPicture.setBackground(Color.DARK_GRAY);
 		lstPicture.setCellRenderer(new PictureCellRenderer());
 		JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		pnlImages.add(picScroller, BorderLayout.CENTER);
@@ -256,12 +258,12 @@ public class RentableDialog extends JDialog {
 		fillInfo(newRentable);
 	}
 
-	public int getRentableId() {
+	public int getId() {
 		return rentableId;
 	}
 
-	public void setBuildingId(int buildingId) {
-		this.rentableId = buildingId;
+	public String getType() {
+		return "RentableDialog";
 	}
 
 	public void fillInfo(boolean isNew) {
@@ -281,10 +283,6 @@ public class RentableDialog extends JDialog {
 			try {
 				//fill building info
 				Rentable rentable = Main.getDataObject().getRentable(rentableId);
-				System.out.println("type3 : " + rentable.getType());
-				if (txtType == null) {
-					System.out.println("txtType is null");
-				}
 				txtType.setText(rentable.getType());
 				txtArea.setText(Integer.toString(rentable.getArea()));
 				txtWindowDir.setText(rentable.getWindowsDirection());
@@ -302,11 +300,27 @@ public class RentableDialog extends JDialog {
 				//TODO make multihreaded
 				lstPicture.setModel(Main.getDataObject().updateRentablePictures(rentableId));
 			} catch (IOException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), Language.getString("errConnectDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);//TODO change message?
+				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
 
 			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errRentableData") + "\n" + ex.getMessage(), Language.getString("errDatabaseFailTitle"), JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, Language.getString("errRentableData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+
+	public void UpdatePictures() {
+		lstPicture.repaint();
+	}
+
+	public void UpdateDataLists() {
+		//TODO add current user to rentable dialog
+	}
+
+	public int[] getSelectedPictures() {
+		return lstPicture.getSelectedIndices();
+	}
+
+	public void UpdateData() {
+		fillInfo(false);
 	}
 }

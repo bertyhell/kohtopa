@@ -2,7 +2,6 @@ package gui.addremovetab;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public abstract class AbstractListPanel extends JPanel {
@@ -27,7 +26,7 @@ public abstract class AbstractListPanel extends JPanel {
 		this.setBackground(bgColor);
 	}
 
-	public void resoreColor() {
+	public void restore() {
 		this.setBackground(bgColor);
 	}
 

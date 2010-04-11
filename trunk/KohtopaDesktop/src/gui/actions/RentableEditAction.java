@@ -17,7 +17,7 @@ public class RentableEditAction extends AbstractIconAction {
 
     @Override
     public void actionPerformed(ActionEvent e) { //TODO if no selected > do nothing (nullpointerexception)
-	new RentableDialog(Main.getInstance(), Main.getDataObject().getSelectedRentableId(), false).setVisible(true);
+	new RentableDialog(Main.getInstance().getRootPane(), Main.getDataObject().getSelectedRentableId(), false).setVisible(true);
 	//TODO replce main with e.source or something like that
     }
 }

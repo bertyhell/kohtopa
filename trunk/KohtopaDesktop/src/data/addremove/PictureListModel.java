@@ -42,4 +42,13 @@ public class PictureListModel extends AbstractListModel {
 	public int getId(int index) {
 		return items.get(index).getId();
 	}
+
+	public void removeSelectedPictures(int[] indexs) throws SQLException {
+		for (int i = indexs.length - 1; i >= 0; i--) {
+			//remove from database
+			DataConnector.removePicture(items.get(indexs[i]).getId());
+			//remove from local items
+			items.remove(indexs[i]);
+		}
+	}
 }

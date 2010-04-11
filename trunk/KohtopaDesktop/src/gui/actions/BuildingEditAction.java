@@ -4,11 +4,8 @@ import gui.Main;
 import gui.addremovetab.BuildingDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 
-/**
- *
- * @author bert
- */
 public class BuildingEditAction extends AbstractIconAction {
 
     public BuildingEditAction(String id, Icon img) {
@@ -17,6 +14,6 @@ public class BuildingEditAction extends AbstractIconAction {
 
     @Override
     public void actionPerformed(ActionEvent e) { //TODO if no selected > do nothing (nullpointerexception)
-	new BuildingDialog(Main.getInstance(), Main.getDataObject().getSelectedBuildingId(), false); //TODO replce main with e.source or something like that
+	new BuildingDialog(((JComponent)e.getSource()).getRootPane(), Main.getDataObject().getSelectedBuildingId(), false); //TODO replce main with e.source or something like that
     }
 }
