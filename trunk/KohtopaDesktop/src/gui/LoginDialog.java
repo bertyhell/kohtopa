@@ -15,7 +15,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTextUI.BasicCaret;
 

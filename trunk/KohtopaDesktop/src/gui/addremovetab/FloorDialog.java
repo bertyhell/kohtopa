@@ -1,6 +1,7 @@
 package gui.addremovetab;
 
 import Language.Language;
+import floorallocationmodule.view.FloorControls;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -50,9 +51,8 @@ public class FloorDialog extends JFrame implements IdentifiableI {
 
 
 		//drawing panel
-		//TODO add Rubens plugin
-
-
+        // Constructor only requires the parent frame and the name of the floor.
+        this.add(new FloorControls(this, Integer.toString(floor)));
 
 		//buttons
 		JPanel pnlButtons = new JPanel();
