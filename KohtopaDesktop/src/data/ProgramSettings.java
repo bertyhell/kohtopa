@@ -20,6 +20,7 @@ import org.w3c.dom.NodeList;
 public class ProgramSettings {
 	//user settings
 
+	private static String connectionstring;
 	private static String username;
 	private static String password;
 	private static boolean savePass;
@@ -45,7 +46,11 @@ public class ProgramSettings {
 
 			//create child element, set content and add to root
 
-			Element child = doc.createElement("username");
+			Element child = doc.createElement("connectionstring");
+			child.setTextContent(connectionstring);
+			root.appendChild(child);
+
+			child = doc.createElement("username");
 			child.setTextContent(username);
 			root.appendChild(child);
 
@@ -105,7 +110,6 @@ public class ProgramSettings {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-
 	}
 
 	public static void read() {
@@ -118,7 +122,10 @@ public class ProgramSettings {
 			doc.getDocumentElement().normalize();
 
 			//reading vars
-			NodeList nodeLst = doc.getElementsByTagName("username");
+			NodeList nodeLst = doc.getElementsByTagName("connectionstring");
+			connectionstring = nodeLst.item(0).getTextContent();
+
+			nodeLst = doc.getElementsByTagName("username");
 			username = nodeLst.item(0).getTextContent();
 
 			nodeLst = doc.getElementsByTagName("password");
@@ -155,6 +162,9 @@ public class ProgramSettings {
 
 	private static void setDefaults() {
 		//default settings:
+		username = "";
+		password = "";
+		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
 		confirmDeleteBuildings = true;
 		confirmDeletePictures = true;
@@ -162,6 +172,14 @@ public class ProgramSettings {
 		confirmDeleteTasks = true;
 		confirmDeleteInvoices = true;
 		confirmDeleteFloors = true;
+	}
+
+	public static String getConnectionstring() {
+		return connectionstring;
+	}
+
+	public static void setConnectionstring(String connectionstring) {
+		ProgramSettings.connectionstring = connectionstring;
 	}
 
 	public static String getUsername() {

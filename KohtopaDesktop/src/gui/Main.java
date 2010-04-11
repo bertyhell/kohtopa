@@ -304,6 +304,23 @@ public class Main extends JFrame {
 		pnlSettings.setPreferredSize(new Dimension(500, 600));
 		pnlSettings.setLayout(new BorderLayout());
 
+		JTabbedPane tabSettings = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.WRAP_TAB_LAYOUT);
+		pnlSettings.add(tabSettings, BorderLayout.CENTER);
+
+		//adding confirm tab
+		JLabel lblConfirm = new JLabel(Language.getString("confirmDialogs"), new ImageIcon(getClass().getResource("/images/warning_32.png")), SwingConstants.RIGHT);
+		JPanel pnlConfirm = new JPanel();
+		pnlConfirm.add(new JLabel("this is the confirm settings dialog"));
+		tabSettings.addTab("", pnlConfirm);
+		tabSettings.setTabComponentAt(tabSettings.getTabCount() - 1, lblConfirm);
+
+		//adding settings tab
+		JLabel lblConnection = new JLabel(Language.getString("connectionSettings"),new ImageIcon(getClass().getResource("/images/connection_32.png")), SwingConstants.RIGHT);
+		JPanel pnlConnection = new JPanel();
+		pnlConnection.add(new JLabel("this is the connection settings dialog"));
+		tabSettings.addTab("", pnlConnection);
+		tabSettings.setTabComponentAt(tabSettings.getTabCount() - 1, lblConnection);
+
 		return pnlSettings;
 	}
 

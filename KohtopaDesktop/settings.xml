@@ -1,4 +1,5 @@
 <Settings>
+<connectionstring>jdbc:oracle:thin:@192.168.58.128:1521:kohtopa</connectionstring>
 <username>Adil</username>
 <password>Koop</password>
 <savePass>true</savePass>
