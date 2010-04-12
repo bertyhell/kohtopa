@@ -130,6 +130,10 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
     }
 
     public void updatePage() {
+        // if calendar not yet initialized, do nothing
+        if(calendar == null)
+            return;
+        
         // clear the calendar pane
         calendar.removeAll();
         calendar.updateUI();
@@ -141,16 +145,21 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
 
         // get month
         int currMonth = cal.get(CalendarModel.MONTH);
-
+        
         //cal.set(cal.get(CalendarModel.YEAR), cal.get(CalendarModel.MONTH), 1);
 
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
         // change date so that calendar starts on monday(roll back one day by default so we
         // get more symmetry when month starts on monday
         if (cal.get(CalendarModel.DAY_OF_WEEK) == CalendarModel.MONDAY) {
             cal.add(CalendarModel.DAY_OF_YEAR, -7);
         } else {
-            cal.set(CalendarModel.DAY_OF_WEEK, CalendarModel.MONDAY);
+            while(cal.get(CalendarModel.DAY_OF_WEEK) != CalendarModel.MONDAY)
+                cal.add(CalendarModel.DAY_OF_WEEK,-1);
         }
 
 
