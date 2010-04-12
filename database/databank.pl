@@ -104,6 +104,33 @@ open ZIP, "<$zipcodes" or die $!;
 my %zipcodes = map{ chomp; split(/\|/) } <ZIP>;
 close ZIP;
 
+print "Success!\nRetrieving messages...\n";
+open "FILE", "<Fortunes.xml" or die $!;
+
+my @messages;
+{
+   my $tmp = $/;
+   $/ = "</fortune>";
+   my @content = <FILE>;
+
+   for(@content) {
+           #print;
+           s|<saying who="(.*?)">(.*?)</saying>|$1: $2|g;
+           
+           #print;
+           if(m@.*<title>(.*?)</title>(.|\n)*<body>((.|\n)*)</body>.*@){
+              my $sub = $1;
+              my $mess = $3;
+              chomp $sub;
+              chomp $mess;
+              $mess =~ s@<.*?>@@g;
+              push @messages,["$sub","$mess"];                   
+           } 
+   }
+   close "FILE";
+   $/ = $tmp;
+}
+
 
 print "Success!\nConnecting to database...\n";
 
@@ -218,7 +245,7 @@ my $bsth = $dbh->prepare($binsert) or die "insert prepare failed ($binsert)";
 my $rinsert = "INSERT INTO rentables(rentableid, buildingid, ownerid, description, type, area, window_direction, window_area, internet, cable, outlet_count, floor, rented, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 my $rsth = $dbh->prepare($rinsert) or die "insert prepare failed ($rinsert)";
 
-my $cinsert = "INSERT INTO contract(contractid, rentableid, renterid, contract_start, contract_end, price, monthly_cost, guarantee) VALUES (?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)";
+my $cinsert = "INSERT INTO contracts(contractid, rentableid, renterid, contract_start, contract_end, price, monthly_cost, guarantee) VALUES (?, ?, ?, TO_DATE(?, 'yyyy-mm-dd'), TO_DATE(?, 'yyyy-mm-dd'), ?, ?, ?)";
 my $csth = $dbh->prepare($cinsert) or die "insert prepare failed ($cinsert)";
 
 my $finsert = "INSERT INTO furniture(furnitureid, rentableid, name, price, damaged) VALUES (?, ?, ?, ?, ?)";
@@ -234,7 +261,7 @@ my $minsert = "INSERT INTO messages(senderid, recipientid, subject, message_read
 my $msth = $dbh->prepare($minsert);
 
 
-my $getaddress = $dbh->prepare("SELECT addressid from addresses where street = ?");
+my $getaddress = $dbh->prepare("SELECT addressid from addresses where street = ? and street_number = ?");
 my $getbuilding = $dbh->prepare("SELECT buildingid from buildings where addressid = ?");
 my $getrentable = $dbh->prepare("SELECT rentableid from rentables where buildingid = ? and description = ?");
 
@@ -245,7 +272,7 @@ for(@rentables) {
          next;
    }
    # insert address if needed   
-   $getaddress->execute($_->[0]);
+   $getaddress->execute($_->[0],$_->[4]);
    my $aid = $getaddress->fetchrow();
    $getaddress->finish();
    
@@ -258,7 +285,7 @@ for(@rentables) {
    }
    
    # get id of address
-   $getaddress->execute($_->[0]);
+   $getaddress->execute($_->[0],$_->[4]);
    $aid = $getaddress->fetchrow();   
    $getaddress->finish();
    
@@ -331,7 +358,7 @@ for(@rentables) {
    my $r = $renter;
    
    for my $i (1..int(rand(10))) {
-            print "1,$rentable,$r, '$year-$month-$day', '$end-$month-$day',$_->[3],$monthcost,$guarantee\n";
+            print "$rentable'$year-$month-$day', '$end-$month-$day'\n";
          if($sim) {
          } else {
             $csth->execute(1,$rentable,$r, "$year-$month-$day", "$end-$month-$day",$_->[3],$monthcost,$guarantee);
@@ -360,7 +387,7 @@ for(@rentables) {
    
    
    # contract id
-   my @contracts = @{ $dbh->selectall_arrayref("SELECT contractid from contract where rentableid = $rentable and renterid = $renter") };
+   my @contracts = @{ $dbh->selectall_arrayref("SELECT contractid from contracts where rentableid = $rentable and renterid = $renter") };
    
    
    # insert furniture (0-10)
@@ -440,23 +467,22 @@ for(@rentables) {
    $y = $year;
    for(0..int(rand(10))) {
       
-      my $msg = "";
-	  my $subject = "";
+      my $entry = $messages[int(rand($#messages))];
+      my $msg = $entry->[1];
+      my $subject = $entry->[0];
+      
+      while(length($msg)>=2048 || length($subject)>=100) {
+         $entry = $messages[int(rand($#messages))];
+         $msg = $entry->[1];
+         $subject = $entry->[0];
+      }
+         
       $m++;
       if($m>12) {
          $y++;
          $m = 1;
       }
-	  
-      #random subject
-	  for(0..int(rand(20))) {
-		$subject .= $letters[int(rand($#letters))];
-	  }
-	  
-      #random message
-      for(0..int(rand(255))) {
-         $msg .= $letters[int(rand($#letters))];
-      }
+	
       
       my $read = int(rand(2));
       #lazyness: one message every month :)
