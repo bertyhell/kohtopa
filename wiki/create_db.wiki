@@ -1,6 +1,5 @@
-<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeODQwNTczYTQtODVjMi00YWUxLTk3YjEtMGE1ZmQzODM3YTQ4&hl=en">nieuwe databank</a>
+<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeYmI3NzU2MmMtZmJhMS00MDI5LThlOWItNjEyYjU5ZTA1MzUy&hl=en">nieuwe databank</a>
 
 aangepast:
-contract => contracts
-buildings => latitude en longitude ingevuld
-dat is het denk ik
+perl script gerunned met deftige messages(geen random tekst maar wat data gehaald van http://www.shlomifish.org/humour/fortunes/shlomif.xml, omdat die in een mooi parsebaar formaat staan)
+Om deftige messages erin te kunnen steken is subject en text in grootte toegenomen tot 100/2048
