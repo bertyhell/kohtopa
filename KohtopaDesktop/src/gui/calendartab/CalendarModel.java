@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.event.ChangeEvent;
@@ -25,30 +27,29 @@ import javax.swing.event.ChangeListener;
  * @author Jelle
  */
 public class CalendarModel extends GregorianCalendar implements ChangeListener {
-    public static final long CONVERTMSTODAY = 86400000;
-    CalendarPanel pane;
-    HashMap<Long,ArrayList<Task>> tasks;
+    //public static final long CONVERTMSTODAY = 86400000;
+    CalendarPanel calendarPanel;
+    HashMap<Integer,ArrayList<Task>> tasks;
 
     protected CalendarModel(int year, int month, CalendarPanel panel) {
         super(year, month, 1);
-        this.pane = panel;
-        tasks = new HashMap<Long,ArrayList<Task>>();
+        this.calendarPanel = panel;
+        tasks = new HashMap<Integer,ArrayList<Task>>();
+        Calendar c = this.getCalendar();
 
         // testcase, should later get data from database(when there are tasks
         // in it :))
         // in the database implementation they should be in order
-        this.add(Calendar.HOUR, 5);
-        addTask(new Task("test3", this.getTime()));
-        this.add(Calendar.HOUR, -1);
-        addTask(new Task("test20342°4831840918240980409217804971409704720", this.getTime()));
-        this.add(Calendar.HOUR, -1);
-        addTask(new Task("test1", this.getTime()));
-        this.add(Calendar.HOUR, 4);
-        addTask(new Task("test4", this.getTime()));
-        this.add(Calendar.DATE, 2);
-        addTask(new Task("nieuwe dag", this.getTime()));
-        this.set(Calendar.HOUR, 0);
-        this.add(Calendar.DATE, -2);
+        c.add(Calendar.HOUR, 5);
+        addTask(new Task("test3", c.getTime()));
+        c.add(Calendar.HOUR, -24);
+        addTask(new Task("test20342°4831840918240980409217804971409704720", c.getTime()));
+        c.add(Calendar.HOUR, -24);
+        addTask(new Task("test1", c.getTime()));
+        c.add(Calendar.HOUR, 4);
+        addTask(new Task("test4", c.getTime()));
+        c.add(Calendar.DATE, 2);
+        addTask(new Task("nieuwe dag", c.getTime()));
 
 
 
@@ -56,36 +57,51 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
     }
 
     public void addTask(Task task) {
-        long key = task.getDate().getTime()/CONVERTMSTODAY;
+        int key = getKey(task.getDate());
         if(!tasks.containsKey(key)) {
-            System.out.println("new date found");
+            //System.out.println("new date found: "+key);
             tasks.put(key,new ArrayList<Task>());
         }
         
         tasks.get(key).add(task);
+
+        calendarPanel.updatePage();
     }
 
     public void removeTask( Task task) {
-        long key = task.getDate().getTime()/CONVERTMSTODAY;
+        int key = getKey(task.getDate());
         if(tasks.containsKey(key))
             tasks.get(key).remove(task);
+        calendarPanel.updatePage();
     }
 
     public void updateTask(Date date, Task task, Task newTask) {
-        long key = task.getDate().getTime()/CONVERTMSTODAY;
+        int key = getKey(task.getDate());
         if(tasks.containsKey(key)) {
             tasks.get(key).remove(task);
             tasks.get(key).add(newTask);
         }
+        calendarPanel.updatePage();
     }
 
     public boolean hasTasksForDay(Date day) {
-        long key = day.getTime()/CONVERTMSTODAY;
+        int key = getKey(day);
         return tasks.containsKey(key);
-
     }
 
-    public HashMap<Long,ArrayList<Task>> getTasks() {
+    private int getKey(Date day) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(day);
+        int key = c.get(Calendar.DATE);
+        key += c.get(Calendar.MONTH)*100;
+        key += c.get(Calendar.YEAR)*10000;
+        //System.out.println(key);
+
+        return key;
+    }
+
+    public HashMap<Integer,ArrayList<Task>> getTasks() {
         return tasks;
     }
 
@@ -96,22 +112,23 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
      * array if there are no tasks
      */
     public ArrayList<Task> getTasksForDay(Date day) {
-        long key = day.getTime()/CONVERTMSTODAY;
+        int key = getKey(day);
         if(tasks.containsKey(key))
             return tasks.get(key);
+        //System.out.println("no tasks found");
         return new ArrayList<Task>();
     }
 
     public void setDate(int year, int month) {
         this.set(CalendarModel.YEAR, year);
         this.set(CalendarModel.MONTH, month);
-        pane.updatePage();
+        calendarPanel.updatePage();
     }
 
     public void changeDate(int nYears, int nMonths) {
         this.add(CalendarModel.YEAR, nYears);
         this.add(CalendarModel.MONTH, nMonths);
-        pane.updatePage();
+        calendarPanel.updatePage();
     }
 
     public Calendar getCalendar() {

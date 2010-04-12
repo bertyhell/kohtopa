@@ -39,6 +39,7 @@ public class CalendarSquare extends JPanel implements MouseListener {
 
         this.day = day;
 
+
         Calendar c = Calendar.getInstance();
         c.setTime(day);
         RelativeLayout rl = new RelativeLayout(RelativeLayout.Y_AXIS);
@@ -110,7 +111,7 @@ public class CalendarSquare extends JPanel implements MouseListener {
             }
             i++;
         }
-        if (i >= 2) {
+        if (i > 2) {
             sb.append("<br />...");
         }
         sb.append("</html>");

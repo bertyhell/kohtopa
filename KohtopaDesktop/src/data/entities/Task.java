@@ -40,6 +40,8 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return DateFormat.getTimeInstance(DateFormat.SHORT).format(date)+": "+description;
+    
+        //return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(date)+": "+description;
     }
 
 
