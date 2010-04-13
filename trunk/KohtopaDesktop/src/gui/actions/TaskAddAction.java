@@ -1,6 +1,6 @@
 package gui.actions;
 
-import gui.calendartab.AddTask;
+import gui.calendartab.ChangeTask;
 import gui.calendartab.CalendarModel;
 import gui.calendartab.TaskDialog;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ public class TaskAddAction extends AbstractIconAction {
         Date date = TaskDialog.getDate();
         CalendarModel model = TaskDialog.getModel();
 
-        AddTask.getInstance(model,date).setVisible(true);
+        ChangeTask.getInstance(ChangeTask.ADD,model,date).setVisible(true);
 
     }
 }

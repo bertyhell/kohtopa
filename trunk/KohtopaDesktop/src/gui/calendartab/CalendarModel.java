@@ -8,12 +8,9 @@ package gui.calendartab;
 import data.entities.Task;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.event.ChangeEvent;
@@ -56,7 +53,14 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
 
     }
 
+    /**
+     * Add a task to the model(and to the database)
+     * @param task the task to add
+     */
     public void addTask(Task task) {
+        if(task == null)
+            return;
+
         int key = getKey(task.getDate());
         if(!tasks.containsKey(key)) {
             //System.out.println("new date found: "+key);
@@ -68,14 +72,29 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         calendarPanel.updatePage();
     }
 
+    /**
+     * Remove a Task from the model(and from the database)
+     * @param task the task to remove
+     */
     public void removeTask( Task task) {
+        if(task == null)
+            return;
+
         int key = getKey(task.getDate());
         if(tasks.containsKey(key))
             tasks.get(key).remove(task);
         calendarPanel.updatePage();
     }
 
-    public void updateTask(Date date, Task task, Task newTask) {
+    /**
+     * Update a task in the model(and the database)
+     * @param task the task to change
+     * @param newTask the new task
+     */
+    public void updateTask(Task task, Task newTask) {
+        if(task == null || newTask == null)
+            return;
+        
         int key = getKey(task.getDate());
         if(tasks.containsKey(key)) {
             tasks.get(key).remove(task);
@@ -84,11 +103,21 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         calendarPanel.updatePage();
     }
 
+    /**
+     * Utility method, checks if there are tasks for a day
+     * @param day the day to test
+     * @return true if there are tasks for that day
+     */
     public boolean hasTasksForDay(Date day) {
         int key = getKey(day);
         return tasks.containsKey(key);
     }
 
+    /**
+     * Utility method, creates a key for a date
+     * @param day the day to make a key for
+     * @return a key, formed as an int: yyyymmdd
+     */
     private int getKey(Date day) {
 
         Calendar c = Calendar.getInstance();
@@ -101,6 +130,10 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         return key;
     }
 
+    /**
+     * Getter for all the tasks
+     * @return the map representing all the tasks, keys are of form yyyymmdd
+     */
     public HashMap<Integer,ArrayList<Task>> getTasks() {
         return tasks;
     }
@@ -119,24 +152,43 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         return new ArrayList<Task>();
     }
 
+    /**
+     * Setter for the date of the model
+     * @param year the year
+     * @param month the month
+     */
     public void setDate(int year, int month) {
         this.set(CalendarModel.YEAR, year);
         this.set(CalendarModel.MONTH, month);
         calendarPanel.updatePage();
     }
 
+    /**
+     * Changes the date of the model
+     * @param nYears amount of added years(can be negative for substraction)
+     * @param nMonths amount of added months(can be negative for substraction)
+     */
     public void changeDate(int nYears, int nMonths) {
         this.add(CalendarModel.YEAR, nYears);
         this.add(CalendarModel.MONTH, nMonths);
         calendarPanel.updatePage();
     }
 
+    /**
+     * Returns a Calendar with current date the date the model is set to, use this
+     * if you want to temporarily change the date without changin the model
+     * @return an instance of Calendar set to the time of the model
+     */
     public Calendar getCalendar() {
         Calendar c = Calendar.getInstance();
         c.setTime(this.getTime());
         return c;
     }
 
+    /**
+     * Listener that checks if the spinner of the CalendarPanel has changed
+     * @param e 
+     */
     public void stateChanged(ChangeEvent e) {
         JSpinner s = (JSpinner) e.getSource();
         SpinnerDateModel sModel = (SpinnerDateModel)s.getModel();
