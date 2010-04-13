@@ -28,12 +28,20 @@ import javax.swing.SpinnerDateModel;
  *
  * @author jelle
  */
-public class AddTask extends JDialog {
-    private static AddTask instance = new AddTask();
+public class ChangeTask extends JDialog {
+    public static final String EDIT = "taskEdit";
+    public static final String ADD = "taskAdd";
+    public static final String REMOVE = "taskRemove";
+
+    private static ChangeTask instance = new ChangeTask();
     private SpinnerDateModel sdm;
     private JTextArea description;
     private CalendarModel model;
     private Date day;
+
+    //private JButton submitButton;
+    private static JButton addButton;
+    private static JButton editButton;
 
     /**
      * Returns the instance of the dialog
@@ -41,19 +49,31 @@ public class AddTask extends JDialog {
      * @param day the day the task needs to be added, if this is null it will be
      *        the day the model is set to
      */
-    public static AddTask getInstance(CalendarModel model, Date day) {
+    public static ChangeTask getInstance(String type, CalendarModel model, Date day) {
         instance.model = model;
         instance.day = day;
-        instance.sdm.setValue(day);
-        instance.description.setText("");
+
+        //instance.submitButton.setText(Language.Language.getString(type));
+
+        instance.setTitle(Language.Language.getString(type));
+        if(type.equals(EDIT) && TaskDialog.getSelectedTask() != null) {
+            instance.description.setText(TaskDialog.getSelectedTask().getDescription());
+            instance.sdm.setValue(TaskDialog.getSelectedTask().getDate());
+            editButton.setVisible(true);
+            addButton.setVisible(false);
+        } else {
+            instance.description.setText("");
+            instance.sdm.setValue(day);
+            addButton.setVisible(true);
+            editButton.setVisible(false);
+        }
         return instance;
     }
 
 
-    private AddTask() {
+    private ChangeTask() {
         super(Main.getInstance(),true);
 
-        this.setTitle(Language.Language.getString("taskAdd"));
         JPanel panel = new JPanel();
         panel.setLayout(new RelativeLayout(RelativeLayout.Y_AXIS));
 
@@ -91,12 +111,12 @@ public class AddTask extends JDialog {
         descriptionPanel.add(new JScrollPane(description));
 
 
-        JButton submitButton = new JButton(Language.Language.getString("taskAdd"));
-        submitButton.addActionListener(new ActionListener() {
+        addButton = new JButton(Language.Language.getString("taskAdd"));
+        addButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                Calendar c = model.getCalendar();
-                c.setTime(sdm.getDate());
+//                Calendar c = model.getCalendar();
+//                c.setTime(sdm.getDate());
                 //System.out.println(c.get(Calendar.DATE)+"/"+c.get(Calendar.MONTH));
                 model.addTask(new Task(description.getText(),sdm.getDate()));
                 instance.setVisible(false);
@@ -104,9 +124,25 @@ public class AddTask extends JDialog {
             }
         });
 
+        editButton = new JButton(Language.Language.getString("taskEdit"));
+        editButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(TaskDialog.getSelectedTask() != null)
+                    model.updateTask(TaskDialog.getSelectedTask(),new Task(description.getText(),sdm.getDate()));
+                instance.setVisible(false);
+                TaskDialog.update();
+            }
+        });
+
+
+
+
+
         panel.add(spinnerPanel);
         panel.add(descriptionPanel);
-        panel.add(submitButton);
+        panel.add(addButton);
+        panel.add(editButton);
 
         
         setContentPane(panel);

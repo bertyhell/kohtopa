@@ -36,6 +36,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
     private static TaskDialog instance = new TaskDialog(Main.getInstance());
     private static ArrayList<Task> taskList;
     private static Date date;
+    private int selectedIndex;
 
     /**
      * Getter for the instance of the dialog
@@ -75,6 +76,10 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
     
     public static CalendarModel getModel() {
         return TaskDialog.model;
+    }
+
+    public static Task getSelectedTask() {
+        return (Task) tasks.getSelectedValue();
     }
 
     /**
@@ -139,6 +144,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
     }
 
     public void valueChanged(ListSelectionEvent e) {
+        selectedIndex = e.getFirstIndex();
     }
 
     private class CustomListModel extends AbstractListModel {
