@@ -168,9 +168,9 @@ public class DataBaseConstants {
 	public static String removeMessage = "delete from " + tableMessages +
                 " where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
 
-        public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ where @=? order by "+read,
+        public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ where @=? order by 6 asc ,5 desc",
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID, recipientID);
-	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by " + read,
+	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by 6 asc ,5 desc",
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID);
         public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
         public static String selectRenters =
