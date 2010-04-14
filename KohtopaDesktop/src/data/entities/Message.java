@@ -5,20 +5,25 @@
 
 package data.entities;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 /**
  *
  * @author jelle
  */
 public class Message {
     int recipient;
+    int senderID;
     String sender;
     String subject;
-    String date;
+    Date date;
     String text;
     String read;
 
-    public Message(int recipient, String sender, String subject, String date, String text, String read) {
+    public Message(int recipient, int senderID, String sender, String subject, Date date, String text, String read) {
         this.recipient = recipient;
+        this.senderID = senderID;
         this.sender = sender;
         if(subject == null || subject.equals(""))
             this.subject = "No subject";
@@ -29,11 +34,24 @@ public class Message {
         this.read = read;
     }
 
+    public int getSenderID() {
+        return senderID;
+    }
+
+    public void setSenderID(int senderID) {
+        this.senderID = senderID;
+    }
+
     public void setRead(String read) {
         this.read = read;
     }
 
-    public String getDate() {
+    public String getDateString() {
+        return DateFormat.getDateInstance().format(date) + " "
+                            + DateFormat.getTimeInstance().format(date);
+    }
+
+    public Date getDate() {
         return date;
     }
 

@@ -192,6 +192,9 @@ public class DataModel {
 			JOptionPane.showMessageDialog(Main.getInstance(), "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
+                if(userId != null) {
+                    ProgramSettings.setUserID(userId);
+                }
 		return userId != null;
 	}
 

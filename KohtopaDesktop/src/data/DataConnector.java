@@ -22,6 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.Message;
+import data.entities.Person;
 import data.entities.Picture;
 import data.entities.Rentable;
 import data.entities.Task;
@@ -449,22 +450,78 @@ public class DataConnector {
                     String text = rsMessages.getString(1);
                     String subject = rsMessages.getString(2);
                     String sender = rsMessages.getString(3) + " " + rsMessages.getString(4);
-                    String dateSent = DateFormat.getDateInstance().format(rsMessages.getDate(5)) + " "
-                            + DateFormat.getTimeInstance().format(rsMessages.getTime(5));
+//                    String dateSent = DateFormat.getDateInstance().format(rsMessages.getDate(5)) + " "
+//                            + DateFormat.getTimeInstance().format(rsMessages.getTimestamp(5));
+                    Date date = rsMessages.getTimestamp(5);
                     String read = rsMessages.getString(6);
                     int recipient = rsMessages.getInt(7);
+                    int senderID = rsMessages.getInt(8);
                     // int recipient, String sender, String subject, String date, String text, boolean read)
 
-                    messages.add(new Message(recipient, sender, subject, dateSent, text, read));
+                    messages.add(new Message(recipient, senderID, sender, subject, date, text, read));
                 }
             } finally {
                 conn.close();
             }
         } catch (Exception ex) {
-            System.out.println("error in getMessages: problems with connection : " + ex);
+            System.out.println("error in getMessages: problems with connection : " + ex.getMessage());
         }
         //System.out.println("found " + messages.size() + " messages.");
         return messages;
+    }
+
+    public static ArrayList<Person> getRenters(int ownerID) {
+        ArrayList<Person> renters = new ArrayList<Person>();
+        try {
+            Connection conn = geefVerbinding();
+            try {
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenters);
+                ps.setInt(1, ownerID);
+                ResultSet rs = ps.executeQuery();
+                
+                while(rs.next()) {
+                    int renterID = rs.getInt(1);
+                    String name = rs.getString(2);
+                    String firstName = rs.getString(3);
+                    String email = rs.getString(4);
+                    String telephone = rs.getString(5);
+                    String cellphone = rs.getString(6);
+                    //int id, String name, String firstName, String email, String telephone, String cellphone
+                    renters.add(new Person(renterID,name,firstName,email,telephone,cellphone));
+                }
+
+            } finally {
+                conn.close();
+            }
+        } catch(Exception ex) {
+            System.out.println("error retrieving renters: "+ex.getMessage());
+        }
+
+        return renters;
+    }
+
+    public static void sendMessage(Message m) {
+        try {
+            Connection conn = geefVerbinding();
+
+            try {
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertMessage);
+                ps.setInt(1, m.getSenderID());
+                ps.setInt(2, m.getRecipient());
+                ps.setString(3, m.getSubject());
+                ps.setTimestamp(4, new java.sql.Timestamp(m.getDate().getTime()));
+                ps.setString(5, m.getRead());
+                ps.setString(6, m.getText());
+
+                ps.execute();
+                        //senderid,recipientid, subject,datesent,read,text
+            } finally {
+                conn.close();
+            }
+        } catch(Exception ex) {
+            System.out.println("Error sending message: " + ex.getMessage());
+        }
+
     }
 
     public static Building getBuilding(int buildingID) throws SQLException {

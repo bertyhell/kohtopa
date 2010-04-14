@@ -42,4 +42,11 @@ public class Person {
     public String getTelephone() {
 	return telephone;
     }
+
+    @Override
+    public String toString() {
+        return name+" "+firstName+" ("+email+")";
+    }
+
+
 }
