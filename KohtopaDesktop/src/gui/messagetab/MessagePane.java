@@ -18,7 +18,10 @@ import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import data.DataConnector;
+import data.ProgramSettings;
 import data.entities.Message;
+import gui.Main;
+import javax.swing.DefaultListModel;
 
 /**
  * An implementation for a messagepane
@@ -29,7 +32,8 @@ public class MessagePane extends JPanel {
     private JSplitPane splitpane;
     private JScrollPane leftpane;
     private JScrollPane rightpane;
-    private Vector<String> messages;
+    private Vector<Message> messages;
+    private Message selectedMessage;
     private JList list;
     private JTextArea text;
 
@@ -43,17 +47,28 @@ public class MessagePane extends JPanel {
         // create the left pane (containing list of messages)
         leftpane = new JScrollPane();
 
-
+        
         // make new JList and add to panel
-        list = new JList(DataConnector.getMessageData());
+        messages = DataConnector.getMessageData(ProgramSettings.getUserID());
+        list = new JList(messages);
 
         list.addListSelectionListener(new ListSelectionListener() {
 
             public void valueChanged(ListSelectionEvent e) {
-                if(list.getSelectedValue() != null) {
+                Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
+                Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
+                if(list.getSelectedIndex() != -1) {
                     Message m = (Message)list.getSelectedValue();
                     text.setText(m.getText());
-                    m.setRead("1");
+
+                    text.setCaretPosition(0);
+
+                    selectedMessage = m;
+
+                    if(m.getRead().equals("0")) {
+                        m.setRead("1");                        
+                        DataConnector.updateMessageState(m);
+                    }
                 }
 
             }
@@ -66,15 +81,17 @@ public class MessagePane extends JPanel {
         // create the right pane
         rightpane = new JScrollPane();
 
-        messages = new Vector<String>();
-        for (int i = 0; i < 200; i++) {
-            messages.add("content " + i + "\nrandom spam!");
-        }
+//        messages = new Vector<String>();
+//        for (int i = 0; i < 200; i++) {
+//            messages.add("content " + i + "\nrandom spam!");
+//        }
 
         // textfield
         text = new JTextArea();
         text.setEditable(false);
         text.setLineWrap(true);
+
+        
 
         rightpane.setViewportView(text);
 
@@ -92,10 +109,27 @@ public class MessagePane extends JPanel {
 
         this.setLayout(new BorderLayout());
         this.add(splitpane);
+
+        Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
+        Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
         //this.add(toolbar,BorderLayout.NORTH);
 
     }
 
+    public Message getSelectedMessage() {
+        return selectedMessage;
+    }
+
+    public void removeSelectedMessage() {
+
+        if(list.getSelectedIndex() != -1) {
+            Message m = messages.get(list.getSelectedIndex());
+            DataConnector.removeMessage(m);
+            messages.remove(list.getSelectedIndex());
+            list.setListData(messages);
+        }
+        this.updateUI();
+    }
 
     /**
      * Makes a button

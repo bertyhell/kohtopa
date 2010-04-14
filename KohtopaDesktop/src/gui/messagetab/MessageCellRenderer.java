@@ -4,10 +4,8 @@
  */
 package gui.messagetab;
 
-import gui.addremovetab.AbstractListPanel;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;

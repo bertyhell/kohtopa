@@ -19,6 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
 import data.ProgramSettings;
+import data.entities.Message;
 import gui.addremovetab.IdentifiableI;
 import gui.addremovetab.RentableDialog;
 import gui.calendartab.CalendarPanel;
@@ -38,10 +39,12 @@ public class Main extends JFrame {
 	private JList lstBuildings;
 	private JList lstRentables;
 	private static DataModel data;
-	private JPanel pnlMessages;
+        private JPanel pnlMessages;
+	private MessagePane pnlMessagesInfo;
 	private JTabbedPane tabbed;
 	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
 	private static int focusedDialog;
+        private static Message selectedMessage;
 
 	public static Main getInstance() {
 		return instance;
@@ -355,7 +358,7 @@ public class Main extends JFrame {
 
 	//TODO move dataconnection of messages to model class and make sure it only connects to database outside constructor
 	public void fetchMessages() {
-		MessagePane pnlMessagesInfo = new MessagePane();
+		pnlMessagesInfo = new MessagePane();
 
 		pnlMessagesInfo.setPreferredSize(new Dimension(500, 600));
 		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
@@ -480,6 +483,15 @@ public class Main extends JFrame {
 
 	public static void updatePictureLists() {
 	}
+
+
+        public static MessagePane getMessagePane() {
+            return instance.pnlMessagesInfo;
+        }
+        
+        public static void updatePanels() {
+            instance.tabbed.updateUI();
+        }
 
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {

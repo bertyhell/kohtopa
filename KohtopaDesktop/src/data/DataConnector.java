@@ -86,14 +86,26 @@ public class DataConnector {
         return buildings;
     }
 
-    public static String getShortLogin() {
+    /**
+     * Returns an optimal login, having the best combination of username/password length,
+     * rentables owned, messages received and contracts given.
+     * @return
+     */
+    public static String getOptimalLogin() {
         try {
             Connection conn = geefVerbinding();
             try {
                 Statement s = conn.createStatement();
-                ResultSet rs = s.executeQuery("select username,password from persons where roleid = 'owner' order by LENGTH(username)+LENGTH(password) asc");
+                ResultSet rs = s.executeQuery(
+                "select distinct p.personid,max(p.username),max(p.password),count(1) ,count(1)/length(max(p.password) || max(p.username)) "+
+                "from messages m "+
+                "join persons p on m.recipientid = p.personid "+
+                "join rentables r on r.ownerid = p.personid "+
+                "join contracts c on c.rentableid = r.rentableid "+
+                "group by p.personid "+
+                "order by 5 desc");
                 if (rs.next()) {
-                    return "Username: " + rs.getString("username") + " , Password: " + rs.getString("password");
+                    return "Username: " + rs.getString(2) + " , Password: " + rs.getString(3);
                 }
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
@@ -432,14 +444,16 @@ public class DataConnector {
         }
     }
 
-    public static Vector<Message> getMessageData() {
+    public static Vector<Message> getMessageData(int id) {
         // create message vector
         Vector<Message> messages = new Vector<Message>();
+        //System.out.println(id);
         try {
             Connection conn = geefVerbinding();
             try {
-                Statement selectMessages = conn.createStatement();
-                ResultSet rsMessages = selectMessages.executeQuery(DataBaseConstants.selectMessages);
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectMessage);
+                ps.setInt(1,id);
+                ResultSet rsMessages = ps.executeQuery();
                 //PreparedStatement selectMessages = conn.prepareStatement(DataBaseConstants.selectMessages);
                 //selectMessages.setInt(1, 0);
 
@@ -500,6 +514,52 @@ public class DataConnector {
         return renters;
     }
 
+    public static void updateMessageState(Message m) {
+        try {
+            Connection conn = geefVerbinding();
+
+            try {
+                //setMessageReplied = "update " + tableMessages + " set "+
+                //read + " = 2 where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "
+                //+dateSent+" = ?";
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.setMessageReplied);
+                ps.setString(1, m.getRead());
+                ps.setString(2, m.getText());
+                ps.setInt(3, m.getSenderID());
+                ps.setInt(4,m.getRecipient());
+                ps.setTimestamp(5, new java.sql.Timestamp(m.getDate().getTime()));
+
+                ps.execute();
+            } finally {
+                conn.close();
+            }
+        } catch(Exception ex) {
+            System.out.println("Error sending message: " + ex.getMessage());
+        }
+    }
+
+    public static void removeMessage(Message m) {
+        try {
+            Connection conn = geefVerbinding();
+
+            try {
+                //removeMessage = "delete from " + tableMessages +
+                //" where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeMessage);
+                ps.setString(1, m.getText());
+                ps.setInt(2, m.getSenderID());
+                ps.setInt(3,m.getRecipient());
+                ps.setTimestamp(4, new java.sql.Timestamp(m.getDate().getTime()));
+
+                ps.execute();
+            } finally {
+                conn.close();
+            }
+        } catch(Exception ex) {
+            System.out.println("Error removing message: " + ex.getMessage());
+        }
+    }
+    
     public static void sendMessage(Message m) {
         try {
             Connection conn = geefVerbinding();

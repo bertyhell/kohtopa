@@ -163,8 +163,13 @@ public class DataBaseConstants {
 			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = -1";
 
         // messages
-	public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
-			text, subject, personName, firstName, dateSent, read, recipientID, tableMessages, tablePersons, personID, senderID, recipientID);
+        public static String setMessageReplied = "update " + tableMessages + " set "+
+                read + " = ? where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
+	public static String removeMessage = "delete from " + tableMessages +
+                " where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
+
+        public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ where @=? order by "+read,
+			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID, recipientID);
 	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by " + read,
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID);
         public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
