@@ -101,7 +101,7 @@ public class LoginDialog extends JDialog implements ActionListener {
 		pnlLogin.add(lblLoginFailed2);
 
 		//FIXME remove this after iterations?
-		JLabel lblLoginTip = new JLabel(DataConnector.getShortLogin());
+		JLabel lblLoginTip = new JLabel(DataConnector.getOptimalLogin());
 		lblLoginTip.setForeground(Color.DARK_GRAY);
 		Layout.buildConstraints(gbc, 0, 5, 2, 1, 60, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblLoginTip, gbc);

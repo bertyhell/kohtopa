@@ -36,11 +36,33 @@ public class ComposeMessageDialog extends JDialog {
     private JComboBox renters;
     private JTextField subject;
     private JTextArea message;
+    private Message original;
 
     private static ComposeMessageDialog instance = new ComposeMessageDialog();
 
     public static ComposeMessageDialog getInstance() {
-        instance.subject.setText("");
+        return getInstance(null);
+    }
+
+    public static ComposeMessageDialog getInstance(Message original) {
+        instance.original = original;
+        if(original == null) {
+            instance.renters.setEnabled(true);
+            instance.subject.setText("");
+        } else {
+            instance.renters.setEnabled(false);
+            int i=0;
+            while(i<instance.renters.getItemCount() && !instance.renters.getItemAt(i).toString().contains(original.getSender())) {
+
+                i++;
+            }
+            
+            
+            
+            if(i<instance.renters.getItemCount())
+                instance.renters.setSelectedIndex(i);
+            instance.subject.setText("Re: "+original.getSubject());
+        }
         instance.message.setText("");
         return instance;
     }
@@ -99,7 +121,12 @@ public class ComposeMessageDialog extends JDialog {
                         new Date(System.currentTimeMillis()),
                         message.getText(),
                         "0"));
+                if(original != null) {
+                    original.setRead("2");
 
+                    DataConnector.updateMessageState(original);
+                    Main.updatePanels();
+                }
                 instance.setVisible(false);
             }
         });
