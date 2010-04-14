@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Date;
 import javax.swing.AbstractListModel;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JList;
@@ -92,6 +93,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
     private TaskDialog(Frame owner) {
         super(owner, Language.getString("taskAdd"), true);
         TaskDialog.model = null;
+		this.setIconImage(new ImageIcon(getClass().getResource("/images/task_23.png")).getImage());
 
         listModel = new CustomListModel();
 
