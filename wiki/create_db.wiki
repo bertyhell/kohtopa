@@ -1,5 +1,4 @@
-<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeYmI3NzU2MmMtZmJhMS00MDI5LThlOWItNjEyYjU5ZTA1MzUy&hl=en">nieuwe databank</a>
+<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeYjYxNjYwNzItM2Y2ZC00MWFkLWE2ZDAtYjUzNWViYzdiY2Vh&hl=en">nieuwe databank...alweer</a>
 
 aangepast:
-perl script gerunned met deftige messages(geen random tekst maar wat data gehaald van http://www.shlomifish.org/humour/fortunes/shlomif.xml, omdat die in een mooi parsebaar formaat staan)
-Om deftige messages erin te kunnen steken is subject en text in grootte toegenomen tot 100/2048
+Kotbazen hebben nu ook messages in hun inbox...had dat nog vergeten :/
