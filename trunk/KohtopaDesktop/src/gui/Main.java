@@ -34,7 +34,7 @@ public class Main extends JFrame {
 
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
-	public final static boolean disableBtnText = true;
+	public final static boolean disableBtnText = false;
 	private JList lstBuildings;
 	private JList lstRentables;
 	private static DataModel data;

@@ -31,7 +31,7 @@ public class MessageListPanel extends AbstractListPanel {
         super();
         this.subject = m.getSubject();
         this.from = m.getSender();
-        this.date = m.getDate();
+        this.date = m.getDateString();
 
 
         GridBagLayout gbl = new GridBagLayout();

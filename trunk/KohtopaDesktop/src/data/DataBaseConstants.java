@@ -86,11 +86,11 @@ public class DataBaseConstants {
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
-	//public static String pw = "admin";
-	public static String pw = "e=mc**2";
+	public static String pw = "admin";
+	//public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
-	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	//public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//public static String connectiestring = "jdbc:oracle:thin:@192.168.19.128:1521:kohtopa";   //pc bert
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
@@ -165,9 +165,16 @@ public class DataBaseConstants {
         // messages
 	public static String selectMessage = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ where @=?",
 			text, subject, personName, firstName, dateSent, read, recipientID, tableMessages, tablePersons, personID, senderID, recipientID);
-	public static String selectMessages = buildString("select @,@,@,@,@,@,@ from @ join @ on @ = @ order by " + read,
-			text, subject, personName, firstName, dateSent, read, recipientID, tableMessages, tablePersons, personID, senderID);
-
+	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by " + read,
+			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID);
+        public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
+        public static String selectRenters =
+                "select distinct p."+personID+", p."+personName+",p."+firstName+
+                ", p."+email+", p."+telephone+",p."+cellphone+
+                " from "+tableContracts+" c "+
+                " join "+tableRentables+" r on c."+rentableID+" = r."+rentableID+
+                " join persons p on p."+personID+" = c."+renterID+
+                " where "+ownerID+" = ?";
         // tasks
         public static String selectTasks = buildString("select @,@,@,@,@,@  from @ "
                 ,taskID, rentableID, description,start_time,end_time,repeats_every,tableTasks);

@@ -23,6 +23,7 @@ public class ProgramSettings {
 	private static String connectionstring;
 	private static String username;
 	private static String password;
+        private static int userID;
 	private static boolean savePass;
 	//confirm settings
 	private static boolean confirmDeleteBuildings;
@@ -164,6 +165,7 @@ public class ProgramSettings {
 		//default settings:
 		username = "";
 		password = "";
+                userID = 0;
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
 		confirmDeleteBuildings = true;
@@ -197,6 +199,14 @@ public class ProgramSettings {
 	public static void setPassword(String password) {
 		ProgramSettings.password = password;
 	}
+
+        public static int getUserID() {
+            return userID;
+        }
+
+        public static void setUserID(int userID) {
+            ProgramSettings.userID = userID;
+        }
 
 	public static boolean confirmDeleteBuildings() {
 		return confirmDeleteBuildings;
