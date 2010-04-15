@@ -12,24 +12,34 @@ import javax.swing.ListCellRenderer;
 import data.entities.Message;
 
 /**
- *
+ * Renderer for a message cell
  * @author jelle
  */
 public class MessageCellRenderer implements ListCellRenderer {
 
-	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		Message m = (Message) list.getModel().getElementAt(index);
-		MessageListPanel p = new MessageListPanel(m);
-		if (isSelected) {
-			p.setBgColor(new Color(150, 150, 150));
-		} else {
-			if (index % 2 == 0) {
-				p.setBgColor(Color.LIGHT_GRAY);
-			} else {
-				p.setBgColor(new Color(170, 170, 170));
-			}
-		}
-                p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		return p;
-	}
+    /**
+     * Renders the cell, creates a MessageListPanel, sets the background and
+     * returns it
+     * @param list
+     * @param value
+     * @param index
+     * @param isSelected
+     * @param cellHasFocus
+     * @return a MessageListPanel
+     */
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        Message m = (Message) list.getModel().getElementAt(index);
+        MessageListPanel p = new MessageListPanel(m);
+        if (isSelected) {
+            p.setBgColor(new Color(150, 150, 150));
+        } else {
+            if (index % 2 == 0) {
+                p.setBgColor(Color.LIGHT_GRAY);
+            } else {
+                p.setBgColor(new Color(170, 170, 170));
+            }
+        }
+        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        return p;
+    }
 }

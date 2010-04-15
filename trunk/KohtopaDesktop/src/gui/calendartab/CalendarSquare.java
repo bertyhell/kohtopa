@@ -17,7 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- *
+ * Represents a square in the calendar
  * @author Jelle
  */
 public class CalendarSquare extends JPanel implements MouseListener {
@@ -27,10 +27,14 @@ public class CalendarSquare extends JPanel implements MouseListener {
     private Date day;
     private JLabel lblTasks;
     private JLabel lblDay;
-    private CalendarModel model;
 
-    public CalendarSquare(CalendarModel model, Date day, boolean currentMonth, boolean odd) {
-        this.model = model;
+    /**
+     * Creates a new calendarSquare
+     * @param day the day of the square
+     * @param currentMonth is the square of the current month or the previous/next one
+     * @param odd is the square odd or even
+     */
+    public CalendarSquare(Date day, boolean currentMonth, boolean odd) {
         if (!currentMonth) {
             foreColor = Color.white;
         } else {
@@ -79,10 +83,19 @@ public class CalendarSquare extends JPanel implements MouseListener {
         this.addMouseListener(this);
     }
 
-    public CalendarSquare(CalendarModel model, Date day, boolean odd) {
-        this(model, day, true, odd);
+    /**
+     * Creates a square, belonging to current month
+     * @param day the day of the square
+     * @param odd odd/even square
+     */
+    public CalendarSquare(Date day, boolean odd) {
+        this(day, true, odd);
     }
 
+    /**
+     * Setter for the tasks for the square
+     * @param tasks the tasks to set
+     */
     public void setTasks(ArrayList<Task> tasks) {
         if (tasks == null) {
             return;
@@ -126,6 +139,11 @@ public class CalendarSquare extends JPanel implements MouseListener {
     public void mousePressed(MouseEvent e) {
     }
 
+    /**
+     * Listens to the mouse released, if it is still within the square, open the
+     * taskDialog
+     * @param e
+     */
     public void mouseReleased(MouseEvent e) {
         try {
             if (this.contains(e.getPoint())) {
@@ -137,12 +155,20 @@ public class CalendarSquare extends JPanel implements MouseListener {
         }
     }
 
+    /**
+     * Upon entering, change color
+     * @param e
+     */
     public void mouseEntered(MouseEvent e) {
         setBackground(Color.BLACK);
         lblDay.setForeground(Color.white);
         lblTasks.setForeground(Color.white);
     }
 
+    /**
+     * Upon leaving, change color
+     * @param e
+     */
     public void mouseExited(MouseEvent e) {
         setBackground(backColor);
         lblDay.setForeground(foreColor);

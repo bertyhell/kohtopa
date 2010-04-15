@@ -29,25 +29,18 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
     CalendarPanel calendarPanel;
     HashMap<Integer,ArrayList<Task>> tasks;
 
+    /**
+     * Creates a calendarModel with the given year, month, monitoring the given
+     * CalendarPanel
+     * @param year the year
+     * @param month the month
+     * @param panel the CalendarPanel to monitor
+     */
     protected CalendarModel(int year, int month, CalendarPanel panel) {
         super(year, month, 1);
         this.calendarPanel = panel;
         tasks = new HashMap<Integer,ArrayList<Task>>();
-//        Calendar c = this.getCalendar();
-//
-//        // testcase, should later get data from database(when there are tasks
-//        // in it :))
-//        // in the database implementation they should be in order
-//        c.add(Calendar.HOUR, 5);
-//        addTask(new Task("test3", c.getTime()));
-//        c.add(Calendar.HOUR, -24);
-//        addTask(new Task("test20342°4831840918240980409217804971409704720", c.getTime()));
-//        c.add(Calendar.HOUR, -24);
-//        addTask(new Task("test1", c.getTime()));
-//        c.add(Calendar.HOUR, 4);
-//        addTask(new Task("test4", c.getTime()));
-//        c.add(Calendar.DATE, 2);
-//        addTask(new Task("nieuwe dag", c.getTime()));
+        
         tasks = DataConnector.getTasks();
     }
 

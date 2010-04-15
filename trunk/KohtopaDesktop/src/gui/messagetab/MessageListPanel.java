@@ -17,10 +17,20 @@ public class MessageListPanel extends AbstractListPanel {
     private static HashMap<String, ImageIcon> icons =
             new HashMap<String, ImageIcon>();
 
+    /**
+     * Add an icon to the map of images,
+     * @param type read state of the message this icon should be displayed for:
+     * 0: unread, 1: read, 2: replied, add your own ones here
+     * @param img image to add
+     */
     public static void addIcon(String type, ImageIcon img) {
         icons.put(type, img);
     }
 
+    /**
+     * Constructor, creates a MessageListPanel for a message
+     * @param m the messages to create the panel for
+     */
     public MessageListPanel(Message m) {
         super();
         this.subject = m.getSubject();
@@ -31,8 +41,6 @@ public class MessageListPanel extends AbstractListPanel {
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         setLayout(gbl);
-
-        //adding information labels
 
 
         // icon

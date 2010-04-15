@@ -90,7 +90,7 @@ public class Language {
 		return strings.get(key);
 	}
 
-	public static String[] getDaysOfWeek(boolean isEnglish) {
+	public static String[] getDaysOfWeek() {
 		return daysOfWeek;
 	}
 }

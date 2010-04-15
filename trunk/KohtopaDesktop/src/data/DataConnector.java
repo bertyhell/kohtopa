@@ -13,11 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -30,16 +27,26 @@ import gui.calendartab.CalendarModel;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * this class gets/puts data from/to database + caches information (rentables, buildings).
+ * @author Jelle
+ */
 public class DataConnector {
-    /* this class gets/puts data from/to database + caches information (rentables, buildings) */
 
     //TODO add aspectJ for dataconnection to avoid duplicate code
     private static DataConnector instance = new DataConnector();
 
+    /**
+     * Gets the instance of the DataConnector
+     * @return the instance
+     */
     public static DataConnector getInstance() {
         return instance;
     }
 
+    /**
+     * Creates the class, registers and starts the JDBC oracle-driver
+     */
     private DataConnector() {
         try {
             DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -51,10 +58,21 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Makes a connection
+     * @return the connection
+     * @throws SQLException thrown if something goes wrong creating the connection
+     */
     private static Connection geefVerbinding() throws SQLException {
         return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
     }
 
+    /**
+     * Fetches buildingPreviews from the database
+     * @return an ArrayList of buildings
+     * @throws SQLException thrown if something goes wrong with the select statements
+     * @throws IOException thrown if there is a problem fetching the images
+     */
     public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
         ArrayList<Building> buildings = new ArrayList<Building>();
         Connection conn = geefVerbinding();
@@ -88,8 +106,10 @@ public class DataConnector {
 
     /**
      * Returns an optimal login, having the best combination of username/password length,
-     * rentables owned, messages received and contracts given.
-     * @return
+     * rentables owned, messages received and contracts owned.
+     * @return a string containing the username and password of the optimal login
+     * returns "no owners found" if there are no usefull entries in the database,
+     * if this is the case, please check your connection or database version
      */
     public static String getOptimalLogin() {
         try {
@@ -97,13 +117,13 @@ public class DataConnector {
             try {
                 Statement s = conn.createStatement();
                 ResultSet rs = s.executeQuery(
-                "select distinct p.personid,max(p.username),max(p.password),count(1) ,count(1)/length(max(p.password) || max(p.username)) "+
-                "from messages m "+
-                "join persons p on m.recipientid = p.personid "+
-                "join rentables r on r.ownerid = p.personid "+
-                "join contracts c on c.rentableid = r.rentableid "+
-                "group by p.personid "+
-                "order by 5 desc");
+                        "select distinct p.personid,max(p.username),max(p.password),count(1) ,count(1)/length(max(p.password) || max(p.username)) "
+                        + "from messages m "
+                        + "join persons p on m.recipientid = p.personid "
+                        + "join rentables r on r.ownerid = p.personid "
+                        + "join contracts c on c.rentableid = r.rentableid "
+                        + "group by p.personid "
+                        + "order by 5 desc");
                 if (rs.next()) {
                     return "Username: " + rs.getString(2) + " , Password: " + rs.getString(3);
                 }
@@ -119,15 +139,24 @@ public class DataConnector {
 
     }
 
+    /**
+     * Updates the latitude and longitude of a building in the database
+     * @param b the building containing the new data
+     * @throws SQLException thrown if something goes wrong with the update command
+     */
     public static void updateBuildings(Building b) throws SQLException {
-        Connection conn = geefVerbinding();
         try {
-            Statement s = conn.createStatement();
-            if (b.getLatitude() != 0) {
-                s.executeUpdate("update buildings"
-                        + " set latitude = " + b.getLatitude()
-                        + " , longitude = " + b.getLongitude()
-                        + " where buildingid = " + b.getId());
+            Connection conn = geefVerbinding();
+            try {
+                Statement s = conn.createStatement();
+                if (b.getLatitude() != 0) {
+                    s.executeUpdate("update buildings"
+                            + " set latitude = " + b.getLatitude()
+                            + " , longitude = " + b.getLongitude()
+                            + " where buildingid = " + b.getId());
+                }
+            } finally {
+                conn.close();
             }
         } catch (SQLException ex) {
             throw new SQLException("update buildings"
@@ -135,9 +164,16 @@ public class DataConnector {
                     + " set longitude = " + b.getLongitude()
                     + " where buildingid = " + b.getId() + "/" + ex.getMessage());
         }
-        conn.close(); //TODO jelle: put this in final block
     }
 
+    /**
+     * Adds a building to the database
+     * @param street the street of the building
+     * @param streetNumber the streetnumber of the building
+     * @param zip zip code of the city of the buidling
+     * @param city the city of the building
+     * @throws SQLException thrown if insert fails
+     */
     static void addBuilding(String street, String streetNumber, String zip, String city) throws SQLException {
         Connection conn = geefVerbinding();
         try {
@@ -158,6 +194,16 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Adds an address tot the database
+     * @param conn the connection to use
+     * @param street the street
+     * @param streetNumber the streetnumber
+     * @param zip zipcode of the address
+     * @param city city of the address
+     * @return the id of the address that is used in the database
+     * @throws SQLException thrown if there is a problem in the commands used
+     */
     static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city) throws SQLException {
 
         Integer addressID = getAddressID(conn, street, streetNumber, zip, city);
@@ -179,6 +225,16 @@ public class DataConnector {
         return addressID;
     }
 
+    /**
+     * Getter for the id of an address
+     * @param conn the connection to use
+     * @param street the street of the address
+     * @param streetNumber the streetnumber of the address
+     * @param zip the zipcode
+     * @param city the city of the address
+     * @return the ID used in the database
+     * @throws SQLException thrown if the select statement fails
+     */
     private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city) throws SQLException {
         Integer id = null;
         try {
@@ -201,6 +257,15 @@ public class DataConnector {
         return id;
     }
 
+    /**
+     * Updates a building in the database
+     * @param id the id of the building
+     * @param street the new street of the building
+     * @param streetNumber the new streetnumber of the building
+     * @param zip the new zipcode of the building
+     * @param city the new city of the building
+     * @throws SQLException thrown when the update fails
+     */
     public static void updateBuilding(int id, String street, String streetNumber, String zip, String city) throws SQLException {
         Connection conn = geefVerbinding();
         try {
@@ -222,22 +287,54 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Adds picture to the database
+     * @param id the id
+     * @param bufferedImage the image to add
+     * @throws SQLException thrown if insert fails
+     */
     public static void addRentablePicture(int id, BufferedImage bufferedImage) throws SQLException {
         addFloorPlan(id, bufferedImage, -1);
     }
 
+    /**
+     * Adds a rentablePreviewPicture to the database
+     * @param id the id
+     * @param img the image to add
+     * @throws SQLException thrown if insert fails
+     */
     public static void addRentablePreviewPicture(int id, BufferedImage img) throws SQLException {
         addFloorPlan(id, img, -2);
     }
 
+    /**
+     * Adds a building picture to the database
+     * @param id the id
+     * @param img the image to add
+     * @throws SQLException thrown if insert fails
+     */
     public static void addBuildingPicture(int id, BufferedImage img) throws SQLException {
         addFloorPlan(id, img, -3);
     }
 
+
+    /**
+     * Adds a building preview image to the database
+     * @param id the id
+     * @param img the image to add
+     * @throws SQLException thrown if insert fails
+     */
     public static void addBuildingPreviewPicture(int id, BufferedImage img) throws SQLException {
         addFloorPlan(id, img, -4);
     }
 
+    /**
+     * Adds a floorplan to the database
+     * @param id the id
+     * @param img the image containing the floorplan
+     * @param floor the floor the plan belongs to
+     * @throws SQLException thrown if insert fails
+     */
     public static void addFloorPlan(int id, BufferedImage img, int floor) throws SQLException {
         Connection conn = geefVerbinding();
         try {
@@ -260,6 +357,11 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Removes picture from the database
+     * @param id the id of the picture
+     * @throws SQLException thrown id delete fails
+     */
     public static void removePicture(int id) throws SQLException {
         Connection conn = geefVerbinding();
         try {
@@ -274,14 +376,33 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Gets the buildingpicture from the database
+     * @param id the id
+     * @return the pictures for the building
+     * @throws SQLException thrown if the select fails
+     */
     public static ArrayList<Picture> getBuildingPictures(int id) throws SQLException {
         return getPictures(id, true);
     }
 
+    /**
+     * Gets thte rentablepictures from the database
+     * @param id the id
+     * @return the pictures for the building
+     * @throws SQLException thrown if the select fails
+     */
     public static ArrayList<Picture> getRentablePictures(int id) throws SQLException {
         return getPictures(id, false);
     }
 
+    /**
+     * Gets pictures from the database
+     * @param id the id
+     * @param isBuilding true if its a building, false if its a rentable
+     * @return the pictures gotten
+     * @throws SQLException thrown if select fails
+     */
     private static ArrayList<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
         ArrayList<Picture> pictures = new ArrayList<Picture>();
         try {
@@ -314,34 +435,44 @@ public class DataConnector {
         return pictures;
     }
 
-    public static ArrayList<Rentable> getRentablesFromUser(String username,String password) {
+
+    /**
+     * Gets the rentables from a certain user
+     * @param ID the id of the user
+     * @return an array of the rentables from the user
+     */
+    public static ArrayList<Rentable> getRentablesFromUser(int ID) {
         ArrayList<Rentable> rentables = new ArrayList<Rentable>();
         try {
             //int id, ImageIcon previewImage, int type, int floor, String description
             Connection conn = geefVerbinding();
             try {
                 PreparedStatement psRentables = conn.prepareStatement(DataBaseConstants.selectRentablesFromUser);
-                psRentables.setString(1, username);
-                psRentables.setString(2, password);
+                psRentables.setInt(1, ID);
                 ResultSet rs = psRentables.executeQuery();
-                while(rs.next()) {
+                while (rs.next()) {
                     int id = rs.getInt(1);
                     int type = rs.getInt(2);
                     int floor = rs.getInt(3);
                     String description = rs.getString(4);
-                    rentables.add(new Rentable(id,null,type,floor,description));
+                    rentables.add(new Rentable(id, null, type, floor, description));
                 }
             } finally {
                 conn.close();
             }
         } catch (SQLException ex) {
-            System.out.println("error getting rentables from user: "+ex.getMessage());
+            System.out.println("error getting rentables from user: " + ex.getMessage());
         }
 
         return rentables;
     }
 
+    /**
+     * Gets the tasks from the database
+     * @return the tasks in the database
+     */
     public static HashMap<Integer, ArrayList<Task>> getTasks() {
+        //TODO: select by rentable/owner/...?
         HashMap<Integer, ArrayList<Task>> tasks = new HashMap<Integer, ArrayList<Task>>();
         try {
             Connection conn = geefVerbinding();
@@ -375,6 +506,10 @@ public class DataConnector {
         return tasks;
     }
 
+    /**
+     * Inserts a task into the database
+     * @param t the task to insert
+     */
     public static void insertTask(Task t) {
         try {
             Connection conn = geefVerbinding();
@@ -397,6 +532,10 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Removes a task from the database
+     * @param t the task to remove
+     */
     public static void removeTask(Task t) {
         try {
             Connection conn = geefVerbinding();
@@ -416,6 +555,12 @@ public class DataConnector {
             System.out.println("Error deleting from tasks: " + ex.getMessage());
         }
     }
+
+    /**
+     * Updates a task in the database
+     * @param originalTask the original task
+     * @param newTask the new task
+     */
     public static void updateTask(Task originalTask, Task newTask) {
         try {
             Connection conn = geefVerbinding();
@@ -424,7 +569,7 @@ public class DataConnector {
 
                 //rentableID, description,start_time,end_time,repeats_every,
                 //rentableID,description,start_time
-                psTasks.setInt(1,newTask.getRentableID());
+                psTasks.setInt(1, newTask.getRentableID());
                 psTasks.setString(2, newTask.getDescription());
                 psTasks.setTimestamp(3, new java.sql.Timestamp(newTask.getDate().getTime()));
                 psTasks.setTimestamp(4, new java.sql.Timestamp(newTask.getEnd().getTime()));
@@ -444,6 +589,11 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Gets the messages from the database for a certain owner
+     * @param id the id of the user
+     * @return a vector of messages
+     */
     public static Vector<Message> getMessageData(int id) {
         // create message vector
         Vector<Message> messages = new Vector<Message>();
@@ -452,25 +602,20 @@ public class DataConnector {
             Connection conn = geefVerbinding();
             try {
                 PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectMessage);
-                ps.setInt(1,id);
+                ps.setInt(1, id);
                 ResultSet rsMessages = ps.executeQuery();
-                //PreparedStatement selectMessages = conn.prepareStatement(DataBaseConstants.selectMessages);
-                //selectMessages.setInt(1, 0);
-
-                //ResultSet rsMessages = selectMessages.executeQuery();
 
                 while (rsMessages.next()) {
-                    //text,subject,personName,firstName,dateSent,read,recipientID
+
                     String text = rsMessages.getString(1);
                     String subject = rsMessages.getString(2);
                     String sender = rsMessages.getString(3) + " " + rsMessages.getString(4);
-//                    String dateSent = DateFormat.getDateInstance().format(rsMessages.getDate(5)) + " "
-//                            + DateFormat.getTimeInstance().format(rsMessages.getTimestamp(5));
+
                     Date date = rsMessages.getTimestamp(5);
                     String read = rsMessages.getString(6);
                     int recipient = rsMessages.getInt(7);
                     int senderID = rsMessages.getInt(8);
-                    // int recipient, String sender, String subject, String date, String text, boolean read)
+
 
                     messages.add(new Message(recipient, senderID, sender, subject, date, text, read));
                 }
@@ -478,12 +623,17 @@ public class DataConnector {
                 conn.close();
             }
         } catch (Exception ex) {
-            System.out.println("error in getMessages: problems with connection : " + ex.getMessage());
+            System.out.println("error in getMessages: " + ex.getMessage());
         }
         //System.out.println("found " + messages.size() + " messages.");
         return messages;
     }
 
+    /**
+     * Gets the renters of a certain owner
+     * @param ownerID the id of the owner
+     * @return an ArrayList of persons containing the renters of an owner
+     */
     public static ArrayList<Person> getRenters(int ownerID) {
         ArrayList<Person> renters = new ArrayList<Person>();
         try {
@@ -492,8 +642,8 @@ public class DataConnector {
                 PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenters);
                 ps.setInt(1, ownerID);
                 ResultSet rs = ps.executeQuery();
-                
-                while(rs.next()) {
+
+                while (rs.next()) {
                     int renterID = rs.getInt(1);
                     String name = rs.getString(2);
                     String firstName = rs.getString(3);
@@ -501,19 +651,23 @@ public class DataConnector {
                     String telephone = rs.getString(5);
                     String cellphone = rs.getString(6);
                     //int id, String name, String firstName, String email, String telephone, String cellphone
-                    renters.add(new Person(renterID,name,firstName,email,telephone,cellphone));
+                    renters.add(new Person(renterID, name, firstName, email, telephone, cellphone));
                 }
 
             } finally {
                 conn.close();
             }
-        } catch(Exception ex) {
-            System.out.println("error retrieving renters: "+ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("error retrieving renters: " + ex.getMessage());
         }
 
         return renters;
     }
 
+    /**
+     * Updates the state of a message
+     * @param m the message with an updated state
+     */
     public static void updateMessageState(Message m) {
         try {
             Connection conn = geefVerbinding();
@@ -526,18 +680,22 @@ public class DataConnector {
                 ps.setString(1, m.getRead());
                 ps.setString(2, m.getText());
                 ps.setInt(3, m.getSenderID());
-                ps.setInt(4,m.getRecipient());
+                ps.setInt(4, m.getRecipient());
                 ps.setTimestamp(5, new java.sql.Timestamp(m.getDate().getTime()));
 
                 ps.execute();
             } finally {
                 conn.close();
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error sending message: " + ex.getMessage());
         }
     }
 
+    /**
+     * Removes a message from the database
+     * @param m the message to remove
+     */
     public static void removeMessage(Message m) {
         try {
             Connection conn = geefVerbinding();
@@ -548,18 +706,22 @@ public class DataConnector {
                 PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeMessage);
                 ps.setString(1, m.getText());
                 ps.setInt(2, m.getSenderID());
-                ps.setInt(3,m.getRecipient());
+                ps.setInt(3, m.getRecipient());
                 ps.setTimestamp(4, new java.sql.Timestamp(m.getDate().getTime()));
 
                 ps.execute();
             } finally {
                 conn.close();
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error removing message: " + ex.getMessage());
         }
     }
-    
+
+    /**
+     * Sends a message, puts it in the database
+     * @param m the message to send
+     */
     public static void sendMessage(Message m) {
         try {
             Connection conn = geefVerbinding();
@@ -574,16 +736,22 @@ public class DataConnector {
                 ps.setString(6, m.getText());
 
                 ps.execute();
-                        //senderid,recipientid, subject,datesent,read,text
+                //senderid,recipientid, subject,datesent,read,text
             } finally {
                 conn.close();
             }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             System.out.println("Error sending message: " + ex.getMessage());
         }
 
     }
 
+    /**
+     * Gets the building from the database with the id given
+     * @param buildingID the id to search for
+     * @return the building
+     * @throws SQLException thrown if something goes wrong fetching the building
+     */
     public static Building getBuilding(int buildingID) throws SQLException {
         Building building = null;
         try {
@@ -616,6 +784,12 @@ public class DataConnector {
         return building;
     }
 
+    /**
+     * Getter for rentables from a building
+     * @param buildingID the id to search for
+     * @return an ArrayList containting the rentables from a building
+     * @throws SQLException thrown if the select fails
+     */
     public static ArrayList<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
         ArrayList<Rentable> rentables = new ArrayList<Rentable>();
         try {
@@ -646,6 +820,12 @@ public class DataConnector {
         return rentables;
     }
 
+    /**
+     * Getter for the rentable with given id
+     * @param rentableID the id to search for
+     * @return the rentable
+     * @throws SQLException thrown if select fails
+     */
     static Rentable getRentable(int rentableID) throws SQLException {
         Rentable rentable = null;
         try {
@@ -681,6 +861,13 @@ public class DataConnector {
         return rentable;
     }
 
+    /**
+     * Checks the login
+     * @param username the username to check
+     * @param password the password to check
+     * @return the userID, null if no user found
+     * @throws SQLException thrown if select fails
+     */
     static Integer checkLogin(String username, String password) throws SQLException {
         Integer userID = null;
         try {
@@ -703,6 +890,9 @@ public class DataConnector {
         return userID;
     }
 
+    /**
+     * Adds dummy pictures to the application
+     */
     public static void addDummyPictures() {
         ArrayList<Building> buildings = null;
         try {
@@ -731,6 +921,10 @@ public class DataConnector {
         }
     }
 
+    /**
+     * Creates views for the owners
+     * @throws SQLException thrown if select fails
+     */
     public static void createViewsForAllOwners() throws SQLException {
         try {
             Connection conn = geefVerbinding();

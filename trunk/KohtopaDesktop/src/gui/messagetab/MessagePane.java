@@ -21,10 +21,9 @@ import data.DataConnector;
 import data.ProgramSettings;
 import data.entities.Message;
 import gui.Main;
-import javax.swing.DefaultListModel;
 
 /**
- * An implementation for a messagepane
+ * MessagePane, this is used for the tab messages
  * @author Jelle
  */
 public class MessagePane extends JPanel {
@@ -81,10 +80,6 @@ public class MessagePane extends JPanel {
         // create the right pane
         rightpane = new JScrollPane();
 
-//        messages = new Vector<String>();
-//        for (int i = 0; i < 200; i++) {
-//            messages.add("content " + i + "\nrandom spam!");
-//        }
 
         // textfield
         text = new JTextArea();
@@ -103,7 +98,6 @@ public class MessagePane extends JPanel {
         splitpane.setDividerSize(5);
         splitpane.setResizeWeight(0.2);
         splitpane.setDividerLocation(350);
-        //splitpane.setDividerLocation();
 
 
 
@@ -116,10 +110,17 @@ public class MessagePane extends JPanel {
 
     }
 
+    /**
+     * Getter for the selected message
+     * @return the selected message
+     */
     public Message getSelectedMessage() {
         return selectedMessage;
     }
 
+    /**
+     * Removes the selected message
+     */
     public void removeSelectedMessage() {
 
         if(list.getSelectedIndex() != -1) {

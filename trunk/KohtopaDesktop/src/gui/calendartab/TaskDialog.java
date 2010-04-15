@@ -25,7 +25,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
- *
+ * Class TaskDialog, creates a dialog that shows the tasks for the selected day
  * @author Jelle
  */
 public class TaskDialog extends JDialog implements ListSelectionListener {
@@ -62,6 +62,9 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
         return instance;
     }
 
+    /**
+     * Updates the dialog to reflect the new situation
+     */
     public static void update() {
         try {
             TaskDialog.getInstance(date);
@@ -70,14 +73,26 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
         }
     }
 
+    /**
+     * Getter for the date
+     * @return the date of the dialog
+     */
     public static Date getDate() {
         return TaskDialog.date;
     }
-    
+
+    /**
+     * Getter for the model of the dialog
+     * @return the model of the dialog
+     */
     public static CalendarModel getModel() {
         return TaskDialog.model;
     }
 
+    /**
+     * Getter for the selected task
+     * @return the selected task, null if none are selected
+     */
     public static Task getSelectedTask() {
         return (Task) tasks.getSelectedValue();
     }
@@ -90,6 +105,10 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
         TaskDialog.model = model;
     }
 
+    /**
+     * Constructor, creates a new TaskDialog with the given owner
+     * @param owner the owner of the TaskDialog
+     */
     private TaskDialog(Frame owner) {
         super(owner, Language.getString("taskAdd"), true);
         TaskDialog.model = null;
@@ -146,25 +165,45 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
         return btn;
     }
 
+    /**
+     * Listener for a change in the listValue
+     * @param e
+     */
     public void valueChanged(ListSelectionEvent e) {
         Main.getAction("taskEdit").setEnabled(e.getFirstIndex() != -1);
         Main.getAction("taskRemove").setEnabled(e.getFirstIndex() != -1);
 
     }
 
+    /**
+     * Class CustomListModel, this is a model that orders the tasks based on
+     * the comparator that tasks have, adding an element is O(n*log(n)), where
+     * n is small (n = amount of tasks already present for that day)
+     */
     private class CustomListModel extends AbstractListModel {
 
         private ArrayList<Task> list;
 
+        /**
+         * Creates a new CustomListModel
+         */
         public CustomListModel() {
 
             list = new ArrayList<Task>();
         }
 
+        /**
+         * Clears the model
+         */
         public void clear() {
             list.clear();
         }
 
+        /**
+         * Add a task to the model, efficiency O(n*log(n)), since there are never
+         * many tasks, this does not matter much
+         * @param t
+         */
         public void addElement(Task t) {
             // i am going to assume the list wont be that big that efficiency matters
             // here, 100000+ tasks in one day is highly unlikely :)
@@ -172,11 +211,20 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
             Collections.sort(list);
         }
 
+        /**
+         * Getter for the size of the table of the model
+         * @return the size of the table of the model
+         */
         @Override
         public int getSize() {
             return list.size();
         }
 
+        /**
+         * Getter for the element at index index
+         * @param index the index of the needed element
+         * @return the element at place index
+         */
         @Override
         public Object getElementAt(int index) {
             if(index >= list.size())

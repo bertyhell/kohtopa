@@ -22,22 +22,29 @@ import javax.swing.JSpinner.DateEditor;
 import javax.swing.SpinnerDateModel;
 
 /**
- *
+ * Panel that represents the calendar
  * @author Jelle
  */
 public class CalendarPanel extends JPanel implements MouseWheelListener {
 
-    private final String[] days = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
     private JPanel calendar;
     private CalendarModel model;
     private boolean nextSquareOdd;
     private SpinnerDateModel spinnerModel;
 
+    /**
+     * Creates a new CalendarPanel of the current month
+     */
     public CalendarPanel() {
         this(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH));
         //System.out.println(Calendar.getInstance().getTimeInMillis()-System.currentTimeMillis());
     }
 
+    /**
+     * Creates a new CalendarPanel of the month asked
+     * @param year year of Calendar
+     * @param month month of calendar
+     */
     public CalendarPanel(int year, int month) {
         nextSquareOdd = true;
 
@@ -58,7 +65,7 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         JPanel dayPanel = new JPanel(new GridLayout(0, 7));
         calendarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         for (int i = 0; i < 7; i++) {
-            JLabel l = new JLabel(days[i]);
+            JLabel l = new JLabel(Language.Language.getDaysOfWeek()[i]);
             l.setOpaque(true);
             l.setBackground(Color.DARK_GRAY);
             l.setForeground(Color.white);
@@ -108,22 +115,47 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         Main.getAction("taskRemove").setEnabled(false);
     }
 
+    /**
+     * Getter for the model
+     * @return the model
+     */
     public CalendarModel getModel() {
         return model;
     }
 
+    /**
+     * Getter for a specific square, indexed starting from zero
+     * @param index the square needed
+     * @return the square
+     */
     public CalendarSquare getSquare(int index) {
         return (CalendarSquare) calendar.getComponent(index + 7);
     }
 
+    /**
+     * Setter for the date of the calendar
+     * @param year new year
+     * @param month new month
+     */
     public void setDate(int year, int month) {
         model.setDate(year, month);
     }
 
+    /**
+     * Changes the date with certain amount of years/months
+     * @param nYears the amount of years to add (can be negative)
+     * @param nMonths the amount of months to add (can be negative)
+     */
     public void changeDate(int nYears, int nMonths) {
         model.changeDate(nYears, nMonths);
     }
 
+    /**
+     * Changes a square
+     * @param place the number of the square
+     * @param number the new number
+     * @param white is it white(is it current month)
+     */
     public void changeSquare(int place, int number, boolean white) {
         JLabel l = (JLabel) calendar.getComponent(7 + place);
         l.setText(String.valueOf(number));
@@ -134,6 +166,9 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         }
     }
 
+    /**
+     * Updates the calendar, call this if you change stuff manually
+     */
     public void updatePage() {
         // if calendar not yet initialized, do nothing
         if(calendar == null)
@@ -174,11 +209,11 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
                 ArrayList<Task> tasks = model.getTasksForDay(cal.getTime());
 
                 if (cal.get(CalendarModel.MONTH) == currMonth) {
-                    CalendarSquare cs = new CalendarSquare(model, cal.getTime(), nextSquareOdd);
+                    CalendarSquare cs = new CalendarSquare(cal.getTime(), nextSquareOdd);
                     cs.setTasks(tasks);
                     calendar.add(cs);
                 } else {
-                    CalendarSquare cs = new CalendarSquare(model, cal.getTime(), false, nextSquareOdd);
+                    CalendarSquare cs = new CalendarSquare(cal.getTime(), false, nextSquareOdd);
                     cs.setTasks(tasks);
                     calendar.add(cs);
                     //calendar.add(new CalendarSquare(cal.getTime(),false,nextSquareOdd));
@@ -193,6 +228,10 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
 
     }
 
+    /**
+     * Listens to mouse scrolls, changes months
+     * @param e
+     */
     public void mouseWheelMoved(MouseWheelEvent e) {
         int n = e.getWheelRotation();
 
