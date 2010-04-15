@@ -8,7 +8,7 @@ import java.util.Date;
 import javax.swing.Icon;
 
 /**
- *
+ * Action for adding a task to the database
  * @author bert
  */
 public class TaskAddAction extends AbstractIconAction {
@@ -17,6 +17,10 @@ public class TaskAddAction extends AbstractIconAction {
 	super(id, img);
     }
 
+    /**
+     * Shows the ChangeTask dialog
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Date date = TaskDialog.getDate();

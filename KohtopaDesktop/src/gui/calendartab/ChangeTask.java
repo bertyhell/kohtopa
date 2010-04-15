@@ -17,6 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +35,8 @@ import javax.swing.JTextArea;
 import javax.swing.SpinnerDateModel;
 
 /**
- *
+ * Class ChangeTask, this is a dialog to change a certain task, is used to add
+ * tasks too
  * @author jelle
  */
 public class ChangeTask extends JDialog {
@@ -45,9 +48,7 @@ public class ChangeTask extends JDialog {
     private SpinnerDateModel sdm;
     private JTextArea description;
     private CalendarModel model;
-    private Date day;
 
-    //private JButton submitButton;
     private static JButton addButton;
     private static JButton editButton;
 
@@ -61,9 +62,9 @@ public class ChangeTask extends JDialog {
      */
     public static ChangeTask getInstance(String type, CalendarModel model, Date day) {
         instance.model = model;
-        instance.day = day;
 
-        //instance.submitButton.setText(Language.Language.getString(type));
+        addButton.setEnabled(!instance.description.getText().isEmpty());
+        editButton.setEnabled(!instance.description.getText().isEmpty());
 
         instance.setTitle(Language.Language.getString(type));
         if(type.equals(EDIT) && TaskDialog.getSelectedTask() != null) {
@@ -81,6 +82,9 @@ public class ChangeTask extends JDialog {
     }
 
 
+    /**
+     * Constructor, creates a task
+     */
     private ChangeTask() {
         super(Main.getInstance(),true);
 
@@ -93,7 +97,6 @@ public class ChangeTask extends JDialog {
 
         JSpinner spinner = new JSpinner();
 
-        JSpinner sp = new JSpinner();
         Calendar c = Calendar.getInstance();
         c.set(1949, 11, 1);
         Date start = c.getTime();
@@ -124,11 +127,7 @@ public class ChangeTask extends JDialog {
         addButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-//                Calendar c = model.getCalendar();
-//                c.setTime(sdm.getDate());
-                //System.out.println(c.get(Calendar.DATE)+"/"+c.get(Calendar.MONTH));
 
-                //(int id, int rentableID, String description, Date start, Date end, int repeats)
                 //TODO: sdm getDate for end, should change but i have no clue what it should be
                 model.addTask(new Task(0,((Rentable)rentablePicker.getSelectedItem()).getId(),
                         description.getText(),sdm.getDate(),sdm.getDate(),0));
@@ -155,7 +154,7 @@ public class ChangeTask extends JDialog {
         //JPanel rentablePanel = new JPanel();
 
         // add rentables to rentablePicker
-        ArrayList<Rentable> rentables = DataConnector.getRentablesFromUser(ProgramSettings.getUsername(), ProgramSettings.getPassword());
+        ArrayList<Rentable> rentables = DataConnector.getRentablesFromUser(ProgramSettings.getUserID());
         rentablePicker = new JComboBox();
         for(Rentable r:rentables)
             rentablePicker.addItem(r);
@@ -167,6 +166,19 @@ public class ChangeTask extends JDialog {
 
         //JPanel descriptionPanel = new JPanel();
         description = new JTextArea();
+        description.addKeyListener(new KeyListener() {
+
+            public void keyTyped(KeyEvent e) {
+            }
+
+            public void keyPressed(KeyEvent e) {
+            }
+
+            public void keyReleased(KeyEvent e) {
+                addButton.setEnabled(!description.getText().isEmpty());
+                editButton.setEnabled(!description.getText().isEmpty());
+            }
+        });
         description.setPreferredSize(new Dimension(200,200));
         description.setLineWrap(true);
 

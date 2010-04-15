@@ -17,6 +17,10 @@ public class TaskRemoveAction extends AbstractIconAction {
 	super(id, img);
     }
 
+    /**
+     * Removes the task from the CalendarModel and the database
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         CalendarModel model = TaskDialog.getModel();

@@ -29,7 +29,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
- *
+ * ComposeMessageDialog class, this is used to write a message to somebody
  * @author jelle
  */
 public class ComposeMessageDialog extends JDialog {
@@ -40,10 +40,22 @@ public class ComposeMessageDialog extends JDialog {
 
     private static ComposeMessageDialog instance = new ComposeMessageDialog();
 
+    /**
+     * Returns the standard instance, this is the normal compose message dialog
+     * @return an instance of the dialog
+     */
     public static ComposeMessageDialog getInstance() {
         return getInstance(null);
     }
 
+    /**
+     * Returns an instance of ComposeMessageDialog, this can be both a reply
+     * message dialog or a send message dialog
+     * @param original the original message that you want to reply to, if this
+     * is null its a normal compose message dialog, this is the same as calling
+     * getInstance()
+     * @return an instance of the dialog
+     */
     public static ComposeMessageDialog getInstance(Message original) {
         instance.original = original;
         if(original == null) {
@@ -52,21 +64,27 @@ public class ComposeMessageDialog extends JDialog {
         } else {
             instance.renters.setEnabled(false);
             int i=0;
+
+            // find the renter that needs to be replied to
             while(i<instance.renters.getItemCount() && !instance.renters.getItemAt(i).toString().contains(original.getSender())) {
 
                 i++;
             }
             
             
-            
+            // if there is a renter found, set the renter to it
             if(i<instance.renters.getItemCount())
                 instance.renters.setSelectedIndex(i);
             instance.subject.setText("Re: "+original.getSubject());
         }
+        // clear message field
         instance.message.setText("");
         return instance;
     }
 
+    /**
+     * Creates a new ComposeMessageDialog
+     */
     private ComposeMessageDialog() {
         JPanel content = new JPanel();
         GridBagLayout gbl = new GridBagLayout();

@@ -44,12 +44,18 @@ public class Main extends JFrame {
 	private JTabbedPane tabbed;
 	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
 	private static int focusedDialog;
-        private static Message selectedMessage;
 
+        /**
+         * Getter for the main instance
+         * @return
+         */
 	public static Main getInstance() {
 		return instance;
 	}
 
+        /**
+         * initializes the program
+         */
 	private Main() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -137,6 +143,10 @@ public class Main extends JFrame {
 		});
 	}
 
+        /**
+         * Creates the add/remove rentables panel
+         * @return the panel
+         */
 	private JPanel createAddRemovePanel() {
 		//Add / Remove tab
 		JPanel pnlAddRemove = new JPanel();
@@ -226,6 +236,10 @@ public class Main extends JFrame {
 		return pnlAddRemove;
 	}
 
+        /**
+         * Creates the calendar panel
+         * @return the calendar panel
+         */
 	private JPanel createCalendarPanel() {
 
 		//Calendar tab
@@ -254,6 +268,10 @@ public class Main extends JFrame {
 		return pnlCalendar;
 	}
 
+        /**
+         * Creates the messages panel
+         * @return the messages panel
+         */
 	private JPanel createMessagesPanel() {
 		//Messages tab
 		pnlMessages = new JPanel();
@@ -280,6 +298,10 @@ public class Main extends JFrame {
 		return pnlMessages;
 	}
 
+        /**
+         * Creates the invoices panel
+         * @return the invoices panel
+         */
 	private JPanel createInvoicesPanel() {
 		//Invoices tab (facturen)
 		JPanel pnlInvoices = new JPanel();
@@ -307,6 +329,10 @@ public class Main extends JFrame {
 		return pnlInvoices;
 	}
 
+        /**
+         * Creates the settings panel
+         * @return the settings panel
+         */
 	private JPanel createSettingsPanel() {
 		//Settings tab
 		JPanel pnlSettings = new JPanel();
@@ -333,6 +359,10 @@ public class Main extends JFrame {
 		return pnlSettings;
 	}
 
+        /**
+         * Creates the language panel
+         * @return the language panel
+         */
 	private JPanel createLanguagePanel() {
 		//Language tab
 		JPanel pnlLanguage = new JPanel();
@@ -352,11 +382,19 @@ public class Main extends JFrame {
 		return pnlLanguage;
 	}
 
+        /**
+         * Getter for an action of a certain type
+         * @param type the type of action
+         * @return the action
+         */
 	public static Action getAction(String type) {
 		return actions.get(type);
 	}
 
-	//TODO move dataconnection of messages to model class and make sure it only connects to database outside constructor
+	/**
+         * Fetches the messages, fills up the message panel
+         */
+        //TODO move dataconnection of messages to model class and make sure it only connects to database outside constructor
 	public void fetchMessages() {
 		pnlMessagesInfo = new MessagePane();
 
@@ -364,14 +402,26 @@ public class Main extends JFrame {
 		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 	}
 
+        /**
+         * Getter for the data object
+         * @return the DataModel object
+         */
 	public static DataModel getDataObject() {
 		return data;
 	}
 
+        /**
+         * Getter for focused dialog
+         * @return focusedDialog
+         */
 	public static IdentifiableI getFocusedDialog() {
 		return dialogs.get(focusedDialog);
 	}
 
+        /**
+         * Setter for focsed dialog
+         * @param dialog the dialog to focus
+         */
 	public static void setFocusedDialog(IdentifiableI dialog) {
 		int index = 0;
 		while (index < dialogs.size() && dialogs.get(index) != dialog) {
@@ -385,22 +435,34 @@ public class Main extends JFrame {
 		}
 	}
 
+        /**
+         * Updates the picture list
+         */
 	public void updatePictureList() {
 		for (IdentifiableI dialog : dialogs) {
 			dialog.UpdatePictures(); //FIXME werkt nog niet goed (bij picture add)
 		}
 	}
 
+        /**
+         * Updates the data list
+         */
 	public void updateDataList() {
 		for (IdentifiableI dialog : dialogs) {
 			dialog.UpdateDataLists();
 		}
 	}
 
+        /**
+         * Updates the list
+         */
 	public void updateList() {
 		lstBuildings.setModel(data.getLmBuilding());
 	}
 
+        /**
+         * Initialises the listeners and shows the application
+         */
 	public void init() {
 		lstBuildings.addMouseListener(new MouseAdapter() {
 
@@ -458,6 +520,13 @@ public class Main extends JFrame {
 		this.setVisible(true);
 	}
 
+        /**
+         * Rescales an image
+         * @param img the image to resize
+         * @param maxSize the maximum size (the image will never be bigger than
+         * this)
+         * @return the resizes image
+         */
 	public static BufferedImage resizeImage(BufferedImage img, int maxSize) {
 		double w = img.getWidth();
 		double h = img.getHeight();
@@ -481,18 +550,31 @@ public class Main extends JFrame {
 
 	}
 
+        /**
+         * Updates the picture list
+         */
 	public static void updatePictureLists() {
 	}
 
-
+        /**
+         * Getter for the message pane
+         * @return the message pane
+         */
         public static MessagePane getMessagePane() {
             return instance.pnlMessagesInfo;
         }
-        
+
+        /**
+         * Updates the panels
+         */
         public static void updatePanels() {
             instance.tabbed.updateUI();
         }
 
+        /**
+         * Main method, starts the program
+         * @param args
+         */
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 

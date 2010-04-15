@@ -145,7 +145,7 @@ public class DataBaseConstants {
                 " select "+rentableID+","+rentableType+","+floor+","+rentableDescription+
                 " from "+tableRentables+" r "+
                 " join "+tablePersons+" p on r."+ownerID+" = p."+personID+
-                " where "+username+" = ? and "+password+" = ?";
+                " where "+ownerID+" = ?";
 	public static String addBuilding = "INSERT INTO " + tableBuildings + " VALUES (0,?,0,0)";
 	public static String updateBuilding = "UPDATE " + tableBuildings + " SET " + addressID + " = ? WHERE " + buildingID + " = ?";
 	public static String checkAddress = "SELECT " + addressID
