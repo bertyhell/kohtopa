@@ -16,6 +16,7 @@ my $rentfile = "koten93668110";
 my $zipcodes = "zipcodes";
 
 
+
 # amount of data to insert
 my $nostreets = 1000;
 my $nousers = 500;
@@ -74,6 +75,14 @@ while(<NAMEFILE>) {
    }
 }
 
+print "Success!\nRetrieving zip codes...\n";
+
+
+open ZIP, "<$zipcodes" or die $!;
+my %zipcodes = map{ chomp; split(/\|/) } <ZIP>;
+close ZIP;
+
+
 print "Success!\nParsing $rentfile...\n";
 
 open RENTFILE,"<$rentfile" or die $!;
@@ -82,6 +91,7 @@ while(<RENTFILE>) {
    chomp;
    push @rentables, [split/\|/];
 }
+close RENTFILE;
 
 for (@rentables) {
       #print $_->[0].": ";
@@ -95,14 +105,31 @@ for (@rentables) {
          $_->[4] = (int(rand(20)+1));
    }
    
+   my $address = $_->[0]." ".$_->[4].", ".$zipcodes{$_->[1]}." ".$_->[1];
+   utf8::encode($address);
+    #print "$address\n";
+   my $site = "http://maps.google.com/maps/api/geocode/xml?address=$address&sensor=false";
+   my $content = get("$site");
+   if($content =~ m@<location>((.|\n)*)</location>@) {
+       my $latlng = $1;
+       my $lat;
+       my $lng;
+       
+       if($latlng =~ m|<lat>(.*)</lat>|) {
+             $lat = $1;
+       }        
+       if($latlng =~ m|<lng>(.*)</lng>|) {
+             $lng = $1;
+       }
+       $_->[5] = $lat;
+       $_->[6] = $lng;
+      print "$address ($lat,$lng)\n";
+   } else {
+      print "error: ".$content;
+   }
+   #sleep 250ms
+   select(undef, undef, undef, 0.25);
 }
-
-print "Success!\nRetrieving zip codes...\n";
-
-
-open ZIP, "<$zipcodes" or die $!;
-my %zipcodes = map{ chomp; split(/\|/) } <ZIP>;
-close ZIP;
 
 print "Success!\nRetrieving messages...\n";
 open "FILE", "<Fortunes.xml" or die $!;
@@ -112,11 +139,9 @@ my @messages;
    my $tmp = $/;
    $/ = "</fortune>";
    my @content = <FILE>;
-
    for(@content) {
            #print;
            s|<saying who="(.*?)">(.*?)</saying>|$1: $2|g;
-           
            #print;
            if(m@.*<title>(.*?)</title>(.|\n)*<body>((.|\n)*)</body>.*@){
               my $sub = $1;
@@ -131,13 +156,15 @@ my @messages;
    $/ = $tmp;
 }
 
-
 print "Success!\nConnecting to database...\n";
 
 my $dbh = DBI->connect( 'dbi:Oracle:host=localhost;sid=XE',
                         'system',
                         'admin',{ RaiseError => 1, AutoCommit => 1 }
                       ) || die "Database connection not made: $DBI::errstr";
+
+#type representation of a SQL double, used to parse string number to a valid database representation
+my $doubletype = [$dbh->type_info(undef)]->[5];
 
 print "Connection succeeded!\nExecuting insert statements for addresses...\n";     
            
@@ -271,6 +298,11 @@ for(@rentables) {
    if(!defined $_->[4]) {
          next;
    }
+   
+       #$_->[5] = $lat;
+       #$_->[6] = $lng;
+   my $lat = $_->[5];
+   my $lng = $_->[6];
    # insert address if needed   
    $getaddress->execute($_->[0],$_->[4]);
    my $aid = $getaddress->fetchrow();
@@ -287,6 +319,7 @@ for(@rentables) {
    # get id of address
    $getaddress->execute($_->[0],$_->[4]);
    $aid = $getaddress->fetchrow();   
+   
    $getaddress->finish();
    
    # insert building if needed   
@@ -298,8 +331,16 @@ for(@rentables) {
       if(defined $aid) {
          if($sim) {
             print "1,$aid,undef,undef\n";
-         } else {            
-            $bsth->execute(1,$aid,undef,undef);
+         } else {     
+            #dirty solution, but oracle takes , instead of .
+            $lat =~ s/\./,/;
+            $lng =~ s/\./,/;
+#            print $lat.", ".$lng."\n";
+#            $bsth->bind_param(1,1,undef);
+#            $bsth->bind_param(2,$aid,undef);
+#            $bsth->bind_param(3,$lat,$doubletype);            
+#            $bsth->bind_param(4,$lng,$doubletype);
+            $bsth->execute(1,$aid,$lat,$lng);
          }
       }
    }
@@ -358,7 +399,7 @@ for(@rentables) {
    my $r = $renter;
    
    for my $i (1..int(rand(10))) {
-            print "$rentable'$year-$month-$day', '$end-$month-$day'\n";
+         #print "1,$rentable,$r, '$year-$month-$day', '$end-$month-$day',$_->[3],$monthcost,$guarantee\n";
          if($sim) {
          } else {
             $csth->execute(1,$rentable,$r, "$year-$month-$day", "$end-$month-$day",$_->[3],$monthcost,$guarantee);
@@ -383,7 +424,7 @@ for(@rentables) {
       $monthcost += int(rand(5));
       $guarantee += int(rand(5));
    }
-   print "_______________\n";
+   #print "_______________\n";
    
    
    # contract id
@@ -497,7 +538,6 @@ for(@rentables) {
       if($min<10) {
          $min = "0".$min;
       }
-
       if($sec<10) {
          $sec = "0".$sec;
       }
@@ -507,9 +547,43 @@ for(@rentables) {
          print "$owner,$renter,$subject, $read, '$y-$m-$day $hour:$min:$sec',$msg\n";
       } else {
          $msth->execute($owner,$renter,$subject, $read, "$y-$m-$day $hour:$min:$sec",$msg);
+         
+         $entry = $messages[int(rand($#messages))];
+         $msg = $entry->[1];
+         $subject = $entry->[0];
+      
+         while(length($msg)>=2048 || length($subject)>=100) {
+            $entry = $messages[int(rand($#messages))];
+            $msg = $entry->[1];
+            $subject = $entry->[0];
+         }   
+      $m++;
+      if($m>12) {
+         $y++;
+         $m = 1;
+      }
+	
+      
+      my $read = int(rand(2));
+      #lazyness: one message every month :)
+      #yyyy-mm-dd HH24:MI:SS
+      my $hour = int(rand(24));
+      
+      my $min = int(rand(60));      
+      my $sec = int(rand(60));
+      if($hour<10) {
+         $hour = "0".$hour;
+      }      
+      if($min<10) {
+         $min = "0".$min;
+      }
+      if($sec<10) {
+         $sec = "0".$sec;
+      }
+      
+         $msth->execute($renter,$owner,$subject, $read, "$y-$m-$day $hour:$min:$sec",$msg);
       }
    }
-   
    
    
 }

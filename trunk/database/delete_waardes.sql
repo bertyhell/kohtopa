@@ -3,7 +3,7 @@ DELETE FROM rentables;
 DELETE FROM persons;
 DELETE FROM furniture;
 DELETE FROM addresses;
-DELETE FROM contract;
+DELETE FROM contracts;
 DELETE FROM consumption;
 DELETE FROM messages;
 DELETE FROM pictures;
