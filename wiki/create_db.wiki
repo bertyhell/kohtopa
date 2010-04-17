@@ -1,4 +1,4 @@
-<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeYjYxNjYwNzItM2Y2ZC00MWFkLWE2ZDAtYjUzNWViYzdiY2Vh&hl=en">nieuwe databank...alweer</a>
+<a href="http://kohtopa.googlecode.com/svn/trunk/database/exportlatlong.sql">nieuwe databank...alweer</a>
 
 aangepast:
-Kotbazen hebben nu ook messages in hun inbox...had dat nog vergeten :/
+latitude/longitude staan nu in perl script, deze stonden nog niet in de databank.
