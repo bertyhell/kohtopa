@@ -118,6 +118,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
 
         JPanel content = new JPanel();
 
+        date = new Date(System.currentTimeMillis());
         BorderLayout bl = new BorderLayout();
         content.setLayout(bl);
 
