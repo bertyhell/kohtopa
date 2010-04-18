@@ -52,6 +52,10 @@ namespace KohtopaWeb
             get { return addressId; }
             set { addressId = value; }
         }
-        
+
+        public override string ToString()
+        {
+            return street + " " + streetNumber + ", " + zipcode + " " + city + ", " + country;
+        }
     }
 }

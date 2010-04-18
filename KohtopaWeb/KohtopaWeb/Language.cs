@@ -11,6 +11,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Collections;
 using System.Xml;
+using System.IO;
 
 namespace KohtopaWeb
 {
@@ -19,23 +20,23 @@ namespace KohtopaWeb
         private static Hashtable languages = new Hashtable();
         private static DataTable dtLanguages = new DataTable("languages");
 
-        public static void read()
+        public static void read(HttpServerUtility server)
         {
-            readLanguages();
+            readLanguages(server);
             foreach (DataRow dr in dtLanguages.Rows)
             {
-                read((string)dr["id"]);
+                read((string)dr["id"],server);
             }
         }
 
-        private static void read(string language)
+        private static void read(string language,HttpServerUtility server)
         {
             if (languages[language] == null)
             {
                 try
                 {
                     Hashtable strings = new Hashtable();
-                    XmlReader reader = new XmlTextReader("language_" + language + ".xml");
+                    XmlReader reader = new XmlTextReader(server.MapPath("Language/language_" + language + ".xml"));
                     try
                     {
                         while (reader.Read())
@@ -81,11 +82,11 @@ namespace KohtopaWeb
             return (string)h[key];            
         }
 
-        public static void write(string language)
+        public static void write(string language,HttpServerUtility server)
         {
             try
             {
-                XmlTextWriter writer = new XmlTextWriter("language_" + language + ".xml", System.Text.Encoding.UTF8);
+                XmlTextWriter writer = new XmlTextWriter(server.MapPath("Language/language_" + language + ".xml"), System.Text.Encoding.UTF8);
                 try
                 {
                     writer.Formatting = Formatting.Indented;
@@ -111,16 +112,16 @@ namespace KohtopaWeb
                 }
             }
             catch {}
-        }
+        }       
 
-        private static void readLanguages()
+        private static void readLanguages(HttpServerUtility server)
         {
             dtLanguages.Clear();
             dtLanguages.Columns.Add("id");
             dtLanguages.Columns.Add("language");            
             try
             {                
-                XmlReader reader = new XmlTextReader("languages.xml");
+                XmlReader reader = new XmlTextReader(server.MapPath("Language/languages.xml"));                  
                 try
                 {
                     while (reader.Read())

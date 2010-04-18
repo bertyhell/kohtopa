@@ -28,7 +28,7 @@ namespace KohtopaWeb
                                                     + "join buildings b on b.buildingid = r.buildingid "
                                                     + "join addresses a on b.addressid = a.addressid "
                                                     + "join contracts c on c.rentableid = r.rentableid "
-                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";
+                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";        
         private static string getPersonIdSQL = "select personId from persons where username = ? and password = ?";
         private static string getPasswordSQL = "select password from persons where username = ?";
         private static string getPersonByUsernameSQL = "select * from persons where userName = ?";
@@ -38,6 +38,8 @@ namespace KohtopaWeb
         private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contract where renterid = ? and contract_start < ? and contract_end > ?";
         private static string getMessagesByIdSQL = "select * from messages where recipientId = ?";
         private static string getLongLatByRentableIdSQL = "select b.longitude, b.latitude from rentables r join buildings b on b.buildingid = r.buildingid where r.rentableid = ?";
+        private static string getBuildingByIdSQL = "select * from buildings where buildingId = ?";
+
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
         
@@ -237,6 +239,45 @@ namespace KohtopaWeb
             return null;
         }
 
+        public static Building getBuilding(int buildingId)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getBuildingByIdSQL;
+            OleDbParameter p = new OleDbParameter();
+            p.Value = buildingId;
+            command.Parameters.Add(p);
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            DataTable dt = ds.Tables[0];
+            if (dt.Rows.Count == 1)
+            {
+                DataRow dr = dt.Rows[0];
+                Building b = new Building();
+                b.Id = buildingId;
+                try
+                {
+                    b.Latitude = Double.Parse("" + dr["latitude"]);
+                }
+                catch
+                {
+                    b.Latitude = 0;
+                }
+                try
+                {
+                    b.Longitude = Double.Parse("" + dr["longitude"]);
+                }
+                catch
+                {
+                    b.Longitude = 0;
+                }
+                b.Address = getAddress(Int32.Parse("" + dr["addressId"]));
+                return b;
+            }
+            return null;
+        }
+
         public static Address getAddress(int addressId)
         {
             OleDbConnection conn = getConnection();
@@ -281,7 +322,7 @@ namespace KohtopaWeb
                 DataRow dr = dt.Rows[0];
                 Rentable r = new Rentable();
                 r.Area = Double.Parse("" + dr["Area"]);
-                r.BuildingId = Int32.Parse("" + dr["BuildingId"]);
+                r.Building = getBuilding(Int32.Parse("" + dr["BuildingId"]));                
                 r.Cable = ("" + dr["Cable"]).Equals("1");
                 r.Internet = ("" + dr["Internet"]).Equals("1");
                 r.Description = ("" + dr["Description"]);

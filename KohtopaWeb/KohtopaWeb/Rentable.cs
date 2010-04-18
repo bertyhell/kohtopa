@@ -14,11 +14,12 @@ namespace KohtopaWeb
 {
     public class Rentable
     {
-        int rentableId, buildingId, type, outletCount, floor;
+        int rentableId,type, outletCount, floor;
         bool internet, cable, rented;
         double area, windowArea, price;
         Person owner;
         string description, windowDirection;
+        Building building;
 
         public string WindowDirection
         {
@@ -92,10 +93,10 @@ namespace KohtopaWeb
             set { type = value; }
         }
 
-        public int BuildingId
+        public Building Building
         {
-            get { return buildingId; }
-            set { buildingId = value; }
+            get { return building; }
+            set { building = value; }
         }
 
         public int RentableId

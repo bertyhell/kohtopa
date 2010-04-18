@@ -509,7 +509,8 @@ namespace KohtopaWeb
             tf.ItemTemplate = gvt;
             tf.SortExpression = DataConnector.RentableOrder.CABLE;
             gvRentables.Columns.Add(tf);
-
+            
+            /*
             lbl = new Label();
             lbl.Text = "DataBind:Normal:Outlet_count";
             tc = new TableCell();
@@ -525,7 +526,25 @@ namespace KohtopaWeb
             tf.HeaderText = Language.getstring("OutletCount", language);
             tf.ItemTemplate = gvt;
             tf.SortExpression = DataConnector.RentableOrder.OUTLET_COUNT;
-            gvRentables.Columns.Add(tf);            
+            gvRentables.Columns.Add(tf);
+            */
+
+            LinkButton  lbtn = new LinkButton();            
+            lbtn.Text = Language.getstring("Details", language);
+            lbtn.PostBackUrl = "DataBind:clickDetails:rentableId";
+            tc = new TableCell();
+            tc.HorizontalAlign = HorizontalAlign.Center;
+            tc.Controls.Add(lbtn);
+            tr = new TableRow();
+            tr.Cells.Add(tc);
+            table = new Table();
+            table.Width = Unit.Percentage(100);
+            table.Rows.Add(tr);
+            gvt = new GridViewTemplate(table, language);
+            tf = new TemplateField();
+            tf.HeaderText = Language.getstring("Details", language);
+            tf.ItemTemplate = gvt;            
+            gvRentables.Columns.Add(tf); 
 
         }
 
