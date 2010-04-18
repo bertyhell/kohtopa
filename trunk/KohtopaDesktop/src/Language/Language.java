@@ -16,6 +16,8 @@ public class Language {
 	private static String[] countryCodes;
 	private static String[] countries;
 	private static String[] daysOfWeek;
+	private static String[] rentableTypes;
+	private static String[] windDir;
 	private static JComboBox cbbCountry;
 
 	//TODO add extra node to xml: Language > "English"
@@ -32,18 +34,28 @@ public class Language {
 			countryCodes = new String[250];
 			countries = new String[250];
 			daysOfWeek = new String[7];
+			rentableTypes = new String[100]; //max 100 different types
+			windDir = new String[8];
 			int i = 0;
 			int j = 0;
+			int k = 0;
+			int m = 0;
 			for (int s = 0; s < nodeLst.getLength(); s++) {
 				Node entryNode = nodeLst.item(s);
 				String name = entryNode.getAttributes().item(0).getNodeValue();
-				if (name.startsWith("cntry")) {
-					countryCodes[i] = name.substring(5, 7);
+				if (name.startsWith("lstCntry")) {
+					countryCodes[i] = name.substring(8);
 					countries[i] = entryNode.getTextContent();
 					i++;
-				} else if (name.startsWith("week")) {
+				} else if (name.startsWith("lstWeek")) {
 					daysOfWeek[j] = entryNode.getTextContent();
 					j++;
+				}else if (name.startsWith("lstRentableType")){
+					rentableTypes[k] = entryNode.getTextContent();
+					k++;
+				}else if (name.startsWith("lstWindDir")){
+					rentableTypes[m] = entryNode.getTextContent();
+					m++;
 				}
 				Language.add(name, entryNode.getTextContent());
 			}
@@ -93,4 +105,14 @@ public class Language {
 	public static String[] getDaysOfWeek() {
 		return daysOfWeek;
 	}
+
+	public static String[] getRentableTypes() {
+		return rentableTypes;
+	}
+
+	public static String[] getWindDir() {
+		return windDir;
+	}
+
+
 }
