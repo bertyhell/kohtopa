@@ -362,6 +362,14 @@ namespace KohtopaWeb
                     lbtn.PostBackUrl = dataValue.ToString();
                 }
             }
+            else if (data[1].Equals("clickDetails"))
+            {
+                object dataValue = DataBinder.Eval(container.DataItem, data[2]);
+                if (dataValue != DBNull.Value)
+                {
+                    lbtn.PostBackUrl = "~/RentableDetails.aspx?id=" + dataValue.ToString();
+                }
+            }
         }
     }
 }
