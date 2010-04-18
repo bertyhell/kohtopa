@@ -158,7 +158,7 @@ public class Main extends JFrame {
 
 		//building operations
 		JButton btnAddBuilding = new JButton(actions.get("buildingAdd"));
-		btnAddBuilding.setHideActionText(true);
+		btnAddBuilding.setHideActionText(disableBtnText);
 		pnlButtonsAddRemove.add(btnAddBuilding);
 
 		JButton btnEditBuilding = new JButton(actions.get("buildingEdit"));
