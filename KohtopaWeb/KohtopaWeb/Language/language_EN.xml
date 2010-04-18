@@ -64,4 +64,5 @@
     <entry name="WindowDirection">Main window direction</entry>
     <entry name="WindowArea">Window area</entry>
     <entry name="Description">Description</entry>
+    <entry name="Welcome">Welcome on kohtopa, a website where students can find their room to study.</entry>
 </Language>
