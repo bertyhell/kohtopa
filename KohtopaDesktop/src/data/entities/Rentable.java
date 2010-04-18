@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 
 public class Rentable extends AbstractPlace {
 
-	private String type;
+	private int type;
 	private int area;
 	private String windowsDirection;
 	private int windowArea;
@@ -37,7 +37,7 @@ public class Rentable extends AbstractPlace {
 		} else {
 			this.previewImage = previewImage;
 		}
-		this.type = Language.getString("rentableType" + type) != null ? Language.getString("rentableType" + type) : "";
+		this.type = type;
 		this.floor = floor;
 		this.description = description;
 	}
@@ -70,7 +70,7 @@ public class Rentable extends AbstractPlace {
 		return rented;
 	}
 
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 

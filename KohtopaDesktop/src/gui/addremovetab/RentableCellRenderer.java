@@ -1,5 +1,6 @@
 package gui.addremovetab;
 
+import Language.Language;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
@@ -14,8 +15,8 @@ public class RentableCellRenderer implements ListCellRenderer {
 	Rentable rentable = (Rentable) value;
 	RentableListPanel pnlRentable = new RentableListPanel(
 		rentable.getId(),
-		rentable.getType(),
-		null,
+		Language.getRentableTypes()[rentable.getType()],
+		null, //TODO addpreview image
 		rentable.getFloor(),
 		rentable.getDescription());
 	if (index != DataModel.getRentableIndex()) {

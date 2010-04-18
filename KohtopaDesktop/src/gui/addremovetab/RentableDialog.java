@@ -22,9 +22,9 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 
 	private RentableDialog instance;
 	private int rentableId;
-	private JTextField txtType;
+	private JComboBox cbbType;
 	private JTextField txtArea;
-	private JTextField txtWindowDir;
+	private JComboBox cbbWindowDir;
 	private JTextField txtWindowArea;
 	private JCheckBox ckbInternet;
 	private JCheckBox ckbCable;
@@ -106,10 +106,11 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 		gbl.addLayoutComponent(lblType, gbc);
 		pnlBuildingInfo.add(lblType);
 
-		txtType = new JTextField();
+		cbbType = new JComboBox(Language.getRentableTypes());
+		cbbType.setSelectedItem(Language.getRentableTypes()[1]);
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(txtType, gbc);
-		pnlBuildingInfo.add(txtType);
+		gbl.addLayoutComponent(cbbType, gbc);
+		pnlBuildingInfo.add(cbbType);
 
 		row++; //next row
 
@@ -135,10 +136,10 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 		gbl.addLayoutComponent(lblWindow, gbc);
 		pnlBuildingInfo.add(lblWindow);
 
-		txtWindowDir = new JTextField();
+		cbbWindowDir = new JComboBox(Language.getWindDir());
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(txtWindowDir, gbc);
-		pnlBuildingInfo.add(txtWindowDir);
+		gbl.addLayoutComponent(cbbWindowDir, gbc);
+		pnlBuildingInfo.add(cbbWindowDir);
 
 		row++; //next row
 
@@ -269,9 +270,9 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 	public void fillInfo(boolean isNew) {
 		if (isNew) {
 			//clear fields
-			txtType.setText("");
+			cbbType.setSelectedIndex(0);
 			txtArea.setText("");
-			txtWindowDir.setText("");
+			cbbWindowDir.setSelectedIndex(0);
 			txtWindowArea.setText("");
 			ckbInternet.setSelected(true);
 			ckbCable.setSelected(true);
@@ -283,9 +284,9 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 			try {
 				//fill building info
 				Rentable rentable = Main.getDataObject().getRentable(rentableId);
-				txtType.setText(rentable.getType());
+				cbbType.setSelectedIndex(rentable.getType()); //TODO change types in dsabase to current value ++
 				txtArea.setText(Integer.toString(rentable.getArea()));
-				txtWindowDir.setText(rentable.getWindowsDirection());
+				//cbbWindowDir.setSelectedIndex(rentable.getWindowsDirection());
 				txtWindowArea.setText(Integer.toString(rentable.getWindowArea()));
 				ckbInternet.setSelected(rentable.isInternet());
 				ckbCable.setSelected(rentable.isCable());
@@ -306,6 +307,50 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 				JOptionPane.showMessageDialog(this, Language.getString("errRentableData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+
+	public boolean CheckInput() {
+		String errorMessage = Language.getString("faultyInput") + ":\n";
+		boolean error = false;
+		if (!txtArea.getText().matches("[0-9]+\\.?[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errArea") + "\n";
+			error = true;
+			txtArea.setBackground(Color.pink);
+		} else {
+			txtArea.setBackground(Color.white);
+		}
+		if (!txtWindowArea.getText().matches("[0-9]+\\.?[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errWindowArea") + "\n";
+			error = true;
+			txtWindowArea.setBackground(Color.pink);
+		} else {
+			txtWindowArea.setBackground(Color.white);
+		}
+		if (!txtOutlets.getText().matches("[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errOutlets") + "\n";
+			error = true;
+			txtOutlets.setBackground(Color.pink);
+		} else {
+			txtOutlets.setBackground(Color.white);
+		}
+		if (!txtFloor.getText().matches("[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errFloor") + "\n";
+			error = true;
+			txtFloor.setBackground(Color.pink);
+		} else {
+			txtFloor.setBackground(Color.white);
+		}
+		if (!txtPrice.getText().matches("[0-9]+\\.?[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errPrice") + "\n";
+			error = true;
+			txtPrice.setBackground(Color.pink);
+		} else {
+			txtPrice.setBackground(Color.white);
+		}
+		if (error) {
+			JOptionPane.showMessageDialog(this, errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+		return !error;
 	}
 
 	public void UpdatePictures() {
