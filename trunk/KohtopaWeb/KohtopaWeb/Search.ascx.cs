@@ -281,7 +281,9 @@ namespace KohtopaWeb
                             string[] values = ("" + dr["value2"]).Split(';');
                             try
                             {
+                                string rf = dv.RowFilter;
                                 dv.Table = DataConnector.getRentables(double.Parse(values[0],CultureInfo.InvariantCulture), double.Parse(values[1],CultureInfo.InvariantCulture) , double.Parse(values[2],CultureInfo.InvariantCulture), "" + ViewState["rentableOrder"]);
+                                dv.RowFilter = rf;
                             }
                             catch{}
                         }
