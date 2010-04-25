@@ -27,6 +27,13 @@ public class MessageListPanel extends AbstractListPanel {
         icons.put(type, img);
     }
 
+    public static ImageIcon getIcon(String type) {
+        if(icons.containsKey(type)) {
+            return icons.get(type);
+        }
+        return null;
+    }
+
     /**
      * Constructor, creates a MessageListPanel for a message
      * @param m the messages to create the panel for

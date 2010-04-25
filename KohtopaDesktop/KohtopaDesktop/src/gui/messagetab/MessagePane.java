@@ -21,12 +21,14 @@ import data.DataConnector;
 import data.ProgramSettings;
 import data.entities.Message;
 import gui.Main;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * MessagePane, this is used for the tab messages
  * @author Jelle
  */
-public class MessagePane extends JPanel {
+public class MessagePane extends JPanel implements MouseListener {
 
     private JSplitPane splitpane;
     private JScrollPane leftpane;
@@ -56,6 +58,7 @@ public class MessagePane extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
                 Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
                 Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
+                Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
                 if(list.getSelectedIndex() != -1) {
                     Message m = (Message)list.getSelectedValue();
                     text.setText(m.getText());
@@ -93,6 +96,8 @@ public class MessagePane extends JPanel {
 
 
 
+
+
         // make splitpane, set resizeweight to 20% left
         splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftpane, rightpane);
         splitpane.setDividerSize(5);
@@ -106,7 +111,9 @@ public class MessagePane extends JPanel {
 
         Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
         Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
+        Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
         //this.add(toolbar,BorderLayout.NORTH);
+        list.addMouseListener(this);
 
     }
 
@@ -119,6 +126,21 @@ public class MessagePane extends JPanel {
     }
 
     /**
+     * Returns the selected messages
+     * @return the selected messages, null if none are selected
+     */
+    public Message[] getSelectedMessages() {
+        Object[] entries = list.getSelectedValues();
+        if(entries == null)
+            return null;
+        Message[] msgs = new Message[entries.length];
+        for(int i=0 ; i<entries.length ; i++) {
+            msgs[i] = (Message) entries[i];
+        }
+        return msgs;
+    }
+
+    /**
      * Removes the selected message
      */
     public void removeSelectedMessage() {
@@ -126,7 +148,10 @@ public class MessagePane extends JPanel {
         if(list.getSelectedIndex() != -1) {
             Message m = messages.get(list.getSelectedIndex());
             DataConnector.removeMessage(m);
-            messages.remove(list.getSelectedIndex());
+            int[] indices = list.getSelectedIndices();
+            for(int index: indices) {
+                messages.remove(index);
+            }
             list.setListData(messages);
         }
         this.updateUI();
@@ -144,5 +169,24 @@ public class MessagePane extends JPanel {
         btn.setToolTipText(Language.getString(langstring));
 
         return btn;
+    }
+
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        if(e.isPopupTrigger()) {
+            MessagePopupMenu menu = new MessagePopupMenu();
+            menu.show(list, e.getX(), e.getY());
+        }
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
     }
 }
