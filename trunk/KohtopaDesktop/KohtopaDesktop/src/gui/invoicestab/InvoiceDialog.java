@@ -5,17 +5,14 @@ import Language.Language;
 import gui.Layout;
 import gui.Main;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.sql.SQLException;
 import javax.swing.*;
-import data.entities.Building;
+import data.entities.Invoice;
 
 /**
  *
@@ -23,196 +20,186 @@ import data.entities.Building;
  */
 public class InvoiceDialog extends JFrame {
 
-//	private InvoiceDialog instance;
-//	private int invoiceId;
-//	private JButton btnConfirm;
-//	private JLabel lblRole;
-//
-//	public InvoiceDialog(JRootPane parent, int invoiceId, boolean newInvoice) {
-//		this.invoiceId = invoiceId;
-//		instance = this;
-//		setTitle(Language.getString(newInvoice ? "invoiceAdd" : "invoiceEdit"));
-//		this.setIconImage(new ImageIcon(getClass().getResource("/images/invoice_64.png")).getImage());
-//		this.setPreferredSize(new Dimension(1000, 600));
-//		this.setMinimumSize(new Dimension(600, 405));
-//		this.setLayout(new BorderLayout());
-//
-//		JPanel pnlInfo = new JPanel(new BorderLayout());
-//
-//		//top
-//		GridBagLayout gbl = new GridBagLayout();
-//		GridBagConstraints gbc = new GridBagConstraints();
-//
-//
-//		JPanel pnlHoofding = new JPanel(gbl);
-//		pnlInfo.add(pnlHoofding, BorderLayout.PAGE_START);
-//
-//		lblRole = new JLabel(Language.getString("homeOwner"));
-//		Layout.buildConstraints(gbc, 0, 0, 3, 1, 3, 3, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
-//		gbl.addLayoutComponent(lblRole, gbc);
-//		pnlHoofding.add(lblRole);
-//
-//		lblName = new JLabel();
-//		Layout.buildConstraints(gbc, 0, 0, 3, 1, 3, 3, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
-//		gbl.addLayoutComponent(lblRole, gbc);
-//		pnlHoofding.add(lblRole);
-//
-//
-//
-//		//buttons
-//		JPanel pnlButtons = new JPanel();
-//		pnlButtons.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-//		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-//		this.add(pnlButtons, BorderLayout.PAGE_END);
-//		JButton btnCancel = new JButton(Language.getString("cancel"), new ImageIcon(getClass().getResource("/images/cancel.png")));
-//		btnCancel.addMouseListener(new MouseAdapter() {
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				instance.dispose();
-//			}
-//		});
-//		pnlButtons.add(btnCancel);
-//
-//		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
-//		if (newInvoice) {
-//			//add building to database
-//			System.out.println("adding add handler");
-//			btnConfirm.addMouseListener(new MouseAdapter() {
-//
-//				@Override
-//				public void mouseReleased(MouseEvent e) {
-//					if(CheckInput()){
-//						try {
-//							Main.getDataObject().addBuilding(txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText());
-//							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-//						} catch (SQLException ex) {
-//							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errAddBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-//						}
-//					}
-//				}
-//			});
-//		} else {
-//			//update database
-//			System.out.println("adding update handler");
-//			btnConfirm.addMouseListener(new MouseAdapter() {
-//
-//				@Override
-//				public void mouseReleased(MouseEvent e) {
-//					System.out.println("click");
-//					if(CheckInput()){
-//						try {
-//							Main.getDataObject().updateBuilding(instance.getId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText());
-//						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-//						} catch (SQLException ex) {
-//							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-//						}
-//					}
-//				}
-//			});
-//		}
-//		pnlButtons.add(btnConfirm);
-//
-//		//info opvullen:
-//		fillInfo(newInvoice);
-//		pack();
-//		setLocationRelativeTo(parent);
-//	}
-//
-//	public int getId() {
-//		return invoiceId;
-//	}
-//
-//	public String getType() {
-//		return "BuildingDialog";
-//	}
-//
-//	public void fillInfo(boolean isNew) {
-//		if (isNew) {
-//			//clear fields
-//			txtStreet.setText("");
-//			txtStreetNumber.setText("");
-//			txtZip.setText("");
-//			txtCity.setText("");
-//			try {
-//				cbbCountry.setSelectedIndex(Language.getIndexByCountryCode("BE"));
-//			} catch (CountryNotFoundException ex) {
-//				JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			}
-//			btnConfirm.setText(Language.getString("add"));
-//		} else {
-//			try {
-//				//fill building info
-//				Building building = Main.getDataObject().getBuilding(invoiceId);
-//				txtStreet.setText(building.getStreet());
-//				txtStreetNumber.setText(building.getNumber());
-//				txtZip.setText(building.getZipcode());
-//				txtCity.setText(building.getCity());
-//				try {
-//					cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getCountry()));
-//				} catch (CountryNotFoundException ex) {
-//					JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//				}
-//
-//				lblPreview.setIcon(building.getPreviewImage());
-//
-//				lstRentables.setModel(Main.getDataObject().getLmRentable());
-//
-//
-//				floors = Main.getDataObject().getFloors();
-//				lstFloors.setListData(floors.toArray());
-//				btnConfirm.setText(Language.getString("update"));
-//			} catch (SQLException ex) {
-//				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			}
-//
-//			try {
-//				//TODO make multihreaded
-//				lstPicture.setModel(Main.getDataObject().updateBuildingPictures(invoiceId));
-//			} catch (IOException ex) {
-//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
-//			} catch (SQLException ex) {
-//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			}
-//
-//		}
-//	}
-//
-//	public boolean CheckInput() {
-//		String errorMessage = Language.getString("faultyInput") + ":\n";
-//		boolean error = false;
-//		if (txtStreet.getText().isEmpty()) {
-//			errorMessage += "   * " + Language.getString("errStreet") + "\n";
-//			error = true;
-//			txtStreet.setBackground(Color.pink);
-//		} else {
-//			txtStreet.setBackground(Color.white);
-//		}
-//		if (!txtStreetNumber.getText().matches("[0-9]+.*")) {
-//			errorMessage += "   * " + Language.getString("errStreetNumber") + "\n";
-//			error = true;
-//			txtStreet.setBackground(Color.pink);
-//		} else {
-//			txtStreet.setBackground(Color.white);
-//		}
-//		if (!txtCity.getText().matches("[^0-9]+")) {
-//			errorMessage += "   * " + Language.getString("errCity") + "\n";
-//			error = true;
-//			txtCity.setBackground(Color.pink);
-//		} else {
-//			txtCity.setBackground(Color.white);
-//		}
-//		if (!txtZip.getText().matches("[0-9]*")) {
-//			errorMessage += "   * " + Language.getString("errZip") + "\n";
-//			error = true;
-//			txtCity.setBackground(Color.pink);
-//		} else {
-//			txtCity.setBackground(Color.white);
-//		}
-//		if (error) {
-//			JOptionPane.showMessageDialog(this, errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-//		}
-//		return !error;
-//	}
+	private InvoiceDialog instance;
+	private Invoice invoice;
+	private JButton btnConfirm;
+	private JLabel lblRoleOwn;
+	private JLabel lblNameOwn;
+	private JLabel lblStreetLineOwn;
+	private JLabel lblCityLineOwn;
+	private JLabel lblCountryOwn;
+	private JLabel lblEmailOwn;
+	private JLabel lblTelephoneOwn;
+	private JLabel lblCellphoneOwn;
+	private JLabel lblRoleRent;
+	private JLabel lblNameRent;
+	private JLabel lblStreetLineRent;
+	private JLabel lblCityLineRent;
+	private JLabel lblCountryRent;
+	private JLabel lblEmailRent;
+	private JLabel lblTelephoneRent;
+	private JLabel lblCellphoneRent;
+
+	public InvoiceDialog(int rentInvoiceId, boolean newInvoice) {
+		invoice = new Invoice(rentInvoiceId, newInvoice);
+		instance = this;
+		setTitle(Language.getString(newInvoice ? "invoiceAdd" : "invoiceEdit"));
+		this.setIconImage(new ImageIcon(getClass().getResource("/images/invoice_64.png")).getImage());
+		this.setPreferredSize(new Dimension(1000, 600));
+		this.setMinimumSize(new Dimension(600, 405));
+		this.setLayout(new BorderLayout());
+
+		JPanel pnlInfo = new JPanel(new BorderLayout());
+
+		//top
+		GridBagLayout gbl = new GridBagLayout();
+		GridBagConstraints gbc = new GridBagConstraints();
+
+
+		JPanel pnlHoofding = new JPanel(gbl);
+		pnlInfo.add(pnlHoofding, BorderLayout.PAGE_START);
+
+		//homeowner info
+		lblRoleOwn = new JLabel(Language.getString("homeOwner"));
+		Layout.buildConstraints(gbc, 0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblRoleOwn, gbc);
+		pnlHoofding.add(lblRoleOwn);
+
+		lblNameOwn = new JLabel(invoice.getOwner().toString());
+		Layout.buildConstraints(gbc, 0, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblNameOwn, gbc);
+		pnlHoofding.add(lblNameOwn);
+
+		lblStreetLineOwn = new JLabel(invoice.getOwner().getAddress().getStreetLine());
+		Layout.buildConstraints(gbc, 0, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblStreetLineOwn, gbc);
+		pnlHoofding.add(lblStreetLineOwn);
+
+		lblCityLineOwn = new JLabel(invoice.getOwner().getAddress().getCityLine());
+		Layout.buildConstraints(gbc, 0, 3, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCityLineOwn, gbc);
+		pnlHoofding.add(lblCityLineOwn);
+		try {
+			lblCountryOwn = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
+			Layout.buildConstraints(gbc, 0, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+			gbl.addLayoutComponent(lblCountryOwn, gbc);
+			pnlHoofding.add(lblCountryOwn);
+		} catch (CountryNotFoundException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errCountryCodeNotFound") + "\n" + ex.getMessage(), "error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		lblEmailOwn = new JLabel(invoice.getOwner().getEmail());
+		Layout.buildConstraints(gbc, 0, 5, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblEmailOwn, gbc);
+		pnlHoofding.add(lblEmailOwn);
+
+		lblTelephoneOwn = new JLabel(Language.getString("telephone") + ": " + invoice.getOwner().getTelephone());
+		Layout.buildConstraints(gbc, 0, 6, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblTelephoneOwn, gbc);
+		pnlHoofding.add(lblTelephoneOwn);
+
+		lblCellphoneOwn = new JLabel(Language.getString("cellphone") + ": " + invoice.getOwner().getTelephone());
+		Layout.buildConstraints(gbc, 0, 7, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCellphoneOwn, gbc);
+		pnlHoofding.add(lblCellphoneOwn);
+
+		//renter info
+		lblRoleRent = new JLabel(Language.getString("renter"));
+		Layout.buildConstraints(gbc, 1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblRoleRent, gbc);
+		pnlHoofding.add(lblRoleRent);
+
+		lblNameRent = new JLabel(invoice.getOwner().toString());
+		Layout.buildConstraints(gbc, 1, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblNameRent, gbc);
+		pnlHoofding.add(lblNameRent);
+
+		lblStreetLineRent = new JLabel(invoice.getOwner().getAddress().getStreetLine());
+		Layout.buildConstraints(gbc, 1, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblStreetLineRent, gbc);
+		pnlHoofding.add(lblStreetLineRent);
+
+		lblCityLineRent = new JLabel(invoice.getOwner().getAddress().getCityLine());
+		Layout.buildConstraints(gbc, 1, 3, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCityLineRent, gbc);
+		pnlHoofding.add(lblCityLineRent);
+		try {
+			lblCountryRent = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
+			Layout.buildConstraints(gbc, 1, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+			gbl.addLayoutComponent(lblCountryRent, gbc);
+			pnlHoofding.add(lblCountryRent);
+		} catch (CountryNotFoundException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errCountryCodeNotFound") + "\n" + ex.getMessage(), "error", JOptionPane.ERROR_MESSAGE);
+		}
+
+		lblEmailRent = new JLabel(invoice.getOwner().getEmail());
+		Layout.buildConstraints(gbc, 1, 5, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblEmailRent, gbc);
+		pnlHoofding.add(lblEmailRent);
+
+		lblTelephoneRent = new JLabel(Language.getString("telephone") + ": " + invoice.getOwner().getTelephone());
+		Layout.buildConstraints(gbc, 1, 6, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblTelephoneRent, gbc);
+		pnlHoofding.add(lblTelephoneRent);
+
+		lblCellphoneRent = new JLabel(Language.getString("cellphone") + ": " + invoice.getOwner().getTelephone());
+		Layout.buildConstraints(gbc, 1, 7, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCellphoneRent, gbc);
+		pnlHoofding.add(lblCellphoneRent);
+
+		//buttons
+		JPanel pnlButtons = new JPanel();
+		pnlButtons.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
+		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		this.add(pnlButtons, BorderLayout.PAGE_END);
+		JButton btnCancel = new JButton(Language.getString("cancel"), new ImageIcon(getClass().getResource("/images/cancel.png")));
+		btnCancel.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				instance.dispose();
+			}
+		});
+		pnlButtons.add(btnCancel);
+
+		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
+		if (newInvoice) {
+			//add new invoice
+			System.out.println("adding add handler");
+			btnConfirm.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				}
+			});
+		} else {
+			//update invoice in database
+			System.out.println("adding update handler");
+			btnConfirm.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+				}
+			});
+		}
+		pnlButtons.add(btnConfirm);
+
+		//info opvullen:
+		fillInfo(newInvoice);
+		pack();
+		setLocationRelativeTo(null);
+	}
+
+	public void fillInfo(boolean isNew) {
+		if (isNew) {
+			//clear fields
+
+			btnConfirm.setText(Language.getString("add"));
+		} else {
+			//fill building info
+
+			btnConfirm.setText(Language.getString("update"));
+		}
+	}
 }
 

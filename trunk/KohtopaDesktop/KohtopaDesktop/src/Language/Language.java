@@ -77,6 +77,10 @@ public class Language {
 		return countryCodes[i];
 	}
 
+	public static String getCountryByCode(String code) throws CountryNotFoundException {
+		return countryCodes[getIndexByCountryCode(code)];
+	}
+
 	public static int getIndexByCountryCode(String code) throws CountryNotFoundException {
 		int i = 0;
 		while (i < countryCodes.length) {

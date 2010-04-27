@@ -10,11 +10,7 @@ import javax.swing.ImageIcon;
 
 public class Building extends AbstractPlace {
 
-	private String street;
-	private String number;
-	private String zipcode;
-	private String city;
-	private String country;
+	private Address address;
 	private ImageIcon previewImage;
 	private double latitude;
 	private double longitude;
@@ -31,11 +27,7 @@ public class Building extends AbstractPlace {
 		} else {
 			this.previewImage = previewImage;
 		}
-		this.street = street;
-		this.number = number;
-		this.zipcode = zipcode;
-		this.city = city;
-		this.country = country;
+		address = new Address(street, number, zipcode, city, country);
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
@@ -85,27 +77,7 @@ public class Building extends AbstractPlace {
 		return id;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public String getNumber() {
-		return number;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public String getZipcode() {
-		return zipcode;
-	}
-
-	public String getCountry() {
-		return country;
-	}
-
-	public String getStreetLine() {
-		return street + " " + number;
+	public Address getAddress() {
+		return address;
 	}
 }

@@ -13,7 +13,33 @@ public class Invoice {
 	private Person owner;
 	private Person renter;
 
-	public Invoice(int renterId){
+	public Invoice(int invRentId, boolean newInvoice) {
 		owner = Main.getDataObject().getOwner();
+		items = new Vector<InvoiceItem>();
+		if (newInvoice) {
+			renter = Main.getDataObject().getPerson(invRentId);
+			//TODO read xml file from database
+		} else {
+			//TODO get renter from invoice id from database
+		}
+	}
+
+	public Person getOwner() {
+		if(owner == null){
+			System.out.println("owner is null");
+		}
+		return owner;
+	}
+
+	public Person getRenter() {
+		return renter;
+	}
+
+	public void addItem(String description, double price) {
+		items.add(new InvoiceItem(description, price));
+	}
+
+	public void addItem(InvoiceItem item) {
+		items.add(item);
 	}
 }

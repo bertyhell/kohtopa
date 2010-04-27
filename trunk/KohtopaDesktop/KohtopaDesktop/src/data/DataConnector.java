@@ -1,6 +1,7 @@
 package data;
 
 import Exceptions.PersonNotFoundException;
+import Language.Language;
 import data.entities.Building;
 import data.entities.Invoice;
 import gui.Main;
@@ -670,23 +671,26 @@ public class DataConnector {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenters);
 				ps.setInt(1, ownerID);
 				ResultSet rs = ps.executeQuery();
-
 				while (rs.next()) {
-					int renterID = rs.getInt(1);
-					String name = rs.getString(2);
-					String firstName = rs.getString(3);
-					String email = rs.getString(4);
-					String telephone = rs.getString(5);
-					String cellphone = rs.getString(6);
 					//int id, String name, String firstName, String email, String telephone, String cellphone
-					renters.add(new Person(renterID, name, firstName, email, telephone, cellphone));
+					renters.add(new Person(
+							rs.getInt(DataBaseConstants.personID),
+							rs.getString(DataBaseConstants.street),
+							rs.getString(DataBaseConstants.streetNumber),
+							rs.getString(DataBaseConstants.zipCode),
+							rs.getString(DataBaseConstants.city),
+							rs.getString(DataBaseConstants.country),
+							rs.getString(DataBaseConstants.personName),
+							rs.getString(DataBaseConstants.firstName),
+							rs.getString(DataBaseConstants.email),
+							rs.getString(DataBaseConstants.telephone),
+							rs.getString(DataBaseConstants.cellphone)));
 				}
-
 			} finally {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			System.out.println("error retrieving renters: " + ex.getMessage());
+			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving renters:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
 		return renters;
@@ -702,13 +706,19 @@ public class DataConnector {
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					//int id, String name, String firstName, String email, String telephone, String cellphone
-					person = new Person(id,
+					person = new Person(
+							id,
+							rs.getString(DataBaseConstants.street),
+							rs.getString(DataBaseConstants.streetNumber),
+							rs.getString(DataBaseConstants.zipCode),
+							rs.getString(DataBaseConstants.city),
+							rs.getString(DataBaseConstants.country),
 							rs.getString(DataBaseConstants.personName),
 							rs.getString(DataBaseConstants.firstName),
 							rs.getString(DataBaseConstants.email),
 							rs.getString(DataBaseConstants.telephone),
 							rs.getString(DataBaseConstants.cellphone));
-				}else{
+				} else {
 					throw new PersonNotFoundException("Person with id: " + id + "was not found");
 				}
 			} finally {

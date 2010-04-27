@@ -99,8 +99,19 @@ public class DataBaseConstants {
 			+ firstName + "," + email + "," + telephone + "," + cellphone
 			+ " FROM " + tablePersons + " b"
 			+ " WHERE " + roleID + " = owner";
-	public static String selectPerson = "SELECT " + personName + "," + firstName + "," + email + "," + telephone + "," + cellphone
-			+ " FROM " + tablePersons
+	public static String selectPerson = "SELECT "
+			+ "p." + personName
+			+ ",p." + firstName
+			+ ",p." + email
+			+ ",p." + telephone
+			+ ",p." + cellphone
+			+ ",a." + street
+			+ ",a." + streetNumber
+			+ ",a." + zipCode
+			+ ",a." + city
+			+ ",a." + country
+			+ " FROM " + tablePersons + " p"
+			+ " JOIN " + tableAddresses + " a ON a." + addressID + " = p." + addressID
 			+ " WHERE " + personID + " = ?";
 	public static String selectBuildingPreviews = "SELECT " + buildingID + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city + ","
@@ -178,13 +189,14 @@ public class DataBaseConstants {
 	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by 6 asc ,5 desc",
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID);
 	public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
-	public static String selectRenters =
-			"select distinct p." + personID + ", p." + personName + ",p." + firstName
+	public static String selectRenters = "SELECT DISTINCT p." + personID + ", p." + personName + ",p." + firstName
 			+ ", p." + email + ", p." + telephone + ",p." + cellphone
-			+ " from " + tableContracts + " c "
-			+ " join " + tableRentables + " r on c." + rentableID + " = r." + rentableID
-			+ " join persons p on p." + personID + " = c." + renterID
-			+ " where " + ownerID + " = ?";
+			+ ",a." + street + ",a." + streetNumber + ",a." + zipCode + ",a." + city + ",a." + country
+			+ " FROM " + tableContracts + " c "
+			+ " JOIN " + tableRentables + " r on c." + rentableID + " = r." + rentableID
+			+ " JOIN " + tablePersons + " p on p." + personID + " = c." + renterID
+			+ " JOIN " + tableAddresses + " a on a." + addressID + " = p." + addressID
+			+ " WHERE " + ownerID + " = ?";
 	// tasks
 	public static String selectTasks = buildString("select @,@,@,@,@,@  from @ ", taskID, rentableID, description, start_time, end_time, repeats_every, tableTasks);
 	public static String insertTask = buildString("insert into @ values (0,?,?,?,?,?)", tableTasks);

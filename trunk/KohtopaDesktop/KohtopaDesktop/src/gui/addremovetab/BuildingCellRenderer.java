@@ -15,9 +15,8 @@ public class BuildingCellRenderer implements ListCellRenderer {
 		BuildingListPanel pnlBuilding = new BuildingListPanel(
 				building.getId(),
 				building.getPreviewImage(),
-				building.getStreetLine(),
-				building.getZipcode(),
-				building.getCity());
+				building.getAddress().getStreetLine(),
+				building.getAddress().getCityLine());
 		if (isSelected) {
 			pnlBuilding.setBgColor(new Color(150, 150, 150));
 		} else {

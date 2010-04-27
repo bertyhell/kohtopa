@@ -2,6 +2,7 @@ package gui.invoicestab;
 
 import gui.AbstractListPanel;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.ImageIcon;
@@ -21,25 +22,9 @@ public class RenterListPanel extends AbstractListPanel {
 		this.setMaximumSize(new Dimension(1000, 50));
 		this.setMinimumSize(new Dimension(200, 50));
 		this.setPreferredSize(new Dimension(200, 50));
-
-
-		GridBagLayout gbl = new GridBagLayout();
-		GridBagConstraints gbc = new GridBagConstraints();
-		setLayout(gbl);
-
-
+		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		//adding information labels
-
-		//preview
-		JLabel lblImage = new JLabel(img);
-		buildConstraints(gbc, 0, 0, 1, 3, 30, 30, GridBagConstraints.WEST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblImage, gbc);
-		this.add(lblImage);
-
-		//name
-		JLabel lblName = new JLabel(name);
-		buildConstraints(gbc, 1, 1, 2, 1, 100, 30, GridBagConstraints.VERTICAL, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblName, gbc);
-		this.add(lblName);
+		this.add(new JLabel(img));
+		this.add(new JLabel(name));
 	}
 }
