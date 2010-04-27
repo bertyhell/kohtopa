@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
+import data.invoices.RenterListModel;
 import gui.SplashConnect;
 
 public class DataModel {
@@ -21,24 +22,28 @@ public class DataModel {
 	//this class is used to seperate betwean database and gui in case of change
 	//and it will also be used to cach certain data (like images and the global list of buildings
 	//TODO add caching + options on timeout in settings
-	private Integer userId;
+	private Integer ownerId;
 	private int lastPictureDialogId;
 	private int lastPictureDialogType;
 	private BuildingListModel lmBuilding;
 	private RentableListModel lmRentable;
 	private PictureListModel lmPicture;
+	private RenterListModel lmRenter;
 	private static int buildingIndex;
 	private static int rentableIndex;
 	private static int pictureIndex;
+	private static int renterIndex;
 
 	public DataModel() {
 		buildingIndex = -1; //none selected
 		rentableIndex = -1; //none selected
 		pictureIndex = -1;  //none selected
+		renterIndex = -1;  //none selected
 
 		lmBuilding = new BuildingListModel();
 		lmRentable = new RentableListModel();
 		lmPicture = new PictureListModel();
+		lmRenter = new RenterListModel();
 	}
 
 	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException {
@@ -64,8 +69,6 @@ public class DataModel {
 	public Rentable getRentable(int rentableId) throws SQLException {
 		return DataConnector.getRentable(rentableId);
 	}
-
-
 
 	public static int getBuildingIndex() {
 		return buildingIndex;
@@ -108,6 +111,16 @@ public class DataModel {
 		return lmRentable;
 	}
 
+	public RentableListModel updateRenters() {
+		try {
+			lmRenter.updateItems(ownerId);
+			return lmRentable;
+		} catch (Exception ex) {
+			System.out.println("err: " + ex.getMessage());
+			return null;
+		}
+	}
+
 	public void updatePictures() throws IOException, SQLException {
 		System.out.println("updating pictures");
 		lmPicture.updateItems(lastPictureDialogId, lastPictureDialogType == 0);
@@ -131,11 +144,11 @@ public class DataModel {
 		return lmBuilding.getElementAt(buildingIndex).getId();
 	}
 
-	public boolean isBuildingSelected(){
+	public boolean isBuildingSelected() {
 		return buildingIndex != -1;
 	}
 
-	public boolean isRentableSelected(){
+	public boolean isRentableSelected() {
 		return rentableIndex != -1;
 	}
 
@@ -185,29 +198,29 @@ public class DataModel {
 		}
 	}
 
-	public int getUserId() {
-		return userId;
+	public int getOwnerId() {
+		return ownerId;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setOwnerId(int userId) {
+		this.ownerId = userId;
 	}
 
 	public boolean checkLogin(String username, String password) {
-		try{
-		userId = DataConnector.checkLogin(username, password);
-		}catch(SQLException ex){
+		try {
+			ownerId = DataConnector.checkLogin(username, password);
+		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-                if(userId != null) {
-                    ProgramSettings.setUserID(userId);
-                }
-		return userId != null;
+		if (ownerId != null) {
+			ProgramSettings.setUserID(ownerId);
+		}
+		return ownerId != null;
 	}
 
 	public boolean isLoggedIn() {
-		return userId != null;
+		return ownerId != null;
 	}
 
 	public void addImage(int id, String type, BufferedImage img) throws SQLException, IOException {
@@ -237,11 +250,11 @@ public class DataModel {
 		DataConnector.addBuilding(street, streetNumber, zip, city);
 	}
 
-	public void updateBuilding(int id,String street, String streetNumber, String zip, String city) throws SQLException {
+	public void updateBuilding(int id, String street, String streetNumber, String zip, String city) throws SQLException {
 		DataConnector.updateBuilding(id, street, streetNumber, zip, city);
 	}
 
-	public ArrayList<Integer> getFloors(){
+	public ArrayList<Integer> getFloors() {
 		return lmRentable.getFloors();
 	}
 }

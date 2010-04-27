@@ -89,7 +89,7 @@ public class DataBaseConstants {
 //	public static String pw = "admin";
 	public static String pw = "e=mc**2";
 	public static String driver = "oracle.jdbc.OracleDriver";
-//	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
+	//public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE";
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
@@ -112,6 +112,11 @@ public class DataBaseConstants {
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildID + " = r." + rentableID
 			+ " AND p." + pictureType + " = -2"
 			+ " WHERE r." + buildingID + " = ?";
+	public static String selectRenterPreviews = "SELECT p." + personID + ", p." + firstName + ", p." +  personName
+			+ " FROM " + tablePersons + " p"
+			+ " JOIN " + tableContracts + " c ON p." + personID + " = c." + renterID
+			+ " JOIN " + tableRentables + " r ON c." + rentableID + " = r." + rentableID
+			+ " WHERE r." + ownerID + " = ?";
 	public static String selectBuilding = "SELECT"
 			+ " a." + street
 			+ ",a." + streetNumber
