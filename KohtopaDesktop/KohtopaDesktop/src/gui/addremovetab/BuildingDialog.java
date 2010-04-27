@@ -363,12 +363,12 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 			try {
 				//fill building info
 				Building building = Main.getDataObject().getBuilding(buildingId);
-				txtStreet.setText(building.getStreet());
-				txtStreetNumber.setText(building.getNumber());
-				txtZip.setText(building.getZipcode());
-				txtCity.setText(building.getCity());
+				txtStreet.setText(building.getAddress().getStreet());
+				txtStreetNumber.setText(building.getAddress().getStreetNumber());
+				txtZip.setText(building.getAddress().getZipcode());
+				txtCity.setText(building.getAddress().getCity());
 				try {
-					cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getCountry()));
+					cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getAddress().getCountry()));
 				} catch (CountryNotFoundException ex) {
 					JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}

@@ -50,7 +50,7 @@ public class Main extends JFrame {
 
 	/**
 	 * Getter for the main instance
-	 * @return
+	 * @return instance
 	 */
 	public static Main getInstance() {
 		return instance;

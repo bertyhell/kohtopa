@@ -5,7 +5,7 @@ import javax.swing.ImageIcon;
 public class Person {
 
 	private int id;
-	//TODO add building fields
+	private Address address;
 	private ImageIcon preview;
 	private String name;
 	private String firstName;
@@ -13,8 +13,20 @@ public class Person {
 	private String telephone;
 	private String cellphone;
 
-	public Person(int id, String name, String firstName, String email, String telephone, String cellphone) {
+	public Person(
+			int id,
+			String street,
+			String streetNumber,
+			String zipCode,
+			String city,
+			String country,
+			String name,
+			String firstName,
+			String email,
+			String telephone,
+			String cellphone) {
 		this.id = id;
+		this.address = new Address(street, streetNumber, zipCode, city, country);
 		preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));
 		this.name = name;
 		this.firstName = firstName;
@@ -25,6 +37,7 @@ public class Person {
 
 	public Person(int id, ImageIcon preview, String name, String firstName) {
 		this.id = id;
+		this.address = null;
 		if(preview == null){
 			this.preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));
 		}else{
@@ -61,6 +74,12 @@ public class Person {
 	public ImageIcon getPreview() {
 		return preview;
 	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	
 
 	@Override
 	public String toString() {

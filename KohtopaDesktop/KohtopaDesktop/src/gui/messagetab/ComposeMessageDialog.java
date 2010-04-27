@@ -5,6 +5,7 @@
 
 package gui.messagetab;
 
+import Language.Language;
 import data.DataConnector;
 import data.ProgramSettings;
 import data.entities.Message;
@@ -19,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -86,7 +88,9 @@ public class ComposeMessageDialog extends JDialog {
      * Creates a new ComposeMessageDialog
      */
     private ComposeMessageDialog() {
-        JPanel content = new JPanel();
+		this.setIconImage(new ImageIcon(getClass().getResource("/images/message_new_23.png")).getImage());
+        this.setTitle(Language.getString("newMessage"));
+		JPanel content = new JPanel();
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = gbl.getConstraints(content);
         content.setLayout(gbl);
