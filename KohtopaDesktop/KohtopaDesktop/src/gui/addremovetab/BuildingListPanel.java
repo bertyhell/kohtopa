@@ -26,9 +26,9 @@ public class BuildingListPanel extends AbstractListPanel {
 		this.zipcode = zipcode;
 		this.city = city;
 
-		this.setMaximumSize(new Dimension(1000, 100));
-		this.setMinimumSize(new Dimension(300, 100));
-		this.setPreferredSize(new Dimension(300, 100));
+		this.setMaximumSize(new Dimension(1000, 50));
+		this.setMinimumSize(new Dimension(300, 50));
+		this.setPreferredSize(new Dimension(300, 50));
 
 
 		GridBagLayout gbl = new GridBagLayout();

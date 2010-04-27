@@ -15,7 +15,7 @@ public class Person {
 
 	public Person(int id, String name, String firstName, String email, String telephone, String cellphone) {
 		this.id = id;
-		preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));;
+		preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));
 		this.name = name;
 		this.firstName = firstName;
 		this.email = email;
@@ -64,6 +64,6 @@ public class Person {
 
 	@Override
 	public String toString() {
-		return name + " " + firstName;
+		return firstName + " " + name;
 	}
 }

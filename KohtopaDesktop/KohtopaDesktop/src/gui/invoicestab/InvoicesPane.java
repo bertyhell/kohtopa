@@ -1,5 +1,7 @@
 package gui.invoicestab;
 
+import data.DataModel;
+import data.entities.Person;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -16,26 +18,44 @@ import javax.swing.ListSelectionModel;
 public class InvoicesPane extends JPanel {
 
 	private JList lstRenters;
+	private JList lstInvoices;
 
-	public InvoicesPane() {
+	public InvoicesPane(DataModel data) {
 		this.setLayout(new BorderLayout());
 
 		//adding lists of renters, invoices and detail invoice editor
-		JSplitPane sppListDetail = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		JSplitPane sppUserlistInvoicesList = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		sppListDetail.add(sppUserlistInvoicesList, 0);
-		this.add(sppListDetail, BorderLayout.CENTER);
+		this.add(sppUserlistInvoicesList, BorderLayout.CENTER);
 
 		//list of renters
-
-		lstRenters = new JList(Main.getDataObject().getRenters());
+		lstRenters = new JList(data.getRenters());
 		lstRenters.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstRenters.setBackground(new Color(217, 217, 217));
 		lstRenters.setCellRenderer(new RenterCellRenderer());
-		JScrollPane scrolBuilding = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrolBuilding.setViewportView(lstRenters);
-		sppUserlistInvoicesList.add(scrolBuilding, 0);
+		JScrollPane scrolRenters = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrolRenters.setViewportView(lstRenters);
+		sppUserlistInvoicesList.add(scrolRenters, 0);
+
+		//list of invoices
+		lstInvoices = new JList();
+		if(lstRenters.getSelectedValue()!= null){
+			data.getInvoices(((Person)lstRenters.getSelectedValue()).getId());
+		}
+		lstInvoices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		lstInvoices.setBackground(new Color(217, 217, 217));
+		lstInvoices.setCellRenderer(new RenterCellRenderer());
+		JScrollPane scrolInvoices = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrolInvoices.setViewportView(lstInvoices);
+		sppUserlistInvoicesList.add(scrolInvoices, 0);
 
 
+	}
+
+	public Object[] getSelectedRenters(){
+		return lstRenters.getSelectedValues();
+	}
+
+	public Object[] getSelectedInvoices(){
+		return lstInvoices.getSelectedValues();
 	}
 }
