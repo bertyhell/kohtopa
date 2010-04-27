@@ -6,6 +6,7 @@ import Language.Language;
 import data.addremove.PictureListModel;
 import gui.Main;
 import data.entities.Building;
+import data.entities.Invoice;
 import data.entities.Person;
 import data.entities.Picture;
 import java.awt.Component;
@@ -15,7 +16,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
-import data.invoices.RenterListModel;
 import gui.SplashConnect;
 import java.util.Vector;
 
@@ -30,22 +30,19 @@ public class DataModel {
 	private BuildingListModel lmBuilding;
 	private RentableListModel lmRentable;
 	private PictureListModel lmPicture;
-	private RenterListModel lmRenter;
 	private static int buildingIndex;
 	private static int rentableIndex;
 	private static int pictureIndex;
-	private static int renterIndex;
 
 	public DataModel() {
 		buildingIndex = -1; //none selected
 		rentableIndex = -1; //none selected
 		pictureIndex = -1;  //none selected
-		renterIndex = -1;  //none selected
 
 		lmBuilding = new BuildingListModel();
 		lmRentable = new RentableListModel();
 		lmPicture = new PictureListModel();
-		lmRenter = new RenterListModel();
+
 	}
 
 	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException {
@@ -96,10 +93,6 @@ public class DataModel {
 		DataModel.pictureIndex = index;
 	}
 
-	public static void setRenterIndex(int index) {
-		DataModel.renterIndex = index;
-	}
-
 	public BuildingListModel getLmBuilding() {
 		return lmBuilding;
 	}
@@ -112,27 +105,25 @@ public class DataModel {
 		return lmPicture;
 	}
 
-	public RenterListModel getLmRenter() {
-		return lmRenter;
-	}
-
 	public RentableListModel updateRentables(int buildingIndex) throws IOException, SQLException {
 		lmRentable.updateItems(lmBuilding.getId(buildingIndex));
 		return lmRentable;
 	}
 
-	public RentableListModel updateRenters() {
-		try {
-			lmRenter.updateItems(ownerId);
-			return lmRentable;
-		} catch (Exception ex) {
-			System.out.println("err: " + ex.getMessage());
-			return null;
-		}
-	}
-
 	public Vector<Person> getRenters() {
 		return DataConnector.getRenters(ownerId);
+	}
+
+	public Vector<Invoice> getInvoices(int RenterId){
+		return DataConnector.getInvoices(RenterId);
+	}
+
+	public Person getPerson(int id){
+		return DataConnector.getPerson(id);
+	}
+
+	public Person getOwner(){
+		return DataConnector.getPerson(ownerId);
 	}
 
 	public void updatePictures() throws IOException, SQLException {

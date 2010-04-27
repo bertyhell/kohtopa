@@ -1,6 +1,8 @@
 package data;
 
+import Exceptions.PersonNotFoundException;
 import data.entities.Building;
+import data.entities.Invoice;
 import gui.Main;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -42,6 +44,10 @@ public class DataConnector {
 	 */
 	public static DataConnector getInstance() {
 		return instance;
+	}
+
+	static Vector<Invoice> getInvoices(int RenterId) {
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
 	/**
@@ -684,6 +690,34 @@ public class DataConnector {
 		}
 
 		return renters;
+	}
+
+	static Person getPerson(int id) {
+		Person person = null;
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPerson);
+				ps.setInt(1, id);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					//int id, String name, String firstName, String email, String telephone, String cellphone
+					person = new Person(id,
+							rs.getString(DataBaseConstants.personName),
+							rs.getString(DataBaseConstants.firstName),
+							rs.getString(DataBaseConstants.email),
+							rs.getString(DataBaseConstants.telephone),
+							rs.getString(DataBaseConstants.cellphone));
+				}else{
+					throw new PersonNotFoundException("Person with id: " + id + "was not found");
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			System.out.println("error retrieving person with id: " + id + ": " + ex.getMessage());
+		}
+		return person;
 	}
 
 	/**

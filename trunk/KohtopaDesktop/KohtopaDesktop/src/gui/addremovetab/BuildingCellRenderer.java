@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-import data.DataModel;
 import data.entities.Building;
 
 public class BuildingCellRenderer implements ListCellRenderer {
@@ -19,14 +18,14 @@ public class BuildingCellRenderer implements ListCellRenderer {
 				building.getStreetLine(),
 				building.getZipcode(),
 				building.getCity());
-		if (index != DataModel.getBuildingIndex()) {
+		if (isSelected) {
+			pnlBuilding.setBgColor(new Color(150, 150, 150));
+		} else {
 			if (index % 2 == 0) {
 				pnlBuilding.setBgColor(Color.LIGHT_GRAY);
 			} else {
 				pnlBuilding.setBgColor(new Color(170, 170, 170));
 			}
-		} else {
-			pnlBuilding.setBgColor(new Color(150, 150, 150));
 		}
 		return pnlBuilding;
 	}

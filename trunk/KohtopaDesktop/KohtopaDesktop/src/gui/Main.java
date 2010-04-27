@@ -24,7 +24,6 @@ import gui.addremovetab.IdentifiableI;
 import gui.addremovetab.RentableDialog;
 import gui.calendartab.CalendarPanel;
 import gui.invoicestab.InvoicesPane;
-import gui.invoicestab.RenterCellRenderer;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -42,8 +41,9 @@ public class Main extends JFrame {
 	private JList lstRentables;
 	private static DataModel data;
 	private JPanel pnlMessages;
-	private MessagePane pnlMessagesInfo;
 	private JPanel pnlInvoices;
+	private MessagePane pnlMessagesInfo;
+	private InvoicesPane pnlInvoicesInfo;
 	private JTabbedPane tabbed;
 	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
 	private static int focusedDialog;
@@ -195,6 +195,8 @@ public class Main extends JFrame {
 		splitter.setDividerLocation(325);
 		splitter.setDividerSize(10);
 
+
+		//TODO fix list (delete listmodels) do it Jelle's way
 		//building preview list
 		lstBuildings = new JList();
 		lstBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -404,7 +406,7 @@ public class Main extends JFrame {
 	 */
 	public void fetchInvoices() {
 		System.out.println("fetching invoices");
-		InvoicesPane pnlInvoicesInfo = new InvoicesPane();
+		pnlInvoicesInfo = new InvoicesPane(data);
 		pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
 		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
 	}
@@ -571,6 +573,14 @@ public class Main extends JFrame {
 	 */
 	public static MessagePane getMessagePane() {
 		return instance.pnlMessagesInfo;
+	}
+
+	/**
+	 * Getter for the invoice pane
+	 * @return the invoice pane
+	 */
+	public static InvoicesPane getInvoicesPane() {
+		return instance.pnlInvoicesInfo;
 	}
 
 	/**

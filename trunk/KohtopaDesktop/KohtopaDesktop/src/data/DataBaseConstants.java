@@ -13,7 +13,7 @@ public class DataBaseConstants {
 	public static String tableConsumption = "consumption";
 	public static String tableMessages = "messages";
 	public static String tablePictures = "pictures";
-        public static String tableTasks = "tasks";
+	public static String tableTasks = "tasks";
 	//addresses column labels
 	public static String addressID = "addressid";
 	public static String streetNumber = "street_number";
@@ -72,12 +72,12 @@ public class DataBaseConstants {
 	public static String renterID = "renterid";
 	public static String contractStart = "contract_start";
 	public static String contractEnd = "contract_end";
-        //tasks column labels
-        public static String taskID = "taskID";
-        public static String  description = "description";
-        public static String start_time = "start_time";
-        public static String end_time = "end_time";
-        public static String repeats_every = "repeats_every";
+	//tasks column labels
+	public static String taskID = "taskID";
+	public static String description = "description";
+	public static String start_time = "start_time";
+	public static String end_time = "end_time";
+	public static String repeats_every = "repeats_every";
 	//pictures column labels
 	public static String pictureType = "type_floor";      //-1: rentable        -2: building      -3: building preview     0-n: building floor
 	public static String pictureID = "pictureid";
@@ -99,6 +99,9 @@ public class DataBaseConstants {
 			+ firstName + "," + email + "," + telephone + "," + cellphone
 			+ " FROM " + tablePersons + " b"
 			+ " WHERE " + roleID + " = owner";
+	public static String selectPerson = "SELECT " + personName + "," + firstName + "," + email + "," + telephone + "," + cellphone
+			+ " FROM " + tablePersons
+			+ " WHERE " + personID + " = ?";
 	public static String selectBuildingPreviews = "SELECT " + buildingID + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city + ","
 			+ latitude + "," + longitude + "," + country
@@ -112,7 +115,7 @@ public class DataBaseConstants {
 			+ " LEFT JOIN " + tablePictures + " p ON p." + RentBuildID + " = r." + rentableID
 			+ " AND p." + pictureType + " = -2"
 			+ " WHERE r." + buildingID + " = ?";
-	public static String selectRenterPreviews = "SELECT p." + personID + ", p." + firstName + ", p." +  personName
+	public static String selectRenterPreviews = "SELECT p." + personID + ", p." + firstName + ", p." + personName
 			+ " FROM " + tablePersons + " p"
 			+ " JOIN " + tableContracts + " c ON p." + personID + " = c." + renterID
 			+ " JOIN " + tableRentables + " r ON c." + rentableID + " = r." + rentableID
@@ -145,11 +148,11 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingID + " = ?"
 			+ " ORDER BY " + floor;
-        public static String selectRentablesFromUser =
-                " select "+rentableID+","+rentableType+","+floor+","+rentableDescription+
-                " from "+tableRentables+" r "+
-                " join "+tablePersons+" p on r."+ownerID+" = p."+personID+
-                " where "+ownerID+" = ?";
+	public static String selectRentablesFromUser =
+			" select " + rentableID + "," + rentableType + "," + floor + "," + rentableDescription
+			+ " from " + tableRentables + " r "
+			+ " join " + tablePersons + " p on r." + ownerID + " = p." + personID
+			+ " where " + ownerID + " = ?";
 	public static String addBuilding = "INSERT INTO " + tableBuildings + " VALUES (0,?,0,0)";
 	public static String updateBuilding = "UPDATE " + tableBuildings + " SET " + addressID + " = ? WHERE " + buildingID + " = ?";
 	public static String checkAddress = "SELECT " + addressID
@@ -165,41 +168,36 @@ public class DataBaseConstants {
 	public static String selectRentablePictures = "SELECT " + pictureData + "," + pictureID
 			+ " FROM " + tablePictures
 			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = -1";
-
-        // messages
-        public static String setMessageReplied = "update " + tableMessages + " set "+
-                read + " = ? where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
-	public static String removeMessage = "delete from " + tableMessages +
-                " where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
-
-        public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ where @=? order by 6 asc ,5 desc",
+	// messages
+	public static String setMessageReplied = "update " + tableMessages + " set "
+			+ read + " = ? where " + text + " = ?  and " + senderID + " = ? and " + recipientID + " = ? and " + dateSent + " = ?";
+	public static String removeMessage = "delete from " + tableMessages
+			+ " where " + text + " = ?  and " + senderID + " = ? and " + recipientID + " = ? and " + dateSent + " = ?";
+	public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ where @=? order by 6 asc ,5 desc",
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID, recipientID);
 	public static String selectMessages = buildString("select @,@,@,@,@,@,@,@ from @ join @ on @ = @ order by 6 asc ,5 desc",
 			text, subject, personName, firstName, dateSent, read, recipientID, senderID, tableMessages, tablePersons, personID, senderID);
-        public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
-        public static String selectRenters =
-                "select distinct p."+personID+", p."+personName+",p."+firstName+
-                ", p."+email+", p."+telephone+",p."+cellphone+
-                " from "+tableContracts+" c "+
-                " join "+tableRentables+" r on c."+rentableID+" = r."+rentableID+
-                " join persons p on p."+personID+" = c."+renterID+
-                " where "+ownerID+" = ?";
-        // tasks
-        public static String selectTasks = buildString("select @,@,@,@,@,@  from @ "
-                ,taskID, rentableID, description,start_time,end_time,repeats_every,tableTasks);
+	public static String insertMessage = "insert into messages values(?,?,?,?,?,?)";
+	public static String selectRenters =
+			"select distinct p." + personID + ", p." + personName + ",p." + firstName
+			+ ", p." + email + ", p." + telephone + ",p." + cellphone
+			+ " from " + tableContracts + " c "
+			+ " join " + tableRentables + " r on c." + rentableID + " = r." + rentableID
+			+ " join persons p on p." + personID + " = c." + renterID
+			+ " where " + ownerID + " = ?";
+	// tasks
+	public static String selectTasks = buildString("select @,@,@,@,@,@  from @ ", taskID, rentableID, description, start_time, end_time, repeats_every, tableTasks);
+	public static String insertTask = buildString("insert into @ values (0,?,?,?,?,?)", tableTasks);
+	public static String deleteTask = buildString("delete from @ where @ = ? and @ = ? and @ = ?",
+			tableTasks, rentableID, description, start_time);
+	public static String updateTask = buildString(
+			"update @ set(@, @, @, @, @) = "
+			+ "(select ?,?,?,?,? from dual)"
+			+ "where @ = ? and @ = ? and @ = ?",
+			tableTasks, rentableID, description, start_time, end_time, repeats_every,
+			rentableID, description, start_time);
 
-	public static String insertTask = buildString("insert into @ values (0,?,?,?,?,?)",tableTasks);
-        public static String deleteTask = buildString("delete from @ where @ = ? and @ = ? and @ = ?",
-                tableTasks,rentableID,description,start_time);
-        public static String updateTask = buildString(
-                "update @ set(@, @, @, @, @) = "+
-                "(select ?,?,?,?,? from dual)"+
-                "where @ = ? and @ = ? and @ = ?",
-                tableTasks, rentableID, description,start_time,end_time,repeats_every,
-                rentableID,description,start_time
-                );
-
-        // create string, stuff to fill in: @
+	// create string, stuff to fill in: @
 	private static String buildString(String base, String... data) {
 		String[] parts = base.split("@");
 		//System.out.println(parts.length + ", " + data.length);
