@@ -6,6 +6,7 @@ import Language.Language;
 import data.addremove.PictureListModel;
 import gui.Main;
 import data.entities.Building;
+import data.entities.Person;
 import data.entities.Picture;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
@@ -16,6 +17,7 @@ import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import data.invoices.RenterListModel;
 import gui.SplashConnect;
+import java.util.Vector;
 
 public class DataModel {
 
@@ -82,16 +84,20 @@ public class DataModel {
 		return pictureIndex;
 	}
 
-	public static void setBuildingIndex(int buildingIndex) {
-		DataModel.buildingIndex = buildingIndex;
+	public static void setBuildingIndex(int index) {
+		DataModel.buildingIndex = index;
 	}
 
 	public static void setRentableIndex(int index) {
 		DataModel.rentableIndex = index;
 	}
 
-	public static void setPictureIndex(int pictureIndex) {
-		DataModel.pictureIndex = pictureIndex;
+	public static void setPictureIndex(int index) {
+		DataModel.pictureIndex = index;
+	}
+
+	public static void setRenterIndex(int index) {
+		DataModel.renterIndex = index;
 	}
 
 	public BuildingListModel getLmBuilding() {
@@ -104,6 +110,10 @@ public class DataModel {
 
 	public PictureListModel getLmPicture() {
 		return lmPicture;
+	}
+
+	public RenterListModel getLmRenter() {
+		return lmRenter;
 	}
 
 	public RentableListModel updateRentables(int buildingIndex) throws IOException, SQLException {
@@ -119,6 +129,10 @@ public class DataModel {
 			System.out.println("err: " + ex.getMessage());
 			return null;
 		}
+	}
+
+	public Vector<Person> getRenters() {
+		return DataConnector.getRenters(ownerId);
 	}
 
 	public void updatePictures() throws IOException, SQLException {

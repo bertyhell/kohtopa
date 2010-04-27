@@ -1,5 +1,6 @@
 package gui.addremovetab;
 
+import gui.AbstractListPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

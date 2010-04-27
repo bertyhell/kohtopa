@@ -5,16 +5,16 @@ import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import data.DataModel;
-import data.entities.Renter;
+import data.entities.Person;
 
 public class RenterCellRenderer implements ListCellRenderer {
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-		Renter renter = (Renter)list.getModel().getElementAt(index);
+		Person renter = (Person)list.getModel().getElementAt(index);
 		RenterListPanel pnlRenter = new RenterListPanel(
 				renter.getId(),
 				null, //TODO add preview image for person
-				renter.getName());
+				renter.toString());
 		if (index != DataModel.getBuildingIndex()) {
 			if (index % 2 == 0) {
 				pnlRenter.setBgColor(Color.LIGHT_GRAY);

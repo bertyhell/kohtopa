@@ -1,5 +1,6 @@
 package gui.addremovetab;
 
+import gui.AbstractListPanel;
 import gui.GuiConstants;
 import java.awt.Color;
 import java.awt.Dimension;

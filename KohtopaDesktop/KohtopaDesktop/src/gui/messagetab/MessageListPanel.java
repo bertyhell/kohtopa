@@ -1,6 +1,6 @@
 package gui.messagetab;
 
-import gui.addremovetab.AbstractListPanel;
+import gui.AbstractListPanel;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
