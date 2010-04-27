@@ -3,9 +3,9 @@ package data.invoices;
 import data.DataConnector;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import javax.swing.AbstractListModel;
-import data.entities.Renter;
+import data.entities.Person;
+import java.util.Vector;
 
 /**
  *
@@ -13,13 +13,13 @@ import data.entities.Renter;
  */
 public class RenterListModel extends AbstractListModel {
 
-	protected ArrayList<Renter> items = new ArrayList<Renter>();
+	protected Vector<Person> items = new Vector<Person>();
 
 	public int getSize() {
 		return items.size();
 	}
 
-	public Renter getElementAt(int index) {
+	public Person getElementAt(int index) {
 		return items.get(index);
 	}
 
@@ -27,7 +27,7 @@ public class RenterListModel extends AbstractListModel {
 		items.clear();
 	}
 
-	public void addElement(Renter renter) {
+	public void addElement(Person renter) {
 		items.add(renter);
 	}
 
@@ -36,6 +36,7 @@ public class RenterListModel extends AbstractListModel {
 	}
 
 	public void updateItems(Integer ownerId) throws SQLException, IOException {
-		DataConnector.selectRenterPreviews(ownerId);
+		items = DataConnector.selectRenterPreviews(ownerId);
+		System.out.println("number of renters: " + items.size());
 	}
 }

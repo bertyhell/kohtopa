@@ -16,8 +16,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -96,7 +96,7 @@ public class ComposeMessageDialog extends JDialog {
         content.add(new JLabel("To: ",JLabel.LEFT),gbc);
 
         // combobox with renters
-        ArrayList<Person> renterList = DataConnector.getRenters(ProgramSettings.getUserID());
+        Vector<Person> renterList = DataConnector.getRenters(ProgramSettings.getUserID());
         renters = new JComboBox();
 
         for(Person p:renterList) {

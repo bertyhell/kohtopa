@@ -1,52 +1,69 @@
 package data.entities;
 
+import javax.swing.ImageIcon;
+
 public class Person {
 
-    private int id;
-    //TODO add building fields
-    private String name;
-    private String firstName;
-    private String email;
-    private String telephone;
-    private String cellphone;
+	private int id;
+	//TODO add building fields
+	private ImageIcon preview;
+	private String name;
+	private String firstName;
+	private String email;
+	private String telephone;
+	private String cellphone;
 
-    public Person(int id, String name, String firstName, String email, String telephone, String cellphone) {
-	this.id = id;
-	this.name = name;
-	this.firstName = firstName;
-	this.email = email;
-	this.telephone = telephone;
-	this.cellphone = cellphone;
-    }
+	public Person(int id, String name, String firstName, String email, String telephone, String cellphone) {
+		this.id = id;
+		preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));;
+		this.name = name;
+		this.firstName = firstName;
+		this.email = email;
+		this.telephone = telephone;
+		this.cellphone = cellphone;
+	}
 
-    public String getCellphone() {
-	return cellphone;
-    }
+	public Person(int id, ImageIcon preview, String name, String firstName) {
+		this.id = id;
+		if(preview == null){
+			this.preview = new ImageIcon(getClass().getResource("/images/dummy_person_preview.png"));
+		}else{
+			this.preview = preview;
+		}
+		this.name = name;
+		this.firstName = firstName;
+	}
 
-    public String getEmail() {
-	return email;
-    }
+	public String getCellphone() {
+		return cellphone;
+	}
 
-    public String getFirstName() {
-	return firstName;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public int getId() {
-	return id;
-    }
+	public String getFirstName() {
+		return firstName;
+	}
 
-    public String getName() {
-	return name;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String getTelephone() {
-	return telephone;
-    }
+	public String getName() {
+		return name;
+	}
 
-    @Override
-    public String toString() {
-        return name+" "+firstName+" ("+email+")";
-    }
+	public String getTelephone() {
+		return telephone;
+	}
 
+	public ImageIcon getPreview() {
+		return preview;
+	}
 
+	@Override
+	public String toString() {
+		return name + " " + firstName;
+	}
 }

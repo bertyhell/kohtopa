@@ -23,6 +23,8 @@ import data.ProgramSettings;
 import gui.addremovetab.IdentifiableI;
 import gui.addremovetab.RentableDialog;
 import gui.calendartab.CalendarPanel;
+import gui.invoicestab.InvoicesPane;
+import gui.invoicestab.RenterCellRenderer;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -41,6 +43,7 @@ public class Main extends JFrame {
 	private static DataModel data;
 	private JPanel pnlMessages;
 	private MessagePane pnlMessagesInfo;
+	private JPanel pnlInvoices;
 	private JTabbedPane tabbed;
 	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
 	private static int focusedDialog;
@@ -89,7 +92,7 @@ public class Main extends JFrame {
 		actions.put("messageReply", new MessageReplyAction("messageReply", new ImageIcon(getClass().getResource("/images/message_reply_23.png"))));
 		actions.put("messageRemove", new MessageRemoveAction("messageRemove", new ImageIcon(getClass().getResource("/images/message_remove_23.png"))));
 		actions.put("messageMarkUnread", new MessageMarkUnreadAction("messageMarkUnread", new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
-                actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd", new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
+		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd", new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
 		actions.put("invoiceEdit", new InvoiceEditAction("invoiceEdit", new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
 		actions.put("invoiceRemove", new InvoiceRemoveAction("invoiceRemove", new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
 		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
@@ -143,7 +146,6 @@ public class Main extends JFrame {
 			}
 		});
 	}
-        
 
 	/**
 	 * Creates the add/remove rentables panel
@@ -306,7 +308,7 @@ public class Main extends JFrame {
 	 */
 	private JPanel createInvoicesPanel() {
 		//Invoices tab (facturen)
-		JPanel pnlInvoices = new JPanel();
+		pnlInvoices = new JPanel();
 		pnlInvoices.setLayout(new BorderLayout());
 
 		JPanel pnlButtonsInvoice = new JPanel();
@@ -322,11 +324,6 @@ public class Main extends JFrame {
 		JButton btnRemoveInvoice = new JButton(actions.get("invoiceRemove"));
 		btnRemoveInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnRemoveInvoice);
-
-
-		JPanel pnlInvoicesInfo = new JPanel();
-		pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
-		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
 
 		return pnlInvoices;
 	}
@@ -398,9 +395,18 @@ public class Main extends JFrame {
 	 */
 	public void fetchMessages() {
 		pnlMessagesInfo = new MessagePane();
-
 		pnlMessagesInfo.setPreferredSize(new Dimension(500, 600));
 		pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Fetches the invoices, fills up the invoices panel
+	 */
+	public void fetchInvoices() {
+		System.out.println("fetching invoices");
+		InvoicesPane pnlInvoicesInfo = new InvoicesPane();
+		pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
+		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
 	}
 
 	/**
@@ -514,6 +520,8 @@ public class Main extends JFrame {
 					data.fetchAddRemove();
 				} else if (tab == 2) {
 					fetchMessages();
+				} else if (tab == 3) {
+					fetchInvoices();
 				}
 				//TODO add rest off fetch methods
 			}

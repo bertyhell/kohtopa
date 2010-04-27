@@ -22,7 +22,6 @@ import data.entities.Message;
 import data.entities.Person;
 import data.entities.Picture;
 import data.entities.Rentable;
-import data.entities.Renter;
 import data.entities.Task;
 import gui.calendartab.CalendarModel;
 import java.util.Date;
@@ -109,15 +108,15 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
-	public static ArrayList<Renter> selectRenterPreviews(int ownerId) throws SQLException, IOException {
-		ArrayList<Renter> renters = new ArrayList<Renter>();
+	public static Vector<Person> selectRenterPreviews(int ownerId) throws SQLException, IOException {
+		Vector<Person> renters = new Vector<Person>();
 		Connection conn = geefVerbinding();
 		try {
 			PreparedStatement psSelectRenters = conn.prepareStatement(DataBaseConstants.selectRenterPreviews);
 			psSelectRenters.setInt(1, ownerId);
 			ResultSet rsRenters = psSelectRenters.executeQuery();
 			while (rsRenters.next()) {
-				renters.add(new Renter(
+				renters.add(new Person(
 						rsRenters.getInt(DataBaseConstants.personID),
 						null,
 						rsRenters.getString(DataBaseConstants.firstName),
@@ -657,8 +656,8 @@ public class DataConnector {
 	 * @param ownerID the id of the owner
 	 * @return an ArrayList of persons containing the renters of an owner
 	 */
-	public static ArrayList<Person> getRenters(int ownerID) {
-		ArrayList<Person> renters = new ArrayList<Person>();
+	public static Vector<Person> getRenters(int ownerID) {
+		Vector<Person> renters = new Vector<Person>();
 		try {
 			Connection conn = geefVerbinding();
 			try {
