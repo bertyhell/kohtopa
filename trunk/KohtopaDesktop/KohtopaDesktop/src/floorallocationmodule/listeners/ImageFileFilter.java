@@ -19,7 +19,7 @@ public class ImageFileFilter extends FileFilter {
 
     public boolean accept (File file) {
         String fileName = file.getName().toLowerCase();
-        return ((fileName.endsWith(".gif")) || (fileName.endsWith(".png")) || (fileName.endsWith(".jpg")));
+        return file.isDirectory()  || ((fileName.endsWith(".gif")) || (fileName.endsWith(".png")) || (fileName.endsWith(".jpg")));
     }
 
     public String getDescription() {

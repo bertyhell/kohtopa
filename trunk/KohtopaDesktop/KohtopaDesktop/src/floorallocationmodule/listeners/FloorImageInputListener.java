@@ -29,6 +29,9 @@ public class FloorImageInputListener extends MouseInputAdapter implements KeyLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if(floorImage != null && floorImage.getImageRectangle() != null)
+            e.translatePoint(-floorImage.getImageRectangle().x, -floorImage.getImageRectangle().y);
+        
         if (floorImage.getFloorContent().isAddFireExtinguisher()) {
             floorImage.getFloorContent().addFireExtinguisher(new FireExtinguisher(e.getX(), e.getY()));
         } else if (floorImage.getFloorContent().isAddCamera()) {

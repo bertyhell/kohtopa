@@ -53,7 +53,15 @@ public class FloorContent {
     private Vector<Camera> cameras;
     private Vector<EmergencyExit> emergencyExits;
 
+    private int x;
+    private int y;
+
     public FloorContent() {
+        this(0,0);
+    }
+    public FloorContent(int x, int y) {
+        this.x = x;
+        this.y = y;
         namedPolygons = new Vector<NamedPolygon>();
         pointQueu = new Vector<Point>();
         namedPolygonsWasteBin = new Vector<NamedPolygon>();
@@ -66,6 +74,22 @@ public class FloorContent {
         fireExtinguishers = new Vector<FireExtinguisher>();
         cameras = new Vector<Camera>();
         emergencyExits = new Vector<EmergencyExit>();
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public void clear() {
@@ -258,6 +282,17 @@ public class FloorContent {
         boolean insidePolygon = false;
         boolean hasOverlap = false;
 
+        if(floorImage.getImageRectangle() != null) {
+            Point translatedPoint = new Point(point.x+floorImage.getImageRectangle().x,
+                   point.y+floorImage.getImageRectangle().y );
+            if(!floorImage.getImageRectangle().contains(translatedPoint)) {
+                //System.out.println("out of bounds");
+                return false;
+            }
+        } else {
+            return false;
+        }
+        
         if (!namedPolygons.isEmpty()) {
             for (NamedPolygon namedPolygon: namedPolygons) {
                 if (namedPolygon.contains(point)) {
@@ -342,6 +377,9 @@ public class FloorContent {
     // Method which writes the content to XML.
     public void save() {
         DOMParser parser = new DOMParser();
+        setX(floorImage.getImageRectangle().width);
+        setY(floorImage.getImageRectangle().height);
+        
         parser.setFloorContent(this);
         parser.parse();
     }

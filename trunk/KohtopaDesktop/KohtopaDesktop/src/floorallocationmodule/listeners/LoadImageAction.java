@@ -28,6 +28,8 @@ public class LoadImageAction implements ActionListener {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(new ImageFileFilter());
 
+
+        fileChooser.setCurrentDirectory(new File("."));
         int answer = fileChooser.showOpenDialog(null);
         if (answer == -1) {
             JOptionPane.showMessageDialog(null, "Please make a choice.", "Error", 0);

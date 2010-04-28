@@ -65,11 +65,11 @@ public class DOMParser {
 
             // Dimension
             Element width = document.createElement(DOMConstants.WIDTH);
-            Text txtWidth = document.createTextNode("700");
+            Text txtWidth = document.createTextNode(String.valueOf(floorContent.getX()));
             width.appendChild(txtWidth);
             root.appendChild(width);
             Element height = document.createElement(DOMConstants.HEIGHT);
-            Text txtHeight = document.createTextNode("700");
+            Text txtHeight = document.createTextNode(String.valueOf(floorContent.getY()));
             height.appendChild(txtHeight);
             root.appendChild(height);
 
@@ -245,6 +245,8 @@ public class DOMParser {
             StreamResult streamResult = new StreamResult(file);
             DOMSource source = new DOMSource(document);
             transformer.transform(source, streamResult);
+
+            System.out.println("file saved to: "+file.getAbsolutePath());
 
             // Image
             

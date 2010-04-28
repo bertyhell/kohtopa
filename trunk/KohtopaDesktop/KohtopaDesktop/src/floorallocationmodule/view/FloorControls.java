@@ -86,8 +86,8 @@ public class FloorControls extends JPanel implements ActionListener {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        floorContent = new FloorContent();
         FloorImage floorImage = new FloorImage();
+        floorContent = new FloorContent();
         floorImage.setFloorContent(floorContent);
         floorContent.setFloorImage(floorImage);
         floorContent.setFloorName(floorName);
@@ -213,6 +213,8 @@ public class FloorControls extends JPanel implements ActionListener {
         add(panelControlsTop, BorderLayout.NORTH);
         add(floorImage, BorderLayout.CENTER);
         add(panelControlsBottom, BorderLayout.SOUTH);
+        floorContent.setX(floorImage.getX());
+        floorContent.setY(floorImage.getY());
     }
 
     public void actionPerformed(ActionEvent e) {
