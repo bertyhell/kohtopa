@@ -1,9 +1,7 @@
 package gui.invoicestab;
 
-import Language.CountryNotFoundException;
 import Language.Language;
 import gui.Layout;
-import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import data.entities.Invoice;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -45,21 +44,22 @@ public class InvoiceDialog extends JFrame {
 		instance = this;
 		setTitle(Language.getString(newInvoice ? "invoiceAdd" : "invoiceEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/invoice_64.png")).getImage());
-		this.setPreferredSize(new Dimension(1000, 600));
-		this.setMinimumSize(new Dimension(600, 405));
+		this.setPreferredSize(new Dimension(600, 750));
+		this.setMinimumSize(new Dimension(350, 405));
 		this.setLayout(new BorderLayout());
 
 		JPanel pnlInfo = new JPanel(new BorderLayout());
+		//pnlInfo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		this.add(pnlInfo, BorderLayout.CENTER);
 
-		//top
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
-
-
 		JPanel pnlHoofding = new JPanel(gbl);
+		pnlHoofding.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		pnlInfo.add(pnlHoofding, BorderLayout.PAGE_START);
 
 		//homeowner info
+		//TODO put owner and renter in seperate panels with border
 		lblRoleOwn = new JLabel(Language.getString("homeOwner"));
 		Layout.buildConstraints(gbc, 0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblRoleOwn, gbc);
@@ -79,14 +79,11 @@ public class InvoiceDialog extends JFrame {
 		Layout.buildConstraints(gbc, 0, 3, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblCityLineOwn, gbc);
 		pnlHoofding.add(lblCityLineOwn);
-		try {
-			lblCountryOwn = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
-			Layout.buildConstraints(gbc, 0, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
-			gbl.addLayoutComponent(lblCountryOwn, gbc);
-			pnlHoofding.add(lblCountryOwn);
-		} catch (CountryNotFoundException ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errCountryCodeNotFound") + "\n" + ex.getMessage(), "error", JOptionPane.ERROR_MESSAGE);
-		}
+
+		lblCountryOwn = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
+		Layout.buildConstraints(gbc, 0, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCountryOwn, gbc);
+		pnlHoofding.add(lblCountryOwn);
 
 		lblEmailOwn = new JLabel(invoice.getOwner().getEmail());
 		Layout.buildConstraints(gbc, 0, 5, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
@@ -103,49 +100,109 @@ public class InvoiceDialog extends JFrame {
 		gbl.addLayoutComponent(lblCellphoneOwn, gbc);
 		pnlHoofding.add(lblCellphoneOwn);
 
+
+
+
+
+
 		//renter info
 		lblRoleRent = new JLabel(Language.getString("renter"));
 		Layout.buildConstraints(gbc, 1, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblRoleRent, gbc);
 		pnlHoofding.add(lblRoleRent);
 
-		lblNameRent = new JLabel(invoice.getOwner().toString());
+		lblNameRent = new JLabel(invoice.getRenter().toString());
 		Layout.buildConstraints(gbc, 1, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblNameRent, gbc);
 		pnlHoofding.add(lblNameRent);
 
-		lblStreetLineRent = new JLabel(invoice.getOwner().getAddress().getStreetLine());
+		lblStreetLineRent = new JLabel(invoice.getRenter().getAddress().getStreetLine());
 		Layout.buildConstraints(gbc, 1, 2, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblStreetLineRent, gbc);
 		pnlHoofding.add(lblStreetLineRent);
 
-		lblCityLineRent = new JLabel(invoice.getOwner().getAddress().getCityLine());
+		lblCityLineRent = new JLabel(invoice.getRenter().getAddress().getCityLine());
 		Layout.buildConstraints(gbc, 1, 3, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblCityLineRent, gbc);
 		pnlHoofding.add(lblCityLineRent);
-		try {
-			lblCountryRent = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
-			Layout.buildConstraints(gbc, 1, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
-			gbl.addLayoutComponent(lblCountryRent, gbc);
-			pnlHoofding.add(lblCountryRent);
-		} catch (CountryNotFoundException ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errCountryCodeNotFound") + "\n" + ex.getMessage(), "error", JOptionPane.ERROR_MESSAGE);
-		}
 
-		lblEmailRent = new JLabel(invoice.getOwner().getEmail());
+		lblCountryRent = new JLabel(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
+		Layout.buildConstraints(gbc, 1, 4, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCountryRent, gbc);
+		pnlHoofding.add(lblCountryRent);
+
+		lblEmailRent = new JLabel(invoice.getRenter().getEmail());
 		Layout.buildConstraints(gbc, 1, 5, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblEmailRent, gbc);
 		pnlHoofding.add(lblEmailRent);
 
-		lblTelephoneRent = new JLabel(Language.getString("telephone") + ": " + invoice.getOwner().getTelephone());
+		lblTelephoneRent = new JLabel(Language.getString("telephone") + ": " + invoice.getRenter().getTelephone());
 		Layout.buildConstraints(gbc, 1, 6, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblTelephoneRent, gbc);
 		pnlHoofding.add(lblTelephoneRent);
 
-		lblCellphoneRent = new JLabel(Language.getString("cellphone") + ": " + invoice.getOwner().getTelephone());
+		lblCellphoneRent = new JLabel(Language.getString("cellphone") + ": " + invoice.getRenter().getTelephone());
 		Layout.buildConstraints(gbc, 1, 7, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblCellphoneRent, gbc);
 		pnlHoofding.add(lblCellphoneRent);
+
+		JPanel pnlDates = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlDates.add(new JLabel(Language.getString("invoiceInterval")));
+		
+		
+
+
+		Layout.buildConstraints(gbc, 1, 7, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(lblCellphoneRent, gbc);
+		pnlHoofding.add(lblCellphoneRent);
+
+
+		//invoice details
+		JScrollPane scrollerItems = new JScrollPane();
+		//scrollerItems.setBorder(BorderFactory.createEtchedBorder());
+		pnlInfo.add(scrollerItems, BorderLayout.CENTER);
+		System.out.println("language string description: " + Language.getString("description"));
+		DefaultTableModel tmInvoices = new DefaultTableModel(
+				new Object[][]{},
+				new String[]{Language.getString("description"), Language.getString("price")+" (€)"}) {
+
+			@Override
+			public Class getColumnClass(int columnIndex) {
+				if (columnIndex == 0) {
+					return String.class;
+				} else {
+					return Integer.class;
+				}
+			}
+
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return true;
+			}
+		};
+		JTable tableInvoices = new JTable(tmInvoices);
+		scrollerItems.setViewportView(tableInvoices);
+
+
+		tableInvoices.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		tableInvoices.getColumnModel().getColumn(1).setMaxWidth(100);
+		tableInvoices.setColumnSelectionAllowed(false);
+		tableInvoices.getTableHeader().setReorderingAllowed(false);
+		tableInvoices.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		tableInvoices.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		tableInvoices.setAutoCreateRowSorter(true);
+
+
+		//adding Invoice items
+
+		tmInvoices.addRow(new Object[]{"test",1});
+
+
 
 		//buttons
 		JPanel pnlButtons = new JPanel();

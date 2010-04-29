@@ -48,10 +48,10 @@ public class Language {
 				} else if (name.startsWith("lstWeek")) {
 					daysOfWeek[j] = entryNode.getTextContent();
 					j++;
-				}else if (name.startsWith("lstRentableType")){
+				} else if (name.startsWith("lstRentableType")) {
 					rentableTypes[k] = entryNode.getTextContent();
 					k++;
-				}else if (name.startsWith("lstWindDir")){
+				} else if (name.startsWith("lstWindDir")) {
 					rentableTypes[m] = entryNode.getTextContent();
 					m++;
 				}
@@ -77,8 +77,8 @@ public class Language {
 		return countryCodes[i];
 	}
 
-	public static String getCountryByCode(String code) throws CountryNotFoundException {
-		return countryCodes[getIndexByCountryCode(code)];
+	public static String getCountryByCode(String code) {
+		return strings.get("lstCntry" + code);
 	}
 
 	public static int getIndexByCountryCode(String code) throws CountryNotFoundException {
@@ -115,6 +115,4 @@ public class Language {
 	public static String[] getWindDir() {
 		return windDir;
 	}
-
-
 }
