@@ -48,6 +48,7 @@ public class DataBaseConstants {
 	public static String cable = "cable";
 	public static String floor = "floor";
 	public static String outletCount = "outlet_count";
+    public static String rented = "rented";
 	public static String rentableDescription = "description";
 	//furniture column labels
 	public static String furnitureID = "furnitureID";
@@ -68,10 +69,14 @@ public class DataBaseConstants {
 	public static String subject = "subject";
 	public static String read = "message_read";
 	//contracts column labels
-	public static String ownerID = "ownerid";
+    public static String contracts = "contracts";
+	public static String contractID = "contractid";
 	public static String renterID = "renterid";
-	public static String contractStart = "contract_start";
-	public static String contractEnd = "contract_end";
+    public static String ownerID = "ownerid";
+	public static String contract_start = "contract_start";
+	public static String contract_end = "contract_end";
+    public static String monthly_cost = "monthly_cost";
+    public static String guarantee = "guarantee";
 	//tasks column labels
 	public static String taskID = "taskID";
 	public static String description = "description";
@@ -208,6 +213,8 @@ public class DataBaseConstants {
 			+ "where @ = ? and @ = ? and @ = ?",
 			tableTasks, rentableID, description, start_time, end_time, repeats_every,
 			rentableID, description, start_time);
+    // contracts
+    public static String selectContracts = "SELECT " +  contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
 
 	// create string, stuff to fill in: @
 	private static String buildString(String base, String... data) {

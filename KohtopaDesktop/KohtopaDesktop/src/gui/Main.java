@@ -23,6 +23,7 @@ import data.ProgramSettings;
 import gui.addremovetab.IdentifiableI;
 import gui.addremovetab.RentableDialog;
 import gui.calendartab.CalendarPanel;
+import gui.contractstab.ContractsPane;
 import gui.invoicestab.InvoicesPane;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -45,6 +46,7 @@ public class Main extends JFrame {
     private JPanel pnlContracts;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
+    private ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
 	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
 	private static int focusedDialog;
@@ -96,6 +98,9 @@ public class Main extends JFrame {
 		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd", new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
 		actions.put("invoiceEdit", new InvoiceEditAction("invoiceEdit", new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
 		actions.put("invoiceRemove", new InvoiceRemoveAction("invoiceRemove", new ImageIcon(getClass().getResource("/images/invoice_remove_23.png"))));
+        actions.put("contractAdd", new ContractAddAction("contractAdd", new ImageIcon(getClass().getResource("/images/contract_add_23.png"))));
+		actions.put("contractEdit", new ContractEditAction("contractEdit", new ImageIcon(getClass().getResource("/images/contract_edit_23.png"))));
+		actions.put("contractRemove", new ContractRemoveAction("contractRemove", new ImageIcon(getClass().getResource("/images/contract_remove_23.png"))));
 		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
 		actions.put("floorEdit", new FloorEditAction("floorEdit", new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
 		actions.put("floorRemove", new FloorRemoveAction("floorRemove", new ImageIcon(getClass().getResource("/images/floor_remove_23.png"))));
@@ -127,7 +132,7 @@ public class Main extends JFrame {
 		tabbed.setMnemonicAt(3, KeyEvent.VK_I);
 
         //adding Contracts panel
-        tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createContractsPanel(), Language.getString("descriptionContracts"));
+        tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/contract_64.png")), createContractsPanel(), Language.getString("descriptionContracts"));
         tabbed.setMnemonicAt(4, KeyEvent.VK_O);
 
 //		//adding Settings Panel
@@ -443,7 +448,9 @@ public class Main extends JFrame {
      */
     public void fetchContracts() {
         System.out.println("fetching contracts");
-//        pnlContractsInfo = new ContractsPane(data);
+        pnlContractsInfo = new ContractsPane(data);
+        pnlContractsInfo.setPreferredSize(new Dimension(500, 600));
+        pnlContracts.add(pnlContractsInfo, BorderLayout.CENTER);
     }
 
 	/**
@@ -559,7 +566,9 @@ public class Main extends JFrame {
 					fetchMessages();
 				} else if (tab == 3) {
 					fetchInvoices();
-				}
+				} else if (tab == 4) {
+                    fetchContracts();
+                }
 				//TODO add rest off fetch methods
 			}
 		});
@@ -617,6 +626,14 @@ public class Main extends JFrame {
 	public static InvoicesPane getInvoicesPane() {
 		return instance.pnlInvoicesInfo;
 	}
+
+    /**
+     * Getter for the contract pane
+     * @return the contract pane
+     */
+    public static ContractsPane getContractsPane() {
+        return instance.pnlContractsInfo;
+    }
 
 	/**
 	 * Updates the panels

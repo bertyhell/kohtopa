@@ -9,6 +9,7 @@ import javax.swing.Icon;
 public class InvoiceRemoveAction extends AbstractIconAction {
 
     public InvoiceRemoveAction(String id, Icon img) {
-	super(id, img);
+        super(id, img);
     }
+
 }

@@ -26,6 +26,7 @@ import data.entities.Person;
 import data.entities.Picture;
 import data.entities.Rentable;
 import data.entities.Task;
+import data.entities.Contract;
 import gui.calendartab.CalendarModel;
 import java.util.Date;
 import java.util.HashMap;
@@ -696,6 +697,44 @@ public class DataConnector {
 		return renters;
 	}
 
+    public static Vector<Contract> getContracts() {
+        //int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
+		Vector<Contract> contracts = new Vector<Contract>();
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContracts);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+                    //contract data
+                    int contractID = rs.getInt(DataBaseConstants.contractID);
+                    int rentableID = rs.getInt(DataBaseConstants.rentableID);
+                    int renterID = rs.getInt(DataBaseConstants.renterID);
+                    Date start = rs.getTimestamp(DataBaseConstants.contract_start);
+                    Date end = rs.getTimestamp(DataBaseConstants.contract_end);
+                    float price = rs.getFloat(DataBaseConstants.price);
+                    float monthly_cost = rs.getFloat(DataBaseConstants.monthly_cost);
+                    float guarantee = rs.getFloat(DataBaseConstants.guarantee);
+
+                    //we use renterID to get renter data
+					Person renter = getPerson(renterID);
+
+                    //we use rentableID to get rentable data
+                    Rentable rentable = getRentable(rentableID);
+
+                    Contract contract = new Contract(contractID, rentable, renter, start, end, price, monthly_cost, guarantee);
+                    contracts.add(contract);
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving renters:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+
+		return contracts;
+	}
+
 	static Person getPerson(int id) {
 		Person person = null;
 		try {
@@ -705,7 +744,7 @@ public class DataConnector {
 				ps.setInt(1, id);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
-					//int id, String name, String firstName, String email, String telephone, String cellphone
+					//int id, String street, String streetNumber, String zipCode, String city, String country, String name, String firstName, String email, String telephone, String cellphone
 					person = new Person(
 							id,
 							rs.getString(DataBaseConstants.street),
@@ -893,6 +932,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if select fails
 	 */
 	static Rentable getRentable(int rentableID) throws SQLException {
+        //int id, ImageIcon previewImage, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
 		Rentable rentable = null;
 		try {
 			Connection conn = geefVerbinding();
@@ -913,11 +953,10 @@ public class DataConnector {
 							rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
 							rs.getInt(DataBaseConstants.outletCount),
 							rs.getInt(DataBaseConstants.floor),
-							false,
-							rs.getDouble(DataBaseConstants.price),
+							rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
+							rs.getFloat(DataBaseConstants.price),
 							rs.getString(DataBaseConstants.rentableDescription));
 				}
-
 			} finally {
 				conn.close();
 			}
