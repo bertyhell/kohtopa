@@ -42,6 +42,7 @@ public class Main extends JFrame {
 	private static DataModel data;
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
+    private JPanel pnlContracts;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
 	private JTabbedPane tabbed;
@@ -125,13 +126,17 @@ public class Main extends JFrame {
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createInvoicesPanel(), Language.getString("descriptionInvoices"));
 		tabbed.setMnemonicAt(3, KeyEvent.VK_I);
 
+        //adding Contracts panel
+        tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/invoice_64.png")), createContractsPanel(), Language.getString("descriptionContracts"));
+        tabbed.setMnemonicAt(4, KeyEvent.VK_O);
+
 //		//adding Settings Panel
 //		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
-//		tabbed.setMnemonicAt(4, KeyEvent.VK_S);
+//		tabbed.setMnemonicAt(5, KeyEvent.VK_S);
 
 		//adding Language Panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/language_64.png")), createLanguagePanel(), Language.getString("descriptionLanguage"));
-		tabbed.setMnemonicAt(4, KeyEvent.VK_L);
+		tabbed.setMnemonicAt(5, KeyEvent.VK_L);
 
 
 		pack();
@@ -330,6 +335,28 @@ public class Main extends JFrame {
 		return pnlInvoices;
 	}
 
+    private JPanel createContractsPanel() {
+		//Contracts tab (contracten)
+		pnlContracts = new JPanel();
+		pnlContracts.setLayout(new BorderLayout());
+
+		JPanel pnlButtonsContract = new JPanel();
+		pnlButtonsContract.setBackground(new Color(180, 180, 180, 100));
+		pnlContracts.add(pnlButtonsContract, BorderLayout.PAGE_START);
+
+		JButton btnAddContract = new JButton(actions.get("contractAdd"));
+		btnAddContract.setHideActionText(disableBtnText);
+		pnlButtonsContract.add(btnAddContract);
+		JButton btnEditContract = new JButton(actions.get("contractEdit"));
+		btnEditContract.setHideActionText(disableBtnText);
+		pnlButtonsContract.add(btnEditContract);
+		JButton btnRemoveContract = new JButton(actions.get("contractRemove"));
+		btnRemoveContract.setHideActionText(disableBtnText);
+		pnlButtonsContract.add(btnRemoveContract);
+
+		return pnlContracts;
+	}
+
 //	/**
 //	 * Creates the settings panel
 //	 * @return the settings panel
@@ -410,6 +437,14 @@ public class Main extends JFrame {
 		pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
 		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
 	}
+
+    /**
+     * Fetches the contracts, fills up the contracts panel
+     */
+    public void fetchContracts() {
+        System.out.println("fetching contracts");
+//        pnlContractsInfo = new ContractsPane(data);
+    }
 
 	/**
 	 * Getter for the data object
