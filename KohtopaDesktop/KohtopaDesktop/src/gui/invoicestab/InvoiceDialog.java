@@ -11,6 +11,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import data.entities.Invoice;
+import java.awt.Color;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -38,6 +41,11 @@ public class InvoiceDialog extends JFrame {
 	private JLabel lblEmailRent;
 	private JLabel lblTelephoneRent;
 	private JLabel lblCellphoneRent;
+	private JComboBox cbbMonthFrom;
+	private JComboBox cbbYearFrom;
+	private JComboBox cbbMonthTo;
+	private JComboBox cbbYearTo;
+	private DefaultTableModel tmInvoices;
 
 	public InvoiceDialog(int rentInvoiceId, boolean newInvoice) {
 		invoice = new Invoice(rentInvoiceId, newInvoice);
@@ -147,24 +155,46 @@ public class InvoiceDialog extends JFrame {
 		pnlHoofding.add(lblCellphoneRent);
 
 		JPanel pnlDates = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		pnlDates.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+		Layout.buildConstraints(gbc, 0, 8, 2, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(pnlDates, gbc);
+		pnlHoofding.add(pnlDates);
+
 		pnlDates.add(new JLabel(Language.getString("invoiceInterval")));
+
+		cbbMonthFrom = new JComboBox(Language.getMonthsOfYear()); //TODO set selected date to last factuur date
+		pnlDates.add(cbbMonthFrom);
+
+		cbbYearFrom = new JComboBox();
+		int year = GregorianCalendar.getInstance().get(Calendar.YEAR);
+		for (int i = year; i > year - 100; i--) {
+			cbbYearFrom.addItem(i);
+		}
+		cbbYearFrom.setSelectedIndex(0);
+		pnlDates.add(cbbYearFrom);
+
+		pnlDates.add(new JLabel(Language.getString("to")));
+
+		cbbMonthTo = new JComboBox(Language.getMonthsOfYear()); //TODO set selected date to last factuur date
+		pnlDates.add(cbbMonthTo);
+
+		cbbYearTo = new JComboBox();
+		for (int i = year; i > year - 100; i--) {
+			cbbYearTo.addItem(i);
+		}
+		cbbYearTo.setSelectedIndex(0);
+		pnlDates.add(cbbYearTo);
+
+
+
 		
-		
-
-
-		Layout.buildConstraints(gbc, 1, 7, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblCellphoneRent, gbc);
-		pnlHoofding.add(lblCellphoneRent);
-
-
 		//invoice details
 		JScrollPane scrollerItems = new JScrollPane();
-		//scrollerItems.setBorder(BorderFactory.createEtchedBorder());
 		pnlInfo.add(scrollerItems, BorderLayout.CENTER);
 		System.out.println("language string description: " + Language.getString("description"));
-		DefaultTableModel tmInvoices = new DefaultTableModel(
+		tmInvoices = new DefaultTableModel(
 				new Object[][]{},
-				new String[]{Language.getString("description"), Language.getString("price")+" (€)"}) {
+				new String[]{Language.getString("description"), Language.getString("price") + " (€)"}) {
 
 			@Override
 			public Class getColumnClass(int columnIndex) {
@@ -183,7 +213,6 @@ public class InvoiceDialog extends JFrame {
 		JTable tableInvoices = new JTable(tmInvoices);
 		scrollerItems.setViewportView(tableInvoices);
 
-
 		tableInvoices.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		tableInvoices.getColumnModel().getColumn(1).setMaxWidth(100);
 		tableInvoices.setColumnSelectionAllowed(false);
@@ -200,15 +229,29 @@ public class InvoiceDialog extends JFrame {
 
 		//adding Invoice items
 
-		tmInvoices.addRow(new Object[]{"test",1});
+		tmInvoices.addRow(new Object[]{"test", 1});
 
 
 
 		//buttons
-		JPanel pnlButtons = new JPanel();
-		pnlButtons.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 10));
-		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		this.add(pnlButtons, BorderLayout.PAGE_END);
+		Box boxButtons = Box.createHorizontalBox();
+		boxButtons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		this.add(boxButtons, BorderLayout.PAGE_END);
+
+		JButton btnAddInvoiceItem = new JButton("", new ImageIcon(getClass().getResource("/images/add_23.png")));
+		btnAddInvoiceItem.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				tmInvoices.addRow(new Object[]{Language.getString("newInvoiceItem"), 0});
+			}
+		});
+		boxButtons.add(btnAddInvoiceItem);
+
+		boxButtons.add(Box.createHorizontalGlue());
+
+
 		JButton btnCancel = new JButton(Language.getString("cancel"), new ImageIcon(getClass().getResource("/images/cancel.png")));
 		btnCancel.addMouseListener(new MouseAdapter() {
 
@@ -217,7 +260,7 @@ public class InvoiceDialog extends JFrame {
 				instance.dispose();
 			}
 		});
-		pnlButtons.add(btnCancel);
+		boxButtons.add(btnCancel);
 
 		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
 		if (newInvoice) {
@@ -239,7 +282,9 @@ public class InvoiceDialog extends JFrame {
 				}
 			});
 		}
-		pnlButtons.add(btnConfirm);
+		boxButtons.add(btnConfirm);
+
+
 
 		//info opvullen:
 		fillInfo(newInvoice);

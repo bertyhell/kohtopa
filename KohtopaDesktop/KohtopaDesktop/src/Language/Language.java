@@ -16,6 +16,7 @@ public class Language {
 	private static String[] countryCodes;
 	private static String[] countries;
 	private static String[] daysOfWeek;
+	private static String[] monthsOfYear;
 	private static String[] rentableTypes;
 	private static String[] windDir;
 	private static JComboBox cbbCountry;
@@ -32,12 +33,14 @@ public class Language {
 			countryCodes = new String[250];
 			countries = new String[250];
 			daysOfWeek = new String[7];
+			monthsOfYear = new String[12];
 			rentableTypes = new String[100]; //max 100 different types
 			windDir = new String[8];
 			int i = 0;
 			int j = 0;
 			int k = 0;
 			int m = 0;
+			int n = 0;
 			for (int s = 0; s < nodeLst.getLength(); s++) {
 				Node entryNode = nodeLst.item(s);
 				String name = entryNode.getAttributes().item(0).getNodeValue();
@@ -52,8 +55,11 @@ public class Language {
 					rentableTypes[k] = entryNode.getTextContent();
 					k++;
 				} else if (name.startsWith("lstWindDir")) {
-					rentableTypes[m] = entryNode.getTextContent();
+					windDir[m] = entryNode.getTextContent();
 					m++;
+				} else if (name.startsWith("lstMonth")) {
+					monthsOfYear[n] = entryNode.getTextContent();
+					n++;
 				}
 				Language.add(name, entryNode.getTextContent());
 			}
@@ -115,4 +121,10 @@ public class Language {
 	public static String[] getWindDir() {
 		return windDir;
 	}
+
+	public static String[] getMonthsOfYear() {
+		return monthsOfYear;
+	}
+
+
 }
