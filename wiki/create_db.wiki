@@ -1,4 +1,5 @@
-<a href="http://kohtopa.googlecode.com/svn/trunk/database/exportlatlong.sql">nieuwe databank...alweer</a>
+<a href="https://kohtopa.googlecode.com/svn/trunk/database/create_db_views.sql">nieuwe databank...alweer maar nu eens van iemand anders</a>
 
 aangepast:
-latitude/longitude staan nu in perl script, deze stonden nog niet in de databank.
+er worden nu gebruikers aangemaakt waarmee je kan inloggen (voorlopig nog negeren) er bestaat ook een scriptje om die users terug te verwijderen als ze niet meer weg willen:
+<a href="https://kohtopa.googlecode.com/svn/trunk/database/dropUsers.sql">
