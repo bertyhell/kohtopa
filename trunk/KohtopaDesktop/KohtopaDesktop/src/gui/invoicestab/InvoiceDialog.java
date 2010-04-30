@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import data.entities.Invoice;
-import java.awt.Color;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.table.DefaultTableModel;
@@ -46,6 +45,7 @@ public class InvoiceDialog extends JFrame {
 	private JComboBox cbbMonthTo;
 	private JComboBox cbbYearTo;
 	private DefaultTableModel tmInvoices;
+	private JTable tableInvoices;
 
 	public InvoiceDialog(int rentInvoiceId, boolean newInvoice) {
 		invoice = new Invoice(rentInvoiceId, newInvoice);
@@ -187,11 +187,10 @@ public class InvoiceDialog extends JFrame {
 
 
 
-		
+
 		//invoice details
 		JScrollPane scrollerItems = new JScrollPane();
 		pnlInfo.add(scrollerItems, BorderLayout.CENTER);
-		System.out.println("language string description: " + Language.getString("description"));
 		tmInvoices = new DefaultTableModel(
 				new Object[][]{},
 				new String[]{Language.getString("description"), Language.getString("price") + " (€)"}) {
@@ -210,13 +209,14 @@ public class InvoiceDialog extends JFrame {
 				return true;
 			}
 		};
-		JTable tableInvoices = new JTable(tmInvoices);
+		tableInvoices = new JTable(tmInvoices);
 		scrollerItems.setViewportView(tableInvoices);
 
 		tableInvoices.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 		tableInvoices.getColumnModel().getColumn(1).setMaxWidth(100);
 		tableInvoices.setColumnSelectionAllowed(false);
 		tableInvoices.getTableHeader().setReorderingAllowed(false);
+		tableInvoices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tableInvoices.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tableInvoices.addMouseListener(new MouseAdapter() {
 
@@ -229,14 +229,10 @@ public class InvoiceDialog extends JFrame {
 
 		//adding Invoice items
 
-		tmInvoices.addRow(new Object[]{"test", 1});
-
-
 
 		//buttons
 		Box boxButtons = Box.createHorizontalBox();
 		boxButtons.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-//		pnlButtons.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		this.add(boxButtons, BorderLayout.PAGE_END);
 
 		JButton btnAddInvoiceItem = new JButton("", new ImageIcon(getClass().getResource("/images/add_23.png")));
@@ -248,6 +244,20 @@ public class InvoiceDialog extends JFrame {
 			}
 		});
 		boxButtons.add(btnAddInvoiceItem);
+
+		JButton btnRemoveInvoiceItem = new JButton("", new ImageIcon(getClass().getResource("/images/remove_23.png")));
+		btnRemoveInvoiceItem.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+				int[] rows = tableInvoices.getSelectedRows();
+				for (int i = rows.length - 1; i >= 0; i--) {
+					tmInvoices.removeRow(rows[i]);
+				}
+			}
+		});
+		boxButtons.add(btnRemoveInvoiceItem);
 
 		boxButtons.add(Box.createHorizontalGlue());
 

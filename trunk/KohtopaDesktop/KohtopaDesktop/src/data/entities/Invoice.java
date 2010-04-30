@@ -14,9 +14,7 @@ public class Invoice {
 	private Person renter;
 
 	public Invoice(int invRentId, boolean newInvoice) {
-		System.out.println("creating invoice");
 		owner = Main.getDataObject().getOwner();
-		System.out.println("owner id: " + owner.getId());
 		items = new Vector<InvoiceItem>();
 		if (newInvoice) {
 			renter = Main.getDataObject().getPerson(invRentId);
