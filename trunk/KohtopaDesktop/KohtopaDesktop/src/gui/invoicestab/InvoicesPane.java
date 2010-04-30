@@ -46,8 +46,7 @@ public class InvoicesPane extends JPanel {
 		lstInvoices.setCellRenderer(new RenterCellRenderer());
 		JScrollPane scrolInvoices = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrolInvoices.setViewportView(lstInvoices);
-		sppUserlistInvoicesList.add(scrolInvoices, 0);
-
+		sppUserlistInvoicesList.add(scrolInvoices, 1);
 
 	}
 

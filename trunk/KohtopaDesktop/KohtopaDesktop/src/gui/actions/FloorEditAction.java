@@ -9,6 +9,7 @@ import javax.swing.Icon;
 public class FloorEditAction extends AbstractIconAction {
 
     public FloorEditAction(String id, Icon img) {
-	super(id, img);
+        super(id, img);
     }
+
 }

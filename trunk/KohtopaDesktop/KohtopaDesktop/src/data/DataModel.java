@@ -6,6 +6,7 @@ import Language.Language;
 import data.addremove.PictureListModel;
 import gui.Main;
 import data.entities.Building;
+import data.entities.Contract;
 import data.entities.Invoice;
 import data.entities.Person;
 import data.entities.Picture;
@@ -117,6 +118,10 @@ public class DataModel {
 	public Vector<Invoice> getInvoices(int RenterId){
 		return DataConnector.getInvoices(RenterId);
 	}
+
+    public Vector<Contract> getContracts() {
+        return DataConnector.getContracts();
+    }
 
 	public Person getPerson(int id){
 		return DataConnector.getPerson(id);
