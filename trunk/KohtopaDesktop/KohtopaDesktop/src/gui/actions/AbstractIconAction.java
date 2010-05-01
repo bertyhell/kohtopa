@@ -14,6 +14,6 @@ public class AbstractIconAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent e) {
-	JOptionPane.showMessageDialog(null, "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
     }
 }

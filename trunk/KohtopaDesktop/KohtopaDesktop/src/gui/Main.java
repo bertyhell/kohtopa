@@ -43,7 +43,7 @@ public class Main extends JFrame {
 	private static DataModel data;
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
-    private JPanel pnlContracts;
+	private JPanel pnlContracts;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
     private ContractsPane pnlContractsInfo;
@@ -118,6 +118,7 @@ public class Main extends JFrame {
 		//adding Add/Remove panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+
 
 		//adding Calendar panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
@@ -340,7 +341,7 @@ public class Main extends JFrame {
 		return pnlInvoices;
 	}
 
-    private JPanel createContractsPanel() {
+	private JPanel createContractsPanel() {
 		//Contracts tab (contracten)
 		pnlContracts = new JPanel();
 		pnlContracts.setLayout(new BorderLayout());
@@ -391,7 +392,6 @@ public class Main extends JFrame {
 //
 //		return pnlSettings;
 //	}
-
 	/**
 	 * Creates the language panel
 	 * @return the language panel
@@ -437,21 +437,22 @@ public class Main extends JFrame {
 	 * Fetches the invoices, fills up the invoices panel
 	 */
 	public void fetchInvoices() {
-		System.out.println("fetching invoices");
-		pnlInvoicesInfo = new InvoicesPane(data);
-		pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
-		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
+		if (pnlInvoicesInfo == null) {
+			pnlInvoicesInfo = new InvoicesPane(data);
+			pnlInvoicesInfo.setPreferredSize(new Dimension(500, 600));
+			pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
+		}
 	}
 
-    /**
-     * Fetches the contracts, fills up the contracts panel
-     */
-    public void fetchContracts() {
-        System.out.println("fetching contracts");
+	/**
+	 * Fetches the contracts, fills up the contracts panel
+	 */
+	public void fetchContracts() {
+		System.out.println("fetching contracts");
         pnlContractsInfo = new ContractsPane(data);
         pnlContractsInfo.setPreferredSize(new Dimension(500, 600));
         pnlContracts.add(pnlContractsInfo, BorderLayout.CENTER);
-    }
+	}
 
 	/**
 	 * Getter for the data object
