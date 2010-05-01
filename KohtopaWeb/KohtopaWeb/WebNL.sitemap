@@ -5,6 +5,7 @@
         <siteMapNode title="Index" url="~/Index.aspx#" description="index"/>
         <siteMapNode title="Zoek kot" url="~/Search.aspx#" description="Zoek kot"/>
         <siteMapNode title="Mijn kamer" url="~/MyRoom.aspx" description="Mijn kamer"/>
+        <siteMapNode title="Kalender" url="~/Calendar.aspx" description="Bekijk taken"/>
         <siteMapNode title="Boodschappen" description="Boodschappen">
           <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees boodschappen"/>
           <siteMapNode title="Schrijf" url="~/Messages.aspx" description="Schrijf een boodschap"/>

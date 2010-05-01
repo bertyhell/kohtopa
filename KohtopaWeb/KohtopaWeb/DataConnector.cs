@@ -45,6 +45,12 @@ namespace KohtopaWeb
         
         private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";
 
+        private static string selectTasks = "select distinct description,start_time,c.rentableid " +
+                                    "from tasks t " +
+                                    "join contracts c on t.rentableid = c.rentableid and c.renterid = ?" +
+                                    /*"where start_time between ? and ? */"order by start_time desc" ; 
+
+
         public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
 
         private static OleDbConnection getConnection(){
@@ -76,10 +82,22 @@ namespace KohtopaWeb
             }
             conn.Close();
 
-            messages.Sort(delegate(Message m1, Message m2) { return m2.DateSent.CompareTo(m1.DateSent); });
+            messages.Sort(delegate(Message m1, Message m2) {
+                if (m2.Read && !m1.Read)
+                {
+                    return -1;
+                }
+                else if(m1.Read)
+                {
+                    return 1;
+                } 
+                return m2.DateSent.CompareTo(m1.DateSent); 
+            });
             return messages;
 
         }
+
+        
 
         //todo parameters
         public static byte[] getPicture(int ImageId){
@@ -96,6 +114,31 @@ namespace KohtopaWeb
             reader.Close();
             conn.Close();
             return data;
+        }
+
+        public static DataTable getTasks(int userId)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = selectTasks;
+
+            OleDbParameter p = new OleDbParameter("renterid", userId);
+            command.Parameters.Add(p);
+
+            /*p = new OleDbParameter("start", start);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("end", end);
+            command.Parameters.Add(p);*/
+
+
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+            
+            da.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+            da.Fill(ds);
+
+            return ds.Tables[0];
         }
 
         public static DataTable getRentables(string order)
