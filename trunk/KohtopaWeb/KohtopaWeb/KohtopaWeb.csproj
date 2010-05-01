@@ -100,6 +100,13 @@
     <Compile Include="Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Invoices.aspx.cs">
+      <DependentUpon>Invoices.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Invoices.aspx.designer.cs">
+      <DependentUpon>Invoices.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Language.cs" />
     <Compile Include="Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>
@@ -186,6 +193,7 @@
     <Content Include="FloorPlan.ascx" />
     <Content Include="Images\cancel.png" />
     <Content Include="Images\ok.png" />
+    <Content Include="Invoices.aspx" />
     <Content Include="Language\languages.xml" />
     <Content Include="Language\language_EN.xml" />
     <Content Include="Language\language_NL.xml" />

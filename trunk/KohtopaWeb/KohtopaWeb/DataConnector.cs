@@ -48,13 +48,35 @@ namespace KohtopaWeb
         private static string selectTasks = "select distinct description,start_time,c.rentableid " +
                                     "from tasks t " +
                                     "join contracts c on t.rentableid = c.rentableid and c.renterid = ?" +
-                                    /*"where start_time between ? and ? */"order by start_time desc" ; 
-
+                                    "order by start_time desc" ;
+        private static string selectConsumptions =
+            "select distinct gas,water,electricity, date_consumption from consumption c " +
+            "join contracts co on co.rentableid = c.rentableid " +
+            "where co.renterid = ? " +
+            "order by date_consumption desc";
 
         public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
+        }
+
+        public static DataTable getConsumptions(int id)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = selectConsumptions;
+
+            OleDbParameter p = new OleDbParameter("renterid", id);
+            command.Parameters.Add(p);
+
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+
+            da.MissingSchemaAction = MissingSchemaAction.AddWithKey;
+            da.Fill(ds);
+
+            return ds.Tables[0];
         }
 
         public static List<Message> getMessages(int id)

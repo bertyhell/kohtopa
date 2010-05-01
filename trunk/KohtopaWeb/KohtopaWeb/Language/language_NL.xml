@@ -63,5 +63,10 @@
     <entry name="WindowDirection">richting van het grootste venster</entry>
     <entry name="WindowArea">Venster oppervlakte</entry>
     <entry name="Description">Beschrijving</entry>
+	<entry name="Gas">Gas</entry>
+	<entry name="Water">Water</entry>
+	<entry name="Electricity">Elektriciteit</entry>
+	<entry name="InvalidValue">Gelieve een geldige waarde in te geven.</entry>
+	<entry name="Submit">Opsturen</entry>
     <entry name="Welcome">Welkom op kohotpa, een website waar studenten hun kot kunnen zoeken.</entry>
 </Language>
