@@ -11,6 +11,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
 using System.Data.OleDb;
 using System.Web.Mail;
+using System.Text.RegularExpressions;
 namespace KohtopaWeb
 {
     public class Message
@@ -42,7 +43,10 @@ namespace KohtopaWeb
         public string Text
         {
             get { return text; }
-            set { text = value; }
+            set {
+                text = value;
+                text = Regex.Replace(text, @"[ \t]+", " ");
+            }
         }
 
         public string Subject
@@ -50,7 +54,11 @@ namespace KohtopaWeb
             get { return subject; }
             set { subject = value; }
         }
-        
+
+        public long DateTicks
+        {
+            get { return DateSent.Ticks;  }
+        }
 
         public DateTime DateSent
         {
@@ -63,6 +71,11 @@ namespace KohtopaWeb
             get { return read; }
             set { read = value; }
         }
+
+        public string State
+        {
+            get { return read?"read":"unread"; }
+         }
 
         public override string ToString()
         {
