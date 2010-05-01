@@ -16,6 +16,7 @@ namespace KohtopaWeb
             {
                 Person user = (Person)Session["user"];
                 //List<Message> l = DataConnector.getMessages(user.PersonId);
+                
                 MessageList.DataSource = DataConnector.getMessages(user.PersonId);
                 MessageList.DataBind();
                 

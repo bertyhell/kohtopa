@@ -9,11 +9,11 @@
             <asp:Menu ID="Menu1" DataSourceID="SiteMap" runat="server" Orientation="Horizontal"
                 StaticMenuItemStyle-HorizontalPadding="2px" BackColor="#E3EAEB" DynamicHorizontalOffset="2"
                 Font-Names="Verdana" Font-Size="0.8em" ForeColor="#666666" StaticSubMenuIndent="10px">
-                <StaticSelectedStyle BackColor="#1C5E55" />
+                <StaticSelectedStyle BackColor="#0099FF" />
                 <StaticMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px"></StaticMenuItemStyle>
                 <DynamicHoverStyle BackColor="#666666" ForeColor="White" />
                 <DynamicMenuStyle BackColor="#E3EAEB" />
-                <DynamicSelectedStyle BackColor="#1C5E55" />
+                <DynamicSelectedStyle BackColor="#3399FF" />
                 <DynamicMenuItemStyle HorizontalPadding="5px" VerticalPadding="2px" />
                 <StaticHoverStyle BackColor="#666666" ForeColor="White" />
             </asp:Menu>
