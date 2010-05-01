@@ -14,26 +14,38 @@ namespace KohtopaWeb
         {
             if (!IsPostBack)
             {
-                Person user = (Person)Session["user"];
-                //List<Message> l = DataConnector.getMessages(user.PersonId);
-                
-                MessageList.DataSource = DataConnector.getMessages(user.PersonId);
-                MessageList.DataBind();
-                
+                reloadMessages();
             }
         }
 
-        protected void select_message(object sender, EventArgs e)
+        private void reloadMessages()
         {
-            if (MessageList.SelectedIndex != -1)
-            {
-                Person user = (Person)Session["user"];
-                List<Message> l = DataConnector.getMessages(user.PersonId);
-                message.Text = l[MessageList.SelectedIndex].Text;
-                DataConnector.setRead(l[MessageList.SelectedIndex],user);
-                MessageList.DataSource = DataConnector.getMessages(user.PersonId);
-                MessageList.DataBind();
-            }
+            Person user = (Person)Session["user"];
+            List<Message> m = DataConnector.getMessages(user.PersonId);
+            Session["messages"] = m;
+            messages.DataSource = m;
+            messages.DataBind();    
+        }
+
+        protected void SelectMessage(object sender, GridViewCommandEventArgs e)
+        {
+            //tmp.Text = e.CommandSource.ToString();
+            int index = int.Parse(e.CommandArgument.ToString())+messages.PageIndex*messages.PageSize;
+            Message m = ((List<Message>)Session["messages"])[index];
+            Person user = (Person)Session["user"];
+            DataConnector.setRead(m, user);
+            message.Text = m.Text;
+
+            reloadMessages();
+
+        }
+
+        protected void indexChange(object sender, GridViewPageEventArgs e)
+        {
+            messages.PageIndex = e.NewPageIndex; 
+            messages.DataSource  = (List<Message>)Session["messages"];
+            messages.DataBind();
+
         }
     }
 

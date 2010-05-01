@@ -14,13 +14,13 @@ namespace KohtopaWeb {
     public partial class GetMessages {
         
         /// <summary>
-        /// MessageList control.
+        /// messages control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox MessageList;
+        protected global::System.Web.UI.WebControls.GridView messages;
         
         /// <summary>
         /// message control.
