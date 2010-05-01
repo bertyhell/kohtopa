@@ -6,6 +6,7 @@
         <siteMapNode title="Search" url="~/Search.aspx#" description="search"/>
         <siteMapNode title="My room" url="~/MyRoom.aspx" description="my room"/>
         <siteMapNode title="Calendar" url="~/Calendar.aspx" description="View tasks"/>
+        <siteMapNode title="Invoices" url="~/Invoices.aspx" description="View invoices"/>
         <siteMapNode title="Messages" description="messages">
           <siteMapNode title="Read messages" url="~/GetMessages.aspx" description="read messages"/>
           <siteMapNode title="Write messages" url="~/Messages.aspx" description="compose messages"/>

@@ -63,6 +63,11 @@
     <entry name="OutletCount">Number of outlets</entry>
     <entry name="WindowDirection">Main window direction</entry>
     <entry name="WindowArea">Window area</entry>
-    <entry name="Description">Description</entry>
+    <entry name="Description">Description</entry>	
+	<entry name="Gas">Gas</entry>
+	<entry name="Water">Water</entry>
+	<entry name="Electricity">Electricity</entry>
+	<entry name="InvalidValue">Please fill in a valid value.</entry>
+	<entry name="Submit">Submit</entry>
     <entry name="Welcome">Welcome on kohtopa, a website where students can find their room to study.</entry>
 </Language>
