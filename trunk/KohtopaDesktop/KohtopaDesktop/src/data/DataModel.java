@@ -123,6 +123,9 @@ public class DataModel {
 		return DataConnector.getInvoices(RenterId);
 	}
 
+    public Vector<Contract> getContracts(int ownerID) {
+        return DataConnector.getContracts(ownerID);
+    }
 	public Vector<Contract> getContracts() {
 		return DataConnector.getContracts();
 	}

@@ -19,7 +19,10 @@ public class ContractCellRenderer implements ListCellRenderer {
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         Contract contract = (Contract)list.getModel().getElementAt(index);
-        ContractListPanel pnlContract = new ContractListPanel(contract.getId(), null, contract.getRenter().getName());
+        ContractListPanel pnlContract = new ContractListPanel(contract.getId(), null,
+                                                              contract.getRenter().getFirstName(),
+                                                              contract.getRenter().getName(),                                                              
+                                                              contract.getStart());
         //TODO: alle juiste gegevens ophalen
         if (isSelected) {
             pnlContract.setBgColor(new Color(150, 150, 150));
