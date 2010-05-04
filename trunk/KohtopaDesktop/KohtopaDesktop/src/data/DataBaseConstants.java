@@ -100,8 +100,8 @@ public class DataBaseConstants {
 //	public static String pw = "admin";
 	public static String pw = "e=mc**2"; //ruben
 	public static String driver = "oracle.jdbc.OracleDriver";
-	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
-//	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+//	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
+	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
 			+ " FROM " + tablePersons
@@ -250,7 +250,7 @@ public class DataBaseConstants {
 	
     // create string, stuff to fill in: @
 	// contracts
-	public static String selectContracts = "SELECT " + contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
+	//public static String selectContracts = "SELECT " + contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
 
 	// create string, stuff to fill in: @
 	private static String buildString(String base, String... data) {
