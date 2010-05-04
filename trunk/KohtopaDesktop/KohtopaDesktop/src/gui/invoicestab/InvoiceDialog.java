@@ -1,11 +1,14 @@
 package gui.invoicestab;
 
+import Exceptions.ContractNotValidException;
 import Language.Language;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import data.entities.Invoice;
 import data.entities.InvoiceItem;
@@ -132,7 +135,9 @@ public class InvoiceDialog extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (checkInput()) {
+
 					DefaultTableModel tmItems = instance.getTmInvoices();
+					tmItems.setNumRows(0);//TODO make sure added items by homeowner are not deleted
 
 					//adding Invoice items
 
@@ -144,13 +149,12 @@ public class InvoiceDialog extends JFrame {
 								+ ((Integer) cbbYearTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem()) * 12
 								+ cbbMonthTo.getSelectedIndex() + 1;
 					}
-					for (InvoiceItem item : Main.getDataObject().getInvoiceItems(
-							instance.getRenterId(),
-							instance.isNewInvoice(),
-							rdbConsumption.isSelected() || rdbFinal.isSelected(),
-							rdbFinal.isSelected(),
-							months)) {
-						tmItems.addRow(item.toObject());
+					try {
+						for (InvoiceItem item : Main.getDataObject().getInvoiceItems(instance.getRenterId(), instance.isNewInvoice(), rdbConsumption.isSelected() || rdbFinal.isSelected(), rdbFinal.isSelected(), months)) {
+							tmItems.addRow(item.toObject());
+						}
+					} catch (ContractNotValidException ex) {
+						JOptionPane.showMessageDialog(Main.getInstance(), "Contract isn't valid anymore, please restart app \nif this problem precists, contact support", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 					}
 				}
 
@@ -280,13 +284,6 @@ public class InvoiceDialog extends JFrame {
 	}
 
 	private boolean checkInput() {
-//		System.out.println("months: " + (cbbMonthTo.getSelectedIndex() + 1));
-//		System.out.println("year from: " + (Integer) cbbYearFrom.getSelectedItem());
-//		System.out.println("year to: " + (Integer) cbbYearTo.getSelectedItem());
-//		System.out.println("month from: " + (cbbMonthFrom.getSelectedIndex() + 1));
-//		System.out.println("month to: " + (cbbMonthTo.getSelectedIndex() + 1));
-//		System.out.println("years equal: " + (((Integer) cbbYearTo.getSelectedItem()).equals((Integer) cbbYearFrom.getSelectedItem())));
-//	System.out.println("month smaller or equal: " + ((cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)));
 		if (((Integer) cbbYearFrom.getSelectedItem()).intValue() < ((Integer) cbbYearTo.getSelectedItem()).intValue()
 				|| ((Integer) cbbYearTo.getSelectedItem()).equals((Integer) cbbYearFrom.getSelectedItem())
 				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)) {

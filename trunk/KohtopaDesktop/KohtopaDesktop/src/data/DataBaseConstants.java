@@ -12,6 +12,7 @@ public class DataBaseConstants {
 	public static String tableContracts = "contracts";
 	public static String tableInvoices = "invoices";
 	public static String tableConsumption = "consumption";
+	public static String tableConstants = "constants";
 	public static String tableMessages = "messages";
 	public static String tablePictures = "pictures";
 	public static String tableTasks = "tasks";
@@ -49,7 +50,7 @@ public class DataBaseConstants {
 	public static String cable = "cable";
 	public static String floor = "floor";
 	public static String outletCount = "outlet_count";
-    public static String rented = "rented";
+	public static String rented = "rented";
 	public static String rentableDescription = "description";
 	//furniture column labels
 	public static String furnitureID = "furnitureID";
@@ -62,6 +63,10 @@ public class DataBaseConstants {
 	public static String water = "water";
 	public static String electricity = "electricity";
 	public static String dataConsumption = "data_consumption";
+	//constants column labels
+	public static String gasPrice = "gasprice";
+	public static String waterPrice = "waterprice";
+	public static String electricityPrice = "electricityprice";
 	//messages column labels
 	public static String senderID = "senderid";
 	public static String recipientID = "recipientid";
@@ -70,14 +75,14 @@ public class DataBaseConstants {
 	public static String subject = "subject";
 	public static String read = "message_read";
 	//contracts column labels
-    public static String contracts = "contracts";
+	public static String contracts = "contracts";
 	public static String contractID = "contractid";
 	public static String renterID = "renterid";
-    public static String ownerID = "ownerid";
+	public static String ownerID = "ownerid";
 	public static String contract_start = "contract_start";
 	public static String contract_end = "contract_end";
-    public static String monthly_cost = "monthly_cost";
-    public static String guarantee = "guarantee";
+	public static String monthly_cost = "monthly_cost";
+	public static String guarantee = "guarantee";
 	//tasks column labels
 	public static String taskID = "taskID";
 	public static String description = "description";
@@ -119,6 +124,24 @@ public class DataBaseConstants {
 			+ " FROM " + tablePersons + " p"
 			+ " JOIN " + tableAddresses + " a ON a." + addressID + " = p." + addressID
 			+ " WHERE " + personID + " = ?";
+	public static String selectRentPrice = "SELECT "
+			+ price
+			+ " FROM " + tableContracts
+			+ " WHERE " + renterID + " = ? and sysdate between " + contract_start + " and " + contract_end;
+	public static String selectRentPriceFinal = "WITH x AS( SELECT "
+			+ price + ", rank() over(order by " + contract_end + " asc) rank"
+			+ " FROM " + tableContracts
+			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
+			+ " SELECT " + price
+			+ " FROM x WHERE rank=1";
+	public static String selectUtilities = "SELECT "
+			+ "u." + gasPrice
+			+ ",u." + waterPrice
+			+ ",u." + electricityPrice
+			+ " FROM " + tableContracts + " c"
+			+ " JOIN " + tableRentables + " r ON r." + rentableID + " = c." + rentableID
+			+ " JOIN " + tableConstants + " u ON u." + buildingID + " = r." + buildingID
+			+ " WHERE c." + renterID + " = ? and sysdate between c." + contract_start + " and c." + contract_end;
 	public static String selectBuildingPreviews = "SELECT " + buildingID + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city + ","
 			+ latitude + "," + longitude + "," + country
@@ -214,8 +237,8 @@ public class DataBaseConstants {
 			+ "where @ = ? and @ = ? and @ = ?",
 			tableTasks, rentableID, description, start_time, end_time, repeats_every,
 			rentableID, description, start_time);
-    // contracts
-    public static String selectContracts = "SELECT " +  contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
+	// contracts
+	public static String selectContracts = "SELECT " + contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
 
 	// create string, stuff to fill in: @
 	private static String buildString(String base, String... data) {

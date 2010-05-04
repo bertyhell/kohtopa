@@ -1,5 +1,6 @@
 package data;
 
+import Exceptions.ContractNotValidException;
 import Exceptions.PersonNotFoundException;
 import Language.Language;
 import data.entities.Building;
@@ -47,14 +48,6 @@ public class DataConnector {
 	 */
 	public static DataConnector getInstance() {
 		return instance;
-	}
-
-	static Vector<Invoice> getInvoices(int RenterId) {
-		throw new UnsupportedOperationException("Not yet implemented");
-	}
-
-	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) {
-		
 	}
 
 	/**
@@ -1032,11 +1025,81 @@ public class DataConnector {
 	}
 
 	/**
-	 * Creates gets rentprice for renter in euro/month
+	 * gets rentprice for renter in euro/month
 	 * @throws SQLException thrown if select fails
 	 */
-	public static double getRentPrice(int renterId) {
-		return 0;
+	public static double getRentPrice(int renterId) throws SQLException, ContractNotValidException {
+		double price = 0;
+		Connection conn = geefVerbinding();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
+			ps.setInt(1, renterId);
+			System.out.println("renter: " + renterId);
+			System.out.println("command: " + DataBaseConstants.selectRentPrice);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				//existing active contract
+				price = rs.getInt(DataBaseConstants.price);
+			} else {
+				//no active contract, final contract?
+				ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
+				ps.setInt(1, renterId);
+				System.out.println("renter: " + renterId);
+				System.out.println("command: " + DataBaseConstants.selectRentPriceFinal);
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					price = rs.getInt(DataBaseConstants.price);
+				} else {
+					throw new ContractNotValidException(Language.getString("errContractNotValid"));
+				}
+			}
+		} finally {
+			conn.close();
+		}
+		return price;
+	}
+
+	static Vector<Invoice> getInvoices(int RenterId) {
+		throw new UnsupportedOperationException("Not yet implemented");
+
+
+	}
+
+	/**
+	 * gets utilities prices for renter in euro, eg: gas, electricity, water usage
+	 * @throws SQLException thrown if select fails
+	 */
+	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) throws SQLException {
+		try {
+			Connection conn = geefVerbinding();
+
+
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectUtilities);
+				ps.setInt(1, renterId);
+				ResultSet rs = ps.executeQuery();
+
+
+				if (rs.next()) {
+					items.add(new InvoiceItem(Language.getString("invoiceGas"), rs.getDouble(DataBaseConstants.gasPrice)));
+					items.add(new InvoiceItem(Language.getString("invoiceWater"), rs.getDouble(DataBaseConstants.waterPrice)));
+					items.add(new InvoiceItem(Language.getString("invoiceElectricity"), rs.getDouble(DataBaseConstants.electricityPrice)));
+
+
+				}
+			} finally {
+				conn.close();
+
+
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+
+
+			throw new SQLException("failed to get utilities: " + ex);
+
+
+		}
 	}
 
 	/**
@@ -1046,18 +1109,25 @@ public class DataConnector {
 	public static void createViewsForAllOwners() throws SQLException {
 		try {
 			Connection conn = geefVerbinding();
+
+
 			try {
 				//TODO get images for building
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectOwners);
 				ResultSet rs = ps.executeQuery();
+
+
 				while (rs.next()) {
 				}
 
 			} finally {
 				conn.close();
+
+
 			}
 		} catch (Exception ex) {
 			throw new SQLException("error in makeViews: " + ex);
+
 		}
 
 	}
