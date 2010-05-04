@@ -8,9 +8,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 import data.entities.Invoice;
+import data.entities.InvoiceItem;
+import gui.Main;
+import java.awt.Color;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import javax.swing.Box;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -20,6 +25,7 @@ public class InvoiceDialog extends JFrame {
 
 	private InvoiceDialog instance;
 	private Invoice invoice;
+	private boolean newInvoice;
 	private JButton btnConfirm;
 	private JComboBox cbbMonthFrom;
 	private JComboBox cbbYearFrom;
@@ -27,10 +33,14 @@ public class InvoiceDialog extends JFrame {
 	private JComboBox cbbYearTo;
 	private DefaultTableModel tmInvoices;
 	private JTable tableInvoices;
+	private JRadioButton rdbBasic;
+	private JRadioButton rdbConsumption;
+	private JRadioButton rdbFinal;
 
 	public InvoiceDialog(int rentInvoiceId, boolean newInvoice) {
 		invoice = new Invoice(rentInvoiceId, newInvoice);
 		instance = this;
+		this.newInvoice = newInvoice;
 		setTitle(Language.getString(newInvoice ? "invoiceAdd" : "invoiceEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/invoice_64.png")).getImage());
 		this.setPreferredSize(new Dimension(600, 750));
@@ -49,10 +59,14 @@ public class InvoiceDialog extends JFrame {
 		pnlHeader.add(new PersonPanel(invoice.getOwner(), Language.getString("homeOwner")), BorderLayout.LINE_START);
 		pnlHeader.add(new PersonPanel(invoice.getRenter(), Language.getString("renter")), BorderLayout.LINE_END);
 
-		//dates
+		//options
+		Box boxOptions = Box.createVerticalBox();
+		boxOptions.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+		pnlHeader.add(boxOptions, BorderLayout.PAGE_END);
+
+		//invoice interval in months
 		JPanel pnlDates = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		pnlDates.setBorder(BorderFactory.createEmptyBorder(20, 0,20, 0));
-		pnlHeader.add(pnlDates, BorderLayout.PAGE_END);
+		boxOptions.add(pnlDates);
 
 		pnlDates.add(new JLabel(Language.getString("invoiceInterval")));
 
@@ -79,8 +93,69 @@ public class InvoiceDialog extends JFrame {
 		cbbYearTo.setSelectedIndex(0);
 		pnlDates.add(cbbYearTo);
 
+		//type of invoice
+		Box boxTypes = Box.createHorizontalBox();
+		boxOptions.add(boxTypes);
 
+		ButtonGroup invoiceTypes = new ButtonGroup();
 
+		rdbBasic = new JRadioButton(Language.getString("basic"));
+		rdbBasic.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+		rdbBasic.setToolTipText(Language.getString("hlpBasic"));
+		rdbBasic.setSelected(true); //TODO store last selected value
+		boxTypes.add(rdbBasic);
+		rdbConsumption = new JRadioButton(Language.getString("utilities"));
+		rdbConsumption.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+		rdbConsumption.setToolTipText(Language.getString("hlpUtilities"));
+		boxTypes.add(rdbConsumption);
+		rdbFinal = new JRadioButton(Language.getString("final"));
+		rdbFinal.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+		rdbFinal.setToolTipText(Language.getString("hlpFinal"));
+		boxTypes.add(rdbFinal);
+		ImageIcon img = new ImageIcon(getClass().getResource("/images/help_23.png"));
+		JLabel lblHelpTypes = new JLabel(img);
+		lblHelpTypes.setToolTipText(Language.getString("hlpIcon"));
+		boxTypes.add(lblHelpTypes);
+		//TODO overleg: radiobuttons of check box buttons?
+		//TODO add option to terminate contract at end date? > overleg met team
+
+		invoiceTypes.add(rdbBasic);
+		invoiceTypes.add(rdbConsumption);
+		invoiceTypes.add(rdbFinal);
+
+		boxTypes.add(Box.createHorizontalGlue());
+
+		JButton btnUpdateInvoiceItems = new JButton(Language.getString("updateInvoiceItems"), new ImageIcon(getClass().getResource("/images/refresh_23.png")));
+		boxTypes.add(btnUpdateInvoiceItems);
+		btnUpdateInvoiceItems.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (checkInput()) {
+					DefaultTableModel tmItems = instance.getTmInvoices();
+
+					//adding Invoice items
+
+					int months = 1;
+					if (cbbYearFrom.getSelectedItem() == cbbYearTo.getSelectedItem()) {
+						months = (Integer) cbbMonthTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem() + 1;
+					} else {
+						months = 12 - (Integer) cbbMonthFrom.getSelectedItem()
+								+ ((Integer) cbbYearTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem()) * 12
+								+ (Integer) cbbMonthTo.getSelectedItem();
+					}
+					for (InvoiceItem item : Main.getDataObject().getInvoiceItems(
+							instance.getRenterId(),
+							instance.isNewInvoice(),
+							rdbConsumption.isSelected() || rdbFinal.isSelected(),
+							rdbFinal.isSelected(),
+							months)) {
+						tmItems.addRow(item.toObject());
+					}
+				}
+
+			}
+		});
 
 		//invoice details
 		JScrollPane scrollerItems = new JScrollPane();
@@ -119,10 +194,6 @@ public class InvoiceDialog extends JFrame {
 			}
 		});
 		tableInvoices.setAutoCreateRowSorter(true);
-
-
-		//adding Invoice items
-
 
 		//buttons
 		Box boxButtons = Box.createHorizontalBox();
@@ -206,6 +277,37 @@ public class InvoiceDialog extends JFrame {
 
 			btnConfirm.setText(Language.getString("update"));
 		}
+	}
+
+	private boolean checkInput() {
+		if ((Integer) cbbYearFrom.getSelectedItem() < (Integer) cbbYearTo.getSelectedItem()
+				|| (Integer) cbbYearTo.getSelectedItem() == (Integer) cbbYearFrom.getSelectedItem()
+				&& (Integer) cbbMonthFrom.getSelectedItem() <= (Integer) cbbMonthTo.getSelectedItem()) {
+			cbbMonthFrom.setBackground(Color.white);
+			cbbMonthTo.setBackground(Color.white);
+			cbbYearFrom.setBackground(Color.white);
+			cbbYearTo.setBackground(Color.white);
+			return true;
+		} else {
+			cbbMonthFrom.setBackground(Color.pink);
+			cbbMonthTo.setBackground(Color.pink);
+			cbbYearFrom.setBackground(Color.pink);
+			cbbYearTo.setBackground(Color.pink);
+			JOptionPane.showMessageDialog(instance, Language.getString("errInvoiceDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
+
+	public int getRenterId() {
+		return invoice.getRenter().getId();
+	}
+
+	public boolean isNewInvoice() {
+		return newInvoice;
+	}
+
+	public DefaultTableModel getTmInvoices() {
+		return tmInvoices;
 	}
 }
 

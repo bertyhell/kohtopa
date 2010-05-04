@@ -8,6 +8,7 @@ import gui.Main;
 import data.entities.Building;
 import data.entities.Contract;
 import data.entities.Invoice;
+import data.entities.InvoiceItem;
 import data.entities.Person;
 import data.entities.Picture;
 import java.awt.Component;
@@ -266,5 +267,16 @@ public class DataModel {
 
 	public ArrayList<Integer> getFloors() {
 		return lmRentable.getFloors();
+	}
+
+	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) {
+		ArrayList<InvoiceItem> items = new ArrayList<InvoiceItem>();
+		items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPrice(renterId)));
+		//TODO add more items
+		if(utilities){
+			
+		}
+
+		return items;
 	}
 }

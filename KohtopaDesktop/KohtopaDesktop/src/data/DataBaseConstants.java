@@ -10,6 +10,7 @@ public class DataBaseConstants {
 	public static String tableRentables = "rentables";
 	public static String tableFurniture = "furniture";
 	public static String tableContracts = "contracts";
+	public static String tableInvoices = "invoices";
 	public static String tableConsumption = "consumption";
 	public static String tableMessages = "messages";
 	public static String tablePictures = "pictures";
