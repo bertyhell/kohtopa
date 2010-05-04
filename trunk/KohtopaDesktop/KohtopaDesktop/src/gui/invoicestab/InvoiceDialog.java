@@ -2,23 +2,22 @@ package gui.invoicestab;
 
 import Exceptions.ContractNotValidException;
 import Language.Language;
+import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import data.entities.Invoice;
 import data.entities.InvoiceItem;
 import gui.Main;
-import java.awt.Color;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.Box;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -39,6 +38,8 @@ public class InvoiceDialog extends JFrame {
 	private JRadioButton rdbBasic;
 	private JRadioButton rdbConsumption;
 	private JRadioButton rdbFinal;
+	private JTextField txtTotal;
+	private JDateChooser dch;
 
 	public InvoiceDialog(int rentInvoiceId, boolean newInvoice) {
 		invoice = new Invoice(rentInvoiceId, newInvoice);
@@ -141,11 +142,11 @@ public class InvoiceDialog extends JFrame {
 
 					//adding Invoice items
 
-					int months = 1;
-					if (cbbYearFrom.getSelectedItem() == cbbYearTo.getSelectedItem()) {
-						months = cbbMonthTo.getSelectedIndex() + 1 - (Integer) cbbYearFrom.getSelectedItem() + 1;
+					int months = 0;
+					if (((Integer) cbbYearFrom.getSelectedItem()).equals(cbbYearTo.getSelectedItem())) {
+						months = cbbMonthTo.getSelectedIndex() - cbbMonthFrom.getSelectedIndex() + 1;
 					} else {
-						months = 12 - cbbMonthFrom.getSelectedIndex() + 1
+						months = 12 - cbbMonthFrom.getSelectedIndex()
 								+ ((Integer) cbbYearTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem()) * 12
 								+ cbbMonthTo.getSelectedIndex() + 1;
 					}
@@ -191,13 +192,36 @@ public class InvoiceDialog extends JFrame {
 		tableInvoices.getTableHeader().setReorderingAllowed(false);
 		tableInvoices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		tableInvoices.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		tableInvoices.addMouseListener(new MouseAdapter() {
+		tableInvoices.setAutoCreateRowSorter(true);
+		tmInvoices.addTableModelListener(new TableModelListener() {
 
-			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void tableChanged(TableModelEvent e) {
+
+				double total = 0;
+				for (int i = 0; i < tmInvoices.getRowCount(); i++) {
+					total += Double.parseDouble(tmInvoices.getValueAt(i, 1).toString());
+				}
+				txtTotal.setText(total + " €");
 			}
 		});
-		tableInvoices.setAutoCreateRowSorter(true);
+
+
+		//total price:
+		Box pnlTotal = Box.createHorizontalBox();
+		pnlTotal.add(new JLabel(Language.getString("sendOn") + ": "));
+		dch = new JDateChooser(GregorianCalendar.getInstance().getTime());
+		dch.setMaximumSize(new Dimension(130, 30));
+		dch.setMinSelectableDate(GregorianCalendar.getInstance().getTime());
+		dch.setPreferredSize(new Dimension(130, 30));
+		pnlTotal.add(dch);
+		pnlTotal.add(Box.createHorizontalGlue());
+		pnlTotal.add(new JLabel(Language.getString("total")));
+		txtTotal = new JTextField();
+		txtTotal.setEditable(false);
+		txtTotal.setPreferredSize(new Dimension(tableInvoices.getColumnModel().getColumn(1).getWidth(), 30));
+		txtTotal.setMaximumSize(new Dimension(100, 30));
+		pnlTotal.add(txtTotal);
+		pnlInfo.add(pnlTotal, BorderLayout.PAGE_END);
 
 		//buttons
 		Box boxButtons = Box.createHorizontalBox();
@@ -249,6 +273,9 @@ public class InvoiceDialog extends JFrame {
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
+					//add new invoice
+					//generate xml file:
+					generateXMLString();
 				}
 			});
 		} else {
@@ -269,6 +296,10 @@ public class InvoiceDialog extends JFrame {
 		fillInfo(newInvoice);
 		pack();
 		setLocationRelativeTo(null);
+	}
+
+	private String generateXMLString() {
+		return "";
 	}
 
 	public void fillInfo(boolean isNew) {

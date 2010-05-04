@@ -121,9 +121,10 @@ public class DataModel {
 		return DataConnector.getInvoices(RenterId);
 	}
 
-    public Vector<Contract> getContracts(int ownerID) {
-        return DataConnector.getContracts(ownerID);
-    }
+	public Vector<Contract> getContracts(int ownerID) {
+		return DataConnector.getContracts(ownerID);
+	}
+
 	public Vector<Contract> getContracts() {
 		return DataConnector.getContracts(ownerId);
 	}
@@ -276,23 +277,31 @@ public class DataModel {
 	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
 		ArrayList<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
+		//monthly cost
 		try {
-			items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPrice(renterId)));
+			items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPriceOrGuarantee(renterId, false) * months));
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "error while getting month price: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
+		//utilities cost
 		if (utilities) {
-			System.out.println("getting utilities");
 			try {
 				DataConnector.getUtilitiesInvoiceItems(renterId, items);
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(Main.getInstance(), "error while getting utilities: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			}
 		}
-		//TODO add more items
 
-
+		//guarantee
+		if (guarantee) {
+			System.out.println("getting garantee");
+			try {
+				items.add(new InvoiceItem(Language.getString("invoiceGuarantee"), DataConnector.getRentPriceOrGuarantee(renterId, true)));
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(Main.getInstance(), "error while getting guarantee: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			}
+		}
 		return items;
 	}
 }
