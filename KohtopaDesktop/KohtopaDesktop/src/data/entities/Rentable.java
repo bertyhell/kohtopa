@@ -7,7 +7,7 @@ public class Rentable extends AbstractPlace {
 
 	private int type;
 	private int area;
-	private String windowsDirection;
+	private String windowDirection;
 	private int windowArea;
 	private boolean internet;
 	private boolean cable;
@@ -18,10 +18,10 @@ public class Rentable extends AbstractPlace {
 	private String description;
 	private ImageIcon previewImage;
 
-	public Rentable(int id, ImageIcon previewImage, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
+	public Rentable(int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
 		this(id, previewImage, type, floor, description);
 		this.area = area;
-		this.windowsDirection = windowsDirection;
+		this.windowDirection = windowDirection;
 		this.windowArea = windowArea;
 		this.internet = internet;
 		this.cable = cable;
@@ -79,7 +79,7 @@ public class Rentable extends AbstractPlace {
 	}
 
 	public String getWindowsDirection() {
-		return windowsDirection;
+		return windowDirection;
 	}
 
 	public String getDescription() {

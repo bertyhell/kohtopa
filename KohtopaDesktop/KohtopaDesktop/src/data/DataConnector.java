@@ -695,15 +695,32 @@ public class DataConnector {
 		return renters;
 	}
 
+    //TODO: enkel selecteren van contracten van de eigenaar, komt in orde met views ?
 	public static Vector<Contract> getContracts() {
+    //TODO: een enkele query?
 		//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
+    public static Vector<Contract> getContracts(int ownerID) {
+        //int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
 		Vector<Contract> contracts = new Vector<Contract>();
 		try {
 			Connection conn = geefVerbinding();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContracts);
+                ps.setInt(1, ownerID);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
+                    Person renter = new Person(
+							rs.getInt(DataBaseConstants.renterID),
+							rs.getString(DataBaseConstants.street),
+							rs.getString(DataBaseConstants.streetNumber),
+							rs.getString(DataBaseConstants.zipCode),
+							rs.getString(DataBaseConstants.city),
+							rs.getString(DataBaseConstants.country),
+							rs.getString(DataBaseConstants.personName),
+							rs.getString(DataBaseConstants.firstName),
+							rs.getString(DataBaseConstants.email),
+							rs.getString(DataBaseConstants.telephone),
+							rs.getString(DataBaseConstants.cellphone));
 					//contract data
 					int contractID = rs.getInt(DataBaseConstants.contractID);
 					int rentableID = rs.getInt(DataBaseConstants.rentableID);
@@ -714,9 +731,31 @@ public class DataConnector {
 					float monthly_cost = rs.getFloat(DataBaseConstants.monthly_cost);
 					float guarantee = rs.getFloat(DataBaseConstants.guarantee);
 
+                    Rentable rentable = new Rentable(
+							rs.getInt(DataBaseConstants.rentableID),
+							null, //TODO add preview image for rooms
+							rs.getInt(DataBaseConstants.rentableType),
+							rs.getInt(DataBaseConstants.rentableArea),
+							rs.getString(DataBaseConstants.windowDirection),
+							rs.getInt(DataBaseConstants.windowArea),
+							rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
+							rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
+							rs.getInt(DataBaseConstants.outletCount),
+							rs.getInt(DataBaseConstants.floor),
+                            rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
+							rs.getFloat(DataBaseConstants.price),
+							rs.getString(DataBaseConstants.rentableDescription));
 					//we use renterID to get renter data
 					Person renter = getPerson(renterID);
 
+                    Contract contract = new Contract(rs.getInt(DataBaseConstants.contractID),
+                                                     rentable, renter,
+                                                     rs.getTimestamp(DataBaseConstants.contract_start),
+                                                     rs.getTimestamp(DataBaseConstants.contract_end),
+                                                     rs.getFloat(DataBaseConstants.price),
+                                                     rs.getFloat(DataBaseConstants.monthly_cost),
+                                                     rs.getFloat(DataBaseConstants.guarantee));
+                    contracts.add(contract);
 					//we use rentableID to get rentable data
 					Rentable rentable = getRentable(rentableID);
 
@@ -727,10 +766,31 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving renters:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
 		return contracts;
+	}
+
+    /**
+	 * Removes a contract from the database
+	 * @param contract the contract to remove
+	 */
+	public static void removeContract(Contract contract) {
+		try {
+			Connection conn = geefVerbinding();
+
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeContract);
+				ps.setInt(1, contract.getId());
+				ps.execute();
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			System.out.println("Error removing contract: " + ex.getMessage());
+		}
 	}
 
 	static Person getPerson(int id) {
@@ -946,7 +1006,7 @@ public class DataConnector {
 							rs.getInt(DataBaseConstants.rentableType),
 							rs.getInt(DataBaseConstants.rentableArea),
 							rs.getString(DataBaseConstants.windowDirection),
-							rs.getInt(DataBaseConstants.windowsArea),
+							rs.getInt(DataBaseConstants.windowArea),
 							rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
 							rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
 							rs.getInt(DataBaseConstants.outletCount),
@@ -959,7 +1019,7 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			throw new SQLException("error in getRentable: " + ex);
+			throw new SQLException("error in getRentable: " + ex.getMessage());
 		}
 		return rentable;
 	}
