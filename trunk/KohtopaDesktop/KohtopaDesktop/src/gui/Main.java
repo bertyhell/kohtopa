@@ -3,6 +3,7 @@ package gui;
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
 //TODO logging
+//TODO add titles to all lists
 import Language.Language;
 import gui.messagetab.MessagePane;
 import gui.actions.*;

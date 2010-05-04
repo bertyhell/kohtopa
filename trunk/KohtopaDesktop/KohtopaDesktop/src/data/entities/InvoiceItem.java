@@ -21,4 +21,8 @@ public class InvoiceItem {
 	public double getPrijs() {
 		return prijs;
 	}
+
+	public Object[] toObject(){
+		return new Object[]{description, new Double(prijs)};
+	}
 }
