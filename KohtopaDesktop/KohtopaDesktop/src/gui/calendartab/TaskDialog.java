@@ -5,7 +5,6 @@
 package gui.calendartab;
 
 import Language.Language;
-import Resources.RelativeLayout;
 import data.entities.Task;
 import gui.Main;
 import java.awt.BorderLayout;
@@ -15,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import javax.swing.AbstractListModel;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,7 +32,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
 
     private static JList tasks;
     private static CustomListModel listModel;
-    private JPanel buttons;
+    private Box buttons;
     private static CalendarModel model;
     private static TaskDialog instance = new TaskDialog(Main.getInstance());
     private static ArrayList<Task> taskList;
@@ -128,26 +128,16 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
         content.add(new JScrollPane(tasks));
 
 
-        buttons = new JPanel();
-        RelativeLayout rl = new RelativeLayout(RelativeLayout.X_AXIS);
-        rl.setAlignment(RelativeLayout.CENTER);
-
-        buttons.setLayout(rl);
-
+        buttons = Box.createHorizontalBox();
         buttons.add(getButton(Main.getAction("taskAdd"), "taskAdd"));
         buttons.add(getButton(Main.getAction("taskEdit"), "taskEdit"));
         buttons.add(getButton(Main.getAction("taskRemove"), "taskRemove"));
 
-
-
-
-        //Layout.buildConstraints(gbc, 1, 0, 1, 1, 20, 30, GridBagConstraints.NONE, GridBagConstraints.CENTER);
         content.add(buttons, BorderLayout.NORTH);
 
 
 
         this.setContentPane(content);
-        //this.setLocationByPlatform(true);
         this.pack();
         this.setLocationRelativeTo(owner);
     }

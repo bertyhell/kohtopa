@@ -125,11 +125,11 @@ public class DataBaseConstants {
 			+ " JOIN " + tableAddresses + " a ON a." + addressID + " = p." + addressID
 			+ " WHERE " + personID + " = ?";
 	public static String selectRentPrice = "SELECT "
-			+ price
+			+ price + "," + guarantee
 			+ " FROM " + tableContracts
 			+ " WHERE " + renterID + " = ? and sysdate between " + contract_start + " and " + contract_end;
 	public static String selectRentPriceFinal = "WITH x AS( SELECT "
-			+ price + ", rank() over(order by " + contract_end + " asc) rank"
+			+ price + "," + guarantee + ", rank() over(order by " + contract_end + " asc) rank"
 			+ " FROM " + tableContracts
 			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
 			+ " SELECT " + price

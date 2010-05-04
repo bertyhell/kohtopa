@@ -4,8 +4,8 @@
  */
 package gui.calendartab;
 
-import Resources.RelativeLayout;
 import data.entities.Task;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -46,9 +47,9 @@ public class CalendarSquare extends JPanel implements MouseListener {
 
         Calendar c = Calendar.getInstance();
         c.setTime(day);
-        RelativeLayout rl = new RelativeLayout(RelativeLayout.Y_AXIS);
-        rl.setFill(true);
-        this.setLayout(rl);
+        this.setLayout(new BorderLayout());
+		Box boxVertical = Box.createVerticalBox();
+		this.add(boxVertical,BorderLayout.CENTER);
 
         lblDay = new JLabel();
         lblDay.setForeground(foreColor);
@@ -71,9 +72,9 @@ public class CalendarSquare extends JPanel implements MouseListener {
             backColor = Color.LIGHT_GRAY;
         }
 
-        this.add(lblDay);
+        boxVertical.add(lblDay);
 
-        this.add(lblTasks);
+        boxVertical.add(lblTasks);
 
         setOpaque(true);
         setBackground(backColor);

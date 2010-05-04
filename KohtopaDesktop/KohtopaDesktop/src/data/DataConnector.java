@@ -695,21 +695,21 @@ public class DataConnector {
 		return renters;
 	}
 
-    //TODO: enkel selecteren van contracten van de eigenaar, komt in orde met views ?
+	//TODO: enkel selecteren van contracten van de eigenaar, komt in orde met views ?
 	//public static Vector<Contract> getContracts() {
-    //TODO: een enkele query?
+	//TODO: een enkele query?
+	//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
+	public static Vector<Contract> getContracts(int ownerID) {
 		//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
-    public static Vector<Contract> getContracts(int ownerID) {
-        //int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
 		Vector<Contract> contracts = new Vector<Contract>();
 		try {
 			Connection conn = geefVerbinding();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContracts);
-                ps.setInt(1, ownerID);
+				ps.setInt(1, ownerID);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
-                    Person renter = new Person(
+					Person renter = new Person(
 							rs.getInt(DataBaseConstants.renterID),
 							rs.getString(DataBaseConstants.street),
 							rs.getString(DataBaseConstants.streetNumber),
@@ -731,7 +731,7 @@ public class DataConnector {
 					float monthly_cost = rs.getFloat(DataBaseConstants.monthly_cost);
 					float guarantee = rs.getFloat(DataBaseConstants.guarantee);
 
-                    Rentable rentable = new Rentable(
+					Rentable rentable = new Rentable(
 							rs.getInt(DataBaseConstants.rentableID),
 							null, //TODO add preview image for rooms
 							rs.getInt(DataBaseConstants.rentableType),
@@ -742,7 +742,7 @@ public class DataConnector {
 							rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
 							rs.getInt(DataBaseConstants.outletCount),
 							rs.getInt(DataBaseConstants.floor),
-                            rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
+							rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
 							rs.getFloat(DataBaseConstants.price),
 							rs.getString(DataBaseConstants.rentableDescription));
 					//we use renterID to get renter data
@@ -766,14 +766,14 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-            ex.printStackTrace();
+			ex.printStackTrace();
 			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
 		return contracts;
 	}
 
-    /**
+	/**
 	 * Removes a contract from the database
 	 * @param contract the contract to remove
 	 */
@@ -1088,8 +1088,8 @@ public class DataConnector {
 	 * gets rentprice for renter in euro/month
 	 * @throws SQLException thrown if select fails
 	 */
-	public static double getRentPrice(int renterId) throws SQLException, ContractNotValidException {
-		double price = 0;
+	public static double getRentPriceOrGuarantee(int renterId, boolean guarantee) throws SQLException, ContractNotValidException {
+		double value = 0;
 		Connection conn = geefVerbinding();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
@@ -1099,7 +1099,11 @@ public class DataConnector {
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				//existing active contract
-				price = rs.getInt(DataBaseConstants.price);
+				if (guarantee) {
+					value = rs.getInt(DataBaseConstants.guarantee);
+				} else {
+					value = rs.getInt(DataBaseConstants.price);
+				}
 			} else {
 				//no active contract, final contract?
 				ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
@@ -1108,7 +1112,11 @@ public class DataConnector {
 				System.out.println("command: " + DataBaseConstants.selectRentPriceFinal);
 				rs = ps.executeQuery();
 				if (rs.next()) {
-					price = rs.getInt(DataBaseConstants.price);
+					if (guarantee) {
+						value = rs.getInt(DataBaseConstants.guarantee);
+					} else {
+						value = rs.getInt(DataBaseConstants.price);
+					}
 				} else {
 					throw new ContractNotValidException(Language.getString("errContractNotValid"));
 				}
@@ -1116,7 +1124,7 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-		return price;
+		return value;
 	}
 
 	static Vector<Invoice> getInvoices(int RenterId) {
@@ -1132,33 +1140,21 @@ public class DataConnector {
 	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) throws SQLException {
 		try {
 			Connection conn = geefVerbinding();
-
-
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectUtilities);
 				ps.setInt(1, renterId);
 				ResultSet rs = ps.executeQuery();
-
-
 				if (rs.next()) {
 					items.add(new InvoiceItem(Language.getString("invoiceGas"), rs.getDouble(DataBaseConstants.gasPrice)));
 					items.add(new InvoiceItem(Language.getString("invoiceWater"), rs.getDouble(DataBaseConstants.waterPrice)));
 					items.add(new InvoiceItem(Language.getString("invoiceElectricity"), rs.getDouble(DataBaseConstants.electricityPrice)));
-
-
 				}
 			} finally {
 				conn.close();
-
-
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-
-
 			throw new SQLException("failed to get utilities: " + ex);
-
-
 		}
 	}
 
