@@ -4,16 +4,22 @@ use LWP::Simple;
 
 # zet debug op 1 om te debuggen
 my $DEBUG = 1;
-# verbose zal code van sites tonen
+
+# verbose zal code van sites tonen, niet aanzetten, tenzij je
+# vermoed dat er probleem is met site
 my $VERB = 0;
 
-# voornamen ophalen
+#######################
+## voornamen ophalen ##
+#######################
 my $site = "http://www.babygrafix.be/voornamen-kindernamen/";
 my $page = "babynamen.html";
 my $search = "[A-Z]_babynamen.html";
 
+# content ophalen
 my $content = get("$site$page");
 
+# als er content gevonden is: parse
 if(defined $content)
 {
    if($VERB) { print $content; }
@@ -40,14 +46,17 @@ else
    die "Error: website niet gevonden!";
 }
 
-
-# achternamen ophalen
+#########################
+## achternamen ophalen ##
+#########################
 my $site = "http://www.vroomen.be/linders/surnames-oneletter.php?firstchar=";
-my $search = "[A-Z]_babynamen.html";
 
+
+# alle subsites overlopen en parsen
 for(A..Z) {
    my $content = get("$site$_");
    
+   # als er content gevonden is: parse
    if(defined $content) {
    
       if($DEBUG) { print "Visiting $site$_\n"; }
@@ -61,45 +70,18 @@ for(A..Z) {
    
 }
 
+# schrijf output naar bestand
 (undef,$min,$hour,undef,undef,$year,undef,$yday,undef) = localtime(time);
 open (BESTAND, ">namen$hour$min$yday$year");
 
+#voornamen wegschrijven
 print BESTAND "::VOORNAMEN::\n";
 for (@voornamen) {
    print BESTAND "$_\n";
 }
 
-$vsize = @voornamen;
-
+#achternamen wegschrijven
 print BESTAND "::ACHTERNAMEN::\n";
 for (@namen) {
    print BESTAND "$_\n";
-}
-
-my $id = 1;
-my $insert = "INSERT into persons (personid,address,role,name,first_name,email,telephone,cellphone) \nVALUES (";
-
-@emailextensies = ("@hotmail.com", "@gmail.com", "@yahoo.com", "@telenet.be", "@skynet.be", "@scarlet.be");
-
-open output, "> namen.sql";
-print output $insert;
-
-for $naam (@namen) {
-   for(1..int(rand(10))) {
-      $voornaam = $voornamen[int(rand($vsize))];
-      $adresid = int(rand(28000));
-      $role = "user";
-      
-      $tel = 0;
-      for(1..8) {
-	$tel .= int(rand(9));
-      }
-      $gsm = 0;
-      for(1..9) {
-         $gsm .= int(rand(9));
-      }
-      
-      
-      print output $insert."$id,$adresid,$role,$naam,$voornaam,$voornaam.$naam".$emailextensies[int(rand(@emailextensies))].",$tel,$gsm);\n";
-   }
 }
