@@ -17,8 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import gui.SplashConnect;
@@ -127,7 +125,7 @@ public class DataModel {
         return DataConnector.getContracts(ownerID);
     }
 	public Vector<Contract> getContracts() {
-		return DataConnector.getContracts();
+		return DataConnector.getContracts(ownerId);
 	}
 
 	public Person getPerson(int id) {

@@ -696,7 +696,7 @@ public class DataConnector {
 	}
 
     //TODO: enkel selecteren van contracten van de eigenaar, komt in orde met views ?
-	public static Vector<Contract> getContracts() {
+	//public static Vector<Contract> getContracts() {
     //TODO: een enkele query?
 		//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
     public static Vector<Contract> getContracts(int ownerID) {
@@ -746,21 +746,21 @@ public class DataConnector {
 							rs.getFloat(DataBaseConstants.price),
 							rs.getString(DataBaseConstants.rentableDescription));
 					//we use renterID to get renter data
-					Person renter = getPerson(renterID);
-
-                    Contract contract = new Contract(rs.getInt(DataBaseConstants.contractID),
-                                                     rentable, renter,
-                                                     rs.getTimestamp(DataBaseConstants.contract_start),
-                                                     rs.getTimestamp(DataBaseConstants.contract_end),
-                                                     rs.getFloat(DataBaseConstants.price),
-                                                     rs.getFloat(DataBaseConstants.monthly_cost),
-                                                     rs.getFloat(DataBaseConstants.guarantee));
-                    contracts.add(contract);
-					//we use rentableID to get rentable data
-					Rentable rentable = getRentable(rentableID);
-
-					Contract contract = new Contract(contractID, rentable, renter, start, end, price, monthly_cost, guarantee);
-					contracts.add(contract);
+//					Person renter = getPerson(renterID);
+//
+//                    Contract contract = new Contract(rs.getInt(DataBaseConstants.contractID),
+//                                                     rentable, renter,
+//                                                     rs.getTimestamp(DataBaseConstants.contract_start),
+//                                                     rs.getTimestamp(DataBaseConstants.contract_end),
+//                                                     rs.getFloat(DataBaseConstants.price),
+//                                                     rs.getFloat(DataBaseConstants.monthly_cost),
+//                                                     rs.getFloat(DataBaseConstants.guarantee));
+//                    contracts.add(contract);
+//					//we use rentableID to get rentable data
+//					Rentable rentable = getRentable(rentableID);
+//
+//					Contract contract = new Contract(contractID, rentable, renter, start, end, price, monthly_cost, guarantee);
+//					contracts.add(contract);
 				}
 			} finally {
 				conn.close();
