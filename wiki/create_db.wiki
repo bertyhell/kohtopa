@@ -1,3 +1,5 @@
+#summary Script voor databank te importen, perl scraping scripts
+
 <a href="https://kohtopa.googlecode.com/svn/trunk/database/create_db_views_4.sql">nieuwe databank...alweer maar nu eens van iemand anders</a>
 
 aangepast:
