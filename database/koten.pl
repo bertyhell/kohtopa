@@ -1,3 +1,4 @@
+# script om data van koten op te halen
 use HTML::TableExtract;
 use Data::Dumper;
 use LWP::UserAgent;
