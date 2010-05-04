@@ -2,4 +2,4 @@
 
 aangepast:
 er worden nu gebruikers aangemaakt waarmee je kan inloggen (voorlopig nog negeren) er bestaat ook een scriptje om die users terug te verwijderen als ze niet meer weg willen:
-<a href="https://kohtopa.googlecode.com/svn/trunk/database/dropUsers.sql">
+<a href="https://kohtopa.googlecode.com/svn/trunk/database/dropUsers.sql">users weg
