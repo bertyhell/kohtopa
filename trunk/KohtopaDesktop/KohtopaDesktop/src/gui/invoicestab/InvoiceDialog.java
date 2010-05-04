@@ -138,11 +138,11 @@ public class InvoiceDialog extends JFrame {
 
 					int months = 1;
 					if (cbbYearFrom.getSelectedItem() == cbbYearTo.getSelectedItem()) {
-						months = (Integer) cbbMonthTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem() + 1;
+						months = cbbMonthTo.getSelectedIndex() + 1 - (Integer) cbbYearFrom.getSelectedItem() + 1;
 					} else {
-						months = 12 - (Integer) cbbMonthFrom.getSelectedItem()
+						months = 12 - cbbMonthFrom.getSelectedIndex() + 1
 								+ ((Integer) cbbYearTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem()) * 12
-								+ (Integer) cbbMonthTo.getSelectedItem();
+								+ cbbMonthTo.getSelectedIndex() + 1;
 					}
 					for (InvoiceItem item : Main.getDataObject().getInvoiceItems(
 							instance.getRenterId(),
@@ -280,19 +280,18 @@ public class InvoiceDialog extends JFrame {
 	}
 
 	private boolean checkInput() {
-		if ((Integer) cbbYearFrom.getSelectedItem() < (Integer) cbbYearTo.getSelectedItem()
-				|| (Integer) cbbYearTo.getSelectedItem() == (Integer) cbbYearFrom.getSelectedItem()
-				&& (Integer) cbbMonthFrom.getSelectedItem() <= (Integer) cbbMonthTo.getSelectedItem()) {
-			cbbMonthFrom.setBackground(Color.white);
-			cbbMonthTo.setBackground(Color.white);
-			cbbYearFrom.setBackground(Color.white);
-			cbbYearTo.setBackground(Color.white);
+//		System.out.println("months: " + (cbbMonthTo.getSelectedIndex() + 1));
+//		System.out.println("year from: " + (Integer) cbbYearFrom.getSelectedItem());
+//		System.out.println("year to: " + (Integer) cbbYearTo.getSelectedItem());
+//		System.out.println("month from: " + (cbbMonthFrom.getSelectedIndex() + 1));
+//		System.out.println("month to: " + (cbbMonthTo.getSelectedIndex() + 1));
+//		System.out.println("years equal: " + (((Integer) cbbYearTo.getSelectedItem()).equals((Integer) cbbYearFrom.getSelectedItem())));
+//	System.out.println("month smaller or equal: " + ((cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)));
+		if (((Integer) cbbYearFrom.getSelectedItem()).intValue() < ((Integer) cbbYearTo.getSelectedItem()).intValue()
+				|| ((Integer) cbbYearTo.getSelectedItem()).equals((Integer) cbbYearFrom.getSelectedItem())
+				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)) {
 			return true;
 		} else {
-			cbbMonthFrom.setBackground(Color.pink);
-			cbbMonthTo.setBackground(Color.pink);
-			cbbYearFrom.setBackground(Color.pink);
-			cbbYearTo.setBackground(Color.pink);
 			JOptionPane.showMessageDialog(instance, Language.getString("errInvoiceDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}

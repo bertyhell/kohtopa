@@ -53,6 +53,10 @@ public class DataConnector {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
+	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) {
+		
+	}
+
 	/**
 	 * Creates the class, registers and starts the JDBC oracle-driver
 	 */

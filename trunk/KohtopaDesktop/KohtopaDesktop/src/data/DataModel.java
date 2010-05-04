@@ -274,7 +274,8 @@ public class DataModel {
 		items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPrice(renterId)));
 		//TODO add more items
 		if(utilities){
-			
+			DataConnector.getUtilitiesInvoiceItems(renterId, items);
+
 		}
 
 		return items;
