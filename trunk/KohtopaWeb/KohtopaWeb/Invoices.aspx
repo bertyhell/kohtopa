@@ -1,34 +1,15 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Invoices.aspx.cs" Inherits="KohtopaWeb.Invoices"
     MasterPageFile="~/master.Master" %>
 
-<asp:Content ID="MessagesPage" runat="server" ContentPlaceHolderID="cphBody">
-    <asp:Table ID="Table1" runat="server">
-        <asp:TableRow>
-            <asp:TableCell HorizontalAlign="Right">
-                <asp:Label ID="gasLbl" runat="server" /></asp:TableCell><asp:TableCell>
-                    <asp:TextBox CausesValidation="true" ID="gas" runat="server" /></asp:TableCell><asp:TableCell>
-                        <asp:CompareValidator Type="Integer" Operator="GreaterThan" ControlToValidate="gas"
-                            ID="gasValidator" runat="server" /></asp:TableCell></asp:TableRow><asp:TableRow>
-            <asp:TableCell HorizontalAlign="Right">
-                <asp:Label ID="waterLbl" runat="server" /></asp:TableCell><asp:TableCell>
-                    <asp:TextBox CausesValidation="true" ID="water" runat="server" /></asp:TableCell><asp:TableCell>
-                        <asp:CompareValidator Type="Integer" Operator="GreaterThan" ControlToValidate="water"
-                            ID="waterValidator" runat="server" /></asp:TableCell></asp:TableRow><asp:TableRow>
-            <asp:TableCell HorizontalAlign="Right">
-                <asp:Label ID="elLbl" runat="server" /></asp:TableCell><asp:TableCell>
-                    <asp:TextBox CausesValidation="true" ID="el" runat="server" /></asp:TableCell><asp:TableCell>
-                        <asp:CompareValidator Type="Integer" Operator="GreaterThan" ControlToValidate="el"
-                            ID="elValidator" runat="server" /></asp:TableCell></asp:TableRow><asp:TableRow>
-            <asp:TableCell ColumnSpan="2" HorizontalAlign="Center">
-                <asp:Button CausesValidation="true" OnClick="submit" ID="submitBtn" runat="server" />
-            </asp:TableCell></asp:TableRow></asp:Table><br />
-    <asp:GridView ID="consumption" AlternatingRowStyle-BackColor="LightGray" Width="50%" AutoGenerateColumns="false" runat="server" >
+<asp:Content ID="Invoices" runat="server" ContentPlaceHolderID="cphBody">
+<center>
+    <asp:GridView ID="tblInvoice" AlternatingRowStyle-BackColor="LightGray" Width="50%" AutoGenerateColumns="false" runat="server" >
         <HeaderStyle BackColor="ActiveBorder"  />
         <Columns>
-            <asp:BoundField HeaderText="Date" DataFormatString="{0:d}" DataField="date_consumption" />
-            <asp:BoundField HeaderText="Gas" DataField="gas" />
-            <asp:BoundField HeaderText="Water" DataField="water" />
-            <asp:BoundField HeaderText="Electricity" DataField="electricity" />
+            <asp:ImageField HeaderText="Paid" ItemStyle-Width="40px" DataImageUrlField="paid" DataImageUrlFormatString="~/Images/paid{0}.png" />
+            <asp:HyperLinkField HeaderText="Date" DataNavigateUrlFields="invoiceid" DataNavigateUrlFormatString="~/pdf/{0}.pdf"  DataTextFormatString="{0:d}" DataTextField="invoicedate" />
         </Columns>
     </asp:GridView>
+    <br />
+</center>  
 </asp:Content>
