@@ -1,5 +1,6 @@
 package data;
 
+import Exceptions.ContractNotValidException;
 import data.addremove.BuildingListModel;
 import data.addremove.RentableListModel;
 import Language.Language;
@@ -16,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import gui.SplashConnect;
@@ -116,19 +119,19 @@ public class DataModel {
 		return DataConnector.getRenters(ownerId);
 	}
 
-	public Vector<Invoice> getInvoices(int RenterId){
+	public Vector<Invoice> getInvoices(int RenterId) {
 		return DataConnector.getInvoices(RenterId);
 	}
 
-    public Vector<Contract> getContracts() {
-        return DataConnector.getContracts();
-    }
+	public Vector<Contract> getContracts() {
+		return DataConnector.getContracts();
+	}
 
-	public Person getPerson(int id){
+	public Person getPerson(int id) {
 		return DataConnector.getPerson(id);
 	}
 
-	public Person getOwner(){
+	public Person getOwner() {
 		return DataConnector.getPerson(ownerId);
 	}
 
@@ -269,14 +272,25 @@ public class DataModel {
 		return lmRentable.getFloors();
 	}
 
-	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) {
+	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
 		ArrayList<InvoiceItem> items = new ArrayList<InvoiceItem>();
-		items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPrice(renterId)));
-		//TODO add more items
-		if(utilities){
-			DataConnector.getUtilitiesInvoiceItems(renterId, items);
 
+		try {
+			items.add(new InvoiceItem(Language.getString("invoiceMonthPrice"), DataConnector.getRentPrice(renterId)));
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "error while getting month price: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
+
+		if (utilities) {
+			System.out.println("getting utilities");
+			try {
+				DataConnector.getUtilitiesInvoiceItems(renterId, items);
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(Main.getInstance(), "error while getting utilities: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		//TODO add more items
+
 
 		return items;
 	}
