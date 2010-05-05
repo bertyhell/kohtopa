@@ -35,7 +35,7 @@ namespace KohtopaWeb
         private static string getPersonByIdSQL = "select * from persons where personId = ?";
         private static string getAddressSQL = "select * from addresses where addressId = ?";
         private static string getRentableByIdSQL = "select * from rentables where rentableId = ?";
-        private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contract where renterid = ? and contract_start < ? and contract_end > ?";
+        private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contracts where renterid = ? and contract_start < ? and contract_end > ?";
         private static string getMessagesByIdSQL = "select * from messages where recipientId = ?";
         private static string getLongLatByRentableIdSQL = "select b.longitude, b.latitude from rentables r join buildings b on b.buildingid = r.buildingid where r.rentableid = ?";
         private static string getBuildingByIdSQL = "select * from buildings where buildingId = ?";
@@ -57,11 +57,43 @@ namespace KohtopaWeb
         private static string selectInvoices = "select invoiceid, invoicedate, paid from invoices i "+
             "join contracts c on c.renterid = ? and c.contractid = i.contractid order by paid asc";
 
+        private static string insertConsumptions = "insert into consumption values(?,?,?,?,?,?)";
 
         public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
+        }
+
+        public static void insertConsumption(Consumption c)
+        {
+            //CONSUMPTIONID  RENTABLEID  GAS  WATER  ELECTRICITY  DATE_CONSUMPTION 
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = insertConsumptions;
+
+            OleDbParameter p = new OleDbParameter("CONSUMPTIONID",c.ConsumptionId);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("RENTABLEID", c.RentableId);
+            command.Parameters.Add(p);
+
+
+            p = new OleDbParameter("GAS", c.Gas);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("WATER", c.Water);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("ELECTRICITY", c.Electricity);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("DATE_CONSUMPTION", c.Date);
+            command.Parameters.Add(p);
+
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
         }
 
         public static DataTable getInvoices(int id)

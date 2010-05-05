@@ -1,8 +1,8 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Consumption.aspx.cs" Inherits="KohtopaWeb.Consumption" MasterPageFile="~/master.Master" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Consumptions.aspx.cs" Inherits="KohtopaWeb.Consumptions" MasterPageFile="~/master.Master" %>
 
 <asp:content id="Consumptions" runat="server" contentplaceholderid="cphBody">
 <center>
-    <asp:Table ID="Table1" runat="server">
+    <asp:Table ID="insertTable" runat="server">
         <asp:TableRow>
             <asp:TableCell HorizontalAlign="Right">
                 <asp:Label ID="gasLbl" runat="server" /></asp:TableCell><asp:TableCell>

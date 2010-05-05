@@ -73,13 +73,14 @@
     <Compile Include="Calendar.aspx.designer.cs">
       <DependentUpon>Calendar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Consumption.aspx.cs">
-      <DependentUpon>Consumption.aspx</DependentUpon>
+    <Compile Include="Consumptions.aspx.cs">
+      <DependentUpon>Consumptions.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Consumption.aspx.designer.cs">
-      <DependentUpon>Consumption.aspx</DependentUpon>
+    <Compile Include="Consumptions.aspx.designer.cs">
+      <DependentUpon>Consumptions.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Consumption.cs" />
     <Compile Include="DataConnector.cs" />
     <Compile Include="FloorPlan.ascx.cs">
       <DependentUpon>FloorPlan.ascx</DependentUpon>
@@ -197,7 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Calendar.aspx" />
-    <Content Include="Consumption.aspx" />
+    <Content Include="Consumptions.aspx" />
     <Content Include="FloorPlan.ascx" />
     <Content Include="Images\cancel.png" />
     <Content Include="Images\ok.png" />
