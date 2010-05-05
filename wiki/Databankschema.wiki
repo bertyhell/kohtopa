@@ -1,2 +1,4 @@
 <a href="http://kohtopa.googlecode.com/svn/trunk/database/database.pdf">pdf versie</a> <br>
+sql script voor het aanmaken van de databank(met triggers en views): 
+<a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_no_data.sql">zonder data</a> <a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_views_6.sql">zonder data</a> <br>
 <img src="http://kohtopa.googlecode.com/svn/trunk/database/database.png" />
