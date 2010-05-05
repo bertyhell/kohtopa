@@ -8,7 +8,7 @@ using System.Data;
 
 namespace KohtopaWeb
 {
-    public partial class Consumption : System.Web.UI.Page
+    public partial class Consumptions : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -25,6 +25,7 @@ namespace KohtopaWeb
             waterValidator.Text = Language.getstring("InvalidValue", "" + Session["language"]);
 
             submitBtn.Text = Language.getstring("Submit", "" + Session["language"]);
+            submitBtn.CausesValidation = true;
 
             if (!IsPostBack)
             {
@@ -44,6 +45,11 @@ namespace KohtopaWeb
             consumption.DataBind();
 
 
+            Rentable r = ((Person)Session["user"]).Rentable;
+                insertTable.Visible = r != null;
+
+
+
             gasValidator.ValueToCompare = data[0].ToString();
             gasValidator.Text = gasValidator.Text + "(min: " + data[0] + ")";
 
@@ -56,7 +62,19 @@ namespace KohtopaWeb
 
         protected void submit(object sender, EventArgs e)
         {
-            // doet nog niks
+            Consumption c = new Consumption();
+            Rentable r = ((Person)Session["user"]).Rentable;
+
+            if (r == null) return;
+            c.Date = DateTime.Today;
+            c.ConsumptionId = 1;
+            c.Electricity = int.Parse(el.Text);
+            c.Gas = int.Parse(gas.Text);
+            c.Water = int.Parse(water.Text);
+
+            DataConnector.insertConsumption(c);
+
+            RefeshData();
         }
     }
 

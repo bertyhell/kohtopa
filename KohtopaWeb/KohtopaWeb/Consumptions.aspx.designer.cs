@@ -11,16 +11,16 @@
 namespace KohtopaWeb {
     
     
-    public partial class Consumption {
+    public partial class Consumptions {
         
         /// <summary>
-        /// Table1 control.
+        /// insertTable control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Table Table1;
+        protected global::System.Web.UI.WebControls.Table insertTable;
         
         /// <summary>
         /// gasLbl control.

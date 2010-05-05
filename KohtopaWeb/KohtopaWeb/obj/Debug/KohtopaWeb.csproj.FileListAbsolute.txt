@@ -19,3 +19,8 @@ C:\Users\Jannes\Desktop\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.pdb
 C:\Users\Jannes\Desktop\KohtopaWeb\KohtopaWeb\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Jannes\Desktop\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.dll
 C:\Users\Jannes\Desktop\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.pdb
+C:\Users\Jelle\Desktop\kohtopa\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.dll
+C:\Users\Jelle\Desktop\kohtopa\KohtopaWeb\KohtopaWeb\bin\KohtopaWeb.pdb
+C:\Users\Jelle\Desktop\kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jelle\Desktop\kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.dll
+C:\Users\Jelle\Desktop\kohtopa\KohtopaWeb\KohtopaWeb\obj\Debug\KohtopaWeb.pdb

@@ -8,7 +8,7 @@
         <siteMapNode title="Kalender" url="~/Calendar.aspx" description="Bekijk taken"/>
         <siteMapNode title="Financieel" url="Fincancieel" description="Financiele bewerkingen">
           <siteMapNode title="Facturen" url="~/Invoices.aspx" description="Bekijk facturen" />
-          <siteMapNode title="Verbruik" url="~/Consumption.aspx" description="Beheer verbruik" />
+          <siteMapNode title="Verbruik" url="~/Consumptions.aspx" description="Beheer verbruik" />
         </siteMapNode>
         <siteMapNode title="Boodschappen" description="Boodschappen">
           <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees boodschappen"/>
