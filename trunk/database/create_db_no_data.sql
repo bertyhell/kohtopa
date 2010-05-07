@@ -244,7 +244,14 @@ drop view changePersonsView;
   ALTER TABLE "FLOORS" MODIFY ("BUILDINGID" NOT NULL ENABLE);
  
   ALTER TABLE "FLOORS" MODIFY ("FLOOR" NOT NULL ENABLE);
+  
+--------------------------------------------------------
+--  Ref Constraints for Table FLOORS
+--------------------------------------------------------
 
+  ALTER TABLE "FLOORS" ADD CONSTRAINT "FK_BUILDING" FOREIGN KEY ("BUILDINGID")
+	  REFERENCES "BUILDINGS" ("BUILDINGID") ENABLE;
+    
 --------------------------------------------------------
 --  Constraints for Table CONSTANTS
 --------------------------------------------------------
