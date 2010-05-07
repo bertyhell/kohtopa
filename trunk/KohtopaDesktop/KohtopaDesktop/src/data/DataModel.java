@@ -72,6 +72,10 @@ public class DataModel {
 		return DataConnector.getRentable(rentableId);
 	}
 
+    public Vector<Rentable> getRentablesFromOwner(int ownerID) {
+        return DataConnector.getRentableFromOwner(ownerID);
+    }
+
 	public static int getBuildingIndex() {
 		return buildingIndex;
 	}

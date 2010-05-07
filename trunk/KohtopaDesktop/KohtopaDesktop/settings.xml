@@ -1,7 +1,7 @@
 <Settings>
 <connectionstring>jdbc:oracle:thin:@192.168.58.128:1521:kohtopa</connectionstring>
-<username>Simon</username>
-<password>Lips</password>
+<username>Willemien</username>
+<password>vandeVoort</password>
 <savePass>true</savePass>
 <confirmDeleteBuildings>true</confirmDeleteBuildings>
 <confirmDeletePictures>true</confirmDeletePictures>

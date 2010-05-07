@@ -21,7 +21,7 @@ import javax.swing.JLabel;
  */
 public class ContractListPanel extends AbstractListPanel {
 
-    public ContractListPanel(int id, ImageIcon preview, String firstName, String name, Date start) {
+    public ContractListPanel(int id, ImageIcon preview, String firstName, String name, Date start, Date end) {
 		super(id);
 		ImageIcon img;
 		if (preview == null) {
@@ -51,7 +51,7 @@ public class ContractListPanel extends AbstractListPanel {
         this.add(lblFirstname);
 
         // date
-        JLabel lblDate = new JLabel(DateFormat.getDateInstance().format(start));
+        JLabel lblDate = new JLabel(DateFormat.getDateInstance().format(start) + " - " + DateFormat.getDateInstance().format(end));
         lblDate.setFont(lblDate.getFont().deriveFont(Font.BOLD + Font.ITALIC));
         buildConstraints(gbc, 1, 0, 2, 1, 150, 40, GridBagConstraints.WEST, GridBagConstraints.WEST);
         gbl.addLayoutComponent(lblDate, gbc);
