@@ -4,7 +4,6 @@
       <siteMapNode title="user"  description="User" url="User">
         <siteMapNode title="Index" url="~/Index.aspx#" description="index"/>
         <siteMapNode title="Search" url="~/Search.aspx#" description="search"/>
-        <siteMapNode title="My room" url="~/MyRoom.aspx" description="my room"/>
         <siteMapNode title="Calendar" url="~/Calendar.aspx" description="View tasks"/>
         <siteMapNode title="Finance" url="Finance" description="Financial actions">
           <siteMapNode title="Invoices" url="~/Invoices.aspx" description="View invoices" />

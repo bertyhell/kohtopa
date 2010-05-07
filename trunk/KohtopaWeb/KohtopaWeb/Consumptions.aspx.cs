@@ -38,9 +38,18 @@ namespace KohtopaWeb
         {
             // consumption
             DataTable consumptionTable = DataConnector.getConsumptions(((Person)Session["user"]).PersonId);
+
+            if (consumptionTable.Rows.Count == 0)
+            {
+                gasValidator.ValueToCompare = "0";
+                waterValidator.ValueToCompare = "0";
+                elValidator.ValueToCompare = "0";
+
+                return;
+            }
             Object[] data = consumptionTable.Rows[0].ItemArray;
 
-
+            
             consumption.DataSource = consumptionTable;
             consumption.DataBind();
 

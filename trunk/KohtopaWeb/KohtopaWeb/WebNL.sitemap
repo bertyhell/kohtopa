@@ -4,15 +4,14 @@
       <siteMapNode title="user"  description="User" url="User">
         <siteMapNode title="Index" url="~/Index.aspx#" description="index"/>
         <siteMapNode title="Zoek kot" url="~/Search.aspx#" description="Zoek kot"/>
-        <siteMapNode title="Mijn kamer" url="~/MyRoom.aspx" description="Mijn kamer"/>
         <siteMapNode title="Kalender" url="~/Calendar.aspx" description="Bekijk taken"/>
         <siteMapNode title="Financieel" url="Fincancieel" description="Financiele bewerkingen">
           <siteMapNode title="Facturen" url="~/Invoices.aspx" description="Bekijk facturen" />
           <siteMapNode title="Verbruik" url="~/Consumptions.aspx" description="Beheer verbruik" />
         </siteMapNode>
-        <siteMapNode title="Boodschappen" description="Boodschappen">
-          <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees boodschappen"/>
-          <siteMapNode title="Schrijf" url="~/Messages.aspx" description="Schrijf een boodschap"/>
+        <siteMapNode title="Boodschappen" description="Berichten">
+          <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees bericht"/>
+          <siteMapNode title="Schrijf" url="~/Messages.aspx" description="Schrijf een bericht"/>
         </siteMapNode>
         <!--<siteMapNode title="Log uit" url="~/Logout.asp" description="log uit" />-->
       </siteMapNode>
