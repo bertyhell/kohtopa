@@ -53,6 +53,7 @@ public class DataConnector {
 	/**
 	 * Creates the class, registers and starts the JDBC oracle-driver
 	 */
+	//TODO replace by init instead of constructor and getinstance
 	private DataConnector() {
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -73,6 +74,10 @@ public class DataConnector {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
 	}
 
+	private static Connection geefVerbindingOwner() throws SQLException {
+		return DriverManager.getConnection(DataBaseConstants.connectiestring, ProgramSettings.getUsername(), ProgramSettings.getPassword());
+	}
+
 	/**
 	 * Fetches buildingPreviews from the database
 	 * @return an ArrayList of buildings
@@ -81,7 +86,7 @@ public class DataConnector {
 	 */
 	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
 		ArrayList<Building> buildings = new ArrayList<Building>();
-		Connection conn = geefVerbinding();
+		Connection conn = geefVerbindingOwner();
 		try {
 			Statement selectBuildings = conn.createStatement();
 			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
@@ -108,6 +113,40 @@ public class DataConnector {
 		return buildings;
 	}
 
+//	/**
+//	 * Fetches buildingPreviews from the database
+//	 * @return an ArrayList of buildings
+//	 * @throws SQLException thrown if something goes wrong with the select statements
+//	 * @throws IOException thrown if there is a problem fetching the images
+//	 */
+//	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
+//		ArrayList<Building> buildings = new ArrayList<Building>();
+//		Connection conn = geefVerbinding();
+//		try {
+//			Statement selectBuildings = conn.createStatement();
+//			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
+//			while (rsBuildings.next()) {
+//				ImageIcon img = null;
+//				byte[] imgData = rsBuildings.getBytes(DataBaseConstants.pictureData);
+//				if (imgData != null) {
+//					img = new ImageIcon(ImageIO.read(new ByteArrayInputStream(imgData)));
+//				}
+//				buildings.add(new Building(
+//						rsBuildings.getInt(DataBaseConstants.buildingID),
+//						img,
+//						rsBuildings.getString(DataBaseConstants.street),
+//						rsBuildings.getString(DataBaseConstants.streetNumber),
+//						rsBuildings.getString(DataBaseConstants.zipCode),
+//						rsBuildings.getString(DataBaseConstants.city),
+//						rsBuildings.getString(DataBaseConstants.country),
+//						rsBuildings.getDouble(DataBaseConstants.latitude),
+//						rsBuildings.getDouble(DataBaseConstants.longitude)));
+//			}
+//		} finally {
+//			conn.close();
+//		}
+//		return buildings;
+//	}
 	/**
 	 * Fetches renter previews from the database
 	 * @return an ArrayList of renters
@@ -116,7 +155,7 @@ public class DataConnector {
 	 */
 	public static Vector<Person> selectRenterPreviews(int ownerId) throws SQLException, IOException {
 		Vector<Person> renters = new Vector<Person>();
-		Connection conn = geefVerbinding();
+		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement psSelectRenters = conn.prepareStatement(DataBaseConstants.selectRenterPreviews);
 			psSelectRenters.setInt(1, ownerId);
@@ -204,21 +243,21 @@ public class DataConnector {
 	 * @param city the city of the building
 	 * @throws SQLException thrown if insert fails
 	 */
-	static void addBuilding(String street, String streetNumber, String zip, String city) throws SQLException {
-		Connection conn = geefVerbinding();
+	static void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
+		Connection conn = geefVerbindingOwner();
 		try {
-			Integer addressID = addAddress(conn, street, streetNumber, zip, city);
+			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
 			//adding building with correct address id
-			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.addBuilding);
+			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.insertBuilding);
+			if(addressID == null) System.out.println("addressid is null *********************");
 			psAddBuilding.setInt(1, addressID);
 			psAddBuilding.execute();
 			psAddBuilding.close();
 		} catch (SQLException ex) {
 			throw new SQLException("error in addBuilding: " + ex);
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(Main.getInstance(), "error in addPicture: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), "error in addbuilding: unknown error \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
 		}
@@ -234,19 +273,21 @@ public class DataConnector {
 	 * @return the id of the address that is used in the database
 	 * @throws SQLException thrown if there is a problem in the commands used
 	 */
-	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city) throws SQLException {
+	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 
-		Integer addressID = getAddressID(conn, street, streetNumber, zip, city);
+		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country);
 		try {
 			if (addressID == null) {
 				//address does not exists > make it and then get id
 				PreparedStatement psAddAddress = conn.prepareStatement(DataBaseConstants.addAddress);
+				psAddAddress.setString(1, streetNumber);
 				psAddAddress.setString(2, street);
-				psAddAddress.setString(1, streetNumber);//number comes first in database :s
 				psAddAddress.setString(3, zip);
 				psAddAddress.setString(4, city);
+				psAddAddress.setString(5, country);
 				psAddAddress.execute();
-				addressID = getAddressID(conn, street, streetNumber, zip, city);
+				addressID = getAddressID(conn, street, streetNumber, zip, city, country);
+				if(addressID == null) System.out.println("addressid is null *********************");
 			}
 		} catch (SQLException ex) {
 			System.out.println("sql exception in addadress: " + ex.getMessage());
@@ -265,18 +306,29 @@ public class DataConnector {
 	 * @return the ID used in the database
 	 * @throws SQLException thrown if the select statement fails
 	 */
-	private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city) throws SQLException {
+	private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 		Integer id = null;
 		try {
 			PreparedStatement psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddress);
+			System.out.println("street: " + street);
+			System.out.println("number: " + streetNumber);
+			System.out.println("zip: " + zip);
+			System.out.println("city: " + city);
+			System.out.println("country: " + country);
+
+			System.out.println("command check address: " + DataBaseConstants.checkAddress);
 			psCheckAddress.setString(1, street);
 			psCheckAddress.setString(2, streetNumber);
 			psCheckAddress.setString(3, zip);
 			psCheckAddress.setString(4, city);
+			psCheckAddress.setString(5, country);
 			ResultSet rsCheck = psCheckAddress.executeQuery();
-			if (rsCheck.next()) { //TODO read: count how many addresses, can never be more then 1 => can be used as consistency check
+			if (rsCheck.next()) {
 				//address already exists
 				id = rsCheck.getInt(DataBaseConstants.addressID);
+				System.out.println("id: " + id);
+			}else{
+				System.out.println("address nog niet gevonden");
 			}
 			rsCheck.close();
 			psCheckAddress.close();
@@ -296,11 +348,11 @@ public class DataConnector {
 	 * @param city the new city of the building
 	 * @throws SQLException thrown when the update fails
 	 */
-	public static void updateBuilding(int id, String street, String streetNumber, String zip, String city) throws SQLException {
+	public static void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 		Connection conn = geefVerbinding();
 		try {
 			//TODO: adding new address with new data (old address: has to be cleaned up by garbagecollect if it is not used anymore)
-			Integer addressID = addAddress(conn, street, streetNumber, zip, city);
+			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
 			//adding building with correct address id
 			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
 			psAddBuilding.setInt(1, addressID);
@@ -365,7 +417,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if insert fails
 	 */
 	public static void addFloorPlan(int id, BufferedImage img, int floor) throws SQLException {
-		Connection conn = geefVerbinding();
+		Connection conn = geefVerbindingOwner();
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(img, "jpg", baos);
@@ -392,9 +444,11 @@ public class DataConnector {
 	 * @throws SQLException thrown id delete fails
 	 */
 	public static void removePicture(int id) throws SQLException {
-		Connection conn = geefVerbinding();
+		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePicture);
+			System.out.println("command: " + DataBaseConstants.deletePicture);
+			System.out.println("deleting picture");
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			ps.close();
@@ -435,7 +489,7 @@ public class DataConnector {
 	private static ArrayList<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
 		ArrayList<Picture> pictures = new ArrayList<Picture>();
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				ByteArrayInputStream bais = null;
 				PreparedStatement ps;
@@ -464,29 +518,29 @@ public class DataConnector {
 		return pictures;
 	}
 
-    public static Vector<Rentable> getRentableFromOwner(int ownerID) {
-        Vector<Rentable> rentables = new Vector<Rentable>();
-        try {
+	public static Vector<Rentable> getRentableFromOwner(int ownerID) {
+		Vector<Rentable> rentables = new Vector<Rentable>();
+		try {
 			//int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablesFromOwner);
-				ps.setInt(1, ownerID);
-				ResultSet rs = ps.executeQuery();
+				Statement st = conn.createStatement();
+				ResultSet rs = st.executeQuery(DataBaseConstants.selectRentablesFromOwner);
 				while (rs.next()) {
-                    Rentable rentable = new Rentable(rs.getInt(DataBaseConstants.rentableID),
-                                                     null, rs.getInt(DataBaseConstants.rentableType),
-                                                     rs.getInt(DataBaseConstants.rentableArea),
-                                                     rs.getString(DataBaseConstants.windowDirection),
-                                                     rs.getInt(DataBaseConstants.windowArea),
-                                                     rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
-                                                     rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
-                                                     rs.getInt(DataBaseConstants.outletCount),
-                                                     rs.getInt(DataBaseConstants.floor),
-                                                     rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
-                                                     rs.getDouble(DataBaseConstants.price),
-                                                     rs.getString(DataBaseConstants.description),
-                                                     rs.getInt(DataBaseConstants.buildingID));
+					Rentable rentable = new Rentable(rs.getInt(DataBaseConstants.rentableID),
+							null,
+							rs.getInt(DataBaseConstants.rentableType),
+							rs.getInt(DataBaseConstants.rentableArea),
+							rs.getString(DataBaseConstants.windowDirection),
+							rs.getInt(DataBaseConstants.windowArea),
+							rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
+							rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
+							rs.getInt(DataBaseConstants.outletCount),
+							rs.getInt(DataBaseConstants.floor),
+							rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
+							rs.getDouble(DataBaseConstants.price),
+							rs.getString(DataBaseConstants.description),
+							rs.getInt(DataBaseConstants.buildingID));
 					rentables.add(rentable);
 				}
 			} finally {
@@ -495,37 +549,6 @@ public class DataConnector {
 		} catch (SQLException ex) {
 			System.out.println("Error getting rentables from owner: " + ex.getMessage());
 		}
-        return rentables;
-    }
-
-	/**
-	 * Gets the rentables from a certain user
-	 * @param ID the id of the user
-	 * @return an array of the rentables from the user
-	 */
-	public static ArrayList<Rentable> getRentablesFromUser(int ID) {
-		ArrayList<Rentable> rentables = new ArrayList<Rentable>();
-		try {
-			//int id, ImageIcon previewImage, int type, int floor, String description
-			Connection conn = geefVerbinding();
-			try {
-				PreparedStatement psRentables = conn.prepareStatement(DataBaseConstants.selectRentablesFromUser);
-				psRentables.setInt(1, ID);
-				ResultSet rs = psRentables.executeQuery();
-				while (rs.next()) {
-					int id = rs.getInt(1);
-					int type = rs.getInt(2);
-					int floor = rs.getInt(3);
-					String description = rs.getString(4);
-					rentables.add(new Rentable(id, null, type, floor, description));
-				}
-			} finally {
-				conn.close();
-			}
-		} catch (SQLException ex) {
-			System.out.println("error getting rentables from user: " + ex.getMessage());
-		}
-
 		return rentables;
 	}
 
@@ -661,7 +684,7 @@ public class DataConnector {
 		Vector<Message> messages = new Vector<Message>();
 		//System.out.println(id);
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectMessage);
 				ps.setInt(1, id);
@@ -699,25 +722,24 @@ public class DataConnector {
 	public static Vector<Person> getRenters(int ownerID) {
 		Vector<Person> renters = new Vector<Person>();
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenters);
-				ps.setInt(1, ownerID);
-				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
+				Statement ts = conn.createStatement();
+				ResultSet rsRenters = ts.executeQuery(DataBaseConstants.selectRenters);
+				while (rsRenters.next()) {
 					//int id, String name, String firstName, String email, String telephone, String cellphone
 					renters.add(new Person(
-							rs.getInt(DataBaseConstants.personID),
-							rs.getString(DataBaseConstants.street),
-							rs.getString(DataBaseConstants.streetNumber),
-							rs.getString(DataBaseConstants.zipCode),
-							rs.getString(DataBaseConstants.city),
-							rs.getString(DataBaseConstants.country),
-							rs.getString(DataBaseConstants.personName),
-							rs.getString(DataBaseConstants.firstName),
-							rs.getString(DataBaseConstants.email),
-							rs.getString(DataBaseConstants.telephone),
-							rs.getString(DataBaseConstants.cellphone)));
+							rsRenters.getInt(DataBaseConstants.personID),
+							rsRenters.getString(DataBaseConstants.street),
+							rsRenters.getString(DataBaseConstants.streetNumber),
+							rsRenters.getString(DataBaseConstants.zipCode),
+							rsRenters.getString(DataBaseConstants.city),
+							rsRenters.getString(DataBaseConstants.country),
+							rsRenters.getString(DataBaseConstants.personName),
+							rsRenters.getString(DataBaseConstants.firstName),
+							rsRenters.getString(DataBaseConstants.email),
+							rsRenters.getString(DataBaseConstants.telephone),
+							rsRenters.getString(DataBaseConstants.cellphone)));
 				}
 			} finally {
 				conn.close();
@@ -783,12 +805,12 @@ public class DataConnector {
 
 
 					Contract contract = new Contract(rs.getInt(DataBaseConstants.contractID),
-                                                     rentable, renter,
-                                                     rs.getTimestamp(DataBaseConstants.contract_start),
-                                                     rs.getTimestamp(DataBaseConstants.contract_end),
-                                                     rs.getFloat(DataBaseConstants.price),
-                                                     rs.getFloat(DataBaseConstants.monthly_cost),
-                                                     rs.getFloat(DataBaseConstants.guarantee));
+							rentable, renter,
+							rs.getTimestamp(DataBaseConstants.contract_start),
+							rs.getTimestamp(DataBaseConstants.contract_end),
+							rs.getFloat(DataBaseConstants.price),
+							rs.getFloat(DataBaseConstants.monthly_cost),
+							rs.getFloat(DataBaseConstants.guarantee));
 					contracts.add(contract);
 //                    contracts.add(contract);
 //					//we use rentableID to get rentable data
@@ -831,7 +853,7 @@ public class DataConnector {
 	static Person getPerson(int id) {
 		Person person = null;
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPerson);
 				ps.setInt(1, id);
@@ -851,9 +873,11 @@ public class DataConnector {
 							rs.getString(DataBaseConstants.telephone),
 							rs.getString(DataBaseConstants.cellphone));
 				} else {
-					throw new PersonNotFoundException("Person with id: " + id + "was not found");
+
+					throw new PersonNotFoundException("Person with id: " + id + " was not found");
 				}
 			} finally {
+
 				conn.close();
 			}
 		} catch (Exception ex) {
@@ -868,13 +892,13 @@ public class DataConnector {
 	 */
 	public static void updateMessageState(Message m) {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 
 			try {
 				//setMessageReplied = "update " + tableMessages + " set "+
 				//read + " = 2 where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "
 				//+dateSent+" = ?";
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.setMessageReplied);
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateMessageReplied);
 				ps.setString(1, m.getRead());
 				ps.setString(2, m.getText());
 				ps.setInt(3, m.getSenderID());
@@ -887,32 +911,6 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			System.out.println("Error sending message: " + ex.getMessage());
-		}
-	}
-
-	/**
-	 * Removes a message from the database
-	 * @param m the message to remove
-	 */
-	public static void removeMessage(Message m) {
-		try {
-			Connection conn = geefVerbinding();
-
-			try {
-				//removeMessage = "delete from " + tableMessages +
-				//" where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "+dateSent+" = ?";
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeMessage);
-				ps.setString(1, m.getText());
-				ps.setInt(2, m.getSenderID());
-				ps.setInt(3, m.getRecipient());
-				ps.setTimestamp(4, new java.sql.Timestamp(m.getDate().getTime()));
-
-				ps.execute();
-			} finally {
-				conn.close();
-			}
-		} catch (Exception ex) {
-			System.out.println("Error removing message: " + ex.getMessage());
 		}
 	}
 
@@ -953,7 +951,7 @@ public class DataConnector {
 	public static Building getBuilding(int buildingID) throws SQLException {
 		Building building = null;
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				//TODO get images for building
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectBuilding);
@@ -991,7 +989,7 @@ public class DataConnector {
 	public static ArrayList<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
 		ArrayList<Rentable> rentables = new ArrayList<Rentable>();
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablePreviewsFromBuilding);
 				ps.setInt(1, buildingID);
@@ -1028,13 +1026,13 @@ public class DataConnector {
 		//int id, ImageIcon previewImage, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
 		Rentable rentable = null;
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				//TODO get images for building
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentable);
 				ps.setInt(1, rentableID);
 				ResultSet rs = ps.executeQuery();
-				while (rs.next()) {
+				if (rs.next()) {
 					rentable = new Rentable(
 							rentableID,
 							null, //TODO add preview image for rooms
@@ -1125,28 +1123,14 @@ public class DataConnector {
 	 */
 	public static double getRentPriceOrGuarantee(int renterId, boolean guarantee) throws SQLException, ContractNotValidException {
 		double value = 0;
-		Connection conn = geefVerbinding();
+		Connection conn = geefVerbindingOwner();
 		try {
-			try{
-			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
-			ps.setInt(1, renterId);
-			ResultSet rs = ps.executeQuery();
-			if (rs.next()) {
-				//existing active contract
-
-				if (guarantee) {
-					value = rs.getInt(DataBaseConstants.guarantee);
-				} else {
-					value = rs.getInt(DataBaseConstants.price);
-				}
-
-			} else {
-				//no active contract, final contract?
-				try{
-				ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
 				ps.setInt(1, renterId);
-				rs = ps.executeQuery();
+				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
+					//existing active contract
 
 					if (guarantee) {
 						value = rs.getInt(DataBaseConstants.guarantee);
@@ -1154,17 +1138,31 @@ public class DataConnector {
 						value = rs.getInt(DataBaseConstants.price);
 					}
 
-
 				} else {
-					throw new ContractNotValidException(Language.getString("errContractNotValid"));
+					//no active contract, final contract?
+					try {
+						ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
+						ps.setInt(1, renterId);
+						rs = ps.executeQuery();
+						if (rs.next()) {
+
+							if (guarantee) {
+								value = rs.getInt(DataBaseConstants.guarantee);
+							} else {
+								value = rs.getInt(DataBaseConstants.price);
+							}
+
+
+						} else {
+							throw new ContractNotValidException(Language.getString("errContractNotValid"));
+						}
+					} catch (Exception ex) {
+						System.out.println("guar exp1");
+					}
 				}
-						}catch(Exception ex){
-					System.out.println("guar exp1");
-				}
+			} catch (Exception ex) {
+				System.out.println("guar exp2");
 			}
-			}catch(Exception ex){
-					System.out.println("guar exp2");
-				}
 		} finally {
 			conn.close();
 		}
@@ -1183,10 +1181,12 @@ public class DataConnector {
 	 */
 	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) throws SQLException {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectUtilities);
 				ps.setInt(1, renterId);
+				System.out.println("id: " + renterId);
+				System.out.println("command: " + DataBaseConstants.selectUtilities);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					items.add(new InvoiceItem(Language.getString("invoiceGas"), rs.getDouble(DataBaseConstants.gasPrice)));
@@ -1211,13 +1211,12 @@ public class DataConnector {
 	 */
 	static void insertInvoice(int renterId, Date sendDate, String xmlString) throws SQLException {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertInvoice);
-				System.out.println("command: " + DataBaseConstants.insertInvoice);
 				ps.setInt(1, renterId);
 				ps.setDate(2, new java.sql.Date(sendDate.getTime()));
-				ps.setBytes(3,xmlString.getBytes());
+				ps.setBytes(3, xmlString.getBytes());
 				ps.execute();
 			} finally {
 				conn.close();

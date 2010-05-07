@@ -94,7 +94,6 @@ public class Main extends JFrame {
 		actions.put("taskRemove", new TaskRemoveAction("taskRemove", new ImageIcon(getClass().getResource("/images/task_remove_23.png"))));
 		actions.put("messageNew", new MessageNewAction("messageNew", new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
 		actions.put("messageReply", new MessageReplyAction("messageReply", new ImageIcon(getClass().getResource("/images/message_reply_23.png"))));
-		actions.put("messageRemove", new MessageRemoveAction("messageRemove", new ImageIcon(getClass().getResource("/images/message_remove_23.png"))));
 		actions.put("messageMarkUnread", new MessageMarkUnreadAction("messageMarkUnread", new ImageIcon(getClass().getResource("/images/message_new_23.png"))));
 		actions.put("invoiceAdd", new InvoiceAddAction("invoiceAdd", new ImageIcon(getClass().getResource("/images/invoice_add_23.png"))));
 		actions.put("invoiceEdit", new InvoiceEditAction("invoiceEdit", new ImageIcon(getClass().getResource("/images/invoice_edit_23.png"))));
@@ -305,9 +304,6 @@ public class Main extends JFrame {
 		JButton btnEditMessage = new JButton(actions.get("messageReply"));
 		btnEditMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnEditMessage);
-		JButton btnRemoveMessage = new JButton(actions.get("messageRemove"));
-		btnRemoveMessage.setHideActionText(disableBtnText);
-		pnlButtonsMessage.add(btnRemoveMessage);
 
 		MessageListPanel.addIcon("0", new ImageIcon(getClass().getResource("/images/message_new_23.png")));
 		MessageListPanel.addIcon("1", new ImageIcon(getClass().getResource("/images/message_read_23.png")));
