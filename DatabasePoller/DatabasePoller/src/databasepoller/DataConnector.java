@@ -43,19 +43,17 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
-	public static Vector<String> selectInvoicesToBeSend() throws SQLException, IOException {
-		Vector<String> invoices = new Vector<String>();
+	public static void selectInvoicesToBeSend(Vector<String> invoices) throws SQLException, IOException {
 		Connection conn = geefVerbinding();
 		try {
 			Statement selectBuildings = conn.createStatement();
 			ResultSet rsInvoices = selectBuildings.executeQuery(DataBaseConstants.selectInvoicesToBeSend);
 			while (rsInvoices.next()) {
-				//TODO check invoices
+				invoices.add(rsInvoices.getString(DataBaseConstants.invoiceXml));
 			}
 		} finally {
 			conn.close();
 		}
-		return invoices;
 	}
 }
 
