@@ -6,6 +6,7 @@ public class DataBaseConstants {
 	public static String tableAddresses = "addresses";
 	public static String tableAddressesRead = "system.addressesview";
 	public static String tableAddressesWrite = "system.changeaddressesview";
+	public static String tableAddressNotConnected = "system.notconnectedaddressesview";
 	public static String tableRoles = "roles";
 	public static String tableRolesRead = "system.rolesview";
 	public static String tableRolesWrite = "system.changerolesview";
@@ -159,18 +160,18 @@ public class DataBaseConstants {
 	public static String selectRentPrice = "SELECT "
 			+ price + "," + guarantee
 			+ " FROM " + tableContractsRead
-			+ " WHERE " + renterID + " = ? and sysdate between " + contract_start + " and " + contract_end;
+			+ " WHERE " + renterID + " = ? AND sysdate BETWEEN " + contract_start + " AND " + contract_end;
 	public static String insertInvoice = "INSERT INTO " + tableInvoicesWrite + " VALUES (0, ("
 			+ " SELECT " + contractID
 			+ " FROM ("
 			+ " SELECT " + contractID + ", rank() over(order by " + contract_end + " asc) rank"
 			+ " FROM " + tableContractsRead
-			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
+			+ " WHERE " + renterID + " = ? AND sysdate - " + contract_end + " >= 0)"
 			+ " WHERE rank=1) ,?,0,?,0)";
 	public static String selectRentPriceFinal = "WITH x AS( SELECT "
-			+ price + "," + guarantee + ", rank() over(order by " + contract_end + " asc) rank"
+			+ price + "," + guarantee + ", rank() OVER(ORDER BY " + contract_end + " asc) rank"
 			+ " FROM " + tableContractsRead
-			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
+			+ " WHERE " + renterID + " = ? AND sysdate - " + contract_end + " >= 0)"
 			+ " SELECT " + price
 			+ " FROM x WHERE rank = 1";
 	public static String selectUtilities = "SELECT "
@@ -180,12 +181,12 @@ public class DataBaseConstants {
 			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tableRentablesRead + " r ON r." + rentableID + " = c." + rentableID
 			+ " JOIN " + tableConstantsRead + " u ON u." + buildingID + " = r." + buildingID
-			+ " WHERE c." + renterID + " = ? and sysdate between c." + contract_start + " and c." + contract_end;
+			+ " WHERE c." + renterID + " = ? AND sysdate BETWEEN c." + contract_start + " AND c." + contract_end;
 	public static String selectBuildingPreviews = "SELECT " + buildingID + "," + pictureData + ","
 			+ street + "," + streetNumber + "," + zipCode + "," + city + ","
 			+ latitude + "," + longitude + "," + country
 			+ " FROM " + tableBuildingsRead + " b"
-			+ " JOIN " + tableAddressesRead + " a on a." + addressID + " = b." + addressID
+			+ " JOIN " + tableAddressesRead + " a ON a." + addressID + " = b." + addressID
 			+ " LEFT JOIN " + tablePicturesRead + " p ON p." + RentBuildID + " = b." + buildingID
 			+ " AND p." + pictureType + " = -4"
 			+ " ORDER BY " + street;
@@ -240,8 +241,11 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentablesRead;
 	public static String insertBuilding = "INSERT INTO " + tableBuildingsWrite + " VALUES (0,?,0,0,null)";
 	public static String updateBuilding = "UPDATE " + tableBuildingsWrite + " SET " + addressID + " = ? WHERE " + buildingID + " = ?";
-	public static String checkAddress = "SELECT " + addressID
+	public static String checkAddressConnected = "SELECT " + addressID
 			+ " FROM " + tableAddressesRead
+			+ " WHERE " + street + "= ? AND " + streetNumber + "=? AND " + zipCode + "=? AND " + city + "=? AND " + country + "=?";
+	public static String checkAddressNotConnected = "SELECT " + addressID
+			+ " FROM " + tableAddressNotConnected
 			+ " WHERE " + street + "= ? AND " + streetNumber + "=? AND " + zipCode + "=? AND " + city + "=? AND " + country + "=?";
 	public static String addAddress = "INSERT INTO " + tableAddressesWrite + " VALUES (0,?,?,?,?,?)";
 	//pictures
@@ -255,63 +259,59 @@ public class DataBaseConstants {
 			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = -1";
 	// messages
 	public static String updateMessageReplied = "update " + tableMessagesWrite
-			+ " set " + read + " = ? "
-			+ "where " + text + " = ?  "
-			+ "and " + senderID + " = ? "
-			+ "and " + recipientID + " = ? "
-			+ "and " + dateSent + " = ?";
-	public static String selectMessage = buildString("select @,@,@,@,@,@,@,@ "
-			+ "from @ "
-			+ "join @ on @ = @ "
-			+ "where @=? "
-			+ "order by 6 asc ,5 desc",
-			text, subject, personName, firstName, dateSent,
-			read, recipientID, senderID, tableMessagesRead,
-			tablePersonsRead, personID, senderID, recipientID);
-	public static String insertMessage = "insert into " + tableMessagesWrite + " values(?,?,?,?,?,?)";
+			+ " set " + read + " = ?"
+			+ " WHERE " + text + " = ?"
+			+ " AND " + senderID + " = ?"
+			+ " AND " + recipientID + " = ?"
+			+ " AND " + dateSent + " = ?";
+	public static String selectMessage = "SELECT "
+			+ text + ","
+			+ subject + ","
+			+ personName + ","
+			+ firstName + ","
+			+ dateSent + ","
+			+ read + ","
+			+ recipientID + ","
+			+ senderID
+			+ " from " + tableMessagesRead
+			+ " join " + tablePersonsRead + " ON " + personID + " = " + senderID
+			+ " where " + recipientID + "=?"
+			+ " order by 6 asc ,5 desc";
+	public static String insertMessage = "INSERT INTO " + tableMessagesWrite + " values(?,?,?,?,?,?)";
 	public static String selectRenters = "SELECT DISTINCT p." + personID + ", p." + personName + ",p." + firstName
 			+ ", p." + email + ", p." + telephone + ",p." + cellphone
 			+ ",a." + street + ",a." + streetNumber + ",a." + zipCode + ",a." + city + ",a." + country
 			+ " FROM " + tableContractsRead + " c "
-			+ " JOIN " + tableRentablesRead + " r on c." + rentableID + " = r." + rentableID
-			+ " JOIN " + tablePersonsRead + " p on p." + personID + " = c." + renterID
-			+ " JOIN " + tableAddressesRead + " a on a." + addressID + " = p." + addressID;
+			+ " JOIN " + tableRentablesRead + " r ON c." + rentableID + " = r." + rentableID
+			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
+			+ " JOIN " + tableAddressesRead + " a ON a." + addressID + " = p." + addressID;
 	// tasks
-	public static String selectTasks = buildString("select @,@,@,@,@,@  " +
-			"from @ ",
-			taskID, rentableID, description, start_time, end_time, repeats_every, tableTasksRead);
-	public static String insertTask = buildString("insert into @ values (0,?,?,?,?,?)", tableTasksWrite);
-	public static String deleteTask = buildString("delete from @ where @ = ? and @ = ? and @ = ?",
-			tableTasksWrite, rentableID, description, start_time);
-	public static String updateTask = buildString(
-			"update @ set(@, @, @, @, @) = "
-			+ "(select ?,?,?,?,? from dual)"
-			+ "where @ = ? and @ = ? and @ = ?",
-			tableTasksWrite, rentableID, description, start_time, end_time, repeats_every,
-			rentableID, description, start_time);
+	public static String selectTasks = "SELECT "
+			+ taskID + ","
+			+ rentableID + ","
+			+ description + ","
+			+ start_time + ","
+			+ end_time + ","
+			+ repeats_every
+			+ " from " + tableTasksRead;
+	public static String insertTask = "INSERT INTO " + tableTasksWrite + " values (0,?,?,?,?,?)";
+	public static String deleteTask = "DELETE FROM " + tableTasksWrite
+			+ " where " + rentableID + " = ? AND " + description + " = ? AND " + start_time + " = ?";
+	public static String updateTask = "update " + tableTasksWrite + " set("
+			+ rentableID + ", "
+			+ description + ", "
+			+ start_time + ", "
+			+ end_time + ", "
+			+ repeats_every + ") = "
+			+ "(SELECT ?,?,?,?,? from dual)"
+			+ "where " + rentableID + " = ? AND " + description + " = ? AND " + start_time + " = ?";
 	// contracts
 	public static String selectContracts = "SELECT DISTINCT c." + contractID + ", c." + rentableID + ", c." + renterID + ", c." + contract_start + ", c." + contract_end + ", c." + price + ", c." + monthly_cost + ", c." + guarantee
 			+ ", r." + buildingID + ", r." + ownerID + ", r." + rentableType + ", r." + description + ", r." + rentableArea + ", r." + windowDirection + ", r." + windowArea + ", r." + internet + ", r." + cable + ", r." + outletCount + ", r." + floor + ", r." + rented + ", r." + price
 			+ ", p." + addressID + ", p." + roleID + ", p." + personName + ", p." + firstName + ", p." + email + ", p." + telephone + ", p." + cellphone + ", p." + username + ", p." + password
 			+ ", a." + streetNumber + ", a." + street + ", a." + zipCode + ", a." + city + ", a." + country + " FROM " + tableContracts + " c"
-			+ " JOIN " + tableRentablesRead + " r on r." + rentableID + " = c." + rentableID
-			+ " JOIN " + tablePersonsRead + " p on p." + personID + " = c." + renterID
-			+ " JOIN " + tableAddressesRead + " a on a." + addressID + " = p." + addressID;
+			+ " JOIN " + tableRentablesRead + " r ON r." + rentableID + " = c." + rentableID
+			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
+			+ " JOIN " + tableAddressesRead + " a ON a." + addressID + " = p." + addressID;
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
-
-	// create string, stuff to fill in: @
-	// contracts
-	//public static String selectContracts = "SELECT " + contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
-	// create string, stuff to fill in: @
-	private static String buildString(String base, String... data) {
-		String[] parts = base.split("@");
-		//System.out.println(parts.length + ", " + data.length);
-		StringBuffer sb = new StringBuffer(parts[0]);
-		for (int i = 1; i < parts.length; i++) {
-			sb.append(data[i - 1]);
-			sb.append(parts[i]);
-		}
-		//System.out.println(sb);
-		return sb.toString();
-	}
 }

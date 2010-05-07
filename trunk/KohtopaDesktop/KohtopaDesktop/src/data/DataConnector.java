@@ -275,9 +275,10 @@ public class DataConnector {
 	 */
 	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 
-		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country);
+		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country, true);
 		try {
 			if (addressID == null) {
+				System.out.println("id is null");
 				//address does not exists > make it and then get id
 				PreparedStatement psAddAddress = conn.prepareStatement(DataBaseConstants.addAddress);
 				psAddAddress.setString(1, streetNumber);
@@ -286,7 +287,7 @@ public class DataConnector {
 				psAddAddress.setString(4, city);
 				psAddAddress.setString(5, country);
 				psAddAddress.execute();
-				addressID = getAddressID(conn, street, streetNumber, zip, city, country);
+				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
 				if(addressID == null) System.out.println("addressid is null *********************");
 			}
 		} catch (SQLException ex) {
@@ -306,17 +307,16 @@ public class DataConnector {
 	 * @return the ID used in the database
 	 * @throws SQLException thrown if the select statement fails
 	 */
-	private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
+	private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city, String country, boolean connected) throws SQLException {
 		Integer id = null;
 		try {
-			PreparedStatement psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddress);
-			System.out.println("street: " + street);
-			System.out.println("number: " + streetNumber);
-			System.out.println("zip: " + zip);
-			System.out.println("city: " + city);
-			System.out.println("country: " + country);
-
-			System.out.println("command check address: " + DataBaseConstants.checkAddress);
+			PreparedStatement psCheckAddress = null;
+			if(connected){
+				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressConnected);
+			}else{
+				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressNotConnected);
+			}
+			System.out.println("command: " + DataBaseConstants.checkAddressNotConnected);
 			psCheckAddress.setString(1, street);
 			psCheckAddress.setString(2, streetNumber);
 			psCheckAddress.setString(3, zip);
