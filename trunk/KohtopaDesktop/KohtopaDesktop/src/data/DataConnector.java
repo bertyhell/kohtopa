@@ -35,26 +35,15 @@ import java.util.HashMap;
 
 /**
  * this class gets/puts data from/to database + caches information (rentables, buildings).
- * @author Jelle
  */
 public class DataConnector {
 
 	//TODO add aspectJ for dataconnection to avoid duplicate code
-	private static DataConnector instance = new DataConnector();
 
 	/**
-	 * Gets the instance of the DataConnector
-	 * @return the instance
+	 * initiazlize, registers and starts the JDBC oracle-driver
 	 */
-	public static DataConnector getInstance() {
-		return instance;
-	}
-
-	/**
-	 * Creates the class, registers and starts the JDBC oracle-driver
-	 */
-	//TODO replace by init instead of constructor and getinstance
-	private DataConnector() {
+	public static void init() {
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Class.forName(DataBaseConstants.driver);
@@ -73,7 +62,12 @@ public class DataConnector {
 	private static Connection geefVerbinding() throws SQLException {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
 	}
-
+	
+	/**
+	 * Makes a connection
+	 * @return the connection
+	 * @throws SQLException thrown if something goes wrong creating the connection
+	 */
 	private static Connection geefVerbindingOwner() throws SQLException {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, ProgramSettings.getUsername(), ProgramSettings.getPassword());
 	}

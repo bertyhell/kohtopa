@@ -5,6 +5,7 @@ package gui;
 //TODO logging
 //TODO add titles to all lists
 import Language.Language;
+import data.DataConnector;
 import gui.messagetab.MessagePane;
 import gui.actions.*;
 import gui.addremovetab.BuildingCellRenderer;
@@ -649,6 +650,7 @@ public class Main extends JFrame {
 
 			public void run() {
 				boolean loginChecked = false;
+				DataConnector.init();
 				//check settings if remember pass is true:
 				if (ProgramSettings.isRemeberPassword()) {
 					//check if stored pass is correct
