@@ -22,7 +22,8 @@ public class ContractCellRenderer implements ListCellRenderer {
         ContractListPanel pnlContract = new ContractListPanel(contract.getId(), null,
                                                               contract.getRenter().getFirstName(),
                                                               contract.getRenter().getName(),                                                              
-                                                              contract.getStart());
+                                                              contract.getStart(),
+                                                              contract.getEnd());
         //TODO: alle juiste gegevens ophalen
         if (isSelected) {
             pnlContract.setBgColor(new Color(150, 150, 150));

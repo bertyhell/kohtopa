@@ -17,6 +17,12 @@ public class Rentable extends AbstractPlace {
 	private double price;
 	private String description;
 	private ImageIcon previewImage;
+    private int buildingID;
+
+    public Rentable(int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description, int buildingID) {
+        this(id, previewImage, type, area, windowDirection, windowArea, internet, cable, outletCount, floor, rented, price, description);
+        this.buildingID = buildingID;
+    }
 
 	public Rentable(int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
 		this(id, previewImage, type, floor, description);
@@ -57,6 +63,10 @@ public class Rentable extends AbstractPlace {
 	public boolean isInternet() {
 		return internet;
 	}
+
+    public int getBuildingID() {
+        return buildingID;
+    }
 
 	public int getOutletCount() {
 		return outletCount;

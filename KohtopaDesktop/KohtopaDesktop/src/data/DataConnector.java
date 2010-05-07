@@ -464,6 +464,40 @@ public class DataConnector {
 		return pictures;
 	}
 
+    public static Vector<Rentable> getRentableFromOwner(int ownerID) {
+        Vector<Rentable> rentables = new Vector<Rentable>();
+        try {
+			//int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablesFromOwner);
+				ps.setInt(1, ownerID);
+				ResultSet rs = ps.executeQuery();
+				while (rs.next()) {
+                    Rentable rentable = new Rentable(rs.getInt(DataBaseConstants.rentableID),
+                                                     null, rs.getInt(DataBaseConstants.rentableType),
+                                                     rs.getInt(DataBaseConstants.rentableArea),
+                                                     rs.getString(DataBaseConstants.windowDirection),
+                                                     rs.getInt(DataBaseConstants.windowArea),
+                                                     rs.getInt(DataBaseConstants.internet) == 1 ? true : false,
+                                                     rs.getInt(DataBaseConstants.cable) == 1 ? true : false,
+                                                     rs.getInt(DataBaseConstants.outletCount),
+                                                     rs.getInt(DataBaseConstants.floor),
+                                                     rs.getInt(DataBaseConstants.rented) == 1 ? true : false,
+                                                     rs.getDouble(DataBaseConstants.price),
+                                                     rs.getString(DataBaseConstants.description),
+                                                     rs.getInt(DataBaseConstants.buildingID));
+					rentables.add(rentable);
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (SQLException ex) {
+			System.out.println("Error getting rentables from owner: " + ex.getMessage());
+		}
+        return rentables;
+    }
+
 	/**
 	 * Gets the rentables from a certain user
 	 * @param ID the id of the user
@@ -721,15 +755,6 @@ public class DataConnector {
 							rs.getString(DataBaseConstants.email),
 							rs.getString(DataBaseConstants.telephone),
 							rs.getString(DataBaseConstants.cellphone));
-					//contract data
-					int contractID = rs.getInt(DataBaseConstants.contractID);
-					int rentableID = rs.getInt(DataBaseConstants.rentableID);
-					int renterID = rs.getInt(DataBaseConstants.renterID);
-					Date start = rs.getTimestamp(DataBaseConstants.contract_start);
-					Date end = rs.getTimestamp(DataBaseConstants.contract_end);
-					float price = rs.getFloat(DataBaseConstants.price);
-					float monthly_cost = rs.getFloat(DataBaseConstants.monthly_cost);
-					float guarantee = rs.getFloat(DataBaseConstants.guarantee);
 
 					Rentable rentable = new Rentable(
 							rs.getInt(DataBaseConstants.rentableID),
@@ -755,6 +780,16 @@ public class DataConnector {
 //                                                     rs.getFloat(DataBaseConstants.price),
 //                                                     rs.getFloat(DataBaseConstants.monthly_cost),
 //                                                     rs.getFloat(DataBaseConstants.guarantee));
+
+
+					Contract contract = new Contract(rs.getInt(DataBaseConstants.contractID),
+                                                     rentable, renter,
+                                                     rs.getTimestamp(DataBaseConstants.contract_start),
+                                                     rs.getTimestamp(DataBaseConstants.contract_end),
+                                                     rs.getFloat(DataBaseConstants.price),
+                                                     rs.getFloat(DataBaseConstants.monthly_cost),
+                                                     rs.getFloat(DataBaseConstants.guarantee));
+					contracts.add(contract);
 //                    contracts.add(contract);
 //					//we use rentableID to get rentable data
 //					Rentable rentable = getRentable(rentableID);
@@ -767,7 +802,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), "Error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
 		return contracts;

@@ -188,6 +188,10 @@ public class DataBaseConstants {
 			+ " FROM " + tableRentables
 			+ " WHERE " + buildingID + " = ?"
 			+ " ORDER BY " + floor;
+    
+    public static String selectRentablesFromOwner = "SELECT " + rentableID + ", " + buildingID + ", " + rentableType + ", " + description + ", " + rentableArea + ", " + windowDirection + ", " + windowArea + ", " + internet + ", " + cable + ", " + outletCount + ", " + floor + ", " + rented + ", " + price +
+                                                    " FROM " + tableRentables + " WHERE " + ownerID + " = ?";
+
 	public static String selectRentablesFromUser =
 			" select " + rentableID + "," + rentableType + "," + floor + "," + rentableDescription
 			+ " from " + tableRentables + " r "

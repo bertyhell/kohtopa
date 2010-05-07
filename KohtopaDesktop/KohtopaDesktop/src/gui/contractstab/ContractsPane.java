@@ -13,6 +13,7 @@ import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.Vector;
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,12 +42,13 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
 
         //list of contracts on the left
         contracts = data.getContracts(ProgramSettings.getUserID());
-		lstContracts = new JList(contracts);
+        DefaultListModel dlm = new DefaultListModel();
+        initiateJList(dlm, contracts);
+		lstContracts = new JList(dlm);
 		lstContracts.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstContracts.setBackground(new Color(217, 217, 217));
 		lstContracts.setCellRenderer(new ContractCellRenderer());
         lstContracts.addListSelectionListener(this);
-
         
         Main.getAction("contractEdit").setEnabled(false);
         Main.getAction("contractRemove").setEnabled(false);
@@ -55,6 +57,7 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
 		scrolContracts.setViewportView(lstContracts);
 		sppUserlistContractsList.add(scrolContracts, 0);
 
+        //contract info on the right
         JScrollPane scrolContractInfo = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         sppUserlistContractsList.add(scrolContractInfo, 0);
     }
@@ -73,20 +76,27 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
      * Removes the selected contract
      */
     public void removeSelectedContract() {
+        // TODO: bug waarbij het antal geselecteerde contracten na het heen en weer switchen tussen dit tabblad
+        // en andere tabbladen altijd 0 is ook al is er 1 geselecteerd
         if (lstContracts.getSelectedIndex() != -1) {
+            DefaultListModel dlm = (DefaultListModel)lstContracts.getModel();
             int[] indices = lstContracts.getSelectedIndices();
             int tmp = 0;
             for (int index: indices) {
-                System.out.println("removing: " + (tmp+1));
-                Contract contract = contracts.get(index);
-//                DataConnector.removeContract(contract);
-                lstContracts.remove(index - tmp);
+                Contract contract = (Contract)contracts.get(index);
+                DataConnector.removeContract(contract);
+                dlm.removeElementAt(index - tmp);
                 contracts.remove(index - tmp);
                 tmp++;
             }
-            lstContracts.setListData(contracts);
         }
         this.updateUI();
+    }
+
+    public void initiateJList(DefaultListModel dlm, Vector<Contract> contracts) {
+        for (Contract contract: contracts) {
+            dlm.addElement(contract);
+        }
     }
 
 }
