@@ -1,6 +1,6 @@
 <a href="https://kohtopa.googlecode.com/svn/wiki/databankschema.pdf">pdf versie</a> <br>
 sql script voor het aanmaken van de databank(met triggers en views): 
-<a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_no_data.sql">zonder data</a> <a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_views_6.sql">met data</a> <br>
+<a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_no_data.sql">zonder data</a> <a href="http://kohtopa.googlecode.com/svn/trunk/database/create_db_views_7.sql">met data</a> <br>
 De meeste triggers hebben te maken met de beveiliging van de databank. Het is de bedoeling dat kotbazen met hun eigen gegevens kunnen inloggen op de databank. Ze krijgen dan wel maar een beperkt zicht op de databank. De beperkingen worden opgelegd door enkel views beschikbaar te maken voor deze gebruikers. Op deze views zitten ook nog eens triggers zodat update en insert opdrachten enkel kunnen op gegevens die van hen zijn.
 Een overzicht van de soorten triggers die gebruikt zijn:
  -after trigger om de gebruikers dynamisch aan te maken(roept stored procedure aan). 
