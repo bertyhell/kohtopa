@@ -30,163 +30,145 @@ import java.awt.event.MouseListener;
  */
 public class MessagePane extends JPanel implements MouseListener {
 
-    private JSplitPane splitpane;
-    private JScrollPane leftpane;
-    private JScrollPane rightpane;
-    private Vector<Message> messages;
-    private Message selectedMessage;
-    private JList list;
-    private JTextArea text;
+	private JSplitPane splitpane;
+	private JScrollPane leftpane;
+	private JScrollPane rightpane;
+	private Vector<Message> messages;
+	private Message selectedMessage;
+	private JList list;
+	private JTextArea text;
 
-    /**
-     * Constructs a new MessagePane, the pane contains 2 parts,
-     * the first part contains a list of messages
-     * the second part contains the message itself
-     */
-    public MessagePane() {
+	/**
+	 * Constructs a new MessagePane, the pane contains 2 parts,
+	 * the first part contains a list of messages
+	 * the second part contains the message itself
+	 */
+	public MessagePane() {
 
-        // create the left pane (containing list of messages)
-        leftpane = new JScrollPane();
-
-        
-        // make new JList and add to panel
-        messages = DataConnector.getMessageData(ProgramSettings.getUserID());
-        list = new JList(messages);
-
-        list.addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
-                Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
-                Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
-                if(list.getSelectedIndex() != -1) {
-                    Message m = (Message)list.getSelectedValue();
-                    text.setText(m.getText());
-
-                    text.setCaretPosition(0);
-
-                    selectedMessage = m;
-
-                    if(m.getRead().equals("0")) {
-                        m.setRead("1");                        
-                        DataConnector.updateMessageState(m);
-                    }
-                }
-
-            }
-        });
-        list.setBackground(new Color(217, 217, 217));
-        list.setCellRenderer(new MessageCellRenderer());
-
-        leftpane.setViewportView(list);
-
-        // create the right pane
-        rightpane = new JScrollPane();
+		// create the left pane (containing list of messages)
+		leftpane = new JScrollPane();
 
 
-        // textfield
-        text = new JTextArea();
-        text.setEditable(false);
-        text.setLineWrap(true);
+		// make new JList and add to panel
+		messages = DataConnector.getMessageData(ProgramSettings.getUserID());
+		list = new JList(messages);
 
-        
+		list.addListSelectionListener(new ListSelectionListener() {
 
-        rightpane.setViewportView(text);
+			public void valueChanged(ListSelectionEvent e) {
+				Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
+				Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
+				if (list.getSelectedIndex() != -1) {
+					Message m = (Message) list.getSelectedValue();
+					text.setText(m.getText());
 
+					text.setCaretPosition(0);
+
+					selectedMessage = m;
+
+					if (m.getRead().equals("0")) {
+						m.setRead("1");
+						DataConnector.updateMessageState(m);
+					}
+				}
+
+			}
+		});
+		list.setBackground(new Color(217, 217, 217));
+		list.setCellRenderer(new MessageCellRenderer());
+
+		leftpane.setViewportView(list);
+
+		// create the right pane
+		rightpane = new JScrollPane();
+
+
+		// textfield
+		text = new JTextArea();
+		text.setEditable(false);
+		text.setLineWrap(true);
+
+
+
+		rightpane.setViewportView(text);
 
 
 
 
 
-        // make splitpane, set resizeweight to 20% left
-        splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftpane, rightpane);
-        splitpane.setDividerSize(5);
-        splitpane.setResizeWeight(0.2);
-        splitpane.setDividerLocation(350);
+
+		// make splitpane, set resizeweight to 20% left
+		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftpane, rightpane);
+		splitpane.setDividerSize(5);
+		splitpane.setResizeWeight(0.2);
+		splitpane.setDividerLocation(350);
 
 
 
-        this.setLayout(new BorderLayout());
-        this.add(splitpane);
+		this.setLayout(new BorderLayout());
+		this.add(splitpane);
 
-        Main.getAction("messageRemove").setEnabled(list.getSelectedIndex() != -1);
-        Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
-        Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
-        //this.add(toolbar,BorderLayout.NORTH);
-        list.addMouseListener(this);
+		Main.getAction("messageReply").setEnabled(list.getSelectedIndex() != -1);
+		Main.getAction("messageMarkUnread").setEnabled(list.getSelectedIndex() != -1);
+		//this.add(toolbar,BorderLayout.NORTH);
+		list.addMouseListener(this);
 
-    }
+	}
 
-    /**
-     * Getter for the selected message
-     * @return the selected message
-     */
-    public Message getSelectedMessage() {
-        return selectedMessage;
-    }
+	/**
+	 * Getter for the selected message
+	 * @return the selected message
+	 */
+	public Message getSelectedMessage() {
+		return selectedMessage;
+	}
 
-    /**
-     * Returns the selected messages
-     * @return the selected messages, null if none are selected
-     */
-    public Message[] getSelectedMessages() {
-        Object[] entries = list.getSelectedValues();
-        if(entries == null)
-            return null;
-        Message[] msgs = new Message[entries.length];
-        for(int i=0 ; i<entries.length ; i++) {
-            msgs[i] = (Message) entries[i];
-        }
-        return msgs;
-    }
+	/**
+	 * Returns the selected messages
+	 * @return the selected messages, null if none are selected
+	 */
+	public Message[] getSelectedMessages() {
+		Object[] entries = list.getSelectedValues();
+		if (entries == null) {
+			return null;
+		}
+		Message[] msgs = new Message[entries.length];
+		for (int i = 0; i < entries.length; i++) {
+			msgs[i] = (Message) entries[i];
+		}
+		return msgs;
+	}
 
-    /**
-     * Removes the selected message
-     */
-    public void removeSelectedMessage() {
+	/**
+	 * Makes a button
+	 * @param action action for button
+	 * @param langstring tooltip string entry in language file
+	 * @return the button
+	 */
+	private JButton getButton(AbstractAction action, String langstring) {
+		JButton btn = new JButton(action);
+		btn.setHideActionText(true);
+		btn.setToolTipText(Language.getString(langstring));
 
-        if(list.getSelectedIndex() != -1) {
-            Message m = messages.get(list.getSelectedIndex());
-            DataConnector.removeMessage(m);
-            int[] indices = list.getSelectedIndices();
-            for(int index: indices) {
-                messages.remove(index);
-            }
-            list.setListData(messages);
-        }
-        this.updateUI();
-    }
+		return btn;
+	}
 
-    /**
-     * Makes a button
-     * @param action action for button
-     * @param langstring tooltip string entry in language file
-     * @return the button
-     */
-    private JButton getButton(AbstractAction action, String langstring) {
-        JButton btn = new JButton(action);
-        btn.setHideActionText(true);
-        btn.setToolTipText(Language.getString(langstring));
+	public void mouseClicked(MouseEvent e) {
+	}
 
-        return btn;
-    }
+	public void mousePressed(MouseEvent e) {
+	}
 
-    public void mouseClicked(MouseEvent e) {
-    }
+	public void mouseReleased(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			MessagePopupMenu menu = new MessagePopupMenu();
+			menu.show(list, e.getX(), e.getY());
+		}
+	}
 
-    public void mousePressed(MouseEvent e) {
-    }
+	public void mouseEntered(MouseEvent e) {
+	}
 
-    public void mouseReleased(MouseEvent e) {
-        if(e.isPopupTrigger()) {
-            MessagePopupMenu menu = new MessagePopupMenu();
-            menu.show(list, e.getX(), e.getY());
-        }
-    }
-
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    public void mouseExited(MouseEvent e) {
-    }
+	public void mouseExited(MouseEvent e) {
+	}
 }

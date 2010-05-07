@@ -139,6 +139,7 @@ public class DataModel {
 	}
 
 	public Person getOwner() {
+
 		return DataConnector.getPerson(ownerId);
 	}
 
@@ -267,12 +268,12 @@ public class DataModel {
 		DataConnector.addRentablePreviewPicture(id, lmPicture.getElementAt(index).getPicture());
 	}
 
-	public void addBuilding(String street, String streetNumber, String zip, String city) throws SQLException {
-		DataConnector.addBuilding(street, streetNumber, zip, city);
+	public void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
+		DataConnector.addBuilding(street, streetNumber, zip, city, country);
 	}
 
-	public void updateBuilding(int id, String street, String streetNumber, String zip, String city) throws SQLException {
-		DataConnector.updateBuilding(id, street, streetNumber, zip, city);
+	public void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
+		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country);
 	}
 
 	public ArrayList<Integer> getFloors() {

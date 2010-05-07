@@ -5,7 +5,6 @@
 
 package gui.calendartab;
 
-import data.DataConnector;
 import data.ProgramSettings;
 import data.entities.Rentable;
 import data.entities.Task;
@@ -18,9 +17,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -150,7 +149,7 @@ public class ChangeTask extends JDialog {
         //JPanel rentablePanel = new JPanel();
 
         // add rentables to rentablePicker
-        ArrayList<Rentable> rentables = DataConnector.getRentablesFromUser(ProgramSettings.getUserID());
+        Vector<Rentable> rentables = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getUserID());
         rentablePicker = new JComboBox();
         for(Rentable r:rentables)
             rentablePicker.addItem(r);

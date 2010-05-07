@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -49,6 +50,7 @@ public class PictureAddAction extends AbstractIconAction {
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
 					Main.getDataObject().addImage(id, type, img);
 				}
+				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"),Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException ex) {
