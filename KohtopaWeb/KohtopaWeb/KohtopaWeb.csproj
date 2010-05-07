@@ -60,7 +60,6 @@
     <Content Include="Global.asax" />
     <Content Include="Index.aspx" />
     <Content Include="Login.aspx" />
-    <Content Include="MyRoom.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -144,13 +143,6 @@
     </Compile>
     <Compile Include="Messages.aspx.designer.cs">
       <DependentUpon>Messages.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="MyRoom.aspx.cs">
-      <DependentUpon>MyRoom.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="MyRoom.aspx.designer.cs">
-      <DependentUpon>MyRoom.aspx</DependentUpon>
     </Compile>
     <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

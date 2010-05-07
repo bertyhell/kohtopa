@@ -62,7 +62,7 @@ namespace KohtopaWeb
                     hs.PostBackValue = name;
                     hs.AlternateText = name;
                     hs.HotSpotMode = HotSpotMode.Navigate;
-                    hs.NavigateUrl = "~/" + name;
+                    hs.NavigateUrl = "~/RentableDetails.aspx?id=" + name;
                 }
                 else if(n.Name == "points")
                 {

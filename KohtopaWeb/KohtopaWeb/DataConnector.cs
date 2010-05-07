@@ -54,7 +54,7 @@ namespace KohtopaWeb
             "join contracts co on co.rentableid = c.rentableid " +
             "where co.renterid = ? " +
             "order by date_consumption desc";
-        private static string selectInvoices = "select invoiceid, invoicedate, paid from invoices i "+
+        private static string selectInvoices = "select invoiceid, invoicedate, paid, invoice_xml, send from invoices i "+
             "join contracts c on c.renterid = ? and c.contractid = i.contractid order by paid asc";
 
         private static string insertConsumptions = "insert into consumption values(?,?,?,?,?,?)";
