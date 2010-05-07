@@ -17,6 +17,7 @@ drop table pictures cascade constraints;
 drop table rentables cascade constraints;
 drop table role cascade constraints;
 drop table tasks cascade constraints;
+drop table floors cascade constraints;
 drop view rentablesView;
 drop view personsView;
 drop view buildingsView;
@@ -58,6 +59,16 @@ drop view changePersonsView;
 	"LATITUDE" NUMBER(10,8), 
 	"LONGITUDE" NUMBER(10,8),
   "IPADDRESS" VARCHAR(15)
+   ) ;
+
+--------------------------------------------------------
+--  DDL for Table FLOORS
+--------------------------------------------------------
+
+  CREATE TABLE "FLOORS" 
+   (	"DATA" CLOB, 
+	"BUILDINGID" NUMBER, 
+	"FLOOR" NUMBER
    ) ;
 --------------------------------------------------------
 --  DDL for Table CONSTANTS
@@ -224,6 +235,24 @@ drop view changePersonsView;
   ALTER TABLE "BUILDINGS" ADD PRIMARY KEY ("BUILDINGID") ENABLE;
  
   ALTER TABLE "BUILDINGS" ADD CONSTRAINT "UNIQUE_BUILDING" UNIQUE ("ADDRESSID") ENABLE;
+
+--------------------------------------------------------
+--  Constraints for Table FLOORS
+--------------------------------------------------------
+ 
+  ALTER TABLE "FLOORS" MODIFY ("FLOORID" NOT NULL ENABLE);
+ 
+  ALTER TABLE "FLOORS" MODIFY ("BUILDINGID" NOT NULL ENABLE);
+ 
+  ALTER TABLE "FLOORS" MODIFY ("FLOOR" NOT NULL ENABLE);
+
+--------------------------------------------------------
+--  Ref Constraints for Table FLOORS
+--------------------------------------------------------
+
+  ALTER TABLE "FLOORS" ADD CONSTRAINT "FK_BUILDING" FOREIGN KEY ("BUILDINGID")
+	  REFERENCES "BUILDINGS" ("BUILDINGID") ENABLE;
+    
 --------------------------------------------------------
 --  Constraints for Table CONSTANTS
 --------------------------------------------------------

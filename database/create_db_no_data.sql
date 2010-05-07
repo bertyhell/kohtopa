@@ -59,6 +59,16 @@ drop view changePersonsView;
 	"LONGITUDE" NUMBER(10,8),
   "IPADDRESS" VARCHAR(15)
    ) ;
+   
+--------------------------------------------------------
+--  DDL for Table FLOORS
+--------------------------------------------------------
+
+  CREATE TABLE "FLOORS" 
+   (	"DATA" CLOB, 
+	"BUILDINGID" NUMBER, 
+	"FLOOR" NUMBER
+   ) ;
 --------------------------------------------------------
 --  DDL for Table CONSTANTS
 --------------------------------------------------------
@@ -224,6 +234,17 @@ drop view changePersonsView;
   ALTER TABLE "BUILDINGS" ADD PRIMARY KEY ("BUILDINGID") ENABLE;
  
   ALTER TABLE "BUILDINGS" ADD CONSTRAINT "UNIQUE_BUILDING" UNIQUE ("ADDRESSID") ENABLE;
+  
+--------------------------------------------------------
+--  Constraints for Table FLOORS
+--------------------------------------------------------
+ 
+  ALTER TABLE "FLOORS" MODIFY ("FLOORID" NOT NULL ENABLE);
+ 
+  ALTER TABLE "FLOORS" MODIFY ("BUILDINGID" NOT NULL ENABLE);
+ 
+  ALTER TABLE "FLOORS" MODIFY ("FLOOR" NOT NULL ENABLE);
+
 --------------------------------------------------------
 --  Constraints for Table CONSTANTS
 --------------------------------------------------------
