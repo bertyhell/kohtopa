@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import gui.SplashConnect;
@@ -307,5 +308,14 @@ public class DataModel {
 			}
 		}
 		return items;
+	}
+
+	public void addInvoice(int renterId, Date sendDate, String xmlString) {
+		try {
+			DataConnector.insertInvoice(renterId, sendDate, xmlString);
+
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to store invoice in database: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

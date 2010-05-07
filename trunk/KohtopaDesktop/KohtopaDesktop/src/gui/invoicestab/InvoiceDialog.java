@@ -1,6 +1,7 @@
 package gui.invoicestab;
 
 import Exceptions.ContractNotValidException;
+import Exceptions.XmlGenerationException;
 import Language.Language;
 import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
@@ -12,12 +13,23 @@ import javax.swing.*;
 import data.entities.Invoice;
 import data.entities.InvoiceItem;
 import gui.Main;
+import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Vector;
 import javax.swing.Box;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -273,9 +285,15 @@ public class InvoiceDialog extends JFrame {
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					//add new invoice
-					//generate xml file:
-					generateXMLString();
+					try {
+						//add new invoice
+						//generate xml file and put it in database
+						Main.getDataObject().addInvoice(invoice.getRenter().getId(), dch.getDate(), generateXMLString());
+						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("invoiceSuccesAdd") + "\n" + Language.getString("invoiceSuccesAdd2"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+						instance.dispose();
+					} catch (XmlGenerationException ex) {
+						JOptionPane.showMessageDialog(instance, ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 		} else {
@@ -298,8 +316,96 @@ public class InvoiceDialog extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
-	private String generateXMLString() {
-		return "";
+	private String generateXMLString() throws XmlGenerationException {
+		try {
+			//create xml string
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.newDocument();
+
+			//create the root element and add it to the document
+			Element root = doc.createElement("invoice");
+			doc.appendChild(root);
+
+			//create item elements of every item in table
+			for (Object item : tmInvoices.getDataVector()) {
+				Element invoiceItem = doc.createElement("invoice_item");
+				Element desc = doc.createElement("description");
+				desc.setTextContent(((Vector<Object>) item).get(0).toString());
+				invoiceItem.appendChild(desc);
+				Element price = doc.createElement("price");
+				price.setTextContent(((Vector<Object>) item).get(1).toString());
+				invoiceItem.appendChild(price);
+				root.appendChild(invoiceItem);
+			}
+
+			//owner info
+			Element owner = doc.createElement("owner");
+			Element property = doc.createElement("firstname");
+			property.setTextContent(invoice.getOwner().getFirstName());
+			owner.appendChild(property);
+			property = doc.createElement("lastname");
+			property.setTextContent(invoice.getOwner().getName());
+			owner.appendChild(property);
+			property = doc.createElement("street");
+			property.setTextContent(invoice.getOwner().getAddress().getStreetLine());
+			owner.appendChild(property);
+			property = doc.createElement("city");
+			property.setTextContent(invoice.getOwner().getAddress().getCityLine());
+			owner.appendChild(property);
+			property = doc.createElement("country");
+			property.setTextContent(invoice.getOwner().getAddress().getCountry());
+			owner.appendChild(property);
+			property = doc.createElement("telephone");
+			property.setTextContent(invoice.getOwner().getTelephone());
+			owner.appendChild(property);
+			property = doc.createElement("cellphone");
+			property.setTextContent(invoice.getOwner().getCellphone());
+			owner.appendChild(property);
+			root.appendChild(owner);
+
+			//renter info
+			Element renter = doc.createElement("renter");
+			property = doc.createElement("firstname");
+			property.setTextContent(invoice.getRenter().getFirstName());
+			renter.appendChild(property);
+			property = doc.createElement("lastname");
+			property.setTextContent(invoice.getRenter().getName());
+			renter.appendChild(property);
+			property = doc.createElement("street");
+			property.setTextContent(invoice.getRenter().getAddress().getStreetLine());
+			renter.appendChild(property);
+			property = doc.createElement("city");
+			property.setTextContent(invoice.getRenter().getAddress().getCityLine());
+			renter.appendChild(property);
+			property = doc.createElement("country");
+			property.setTextContent(invoice.getRenter().getAddress().getCountry());
+			renter.appendChild(property);
+			property = doc.createElement("telephone");
+			property.setTextContent(invoice.getRenter().getTelephone());
+			renter.appendChild(property);
+			property = doc.createElement("cellphone");
+			property.setTextContent(invoice.getRenter().getCellphone());
+			renter.appendChild(property);
+			root.appendChild(renter);
+
+			//set up a transformer
+			TransformerFactory transfac = TransformerFactory.newInstance();
+			Transformer trans = transfac.newTransformer();
+			trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+			//create string from xml tree
+			StringWriter sw = new StringWriter();
+			StreamResult result = new StreamResult(sw);
+			DOMSource source = new DOMSource(doc);
+			trans.transform(source, result);
+
+			System.out.println("xml: " + sw.toString());
+			return sw.toString();
+		} catch (Exception ex) {
+			throw new XmlGenerationException("Failed to generate XML file:\n" + ex.getMessage());
+		}
 	}
 
 	public void fillInfo(boolean isNew) {

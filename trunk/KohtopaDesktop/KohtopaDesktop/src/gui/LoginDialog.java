@@ -129,6 +129,7 @@ public class LoginDialog extends JDialog implements ActionListener {
 				//store login
 				ProgramSettings.setUsername(txtUser.getText());
 				ProgramSettings.setPassword(txtPass.getText());
+				data.
 				ProgramSettings.setRemeberPassword(true);
 			}
 			instance.dispose();

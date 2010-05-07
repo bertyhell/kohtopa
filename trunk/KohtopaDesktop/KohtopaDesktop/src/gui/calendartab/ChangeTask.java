@@ -111,9 +111,6 @@ public class ChangeTask extends JDialog {
         DateEditor e = new DateEditor(spinner, "HH:mm dd/MM/yyyy");
         spinner.setEditor(e);
 
-
-        //GridBagConstraints gbc, int x, int y, int w, int h, int wx, int wy, int fill, int anchor) {
-
         Layout.buildConstraints(gbc, 0, 0, 1, 1, 10, 10, GridBagConstraints.BOTH, GridBagConstraints.WEST);
         panel.add(new JLabel("Time: ",JLabel.LEFT),gbc);
         

@@ -83,6 +83,12 @@ public class DataBaseConstants {
 	public static String contract_end = "contract_end";
 	public static String monthly_cost = "monthly_cost";
 	public static String guarantee = "guarantee";
+	//invoices column labels
+	public static String invoiceId = "invoiceid";
+	public static String invoiceDate = "invoicedate";
+	public static String invoicePaid = "paid";
+	public static String invoiceXml = "invoice_xml";
+	public static String invoiceSend = "send";
 	//tasks column labels
 	public static String taskID = "taskID";
 	public static String description = "description";
@@ -99,9 +105,16 @@ public class DataBaseConstants {
 	public static String un = "system";
 //	public static String pw = "admin";
 	public static String pw = "e=mc**2"; //ruben
-	public static String driver = "oracle.jdbc.OracleDriver";
+	public static String driver = "oracle.jdbc.driver.OracleDriver";
 //	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+
+
+
+
+
+
+
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
 			+ " FROM " + tablePersons
@@ -128,12 +141,19 @@ public class DataBaseConstants {
 			+ price + "," + guarantee
 			+ " FROM " + tableContracts
 			+ " WHERE " + renterID + " = ? and sysdate between " + contract_start + " and " + contract_end;
+	public static String insertInvoice = "INSERT INTO " + tableInvoices + " VALUES (0, ("
+			+ " SELECT " + contractID
+			+ " FROM ("
+			+ " SELECT " + contractID + ", rank() over(order by " + contract_end + " asc) rank"
+			+ " FROM " + tableContracts
+			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
+			+ " WHERE rank=1) ,?,0,?,0)";
 	public static String selectRentPriceFinal = "WITH x AS( SELECT "
 			+ price + "," + guarantee + ", rank() over(order by " + contract_end + " asc) rank"
 			+ " FROM " + tableContracts
 			+ " WHERE " + renterID + " = ? and sysdate - " + contract_end + " >= 0)"
 			+ " SELECT " + price
-			+ " FROM x WHERE rank=1";
+			+ " FROM x WHERE rank = 1";
 	public static String selectUtilities = "SELECT "
 			+ "u." + gasPrice
 			+ ",u." + waterPrice
@@ -241,21 +261,20 @@ public class DataBaseConstants {
 			+ "where @ = ? and @ = ? and @ = ?",
 			tableTasks, rentableID, description, start_time, end_time, repeats_every,
 			rentableID, description, start_time);
-    // contracts
-    public static String selectContracts = "SELECT DISTINCT c." + contractID + ", c." + rentableID + ", c." + renterID + ", c." + contract_start + ", c." + contract_end + ", c." + price + ", c." + monthly_cost + ", c." + guarantee
-                                           + ", r." + buildingID + ", r." + ownerID + ", r." + rentableType + ", r." + description + ", r." + rentableArea + ", r." + windowDirection + ", r." + windowArea + ", r." + internet + ", r." + cable + ", r." + outletCount + ", r." + floor + ", r." + rented + ", r." + price
-                                           + ", p." + addressID + ", p." + roleID + ", p." + personName + ", p." + firstName + ", p." + email + ", p." + telephone + ", p." + cellphone + ", p." + username + ", p." + password
-                                           + ", a." + streetNumber + ", a." + street + ", a." + zipCode + ", a." + city + ", a." + country + " FROM " + tableContracts+ " c"
-                                           + " JOIN " + tableRentables + " r on r." + rentableID + " = c." + rentableID
-                                           + " JOIN " + tablePersons + " p on p." + personID + " = c." + renterID
-                                           + " JOIN " + tableAddresses + " a on a." + addressID + " = p." + addressID
-                                           + " WHERE r." + ownerID + " = ?";
-    public static String removeContract = "DELETE FROM " + tableContracts + " WHERE " + contractID + " = ?";
-	
-    // create string, stuff to fill in: @
+	// contracts
+	public static String selectContracts = "SELECT DISTINCT c." + contractID + ", c." + rentableID + ", c." + renterID + ", c." + contract_start + ", c." + contract_end + ", c." + price + ", c." + monthly_cost + ", c." + guarantee
+			+ ", r." + buildingID + ", r." + ownerID + ", r." + rentableType + ", r." + description + ", r." + rentableArea + ", r." + windowDirection + ", r." + windowArea + ", r." + internet + ", r." + cable + ", r." + outletCount + ", r." + floor + ", r." + rented + ", r." + price
+			+ ", p." + addressID + ", p." + roleID + ", p." + personName + ", p." + firstName + ", p." + email + ", p." + telephone + ", p." + cellphone + ", p." + username + ", p." + password
+			+ ", a." + streetNumber + ", a." + street + ", a." + zipCode + ", a." + city + ", a." + country + " FROM " + tableContracts + " c"
+			+ " JOIN " + tableRentables + " r on r." + rentableID + " = c." + rentableID
+			+ " JOIN " + tablePersons + " p on p." + personID + " = c." + renterID
+			+ " JOIN " + tableAddresses + " a on a." + addressID + " = p." + addressID
+			+ " WHERE r." + ownerID + " = ?";
+	public static String removeContract = "DELETE FROM " + tableContracts + " WHERE " + contractID + " = ?";
+
+	// create string, stuff to fill in: @
 	// contracts
 	//public static String selectContracts = "SELECT " + contractID + ", " + rentableID + ", " + renterID + ", " + contract_start + ", " + contract_end + "," + price + ", " + monthly_cost + ", " + guarantee + " FROM " + contracts;
-
 	// create string, stuff to fill in: @
 	private static String buildString(String base, String... data) {
 		String[] parts = base.split("@");

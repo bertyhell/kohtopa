@@ -1127,35 +1127,44 @@ public class DataConnector {
 		double value = 0;
 		Connection conn = geefVerbinding();
 		try {
+			try{
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
 			ps.setInt(1, renterId);
-			System.out.println("renter: " + renterId);
-			System.out.println("command: " + DataBaseConstants.selectRentPrice);
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				//existing active contract
+
 				if (guarantee) {
 					value = rs.getInt(DataBaseConstants.guarantee);
 				} else {
 					value = rs.getInt(DataBaseConstants.price);
 				}
+
 			} else {
 				//no active contract, final contract?
+				try{
 				ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
 				ps.setInt(1, renterId);
-				System.out.println("renter: " + renterId);
-				System.out.println("command: " + DataBaseConstants.selectRentPriceFinal);
 				rs = ps.executeQuery();
 				if (rs.next()) {
+
 					if (guarantee) {
 						value = rs.getInt(DataBaseConstants.guarantee);
 					} else {
 						value = rs.getInt(DataBaseConstants.price);
 					}
+
+
 				} else {
 					throw new ContractNotValidException(Language.getString("errContractNotValid"));
 				}
+						}catch(Exception ex){
+					System.out.println("guar exp1");
+				}
 			}
+			}catch(Exception ex){
+					System.out.println("guar exp2");
+				}
 		} finally {
 			conn.close();
 		}
@@ -1190,6 +1199,32 @@ public class DataConnector {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw new SQLException("failed to get utilities: " + ex);
+		}
+	}
+
+	/**
+	 * inserts 1 invoice in the database
+	 * @param renterId specifies the renter
+	 * @param sendDate specifies the date that invoice has to be send
+	 * @param xmlString specifies the invoice items in xml format in a String
+	 * @throws SQLException thrown if select fails
+	 */
+	static void insertInvoice(int renterId, Date sendDate, String xmlString) throws SQLException {
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertInvoice);
+				System.out.println("command: " + DataBaseConstants.insertInvoice);
+				ps.setInt(1, renterId);
+				ps.setDate(2, new java.sql.Date(sendDate.getTime()));
+				ps.setBytes(3,xmlString.getBytes());
+				ps.execute();
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new SQLException("failed during insert Invoice: " + ex);
 		}
 	}
 
