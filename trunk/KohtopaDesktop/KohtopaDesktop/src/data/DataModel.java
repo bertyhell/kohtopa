@@ -12,7 +12,6 @@ import data.entities.Invoice;
 import data.entities.InvoiceItem;
 import data.entities.Person;
 import data.entities.Picture;
-import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
-import gui.SplashConnect;
 import java.util.Vector;
 
 public class DataModel {
@@ -31,29 +29,26 @@ public class DataModel {
 	private Integer ownerId;
 	private int lastPictureDialogId;
 	private int lastPictureDialogType;
-	private BuildingListModel lmBuilding;
-	private RentableListModel lmRentable;
+//	private BuildingListModel lmBuilding;
+//	private RentableListModel lmRentable;
 	private PictureListModel lmPicture;
-	private static int buildingIndex;
-	private static int rentableIndex;
-	private static int pictureIndex;
+//	private static int buildingIndex;
+//	private static int rentableIndex;
+//	private static int pictureIndex;
 
 	public DataModel() {
-		buildingIndex = -1; //none selected
-		rentableIndex = -1; //none selected
-		pictureIndex = -1;  //none selected
-
-		lmBuilding = new BuildingListModel();
-		lmRentable = new RentableListModel();
-		lmPicture = new PictureListModel();
+		DataConnector.init();
+//		buildingIndex = -1; //none selected
+//		rentableIndex = -1; //none selected
+//		pictureIndex = -1;  //none selected
+//
+//		lmBuilding = new BuildingListModel();
+//		lmRentable = new RentableListModel();
+//		lmPicture = new PictureListModel();
 
 	}
 
-	public ArrayList<Building> getBuildingPreviews(Component requesterFrame) throws SQLException, IOException {
-		return DataConnector.selectBuildingPreviews();
-	}
-
-	public ArrayList<Rentable> getRentablePreviews(int buildingId) throws SQLException, IOException {
+	public Vector<Rentable> getRentablePreviews(int buildingId) throws SQLException, IOException {
 		return DataConnector.getRentablesFromBuilding(buildingId);
 	}
 
@@ -65,7 +60,7 @@ public class DataModel {
 		return DataConnector.getBuilding(buildingId);
 	}
 
-	public ArrayList<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException {
+	public Vector<Rentable> getRentablesFromBuilding(int buildingId) throws SQLException {
 		return DataConnector.getRentablesFromBuilding(buildingId);
 	}
 
@@ -73,50 +68,50 @@ public class DataModel {
 		return DataConnector.getRentable(rentableId);
 	}
 
-    public Vector<Rentable> getRentablesFromOwner(int ownerID) {
-        return DataConnector.getRentableFromOwner(ownerID);
-    }
-
-	public static int getBuildingIndex() {
-		return buildingIndex;
+	public Vector<Rentable> getRentablesFromOwner(int ownerID) {
+		return DataConnector.getRentableFromOwner(ownerID);
 	}
+//
+//	public static int getBuildingIndex() {
+//		return buildingIndex;
+//	}
+//
+//	public static int getRentableIndex() {
+//		return rentableIndex;
+//	}
+//
+//	public static int getPictureIndex() {
+//		return pictureIndex;
+//	}
+//
+//	public static void setBuildingIndex(int index) {
+//		DataModel.buildingIndex = index;
+//	}
+//
+//	public static void setRentableIndex(int index) {
+//		DataModel.rentableIndex = index;
+//	}
+//
+//	public static void setPictureIndex(int index) {
+//		DataModel.pictureIndex = index;
+//	}
+//
+//	public BuildingListModel getLmBuilding() {
+//		return lmBuilding;
+//	}
+//
+//	public RentableListModel getLmRentable() {
+//		return lmRentable;
+//	}
+//
+//	public PictureListModel getLmPicture() {
+//		return lmPicture;
+//	}
 
-	public static int getRentableIndex() {
-		return rentableIndex;
-	}
-
-	public static int getPictureIndex() {
-		return pictureIndex;
-	}
-
-	public static void setBuildingIndex(int index) {
-		DataModel.buildingIndex = index;
-	}
-
-	public static void setRentableIndex(int index) {
-		DataModel.rentableIndex = index;
-	}
-
-	public static void setPictureIndex(int index) {
-		DataModel.pictureIndex = index;
-	}
-
-	public BuildingListModel getLmBuilding() {
-		return lmBuilding;
-	}
-
-	public RentableListModel getLmRentable() {
-		return lmRentable;
-	}
-
-	public PictureListModel getLmPicture() {
-		return lmPicture;
-	}
-
-	public RentableListModel updateRentables(int buildingIndex) throws IOException, SQLException {
-		lmRentable.updateItems(lmBuilding.getId(buildingIndex));
-		return lmRentable;
-	}
+//	public RentableListModel updateRentables(int buildingIndex) throws IOException, SQLException {
+//		lmRentable.updateItems(lmBuilding.getId(buildingIndex));
+//		return lmRentable;
+//	}
 
 	public Vector<Person> getRenters() {
 		return DataConnector.getRenters(ownerId);
@@ -142,83 +137,83 @@ public class DataModel {
 
 		return DataConnector.getPerson(ownerId);
 	}
+//
+//	public void updatePictures() throws IOException, SQLException {
+//		System.out.println("updating pictures");
+//		lmPicture.updateItems(lastPictureDialogId, lastPictureDialogType == 0);
+//	}
+//
+//	public PictureListModel updateBuildingPictures(int buildingId) throws IOException, SQLException {
+//		lastPictureDialogId = buildingId;
+//		lastPictureDialogType = 0; //building  //TODO change ints by enums
+//		lmPicture.updateItems(buildingId, true);
+//		return lmPicture;
+//	}
+//
+//	public PictureListModel updateRentablePictures(int rentableId) throws IOException, SQLException {
+//		lastPictureDialogId = rentableId;
+//		lastPictureDialogId = 1; //rentable
+//		lmPicture.updateItems(rentableId, false);
+//		return lmPicture;
+//	}
 
-	public void updatePictures() throws IOException, SQLException {
-		System.out.println("updating pictures");
-		lmPicture.updateItems(lastPictureDialogId, lastPictureDialogType == 0);
-	}
+//	public int getSelectedBuildingId() {
+//		return lmBuilding.getElementAt(buildingIndex).getId();
+//	}
+//
+//	public boolean isBuildingSelected() {
+//		return buildingIndex != -1;
+//	}
+//
+//	public boolean isRentableSelected() {
+//		return rentableIndex != -1;
+//	}
 
-	public PictureListModel updateBuildingPictures(int buildingId) throws IOException, SQLException {
-		lastPictureDialogId = buildingId;
-		lastPictureDialogType = 0; //building  //TODO change ints by enums
-		lmPicture.updateItems(buildingId, true);
-		return lmPicture;
-	}
-
-	public PictureListModel updateRentablePictures(int rentableId) throws IOException, SQLException {
-		lastPictureDialogId = rentableId;
-		lastPictureDialogId = 1; //rentable
-		lmPicture.updateItems(rentableId, false);
-		return lmPicture;
-	}
-
-	public int getSelectedBuildingId() {
-		return lmBuilding.getElementAt(buildingIndex).getId();
-	}
-
-	public boolean isBuildingSelected() {
-		return buildingIndex != -1;
-	}
-
-	public boolean isRentableSelected() {
-		return rentableIndex != -1;
-	}
-
-	public int getSelectedRentableId() {
-		return lmRentable.getRentableAt(rentableIndex).getId();
-	}
-
-	public int getSelectedRentableId(int index) {
-		rentableIndex = index;
-		return lmRentable.getRentableAt(rentableIndex).getId();
-	}
-
-	public boolean mouseOver(int index, boolean isBuilding) {
-		if (isBuilding) {
-			if (index == buildingIndex) {
-				return false;
-			} else {
-				buildingIndex = index;
-				return true;
-			}
-		} else {
-			if (index == rentableIndex) {
-				return false;
-			} else {
-				rentableIndex = index;
-				return true;
-			}
-		}
-	}
-
-	public boolean fetchAddRemove() {
-		try {
-			lmBuilding.updateItems();
-			return true;
-		} catch (SQLException ex) {
-			SplashConnect.hideSplash();
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			//TODO add connection string settings
-
-			return false;
-		} catch (IOException ex) {
-			SplashConnect.hideSplash();
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			//TODO add connection string settings
-
-			return false;
-		}
-	}
+//	public int getSelectedRentableId() {
+//		return lmRentable.getRentableAt(rentableIndex).getId();
+//	}
+//
+//	public int getSelectedRentableId(int index) {
+//		rentableIndex = index;
+//		return lmRentable.getRentableAt(rentableIndex).getId();
+//	}
+//
+//	public boolean mouseOver(int index, boolean isBuilding) {
+//		if (isBuilding) {
+//			if (index == buildingIndex) {
+//				return false;
+//			} else {
+//				buildingIndex = index;
+//				return true;
+//			}
+//		} else {
+//			if (index == rentableIndex) {
+//				return false;
+//			} else {
+//				rentableIndex = index;
+//				return true;
+//			}
+//		}
+//	}
+//
+//	public boolean fetchAddRemove() {
+//		try {
+//			lmBuilding.updateItems();
+//			return true;
+//		} catch (SQLException ex) {
+//			SplashConnect.hideSplash();
+//			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//			//TODO add connection string settings
+//
+//			return false;
+//		} catch (IOException ex) {
+//			SplashConnect.hideSplash();
+//			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//			//TODO add connection string settings
+//
+//			return false;
+//		}
+//	}
 
 	public int getOwnerId() {
 		return ownerId;
@@ -245,19 +240,33 @@ public class DataModel {
 		return ownerId != null;
 	}
 
-	public void addImage(int id, String type, BufferedImage img) throws SQLException, IOException {
-		if (type.equals("BuildingDialog")) {
-			DataConnector.addBuildingPicture(id, img);
-		} else {
-			DataConnector.addRentablePicture(id, img);
-		}
+
+	public void addBuildingImage(int buildingId, BufferedImage img) throws SQLException, IOException {
+
+			DataConnector.addBuildingPicture(buildingId, img);
+
 		//lists verwittigen
-		lmPicture.addElement(new Picture(id, img));
+		lmPicture.addElement(new Picture(buildingId, img));
+		Main.updatePictureLists();//TODO observer pattern toepassen
+	}
+
+	public void addRentableImage(int rentableId, BufferedImage img) throws SQLException, IOException {
+
+			DataConnector.addRentablePicture(rentableId, img);
+		//lists verwittigen
+		lmPicture.addElement(new Picture(rentableId, img));
 		Main.updatePictureLists();//TODO observer pattern toepassen
 	}
 
 	public void deleteSelectedPictures(int[] indexs) throws SQLException {
 		lmPicture.removeSelectedPictures(indexs);
+	}
+
+	public void deleteSelectedBuildings(Object[] selected) {
+		for (int i = selected.length - 1; i >= 0; i--) {
+			//TODO check if building is empty > remove
+			//else ask to remove rentables > remove rent then remove building
+		}
 	}
 
 	public void addBuildingPreviewPicture(int id, int index) throws SQLException {
@@ -276,8 +285,8 @@ public class DataModel {
 		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country);
 	}
 
-	public ArrayList<Integer> getFloors() {
-		return lmRentable.getFloors();
+	public Vector<Integer> getFloors(int buildingId) throws SQLException {
+		return DataConnector.getFloors(buildingId);
 	}
 
 	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
@@ -318,5 +327,9 @@ public class DataModel {
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to store invoice in database: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public Vector<Building> getBuildingPreviews() throws SQLException, IOException{
+		return DataConnector.selectBuildingPreviews();
 	}
 }

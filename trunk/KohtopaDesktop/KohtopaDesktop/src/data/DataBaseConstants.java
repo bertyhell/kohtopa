@@ -248,6 +248,9 @@ public class DataBaseConstants {
 			+ " FROM " + tableAddressNotConnected
 			+ " WHERE " + street + "= ? AND " + streetNumber + "=? AND " + zipCode + "=? AND " + city + "=? AND " + country + "=?";
 	public static String addAddress = "INSERT INTO " + tableAddressesWrite + " VALUES (0,?,?,?,?,?)";
+	public static String selectFloors = "SELECT " + floor
+			+ " FROM " + tableRentablesRead
+			+ " WHERE " + buildingID + " = ?";
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePicturesWrite + " VALUES (0,?,?,?)";
 	public static String deletePicture = "DELETE FROM " + tablePicturesWrite + " WHERE " + pictureID + " = ?";

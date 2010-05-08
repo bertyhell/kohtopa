@@ -1,10 +1,13 @@
 package gui.actions;
 
 import Language.Language;
+import data.entities.Rentable;
 import gui.Main;
+import gui.addremovetab.IRentableListContainer;
 import gui.addremovetab.RentableDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,19 +16,21 @@ import javax.swing.JOptionPane;
  */
 public class RentableEditAction extends AbstractIconAction {
 
-    public RentableEditAction(String id, Icon img) {
-	super(id, img);
-    }
+	public RentableEditAction(String id, Icon img) {
+		super(id, img);
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-		if(Main.getDataObject().isRentableSelected()){
-new RentableDialog(Main.getInstance().getRootPane(), Main.getDataObject().getSelectedRentableId(), false).setVisible(true);
-		}else{
-			JOptionPane.showMessageDialog(Main.getInstance(), "please select a rentable first \n", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object[] selected = ((IRentableListContainer)((JComponent)e.getSource()).getRootPane()).getSelectedRentables();
+		if (selected.length == 1) {
+			new RentableDialog(Main.getInstance(), ((Rentable)selected[0]).getId(), false).setVisible(true);
+			//TODO getinstance isn't correct cause it can also be a building dialog, how to fix?
+		} else {
+			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 rentable to edit", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 
 		}
-	
 
-    }
+
+	}
 }

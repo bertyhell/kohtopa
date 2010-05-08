@@ -2,7 +2,6 @@ package gui.invoicestab;
 
 import data.DataModel;
 import data.entities.Person;
-import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JList;

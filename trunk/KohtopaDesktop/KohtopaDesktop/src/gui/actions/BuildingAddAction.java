@@ -1,9 +1,9 @@
 package gui.actions;
 
+import gui.Main;
 import gui.addremovetab.BuildingDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
-import javax.swing.JComponent;
 
 public class BuildingAddAction extends AbstractIconAction {
 
@@ -13,6 +13,6 @@ public class BuildingAddAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new BuildingDialog(((JComponent) e.getSource()).getRootPane(), -1, true).setVisible(true);
+		new BuildingDialog(Main.getInstance(), -1, true).setVisible(true);
 	}
 }

@@ -18,12 +18,13 @@ public class PictureRemoveAction extends AbstractIconAction {
 	public void actionPerformed(ActionEvent e) {
 		//TODO show message only if settings are true
 		if (JOptionPane.showConfirmDialog(((JComponent) e.getSource()).getRootPane(), Language.getString("confirmDeletePictures"), Language.getString("confirm"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-			try {
-				Main.getDataObject().deleteSelectedPictures(Main.getFocusedDialog().getSelectedPictures());
-			Main.getFocusedDialog().UpdatePictures();
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			}
+			System.out.println("to be implemented");
+//			try {
+//				Main.getDataObject().deleteSelectedPictures(Main.getFocusedDialog().getSelectedPictures());
+//			Main.getFocusedDialog().UpdatePictures();
+//			} catch (SQLException ex) {
+//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//			}
 		}
 	}
 }
