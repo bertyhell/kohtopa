@@ -1268,6 +1268,11 @@ public class DataConnector {
 
 	}
 
+	/**
+	 * Deletes the specified rentable from database
+	 * @param rentableId the identification of the rentable that has to be deleted
+	 * @throws SQLException thrown if delete fails
+	 */
 	static void deleteRentable(int rentableId) throws SQLException {
 		Connection conn = geefVerbindingOwner();
 		try {
@@ -1276,7 +1281,26 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			throw new SQLException("error in remobe rentable: " + rentableId + " from database: " + ex);
+			throw new SQLException("error in remove rentable: " + rentableId + " from database: " + ex);
+		} finally {
+			conn.close();
+		}
+	}
+
+	/**
+	 * Deletes the specified building from database
+	 * @param buildingId the identification of the building that has to be deleted
+	 * @throws SQLException thrown if delete fails
+	 */
+	static void deleteBuilding(Integer buildingId) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteBuilding);
+			ps.setInt(1, buildingId);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			throw new SQLException("error in remove building: " + buildingId + " from database: " + ex);
 		} finally {
 			conn.close();
 		}

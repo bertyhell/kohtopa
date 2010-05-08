@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import java.util.Vector;
@@ -247,17 +249,13 @@ public class DataModel {
 		}
 	}
 
+
 	public void deleteSelectedBuildings(Vector<Integer> ids) {
-						//TODO check if building is empty > remove
-				//else ask to remove rentables > remove rent then remove building
 		boolean continueWithouthConfirm = false;
-		for (int i = ids.size() - 1; i >= 0; i--) {
+		for (Integer id : ids) {
 			try {
 				//delete building
-				
-
-
-
+				DataConnector.deleteBuilding(id);
 			} catch (Exception ex) {//TODO 010 fix this exception use > check if there are any rentables in building yourself
 				System.out.println("exception during deletion building: \n" + ex.getMessage());
 				if (!continueWithouthConfirm) {
@@ -277,8 +275,16 @@ public class DataModel {
 						return; //abort delete
 					}
 				}
-				//delete rentables and building
-
+				try {
+					//first deleting rentables
+					for(Rentable rentable : DataConnector.getRentablesFromBuilding(id)){
+						DataConnector.deleteRentable(rentable.getId());
+					}
+					//deleting building (should be empty now
+					DataConnector.deleteBuilding(id);
+				} catch (SQLException ex1) {
+					JOptionPane.showMessageDialog(Main.getInstance(), "Failed to delete building: \n" + ex1.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		}
 	}
