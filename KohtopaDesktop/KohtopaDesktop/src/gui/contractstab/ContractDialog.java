@@ -10,7 +10,6 @@ import data.ProgramSettings;
 import data.entities.Address;
 import data.entities.Building;
 import data.entities.Contract;
-import gui.contractstab.EIDPerson;
 import data.entities.Rentable;
 import gui.Main;
 import gui.invoicestab.PersonPanel;
@@ -20,6 +19,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -46,13 +46,15 @@ public class ContractDialog extends JFrame {
 
     private Vector<Rentable> rentablesFromOwner;
 
+    private PersonInputPanel personInputPanel;
+
     private JComboBox cbbMonthFrom;
 	private JComboBox cbbYearFrom;
     private JComboBox cbbMonthTo;
 	private JComboBox cbbYearTo;
 
     private JTextField txtPrice;
-    private JTextField txtMontlyCost;
+    private JTextField txtMonthlyCost;
     private JTextField txtGuarantee;
 
     private JComboBox cbbRentable;
@@ -83,9 +85,11 @@ public class ContractDialog extends JFrame {
 
 		pnlPersons.add(new PersonPanel(Main.getDataObject().getPerson(ProgramSettings.getUserID()), Language.getString("homeOwner")), BorderLayout.LINE_START);
         if (contract == null) {
-            pnlPersons.add(new PersonInputPanel(null, Language.getString("renter")), BorderLayout.LINE_END);
+            personInputPanel = new PersonInputPanel(null, Language.getString("renter"));
+            pnlPersons.add(personInputPanel, BorderLayout.LINE_END);
         } else {
-            pnlPersons.add(new PersonInputPanel(contract.getRenter(), Language.getString("renter")), BorderLayout.LINE_END);
+            personInputPanel = new PersonInputPanel(contract.getRenter(), Language.getString("renter"));
+            pnlPersons.add(personInputPanel, BorderLayout.LINE_END);
         }
 
         // eID
@@ -116,26 +120,45 @@ public class ContractDialog extends JFrame {
 
 		cbbMonthFrom = new JComboBox(Language.getMonthsOfYear());
 		pnlDates.add(cbbMonthFrom);
+        if (contract == null) {
+            cbbMonthFrom.setSelectedIndex(0);
+        } else {
+            cbbMonthFrom.setSelectedIndex(contract.getStart().getMonth());
+        }
 
 		cbbYearFrom = new JComboBox();
-		int year = GregorianCalendar.getInstance().get(Calendar.YEAR);
-		for (int i = year; i < year + 100; i++) {
+		int yearFrom = GregorianCalendar.getInstance().get(Calendar.YEAR) - 10;
+		for (int i = yearFrom; i < yearFrom + 100; i++) {
 			cbbYearFrom.addItem(i);
 		}
-		cbbYearFrom.setSelectedIndex(0);
-		pnlDates.add(cbbYearFrom);
+        pnlDates.add(cbbYearFrom);
+        if (contract == null) {
+            cbbYearFrom.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR));
+        } else {
+            cbbYearFrom.setSelectedItem(contract.getStart().getYear());
+        }
 
 		pnlDates.add(new JLabel(Language.getString("to")));
 
 		cbbMonthTo = new JComboBox(Language.getMonthsOfYear());
 		pnlDates.add(cbbMonthTo);
+        if (contract == null) {
+            cbbMonthTo.setSelectedIndex(0);
+        } else {
+            cbbMonthTo.setSelectedIndex(contract.getEnd().getMonth());
+        }
 
 		cbbYearTo = new JComboBox();
-		for (int i = year; i < year + 100; i++) {
+        int yearTo = GregorianCalendar.getInstance().get(Calendar.YEAR) - 10 + 1;
+		for (int i = yearTo; i < yearTo + 100; i++) {
 			cbbYearTo.addItem(i);
 		}
-		cbbYearTo.setSelectedIndex(0);
-		pnlDates.add(cbbYearTo);
+        pnlDates.add(cbbYearTo);
+        if (contract == null) {
+            cbbYearTo.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR) + 1);
+        } else {
+            cbbYearTo.setSelectedItem(contract.getEnd().getYear());
+        }
 
         // kosten: price
         JPanel pnlPrice = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -158,13 +181,13 @@ public class ContractDialog extends JFrame {
         JLabel lblMonthlyCost = new JLabel(Language.getString("contractMonthlyCost") + ": ");
         pnlMontlyCost.add(lblMonthlyCost);
         if (contract == null) {
-            txtMontlyCost = new JTextField();
-            txtMontlyCost.setColumns(5);
-            pnlMontlyCost.add(txtMontlyCost);
+            txtMonthlyCost = new JTextField();
+            txtMonthlyCost.setColumns(5);
+            pnlMontlyCost.add(txtMonthlyCost);
         } else {
-            txtMontlyCost = new JTextField("" + contract.getMonthly_cost());
-            txtMontlyCost.setColumns(5);
-            pnlMontlyCost.add(txtMontlyCost);
+            txtMonthlyCost = new JTextField("" + contract.getMonthly_cost());
+            txtMonthlyCost.setColumns(5);
+            pnlMontlyCost.add(txtMonthlyCost);
         }
 
         // kosten: guarantee
@@ -195,7 +218,17 @@ public class ContractDialog extends JFrame {
                 System.out.println("Error in getting Address from building");
             }
         }
-        cbbRentable.setSelectedIndex(0);
+        if (contract == null) {
+            cbbRentable.setSelectedIndex(0);
+        } else {
+            int index = 0;
+            for (int i = 0; i < rentablesFromOwner.size(); i++) {
+                if (contract.getRentable().getId() == rentablesFromOwner.get(i).getId()) {
+                    index = i;
+                }
+            }
+            cbbRentable.setSelectedIndex(index);
+        }
         pnlRentable.add(cbbRentable);
 
         // final Buttons
@@ -237,7 +270,17 @@ public class ContractDialog extends JFrame {
     private void fetchDataFromEIDCard() {
         try {
             EIDPerson person = new EIDPerson();
-            System.out.println(person.toString());
+            personInputPanel.setTxtFirstName(person.getFirstName());
+            personInputPanel.setTxtName(person.getName());
+            Address homeAddress = person.getHomeAddress();
+            personInputPanel.setTxtStreet(homeAddress.getStreet());
+            personInputPanel.setTxtStreetNumber(homeAddress.getStreetNumber());
+            personInputPanel.setTxtZipCode(homeAddress.getZipcode());
+            personInputPanel.setTxtCountry(homeAddress.getCountry());
+            personInputPanel.setTxtCity(homeAddress.getCity());
+            personInputPanel.setTxtCellphone("");
+            personInputPanel.setTxtTelephone("");
+            personInputPanel.setTxtEmail("");
         } catch (Exception exc) {
             JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errFetchEIDPerson") + "\n" + exc.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -245,12 +288,37 @@ public class ContractDialog extends JFrame {
     }
 
     private void insertContract() {
-        // rentable exists so only the rentableID has to be determined
-//        int rentableID = ((Rentable)rentablesFromOwner.get(cbbRentable.getSelectedIndex())).getId();
+        // TODO: check if every field is filled in
+
+        // add person
+//        int personID = Main.getDataObject().addPerson("user", personInputPanel.getTxtStreet(), personInputPanel.getTxtStreetNumber(),
+//                                               personInputPanel.getTxtZipCode(), personInputPanel.getTxtCity(),
+//                                               personInputPanel.getTxtCountry(), personInputPanel.getTxtName(),
+//                                               personInputPanel.getTxtFirstName(), personInputPanel.getTxtEmail(),
+//                                               personInputPanel.getTxtTelephone(), personInputPanel.getTxtCellphone(),
+//                                               personInputPanel.getTxtFirstName(), personInputPanel.getTxtName());
+//        // TODO: check if person already exsits, if so use this person
+//
+//        // add contract
+//        Date startDate = new Date((Integer)cbbYearFrom.getSelectedItem(), (Integer)cbbMonthFrom.getSelectedItem(), 1);
+//        Date endDate = new Date((Integer)cbbYearTo.getSelectedItem(), (Integer)cbbMonthTo.getSelectedItem(), 1);
+//        Main.getDataObject().addContract(rentablesFromOwner.get(cbbRentable.getSelectedIndex()).getId(),
+//                                         personID, startDate, endDate,
+//                                         (Float)txtPrice.getText(), (Float)txtMonthlyCost.getText(), (Float)txtGuarantee.getText());
     }
 
     private void editContract() {
-
+//        Main.getDataObject().updatePerson(contract.getRenter().getId(), "user", personInputPanel.getTxtStreet(), personInputPanel.getTxtStreetNumber(),
+//                                               personInputPanel.getTxtZipCode(), personInputPanel.getTxtCity(),
+//                                               personInputPanel.getTxtCountry(), personInputPanel.getTxtName(),
+//                                               personInputPanel.getTxtFirstName(), personInputPanel.getTxtEmail(),
+//                                               personInputPanel.getTxtTelephone(), personInputPanel.getTxtCellphone(),
+//                                               personInputPanel.getTxtFirstName(), personInputPanel.getTxtName());
+//        Date startDate = new Date((Integer)cbbYearFrom.getSelectedItem(), (Integer)cbbMonthFrom.getSelectedItem(), 1);
+//        Date endDate = new Date((Integer)cbbYearTo.getSelectedItem(), (Integer)cbbMonthTo.getSelectedItem(), 1);
+//        Main.getDataObject().updateContract(contract.getId(), rentablesFromOwner.get(cbbRentable.getSelectedIndex()).getId(),
+//                                         contract.getRenter().getId(), startDate, endDate,
+//                                         (Float)txtPrice.getText(), (Float)txtMonthlyCost.getText(), (Float)txtGuarantee.getText());
     }
 
 }
