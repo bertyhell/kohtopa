@@ -220,19 +220,22 @@ public class Main extends JFrame {
 		JPanel pnlCalendar = new JPanel();
 		pnlCalendar.setLayout(new BorderLayout());
 
-		JPanel pnlButtonsCalendar = new JPanel();
-		pnlButtonsCalendar.setBackground(new Color(180, 180, 180, 100));
-		pnlCalendar.add(pnlButtonsCalendar, BorderLayout.PAGE_START);
+		//TODO 5 change workflow to fit rest of app > on click > select cel > then use buttons on top
+		//make tasks idividually selectable in mini lists for each cel
 
-		JButton btnAddTask = new JButton(actions.get("taskAdd"));
-		btnAddTask.setHideActionText(disableBtnText);
-		pnlButtonsCalendar.add(btnAddTask);
-		JButton btnEditTask = new JButton(actions.get("taskEdit"));
-		btnEditTask.setHideActionText(disableBtnText);
-		pnlButtonsCalendar.add(btnEditTask);
-		JButton btnRemoveTask = new JButton(actions.get("taskRemove"));
-		btnRemoveTask.setHideActionText(disableBtnText);
-		pnlButtonsCalendar.add(btnRemoveTask);
+//		JPanel pnlButtonsCalendar = new JPanel();
+//		pnlButtonsCalendar.setBackground(new Color(180, 180, 180, 100));
+//		pnlCalendar.add(pnlButtonsCalendar, BorderLayout.PAGE_START);
+//
+//		JButton btnAddTask = new JButton(actions.get("taskAdd"));
+//		btnAddTask.setHideActionText(disableBtnText);
+//		pnlButtonsCalendar.add(btnAddTask);
+//		JButton btnEditTask = new JButton(actions.get("taskEdit"));
+//		btnEditTask.setHideActionText(disableBtnText);
+//		pnlButtonsCalendar.add(btnEditTask);
+//		JButton btnRemoveTask = new JButton(actions.get("taskRemove"));
+//		btnRemoveTask.setHideActionText(disableBtnText);
+//		pnlButtonsCalendar.add(btnRemoveTask);
 
 		JPanel pnlDays = new CalendarPanel();
 		pnlDays.setPreferredSize(new Dimension(500, 600));

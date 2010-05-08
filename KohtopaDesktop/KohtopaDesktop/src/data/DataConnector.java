@@ -282,6 +282,7 @@ public class DataConnector {
 				psAddAddress.setString(5, country);
 				psAddAddress.execute();
 				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
+				System.out.println("error in checkaddress");
 				if (addressID == null) {
 					System.out.println("addressid is null *********************");
 				}
@@ -754,7 +755,6 @@ public class DataConnector {
 			Connection conn = geefVerbinding();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContracts);
-				ps.setInt(1, ownerID);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
 					Person renter = new Person(
