@@ -85,7 +85,7 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 			scrolRentable.setViewportView(lstRentables);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to get buildings info \n" + ex.getMessage(), "title", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to get buildings info \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
