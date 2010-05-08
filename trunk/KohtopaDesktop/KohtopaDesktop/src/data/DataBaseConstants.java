@@ -133,8 +133,8 @@ public class DataBaseConstants {
 //	public static String pw = "admin";
 	public static String pw = "e=mc**2"; //ruben
 	public static String driver = "oracle.jdbc.driver.OracleDriver";
-//	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
+//	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
 			+ " FROM " + tablePersons

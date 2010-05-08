@@ -66,4 +66,16 @@ public class EIDPerson {
                homeAddress.toString() + "\n";
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }
