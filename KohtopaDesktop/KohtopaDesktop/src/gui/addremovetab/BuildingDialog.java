@@ -38,13 +38,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 	public BuildingDialog(Window parent, int buildingId, boolean newBuilding) {
 		this.buildingId = buildingId;
 		instance = this;
-//		this.addWindowFocusListener(new WindowAdapter() {
-//
-//			@Override
-//			public void windowGainedFocus(WindowEvent e) {
-//				Main.setFocusedDialog(instance);
-//			}
-//		});
 		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setPreferredSize(new Dimension(1000, 600));
@@ -294,7 +287,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
 		if (newBuilding) {
 			//add building to database
-			System.out.println("adding add handler");
 			btnConfirm.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -311,7 +303,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 			});
 		} else {
 			//update database
-			System.out.println("adding update handler");
 			btnConfirm.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -432,15 +423,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		fillInfo(false);
 	}
 
-	public void UpdatePictures() {
-		lstPicture.repaint();
-	}
-
-	public void UpdateDataLists() {
-		lstFloors.repaint();
-		lstRentables.repaint();
-	}
-
 	public Object[] getSelectedPictures() {
 		return lstPicture.getSelectedValues();
 	}
@@ -455,5 +437,33 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 	public int getBuildingId() {
 		return buildingId;
+	}
+
+	public int getId() {
+		return buildingId;
+	}
+
+	public void updateRentableList() {
+		try {
+			lstRentables.setListData(Main.getDataObject().getRentablePreviews(buildingId));
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect rentables from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void updateFloorList() {
+		try {
+			lstFloors.setListData(Main.getDataObject().getFloors(buildingId));
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect floors from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void updatePictureList() {
+		try {
+			lstPicture.setListData(Main.getDataObject().getPicturesFromBuilding(buildingId));
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect pictures from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

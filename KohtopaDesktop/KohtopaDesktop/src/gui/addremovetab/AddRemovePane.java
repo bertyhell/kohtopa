@@ -1,5 +1,6 @@
 package gui.addremovetab;
 
+import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import data.DataModel;
 import data.entities.Building;
@@ -21,7 +22,7 @@ import javax.swing.ListSelectionModel;
  *
  * @author Bert Verhelst <verhelst_bert@hotmail.com>
  */
-public class AddRemovePane extends JPanel {
+public class AddRemovePane extends JPanel implements IBuildingListContainer, IRentableListContainer {
 
 	private AddRemovePane instance;
 	private JList lstBuildings;
@@ -42,42 +43,6 @@ public class AddRemovePane extends JPanel {
 			splitter.setDividerSize(10);
 			this.add(splitter, BorderLayout.CENTER);
 
-
-
-
-
-
-
-
-//
-//				try {
-//			lmBuilding.updateItems();
-//			return true;
-//		} catch (SQLException ex) {
-//			SplashConnect.hideSplash();
-//			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			//TODO add connection string settings
-//
-//			return false;
-//		} catch (IOException ex) {
-//			SplashConnect.hideSplash();
-//			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errImagesFetchFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			//TODO add connection string settings
-//
-//			return false;
-//		}
-
-
-
-
-
-
-
-
-
-
-
-			//TODO fix list (delete listmodels) do it Jelle's way
 			//building preview list
 			lstBuildings = new JList(data.getBuildingPreviews());
 			lstBuildings.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -90,7 +55,7 @@ public class AddRemovePane extends JPanel {
 					if (e.getClickCount() == 2) {
 						//open building dialog
 						new BuildingDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId(), false).setVisible(true);
-					}else{
+					} else {
 						try {
 							instance.getLstRentables().setListData(instance.getDataModel().getRentablesFromBuilding(((Building) lstBuildings.getSelectedValue()).getId()));
 						} catch (SQLException ex) {
@@ -115,15 +80,6 @@ public class AddRemovePane extends JPanel {
 						//open rentable dialog
 						new RentableDialog(Main.getInstance(), ((Rentable) lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 					}
-//					else {
-//						try {
-//							//select rentable
-//							//DataModel.setRentableIndex(lstRentables.locationToIndex(e.getPoint()));
-//						} catch (Exception ex) {
-//							//FIXME exception opsplitsen, translation messages
-//							JOptionPane.showMessageDialog(Main.getInstance(), "Couldn't connect to database\n" + ex.getMessage(), "connection failed", JOptionPane.ERROR_MESSAGE);
-//						}
-//					}
 				}
 			});
 
@@ -133,19 +89,51 @@ public class AddRemovePane extends JPanel {
 		}
 	}
 
-	public int[] getSelectedBuildings() {
-		return lstBuildings.getSelectedIndices();
-	}
-
-	public int[] getSelectedRentables() {
-		return lstRentables.getSelectedIndices();
-	}
-
 	public JList getLstRentables() {
 		return lstRentables;
 	}
 
 	public DataModel getDataModel() {
 		return data;
+	}
+
+	public int getId() {
+		if (lstRentables.getSelectedIndices().length == 0) {
+			return ((Building) lstBuildings.getSelectedValue()).getId();
+		} else {
+			return ((Rentable) lstRentables.getSelectedValue()).getId();
+		}
+	}
+
+	public Object[] getSelectedBuildings() {
+		return lstBuildings.getSelectedValues();
+	}
+
+	public Object[] getSelectedRentables() {
+		return lstRentables.getSelectedValues();
+	}
+
+	public int getBuildingId() throws WrongNumberOfSelectedItemsException {
+		if (lstBuildings.getSelectedValues().length == 1) {
+			return ((Building) lstBuildings.getSelectedValue()).getId();
+		} else {
+			throw new WrongNumberOfSelectedItemsException("please select 1 building");
+		}
+	}
+
+	public void updateBuildingList() {
+		try {
+			lstBuildings.setListData(data.getBuildingPreviews());
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect buildings from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	public void updateRentableList() {
+		try {
+			lstRentables.setListData(data.getRentablePreviews(((Building) instance.getSelectedBuildings()[0]).getId()));
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect rentables from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

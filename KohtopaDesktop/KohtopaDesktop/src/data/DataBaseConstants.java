@@ -251,6 +251,7 @@ public class DataBaseConstants {
 	public static String selectFloors = "SELECT " + floor
 			+ " FROM " + tableRentablesRead
 			+ " WHERE " + buildingID + " = ?";
+	public static String deleteRentable = "DELETE FROM " + tableRentablesWrite + " WHERE " + rentableID + " = ?";
 	//pictures
 	public static String insertPicture = "INSERT INTO " + tablePicturesWrite + " VALUES (0,?,?,?)";
 	public static String deletePicture = "DELETE FROM " + tablePicturesWrite + " WHERE " + pictureID + " = ?";

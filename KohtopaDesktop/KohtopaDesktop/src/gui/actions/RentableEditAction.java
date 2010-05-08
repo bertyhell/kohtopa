@@ -2,6 +2,7 @@ package gui.actions;
 
 import Language.Language;
 import data.entities.Rentable;
+import gui.JActionButton;
 import gui.Main;
 import gui.addremovetab.IRentableListContainer;
 import gui.addremovetab.RentableDialog;
@@ -22,7 +23,7 @@ public class RentableEditAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object[] selected = ((IRentableListContainer)((JComponent)e.getSource()).getRootPane()).getSelectedRentables();
+		Object[] selected = ((IRentableListContainer)((JActionButton)e.getSource()).getRoot()).getSelectedRentables();
 		if (selected.length == 1) {
 			new RentableDialog(Main.getInstance(), ((Rentable)selected[0]).getId(), false).setVisible(true);
 			//TODO getinstance isn't correct cause it can also be a building dialog, how to fix?

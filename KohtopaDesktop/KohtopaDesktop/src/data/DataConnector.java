@@ -17,7 +17,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -39,7 +38,6 @@ import java.util.HashMap;
 public class DataConnector {
 
 	//TODO add aspectJ for dataconnection to avoid duplicate code
-
 	/**
 	 * initiazlize, registers and starts the JDBC oracle-driver
 	 */
@@ -62,7 +60,7 @@ public class DataConnector {
 	private static Connection geefVerbinding() throws SQLException {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
 	}
-	
+
 	/**
 	 * Makes a connection
 	 * @return the connection
@@ -74,7 +72,7 @@ public class DataConnector {
 
 	/**
 	 * Fetches buildingPreviews from the database
-	 * @return an ArrayList of buildings
+	 * @return an Vector of buildings
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
@@ -109,12 +107,12 @@ public class DataConnector {
 
 //	/**
 //	 * Fetches buildingPreviews from the database
-//	 * @return an ArrayList of buildings
+//	 * @return an Vector of buildings
 //	 * @throws SQLException thrown if something goes wrong with the select statements
 //	 * @throws IOException thrown if there is a problem fetching the images
 //	 */
-//	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
-//		ArrayList<Building> buildings = new ArrayList<Building>();
+//	public static Vector<Building> selectBuildingPreviews() throws SQLException, IOException {
+//		Vector<Building> buildings = new Vector<Building>();
 //		Connection conn = geefVerbinding();
 //		try {
 //			Statement selectBuildings = conn.createStatement();
@@ -143,7 +141,7 @@ public class DataConnector {
 //	}
 	/**
 	 * Fetches renter previews from the database
-	 * @return an ArrayList of renters
+	 * @return an Vector of renters
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
@@ -243,7 +241,9 @@ public class DataConnector {
 			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
 			//adding building with correct address id
 			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.insertBuilding);
-			if(addressID == null) System.out.println("addressid is null *********************");
+			if (addressID == null) {
+				System.out.println("addressid is null *********************");
+			}
 			psAddBuilding.setInt(1, addressID);
 			psAddBuilding.execute();
 			psAddBuilding.close();
@@ -282,7 +282,9 @@ public class DataConnector {
 				psAddAddress.setString(5, country);
 				psAddAddress.execute();
 				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
-				if(addressID == null) System.out.println("addressid is null *********************");
+				if (addressID == null) {
+					System.out.println("addressid is null *********************");
+				}
 			}
 		} catch (SQLException ex) {
 			System.out.println("sql exception in addadress: " + ex.getMessage());
@@ -305,12 +307,11 @@ public class DataConnector {
 		Integer id = null;
 		try {
 			PreparedStatement psCheckAddress = null;
-			if(connected){
+			if (connected) {
 				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressConnected);
-			}else{
+			} else {
 				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressNotConnected);
 			}
-			System.out.println("command: " + DataBaseConstants.checkAddressNotConnected);
 			psCheckAddress.setString(1, street);
 			psCheckAddress.setString(2, streetNumber);
 			psCheckAddress.setString(3, zip);
@@ -320,8 +321,7 @@ public class DataConnector {
 			if (rsCheck.next()) {
 				//address already exists
 				id = rsCheck.getInt(DataBaseConstants.addressID);
-				System.out.println("id: " + id);
-			}else{
+			} else {
 				System.out.println("address nog niet gevonden");
 			}
 			rsCheck.close();
@@ -441,8 +441,6 @@ public class DataConnector {
 		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePicture);
-			System.out.println("command: " + DataBaseConstants.deletePicture);
-			System.out.println("deleting picture");
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			ps.close();
@@ -459,7 +457,7 @@ public class DataConnector {
 	 * @return the pictures for the building
 	 * @throws SQLException thrown if the select fails
 	 */
-	public static ArrayList<Picture> getBuildingPictures(int id) throws SQLException {
+	public static Vector<Picture> getBuildingPictures(int id) throws SQLException {
 		return getPictures(id, true);
 	}
 
@@ -469,7 +467,7 @@ public class DataConnector {
 	 * @return the pictures for the building
 	 * @throws SQLException thrown if the select fails
 	 */
-	public static ArrayList<Picture> getRentablePictures(int id) throws SQLException {
+	public static Vector<Picture> getRentablePictures(int id) throws SQLException {
 		return getPictures(id, false);
 	}
 
@@ -480,8 +478,8 @@ public class DataConnector {
 	 * @return the pictures gotten
 	 * @throws SQLException thrown if select fails
 	 */
-	private static ArrayList<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
-		ArrayList<Picture> pictures = new ArrayList<Picture>();
+	private static Vector<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
+		Vector<Picture> pictures = new Vector<Picture>();
 		try {
 			Connection conn = geefVerbindingOwner();
 			try {
@@ -550,9 +548,9 @@ public class DataConnector {
 	 * Gets the tasks from the database
 	 * @return the tasks in the database
 	 */
-	public static HashMap<Integer, ArrayList<Task>> getTasks() {
+	public static HashMap<Integer, Vector<Task>> getTasks() {
 		//TODO: select by rentable/owner/...?
-		HashMap<Integer, ArrayList<Task>> tasks = new HashMap<Integer, ArrayList<Task>>();
+		HashMap<Integer, Vector<Task>> tasks = new HashMap<Integer, Vector<Task>>();
 		try {
 			Connection conn = geefVerbinding();
 			try {
@@ -570,7 +568,7 @@ public class DataConnector {
 
 					int key = CalendarModel.getKey(start);
 					if (!tasks.containsKey(key)) {
-						tasks.put(key, new ArrayList<Task>());
+						tasks.put(key, new Vector<Task>());
 					}
 					tasks.get(key).add(new Task(taskID, rentableID, description, start, end, repeats));
 					i++;
@@ -711,7 +709,7 @@ public class DataConnector {
 	/**
 	 * Gets the renters of a certain owner
 	 * @param ownerID the id of the owner
-	 * @return an ArrayList of persons containing the renters of an owner
+	 * @return an Vector of persons containing the renters of an owner
 	 */
 	public static Vector<Person> getRenters(int ownerID) {
 		Vector<Person> renters = new Vector<Person>();
@@ -887,24 +885,19 @@ public class DataConnector {
 	public static void updateMessageState(Message m) {
 		try {
 			Connection conn = geefVerbindingOwner();
-
 			try {
-				//setMessageReplied = "update " + tableMessages + " set "+
-				//read + " = 2 where " + text + " = ?  and "+senderID+" = ? and "+recipientID+" = ? and "
-				//+dateSent+" = ?";
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateMessageReplied);
 				ps.setString(1, m.getRead());
 				ps.setString(2, m.getText());
 				ps.setInt(3, m.getSenderID());
 				ps.setInt(4, m.getRecipient());
 				ps.setTimestamp(5, new java.sql.Timestamp(m.getDate().getTime()));
-
 				ps.execute();
 			} finally {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			System.out.println("Error sending message: " + ex.getMessage());
+			System.out.println("Error setting message as read: " + ex.getMessage());
 		}
 	}
 
@@ -977,7 +970,7 @@ public class DataConnector {
 	/**
 	 * Getter for rentables from a building
 	 * @param buildingID the id to search for
-	 * @return an ArrayList containting the rentables from a building
+	 * @return an Vector containting the rentables from a building
 	 * @throws SQLException thrown if the select fails
 	 */
 	public static Vector<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
@@ -1050,7 +1043,6 @@ public class DataConnector {
 		}
 		return rentable;
 	}
-
 
 	/**
 	 * gets floor id's of building
@@ -1200,14 +1192,12 @@ public class DataConnector {
 	 * gets utilities prices for renter in euro, eg: gas, electricity, water usage
 	 * @throws SQLException thrown if select fails
 	 */
-	static void getUtilitiesInvoiceItems(int renterId, ArrayList<InvoiceItem> items) throws SQLException {
+	static void getUtilitiesInvoiceItems(int renterId, Vector<InvoiceItem> items) throws SQLException {
 		try {
 			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectUtilities);
 				ps.setInt(1, renterId);
-				System.out.println("id: " + renterId);
-				System.out.println("command: " + DataBaseConstants.selectUtilities);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					items.add(new InvoiceItem(Language.getString("invoiceGas"), rs.getDouble(DataBaseConstants.gasPrice)));
@@ -1276,6 +1266,20 @@ public class DataConnector {
 
 		}
 
+	}
+
+	static void deleteRentable(int rentableId) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteRentable);
+			ps.setInt(1, rentableId);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			throw new SQLException("error in remobe rentable: " + rentableId + " from database: " + ex);
+		} finally {
+			conn.close();
+		}
 	}
 }
 

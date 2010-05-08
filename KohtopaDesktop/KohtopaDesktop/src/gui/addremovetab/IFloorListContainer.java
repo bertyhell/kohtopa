@@ -4,7 +4,8 @@ package gui.addremovetab;
  *
  * @author Bert Verhelst <verhelst_bert@hotmail.com>
  */
-public interface IFloorListContainer {
+public interface IFloorListContainer extends IIdentifiable{
 
 	public Object[] getSelectedFloors();
+	public void updateFloorList();
 }

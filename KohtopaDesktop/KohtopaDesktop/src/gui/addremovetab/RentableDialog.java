@@ -369,4 +369,12 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 	public void UpdateData() {
 		fillInfo(false);
 	}
+
+	public void updatePictureList() {
+		try {
+			lstPicture.setListData(Main.getDataObject().getPicturesFromRentable(rentableId));
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect pictures from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+	}
 }

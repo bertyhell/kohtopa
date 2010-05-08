@@ -1,10 +1,7 @@
 package data;
 
 import Exceptions.ContractNotValidException;
-import data.addremove.BuildingListModel;
-import data.addremove.RentableListModel;
 import Language.Language;
-import data.addremove.PictureListModel;
 import gui.Main;
 import data.entities.Building;
 import data.entities.Contract;
@@ -15,7 +12,6 @@ import data.entities.Picture;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
@@ -27,11 +23,11 @@ public class DataModel {
 	//and it will also be used to cach certain data (like images and the global list of buildings
 	//TODO add caching + options on timeout in settings
 	private Integer ownerId;
-	private int lastPictureDialogId;
-	private int lastPictureDialogType;
+//	private int lastPictureDialogId;
+//	private int lastPictureDialogType;
 //	private BuildingListModel lmBuilding;
 //	private RentableListModel lmRentable;
-	private PictureListModel lmPicture;
+//	private PictureListModel lmPicture;
 //	private static int buildingIndex;
 //	private static int rentableIndex;
 //	private static int pictureIndex;
@@ -112,7 +108,6 @@ public class DataModel {
 //		lmRentable.updateItems(lmBuilding.getId(buildingIndex));
 //		return lmRentable;
 //	}
-
 	public Vector<Person> getRenters() {
 		return DataConnector.getRenters(ownerId);
 	}
@@ -168,7 +163,6 @@ public class DataModel {
 //	public boolean isRentableSelected() {
 //		return rentableIndex != -1;
 //	}
-
 //	public int getSelectedRentableId() {
 //		return lmRentable.getRentableAt(rentableIndex).getId();
 //	}
@@ -214,7 +208,6 @@ public class DataModel {
 //			return false;
 //		}
 //	}
-
 	public int getOwnerId() {
 		return ownerId;
 	}
@@ -240,41 +233,62 @@ public class DataModel {
 		return ownerId != null;
 	}
 
-
 	public void addBuildingImage(int buildingId, BufferedImage img) throws SQLException, IOException {
-
-			DataConnector.addBuildingPicture(buildingId, img);
-
-		//lists verwittigen
-		lmPicture.addElement(new Picture(buildingId, img));
-		Main.updatePictureLists();//TODO observer pattern toepassen
+		DataConnector.addBuildingPicture(buildingId, img);
 	}
 
 	public void addRentableImage(int rentableId, BufferedImage img) throws SQLException, IOException {
-
-			DataConnector.addRentablePicture(rentableId, img);
-		//lists verwittigen
-		lmPicture.addElement(new Picture(rentableId, img));
-		Main.updatePictureLists();//TODO observer pattern toepassen
+		DataConnector.addRentablePicture(rentableId, img);
 	}
 
-	public void deleteSelectedPictures(int[] indexs) throws SQLException {
-		lmPicture.removeSelectedPictures(indexs);
-	}
-
-	public void deleteSelectedBuildings(Object[] selected) {
-		for (int i = selected.length - 1; i >= 0; i--) {
-			//TODO check if building is empty > remove
-			//else ask to remove rentables > remove rent then remove building
+	public void deleteSelectedPictures(Vector<Integer> ids) throws SQLException {
+		for (Integer id : ids) {
+			DataConnector.removePicture(id); //TODO more efficient in dataconnector?
 		}
 	}
 
-	public void addBuildingPreviewPicture(int id, int index) throws SQLException {
-		DataConnector.addBuildingPreviewPicture(id, lmPicture.getElementAt(index).getPicture());
+	public void deleteSelectedBuildings(Vector<Integer> ids) {
+						//TODO check if building is empty > remove
+				//else ask to remove rentables > remove rent then remove building
+		boolean continueWithouthConfirm = false;
+		for (int i = ids.size() - 1; i >= 0; i--) {
+			try {
+				//delete building
+				
+
+
+
+			} catch (Exception ex) {//TODO 010 fix this exception use > check if there are any rentables in building yourself
+				System.out.println("exception during deletion building: \n" + ex.getMessage());
+				if (!continueWithouthConfirm) {
+					Object[] options = {"Always", "Once", "Abort"};
+					int choise = JOptionPane.showOptionDialog(
+							Main.getInstance(),
+							"One of the selected buildings still contain rentables. \nContinue with deletion?",
+							Language.getString("confirm"),
+							JOptionPane.YES_NO_CANCEL_OPTION,
+							JOptionPane.QUESTION_MESSAGE,
+							null,
+							options,
+							options[2]);
+					if (choise == 0) {
+						continueWithouthConfirm = true;
+					} else if (choise == 2) {
+						return; //abort delete
+					}
+				}
+				//delete rentables and building
+
+			}
+		}
 	}
 
-	public void addRentablePreviewPicture(int id, int index) throws SQLException {
-		DataConnector.addRentablePreviewPicture(id, lmPicture.getElementAt(index).getPicture());
+	public void addBuildingPreviewPicture(int id, BufferedImage img) throws SQLException {
+		DataConnector.addBuildingPreviewPicture(id, img);
+	}
+
+	public void addRentablePreviewPicture(int id, BufferedImage img) throws SQLException {
+		DataConnector.addRentablePreviewPicture(id, img);
 	}
 
 	public void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
@@ -289,8 +303,8 @@ public class DataModel {
 		return DataConnector.getFloors(buildingId);
 	}
 
-	public ArrayList<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
-		ArrayList<InvoiceItem> items = new ArrayList<InvoiceItem>();
+	public Vector<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
+		Vector<InvoiceItem> items = new Vector<InvoiceItem>();
 
 		//monthly cost
 		try {
@@ -329,7 +343,21 @@ public class DataModel {
 		}
 	}
 
-	public Vector<Building> getBuildingPreviews() throws SQLException, IOException{
+	public Vector<Building> getBuildingPreviews() throws SQLException, IOException {
 		return DataConnector.selectBuildingPreviews();
+	}
+
+	public void deleteSelectedRentables(Vector<Integer> selected) throws SQLException {
+		for (Integer id : selected) {
+			DataConnector.deleteRentable(id);
+		}
+	}
+
+	public Vector<Picture> getPicturesFromBuilding(int buildingId) throws SQLException {
+		return DataConnector.getBuildingPictures(buildingId);
+	}
+
+	public Vector<Picture> getPicturesFromRentable(int rentableId) throws SQLException {
+		return DataConnector.getRentablePictures(rentableId);
 	}
 }

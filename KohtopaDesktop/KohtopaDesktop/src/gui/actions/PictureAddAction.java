@@ -8,11 +8,16 @@ import gui.actions.filefilters.FileFilterImage;
 import gui.actions.filefilters.FileFilterJpg;
 import gui.actions.filefilters.FileFilterPng;
 import gui.addremovetab.IBuildingListContainer;
+import gui.addremovetab.IIdentifiable;
+import gui.addremovetab.IPictureListContainer;
+import gui.addremovetab.IRentableListContainer;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -42,27 +47,28 @@ public class PictureAddAction extends AbstractIconAction {
 		if (fc.showOpenDialog(((JComponent) e.getSource()).getTopLevelAncestor()) == JFileChooser.APPROVE_OPTION) {
 			//open button was pressed
 			File[] sourceimages = fc.getSelectedFiles();
+			JRootPane root = ((JComponent) e.getSource()).getRootPane();
+			System.out.println("root: " + root);
 
 			try {
 				// Read from Filelist
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
 					//in database laden
-//					int id = Main.getFocusedDialog().getId();
-//					String type = Main.getFocusedDialog().getType();
-					JRootPane root = ((JComponent) e.getSource()).getRootPane();
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
 					System.out.println("images add must be implemented");
-//					if (root instanceof IBuildingListContainer) {
-//						//add building picture
-//						Main.getDataObject().addBuildingImage(id, img);
-//					} else {
-//						// add rentable picture
-//						Main.getDataObject().addRentableImage(id, img);
-//					}
+					if (root instanceof IRentableListContainer) {
+						//add building picture
+						Main.getDataObject().addBuildingImage(((IIdentifiable) root).getId(), img);
+					} else {
+						// add rentable picture
+						Main.getDataObject().addRentableImage(((IIdentifiable) root).getId(), img);
+					}
+					//update list
+					((IPictureListContainer) root).updatePictureList();
 				}
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-//			} catch (SQLException ex) {
-//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException ex) {
 				//ex.printStackTrace();
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errReadingImage") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
