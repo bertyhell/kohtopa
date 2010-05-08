@@ -11,14 +11,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import javax.swing.*;
 import data.entities.Rentable;
-import java.awt.event.WindowAdapter;
-import java.io.IOException;
+import java.awt.Window;
 
-public class RentableDialog extends JFrame implements IdentifiableI {
+public class RentableDialog extends JFrame implements IPictureListContainer {
 
 	private RentableDialog instance;
 	private int rentableId;
@@ -35,16 +33,16 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 	private JLabel lblPreview;
 	private JList lstPicture;
 
-	public RentableDialog(JRootPane parent, int id, boolean newRentable) { //TODO when new rentable > use id as building id
+	public RentableDialog(Window parent, int id, boolean newRentable) { //TODO when new rentable > use id as building id
 		this.rentableId = id;
 		instance = this;
-		this.addWindowFocusListener(new WindowAdapter() {
-
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-				Main.setFocusedDialog(instance);
-			}
-		});
+//		this.addWindowFocusListener(new WindowAdapter() {
+//
+//			@Override
+//			public void windowGainedFocus(WindowEvent e) {
+//				Main.setFocusedDialog(instance);
+//			}
+//		});
 		setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setPreferredSize(new Dimension(700, 500));
@@ -301,10 +299,10 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 
 				lblPreview.setIcon(rentable.getPreviewImage());
 
-				//TODO make multihreaded
-				lstPicture.setModel(Main.getDataObject().updateRentablePictures(rentableId));
-			} catch (IOException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
+//				//TODO make multihreaded
+//				lstPicture.setModel(Main.getDataObject().updateRentablePictures(rentableId));
+//			} catch (IOException ex) {
+//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
 
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(this, Language.getString("errRentableData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -357,15 +355,15 @@ public class RentableDialog extends JFrame implements IdentifiableI {
 	}
 
 	public void UpdatePictures() {
-		lstPicture.repaint();
+		//lstPicture.repaint();
 	}
 
 	public void UpdateDataLists() {
 		//TODO add current user to rentable dialog
 	}
 
-	public int[] getSelectedPictures() {
-		return lstPicture.getSelectedIndices();
+	public Object[] getSelectedPictures() {
+		return lstPicture.getSelectedValues();
 	}
 
 	public void UpdateData() {

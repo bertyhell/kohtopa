@@ -78,8 +78,8 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
-	public static ArrayList<Building> selectBuildingPreviews() throws SQLException, IOException {
-		ArrayList<Building> buildings = new ArrayList<Building>();
+	public static Vector<Building> selectBuildingPreviews() throws SQLException, IOException {
+		Vector<Building> buildings = new Vector<Building>();
 		Connection conn = geefVerbindingOwner();
 		try {
 			Statement selectBuildings = conn.createStatement();
@@ -980,8 +980,8 @@ public class DataConnector {
 	 * @return an ArrayList containting the rentables from a building
 	 * @throws SQLException thrown if the select fails
 	 */
-	public static ArrayList<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
-		ArrayList<Rentable> rentables = new ArrayList<Rentable>();
+	public static Vector<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
+		Vector<Rentable> rentables = new Vector<Rentable>();
 		try {
 			Connection conn = geefVerbindingOwner();
 			try {
@@ -1051,6 +1051,33 @@ public class DataConnector {
 		return rentable;
 	}
 
+
+	/**
+	 * gets floor id's of building
+	 * @param buildingId specifies what building to search in
+	 * @return Vector of integers that represent the floor id's
+	 * @throws SQLException thrown if select fails
+	 */
+	static Vector<Integer> getFloors(int buildingId) throws SQLException {
+		Vector<Integer> floors = new Vector<Integer>();
+		try {
+			Connection conn = geefVerbindingOwner();
+			try {
+				PreparedStatement psFloors = conn.prepareStatement(DataBaseConstants.selectFloors);
+				psFloors.setInt(1, buildingId);
+				ResultSet rsFloors = psFloors.executeQuery();
+				while (rsFloors.next()) {
+					floors.add(rsFloors.getInt(DataBaseConstants.floor));
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			throw new SQLException("error in get floors: " + ex.getMessage());
+		}
+		return floors;
+	}
+
 	/**
 	 * Checks the login
 	 * @param username the username to check
@@ -1084,7 +1111,7 @@ public class DataConnector {
 	 * Adds dummy pictures to the application
 	 */
 	public static void addDummyPictures() {
-		ArrayList<Building> buildings = null;
+		Vector<Building> buildings = null;
 		try {
 			BufferedImage imgRentable = ImageIO.read(new File("dummy_rentable_preview.png"));
 			BufferedImage imgBuildingPreview = ImageIO.read(new File("dummy_building_preview.png"));

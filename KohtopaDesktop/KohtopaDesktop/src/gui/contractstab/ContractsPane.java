@@ -12,6 +12,7 @@ import data.entities.Contract;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -33,6 +34,7 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
 
     public ContractsPane(DataModel data) {
         this.setLayout(new BorderLayout());
+		setPreferredSize(new Dimension(500, 600));
 
         JSplitPane sppUserlistContractsList = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         sppUserlistContractsList.setDividerSize(5);

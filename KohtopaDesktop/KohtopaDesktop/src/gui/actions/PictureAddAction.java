@@ -7,6 +7,7 @@ import gui.actions.filefilters.FileFilterGif;
 import gui.actions.filefilters.FileFilterImage;
 import gui.actions.filefilters.FileFilterJpg;
 import gui.actions.filefilters.FileFilterPng;
+import gui.addremovetab.IBuildingListContainer;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -18,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 
 public class PictureAddAction extends AbstractIconAction {
 
@@ -45,14 +47,22 @@ public class PictureAddAction extends AbstractIconAction {
 				// Read from Filelist
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
 					//in database laden
-					int id = Main.getFocusedDialog().getId();
-					String type = Main.getFocusedDialog().getType();
+//					int id = Main.getFocusedDialog().getId();
+//					String type = Main.getFocusedDialog().getType();
+					JRootPane root = ((JComponent) e.getSource()).getRootPane();
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
-					Main.getDataObject().addImage(id, type, img);
+					System.out.println("images add must be implemented");
+//					if (root instanceof IBuildingListContainer) {
+//						//add building picture
+//						Main.getDataObject().addBuildingImage(id, img);
+//					} else {
+//						// add rentable picture
+//						Main.getDataObject().addRentableImage(id, img);
+//					}
 				}
-				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"),Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+//			} catch (SQLException ex) {
+//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException ex) {
 				//ex.printStackTrace();
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errReadingImage") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -1,11 +1,13 @@
 package gui.actions;
 
+import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import gui.Main;
-import gui.addremovetab.BuildingDialog;
+import gui.addremovetab.IRentableListContainer;
 import gui.addremovetab.RentableDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 /**
@@ -20,10 +22,11 @@ public class RentableAddAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (Main.getDataObject().isBuildingSelected()) {
-			new RentableDialog(null, Main.getDataObject().getSelectedBuildingId(), true).setVisible(true); //TODO show what building your adding the rentable to
-		} else {
-			JOptionPane.showMessageDialog(Main.getInstance(), "please select a building first \n", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		try {
+			new RentableDialog(null, ((IRentableListContainer) ((JComponent)e.getSource()).getRootPane()).getBuildingId(), true).setVisible(true); //TODO show what building your adding the rentable to
+		} catch (WrongNumberOfSelectedItemsException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 rentable to edit", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			//TODO main.getinstance isn't really correct
 		}
 	}
 }

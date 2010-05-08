@@ -12,15 +12,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import javax.swing.*;
 import data.entities.Building;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import data.entities.Rentable;
+import java.awt.Window;
+import java.util.Vector;
 
-public class BuildingDialog extends JFrame implements IdentifiableI {
+public class BuildingDialog extends JFrame implements IRentableListContainer, IFloorListContainer, IPictureListContainer {
 
 	private BuildingDialog instance;
 	private int buildingId;
@@ -34,18 +33,18 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 	private JButton btnConfirm;
 	private JLabel lblPreview;
 	private JList lstPicture;
-	private ArrayList<Integer> floors;
+	private Vector<Integer> floors;
 
-	public BuildingDialog(JRootPane parent, int buildingId, boolean newBuilding) {
+	public BuildingDialog(Window parent, int buildingId, boolean newBuilding) {
 		this.buildingId = buildingId;
 		instance = this;
-		this.addWindowFocusListener(new WindowAdapter() {
-
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-				Main.setFocusedDialog(instance);
-			}
-		});
+//		this.addWindowFocusListener(new WindowAdapter() {
+//
+//			@Override
+//			public void windowGainedFocus(WindowEvent e) {
+//				Main.setFocusedDialog(instance);
+//			}
+//		});
 		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setPreferredSize(new Dimension(1000, 600));
@@ -202,9 +201,8 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int index = lstFloors.locationToIndex(e.getPoint());
 				if (e.getClickCount() > 1) {
-					new FloorDialog(instance.getRootPane(), instance.getId(), floors.get(index), false).setVisible(true);
+					new FloorDialog(instance.getRootPane(), instance.getBuildingId(), (Integer)lstFloors.getSelectedValue(), false).setVisible(true);
 				}
 			}
 		});
@@ -248,7 +246,7 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 					if(instance == null){
 						System.out.println("instance == 0");
 					}
-					new RentableDialog(instance.getRootPane(), Main.getDataObject().getSelectedRentableId(index), false).setVisible(true);
+					new RentableDialog(instance, ((Rentable)lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 				}
 			}
 		});
@@ -321,7 +319,7 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 					System.out.println("click");
 					if(CheckInput()){
 						try {
-							Main.getDataObject().updateBuilding(instance.getId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
+							Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 						} catch (SQLException ex) {
 							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
@@ -336,10 +334,6 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 		fillInfo(newBuilding);
 		pack();
 		setLocationRelativeTo(parent);
-	}
-
-	public int getId() {
-		return buildingId;
 	}
 
 	public String getType() {
@@ -375,24 +369,24 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 
 				lblPreview.setIcon(building.getPreviewImage());
 
-				lstRentables.setModel(Main.getDataObject().getLmRentable());
+				lstRentables.setListData(Main.getDataObject().getRentablesFromBuilding(buildingId));
 
 				
-				floors = Main.getDataObject().getFloors();
-				lstFloors.setListData(floors.toArray());
+				floors = Main.getDataObject().getFloors(buildingId);
+				lstFloors.setListData(floors);
 				btnConfirm.setText(Language.getString("update"));
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 
-			try {
-				//TODO make multihreaded
-				lstPicture.setModel(Main.getDataObject().updateBuildingPictures(buildingId));
-			} catch (IOException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			}
+//			try {
+//				//TODO make multihreaded
+//				lstPicture.setModel(Main.getDataObject().updateBuildingPictures(buildingId));
+//			} catch (IOException ex) {
+//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
+//			} catch (SQLException ex) {
+//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//			}
 
 		}
 	}
@@ -447,7 +441,19 @@ public class BuildingDialog extends JFrame implements IdentifiableI {
 		lstRentables.repaint();
 	}
 
-	public int[] getSelectedPictures() {
-		return lstPicture.getSelectedIndices();
+	public Object[] getSelectedPictures() {
+		return lstPicture.getSelectedValues();
+	}
+
+	public Object[] getSelectedRentables() {
+		return lstRentables.getSelectedValues();
+	}
+
+	public Object[] getSelectedFloors() {
+		return lstFloors.getSelectedValues();
+	}
+
+	public int getBuildingId() {
+		return buildingId;
 	}
 }

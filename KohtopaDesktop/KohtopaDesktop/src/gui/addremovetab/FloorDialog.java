@@ -23,13 +23,13 @@ public class FloorDialog extends JFrame implements IdentifiableI {
 		this.buildingId = buildingId;
 		this.floor = floor;
 		instance = this;
-		this.addWindowFocusListener(new WindowAdapter() {
-
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-				Main.setFocusedDialog(instance);
-			}
-		});
+//		this.addWindowFocusListener(new WindowAdapter() {
+//
+//			@Override
+//			public void windowGainedFocus(WindowEvent e) {
+//				Main.setFocusedDialog(instance);
+//			}
+//		});
 		setTitle(Language.getString(newFloor ? "floorAdd" : "floorEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/floor_23.png")).getImage());
 		this.setPreferredSize(new Dimension(700, 600));
