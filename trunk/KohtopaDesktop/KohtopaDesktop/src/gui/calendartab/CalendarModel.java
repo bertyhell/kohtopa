@@ -7,7 +7,7 @@ package gui.calendartab;
 
 import data.DataConnector;
 import data.entities.Task;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,7 +27,7 @@ import javax.swing.event.ChangeListener;
 public class CalendarModel extends GregorianCalendar implements ChangeListener {
     //public static final long CONVERTMSTODAY = 86400000;
     CalendarPanel calendarPanel;
-    HashMap<Integer,ArrayList<Task>> tasks;
+    HashMap<Integer,Vector<Task>> tasks;
 
     /**
      * Creates a calendarModel with the given year, month, monitoring the given
@@ -39,7 +39,7 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
     protected CalendarModel(int year, int month, CalendarPanel panel) {
         super(year, month, 1);
         this.calendarPanel = panel;
-        tasks = new HashMap<Integer,ArrayList<Task>>();
+        tasks = new HashMap<Integer,Vector<Task>>();
         
         tasks = DataConnector.getTasks();
     }
@@ -55,7 +55,7 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         int key = getKey(task.getDate());
         if(!tasks.containsKey(key)) {
             //System.out.println("new date found: "+key);
-            tasks.put(key,new ArrayList<Task>());
+            tasks.put(key,new Vector<Task>());
         }
 
         tasks.get(key).add(task);
@@ -95,7 +95,7 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
             // add new task
             key = getKey(newTask.getDate());
             if(!tasks.containsKey(key)) {
-                tasks.put(key,new ArrayList<Task>());
+                tasks.put(key,new Vector<Task>());
             }
             tasks.get(key).add(newTask);
         }
@@ -134,7 +134,7 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
      * Getter for the tasks
      * @return the map representing all the tasks, keys are of form yyyymmdd
      */
-    public HashMap<Integer,ArrayList<Task>> getTasks() {
+    public HashMap<Integer,Vector<Task>> getTasks() {
         return tasks;
     }
 
@@ -142,22 +142,22 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
      * Setter for all tasks
      * @param tasks the hashmap containing the tasks
      */
-    public void setTasks(HashMap<Integer,ArrayList<Task>> tasks) {
+    public void setTasks(HashMap<Integer,Vector<Task>> tasks) {
         this.tasks = tasks;
     }
 
     /**
      * Getter for tasks for a day
      * @param day the day, hours, minutes, seconds and miliseconds do not matter
-     * @return arrayList containing tasks for that day, this will be an empty
+     * @return Vector containing tasks for that day, this will be an empty
      * array if there are no tasks
      */
-    public ArrayList<Task> getTasksForDay(Date day) {
+    public Vector<Task> getTasksForDay(Date day) {
         int key = getKey(day);
         if(tasks.containsKey(key))
             return tasks.get(key);
         //System.out.println("no tasks found");
-        return new ArrayList<Task>();
+        return new Vector<Task>();
     }
 
     /**

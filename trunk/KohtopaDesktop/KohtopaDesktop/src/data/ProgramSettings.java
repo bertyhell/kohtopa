@@ -35,7 +35,6 @@ public class ProgramSettings {
 
 	public static void write() {
 		try {
-			System.out.println("writing settings");
 			//create xml string
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
@@ -106,7 +105,7 @@ public class ProgramSettings {
 			BufferedWriter output = new BufferedWriter(new FileWriter(new File("settings.xml")));
 			output.write(xmlString);
 			output.close();
-			System.out.println("settings has been written");
+			System.out.println("Settings succesfully stored");
 
 		} catch (Exception e) {
 			System.out.println(e);

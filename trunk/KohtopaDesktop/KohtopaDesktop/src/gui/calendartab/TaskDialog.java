@@ -9,7 +9,7 @@ import data.entities.Task;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 import java.util.Date;
 import javax.swing.AbstractListModel;
@@ -35,7 +35,7 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
     private Box buttons;
     private static CalendarModel model;
     private static TaskDialog instance = new TaskDialog(Main.getInstance());
-    private static ArrayList<Task> taskList;
+    private static Vector<Task> taskList;
     private static Date date;
 
     /**
@@ -173,14 +173,14 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
      */
     private class CustomListModel extends AbstractListModel {
 
-        private ArrayList<Task> list;
+        private Vector<Task> list;
 
         /**
          * Creates a new CustomListModel
          */
         public CustomListModel() {
 
-            list = new ArrayList<Task>();
+            list = new Vector<Task>();
         }
 
         /**

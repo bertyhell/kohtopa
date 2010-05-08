@@ -280,7 +280,6 @@ public class InvoiceDialog extends JFrame {
 		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
 		if (newInvoice) {
 			//add new invoice
-			System.out.println("adding add handler");
 			btnConfirm.addMouseListener(new MouseAdapter() {
 
 				@Override
@@ -298,7 +297,6 @@ public class InvoiceDialog extends JFrame {
 			});
 		} else {
 			//update invoice in database
-			System.out.println("adding update handler");
 			btnConfirm.addMouseListener(new MouseAdapter() {
 
 				@Override

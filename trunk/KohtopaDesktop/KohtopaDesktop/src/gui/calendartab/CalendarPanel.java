@@ -11,7 +11,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.BorderFactory;
@@ -160,9 +160,9 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         JLabel l = (JLabel) calendar.getComponent(7 + place);
         l.setText(String.valueOf(number));
         if (white) {
-            l.setForeground(Color.white);
+            l.setForeground(Color.WHITE);
         } else {
-            l.setForeground(Color.black);
+            l.setForeground(Color.BLACK);
         }
     }
 
@@ -206,7 +206,7 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         // other rows
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
-                ArrayList<Task> tasks = model.getTasksForDay(cal.getTime());
+                Vector<Task> tasks = model.getTasksForDay(cal.getTime());
 
                 if (cal.get(CalendarModel.MONTH) == currMonth) {
                     CalendarSquare cs = new CalendarSquare(cal.getTime(), nextSquareOdd);

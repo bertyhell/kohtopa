@@ -1,7 +1,16 @@
 package gui.actions;
 
+import Language.Language;
+import data.entities.Picture;
+import gui.JActionButton;
+import gui.Main;
+import gui.addremovetab.IIdentifiable;
+import gui.addremovetab.IPictureListContainer;
+import gui.addremovetab.IRentableListContainer;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 
 public class PicturePreviewAction extends AbstractIconAction {
 
@@ -11,25 +20,23 @@ public class PicturePreviewAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-//		System.out.println("set preview");
-//		IdentifiableI dialog = Main.getFocusedDialog();
-//		int[] indexs = dialog.getSelectedPictures();
-//		System.out.println("index: " + indexs[0]);
-//		System.out.println("id: " +dialog.getId());
-		
-//		if (indexs.length != 1) {
-//			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("infoSelectPicture"), Language.getString("picture"), JOptionPane.INFORMATION_MESSAGE);
-//		} else {
-//			try {
-//				if (dialog.getType().equals("BuildingDialog")) {
-//					Main.getDataObject().addBuildingPreviewPicture(dialog.getId(),indexs[0]);
-//				} else {
-//					Main.getDataObject().addRentablePreviewPicture(dialog.getId(),indexs[0]);
-//				}
-//			} catch (SQLException ex) {
-//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			}
-//		}
-
+		System.out.println("set preview");
+		try {
+			IIdentifiable root = ((JActionButton) e.getSource()).getRoot();
+			Object[] selected = ((IPictureListContainer) root).getSelectedPictures();
+			if (selected.length == 1) {
+				if (root instanceof IRentableListContainer) {
+					//add building picture
+					Main.getDataObject().addBuildingPreviewPicture(root.getId(), ((Picture) selected[0]).getPicture());
+				} else {
+					// add rentable picture
+					Main.getDataObject().addRentablePreviewPicture(root.getId(), ((Picture) selected[0]).getPicture());
+				}
+			} else {
+				JOptionPane.showMessageDialog(Main.getInstance(), "Please select exacly 1 image to make preview", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

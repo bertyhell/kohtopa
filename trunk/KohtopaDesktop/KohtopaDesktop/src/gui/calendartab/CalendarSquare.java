@@ -9,7 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.BorderFactory;
@@ -37,9 +37,9 @@ public class CalendarSquare extends JPanel implements MouseListener {
      */
     public CalendarSquare(Date day, boolean currentMonth, boolean odd) {
         if (!currentMonth) {
-            foreColor = Color.white;
+            foreColor = Color.WHITE;
         } else {
-            foreColor = Color.black;
+            foreColor = Color.BLACK;
         }
 
         this.day = day;
@@ -97,7 +97,7 @@ public class CalendarSquare extends JPanel implements MouseListener {
      * Setter for the tasks for the square
      * @param tasks the tasks to set
      */
-    public void setTasks(ArrayList<Task> tasks) {
+    public void setTasks(Vector<Task> tasks) {
         if (tasks == null) {
             return;
         }
@@ -161,7 +161,7 @@ public class CalendarSquare extends JPanel implements MouseListener {
      * @param e
      */
     public void mouseEntered(MouseEvent e) {
-        setBackground(Color.BLACK);
+        setBackground(Color.DARK_GRAY);
         lblDay.setForeground(Color.white);
         lblTasks.setForeground(Color.white);
     }

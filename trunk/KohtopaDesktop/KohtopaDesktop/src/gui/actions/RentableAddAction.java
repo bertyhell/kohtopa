@@ -2,6 +2,7 @@ package gui.actions;
 
 import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
+import gui.JActionButton;
 import gui.Main;
 import gui.addremovetab.IRentableListContainer;
 import gui.addremovetab.RentableDialog;
@@ -23,7 +24,7 @@ public class RentableAddAction extends AbstractIconAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			new RentableDialog(null, ((IRentableListContainer) ((JComponent)e.getSource()).getRootPane()).getBuildingId(), true).setVisible(true); //TODO show what building your adding the rentable to
+			new RentableDialog(null, ((IRentableListContainer) ((JActionButton)e.getSource()).getRoot()).getBuildingId(), true).setVisible(true); //TODO show what building your adding the rentable to
 		} catch (WrongNumberOfSelectedItemsException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 rentable to edit", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			//TODO main.getinstance isn't really correct

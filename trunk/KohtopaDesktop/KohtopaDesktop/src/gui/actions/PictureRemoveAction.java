@@ -1,12 +1,18 @@
 package gui.actions;
 
 import Language.Language;
+import data.entities.Picture;
 import gui.Main;
+import gui.addremovetab.IIdentifiable;
+import gui.addremovetab.IPictureListContainer;
+import gui.addremovetab.IRentableListContainer;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
+import java.util.Vector;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.JRootPane;
 
 public class PictureRemoveAction extends AbstractIconAction {
 
@@ -16,15 +22,17 @@ public class PictureRemoveAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//TODO show message only if settings are true
-		if (JOptionPane.showConfirmDialog(((JComponent) e.getSource()).getRootPane(), Language.getString("confirmDeletePictures"), Language.getString("confirm"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
-			System.out.println("to be implemented");
-//			try {
-//				Main.getDataObject().deleteSelectedPictures(Main.getFocusedDialog().getSelectedPictures());
-//			Main.getFocusedDialog().UpdatePictures();
-//			} catch (SQLException ex) {
-//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-//			}
+		System.out.println("remove pictures");
+		try {
+			JRootPane root = ((JComponent) e.getSource()).getRootPane();
+			Vector<Integer> selected = new Vector<Integer>();
+			for(Object picture :  ((IPictureListContainer) root).getSelectedPictures()){
+				//getting list of picture id's to be deleted
+				selected.add(((Picture)picture).getId());
+			}
+			Main.getDataObject().deleteSelectedPictures(selected);
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

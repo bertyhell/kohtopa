@@ -4,7 +4,6 @@ package gui;
 //TODO add right click menu's in all panels
 //TODO logging
 //TODO add titles to all lists
-import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import data.DataConnector;
 import gui.messagetab.MessagePane;
@@ -20,10 +19,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
 import data.ProgramSettings;
-import data.entities.Building;
 import gui.addremovetab.AddRemovePane;
-import gui.addremovetab.IBuildingListContainer;
-import gui.addremovetab.IRentableListContainer;
 import gui.calendartab.CalendarPanel;
 import gui.contractstab.ContractsPane;
 import gui.invoicestab.InvoicesPane;
@@ -34,13 +30,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 
-public class Main extends JFrame implements IBuildingListContainer, IRentableListContainer {
+public class Main extends JFrame {
 
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
 	public final static boolean disableBtnText = false;
-	private JList lstBuildings;
-	private JList lstRentables;
 	private static DataModel data;
 	private JPanel pnlAddremove;
 	private JPanel pnlMessages;
@@ -51,8 +45,6 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 	private InvoicesPane pnlInvoicesInfo;
 	private ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
-//	private static ArrayList<IdentifiableI> dialogs; //TODO on close check all dialogs if they have any unsaved data
-	private static int focusedDialog;
 
 	/**
 	 * Getter for the main instance
@@ -73,7 +65,7 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 			JOptionPane.showMessageDialog(this, "Look and Feel not found, make sure you have latest java version\n" + ex.getMessage(), "Look and Feel not found", JOptionPane.ERROR_MESSAGE);
 		}
 		Language.read(); //reads strings in specific language from xml file
-		ProgramSettings.read(); //TODO fix, if needed do it manually with dom
+		ProgramSettings.read(); //reads settings from xml file using dom
 
 		setTitle(Language.getString("titleJFrameDesktopMain"));
 		data = new DataModel();
@@ -117,6 +109,8 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 		tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		this.add(tabbed, BorderLayout.CENTER);
 
+		pnlAddremoveInfo = new AddRemovePane(data);
+
 		//adding Add/Remove panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
@@ -145,16 +139,14 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/language_64.png")), createLanguagePanel(), Language.getString("descriptionLanguage"));
 		tabbed.setMnemonicAt(5, KeyEvent.VK_L);
 
-
 		//add tab contant dynamically
 		tabbed.addChangeListener(new ChangeListener() {
 
 			public void stateChanged(ChangeEvent e) {
 				int tab = tabbed.getSelectedIndex();
-				if (tab == 0) {
-//					pnlAddremoveInfo = new AddRemovePane(data);
-//					pnlAddremove.add(pnlAddremoveInfo, BorderLayout.CENTER);
-				} else if (tab == 2) {
+
+				//TODO 020 adjust tab 1 to fit like rest
+				if (tab == 2) {
 					pnlMessagesInfo = new MessagePane();
 					pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 				} else if (tab == 3 && pnlInvoicesInfo == null) {
@@ -166,12 +158,7 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 				}
 			}
 		});
-		pnlAddremoveInfo = new AddRemovePane(data);
 		pnlAddremove.add(pnlAddremoveInfo, BorderLayout.CENTER);
-
-
-
-
 
 		pack();
 		this.setLocationRelativeTo(null);
@@ -203,22 +190,21 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 		JButton btnAddBuilding = new JButton(Main.getAction("buildingAdd"));
 		pnlButtonsAddRemove.add(btnAddBuilding);
 
-		JButton btnEditBuilding = new JButton(Main.getAction("buildingEdit"));
+		JActionButton btnEditBuilding = new JActionButton(Main.getAction("buildingEdit"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnEditBuilding);
 
-		//TODO remove selected buildings > make it remove all selected buildings
 		//TODO also multiple selection on buildings > show multiple rentables
-		JButton btnRemoveBuilding = new JButton(Main.getAction("buildingRemove"));
+		JActionButton btnRemoveBuilding = new JActionButton(Main.getAction("buildingRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveBuilding);
 
 		//rentable operations
-		JButton btnAddRentable = new JButton(Main.getAction("rentableAdd"));
+		JActionButton btnAddRentable = new JActionButton(Main.getAction("rentableAdd"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnAddRentable);
 
-		JButton btnEditRentable = new JButton(Main.getAction("rentableEdit"));
+		JActionButton btnEditRentable = new JActionButton(Main.getAction("rentableEdit"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnEditRentable);
 
-		JButton btnRemoveRentable = new JButton(Main.getAction("rentableRemove"));
+		JActionButton btnRemoveRentable = new JActionButton(Main.getAction("rentableRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveRentable);
 
 		return pnlAddremove;
@@ -393,71 +379,12 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 	}
 
 	/**
-	 * Getter for selected buildings
-	 * @return and array of indexes of the selected buildings
-	 */
-	public Object[] getSelectedBuildings() {
-		return lstBuildings.getSelectedValues();
-	}
-
-	/**
-	 * Getter for selected rentables
-	 * @return and array of indexes of the selected rentables
-	 */
-	public Object[] getSelectedRentables() {
-		return lstRentables.getSelectedValues();
-	}
-
-	/**
 	 * Getter for the data object
 	 * @return the DataModel object
 	 */
 	public static DataModel getDataObject() {
 		return data;
 	}
-
-//	/**
-//	 * Getter for focused dialog
-//	 * @return focusedDialog
-//	 */
-//	public static IdentifiableI getFocusedDialog() {
-//		return dialogs.get(focusedDialog);
-//	}
-//
-//	/**
-//	 * Setter for focsed dialog
-//	 * @param dialog the dialog to focus
-//	 */
-//	public static void setFocusedDialog(IdentifiableI dialog) {
-//		int index = 0;
-//		while (index < dialogs.size() && dialogs.get(index) != dialog) {
-//			index++;
-//		}
-//		if (index == dialogs.size()) {
-//			focusedDialog = dialogs.size(); //equals the same line after "add" but with size()-1 (more efficient this way)
-//			dialogs.add(dialog);
-//		} else {
-//			focusedDialog = index;
-//		}
-//	}
-
-//	/**
-//	 * Updates the picture list
-//	 */
-//	public void updatePictureList() {
-//		for (IdentifiableI dialog : dialogs) {
-//			dialog.UpdatePictures(); //FIXME werkt nog niet goed (bij picture add)
-//		}
-//	}
-//
-//	/**
-//	 * Updates the data list
-//	 */
-//	public void updateDataList() {
-//		for (IdentifiableI dialog : dialogs) {
-//			dialog.UpdateDataLists();
-//		}
-//	}
 
 	/**
 	 * Rescales an image
@@ -487,12 +414,6 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 		}
 		return img;
 
-	}
-
-	/**
-	 * Updates the picture list
-	 */
-	public static void updatePictureLists() {
 	}
 
 	/**
@@ -564,13 +485,5 @@ public class Main extends JFrame implements IBuildingListContainer, IRentableLis
 				}
 			}
 		});
-	}
-
-	public int getBuildingId() throws WrongNumberOfSelectedItemsException{
-		if(lstBuildings.getSelectedValues().length == 1){
-			return ((Building)lstBuildings.getSelectedValue()).getId();
-		}else{
-			throw new WrongNumberOfSelectedItemsException("please select 1 building");
-		}
 	}
 }
