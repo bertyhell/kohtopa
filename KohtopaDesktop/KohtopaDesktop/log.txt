@@ -1,0 +1,67 @@
+------------------application started ---------------------
+logged in with stored pass
+Settings succesfully stored
+------------------application started ---------------------
+initializing DataConnector
+checking login
+logged in with stored pass
+Settings succesfully stored
+initializing DataConnector
+initializing DataModel
+getBuildingPreviews
+found 0 tasks.
+------------------application started ---------------------
+initializing DataConnector
+checking login
+logged in with stored pass
+getting Rentables by BuildingId
+found 32 messages.
+getting contracts
+getting Renters
+error setting read status on messages: ORA-01031: insufficient privileges
+
+[Ljava.lang.StackTraceElement;@14b9a74
+Settings succesfully stored
+initializing DataConnector
+initializing DataModel
+getBuildingPreviews
+found 0 tasks.
+------------------application started ---------------------
+initializing DataConnector
+checking login
+logged in with stored pass
+getting Rentables by BuildingId
+getting Rentable by id
+Settings succesfully stored
+initializing DataConnector
+initializing DataModel
+getBuildingPreviews
+found 0 tasks.
+------------------application started ---------------------
+initializing DataConnector
+checking login
+logged in with stored pass
+Settings succesfully stored
+initializing DataConnector
+initializing DataModel
+getBuildingPreviews
+found 0 tasks.
+------------------application started ---------------------
+initializing DataConnector
+checking login
+logged in with stored pass
+found 32 messages.
+getting Renters
+getting contracts
+getting Rentables by BuildingId
+found 32 messages.
+error setting read status on messages: ORA-01031: insufficient privileges
+
+[Ljava.lang.StackTraceElement;@1627c16
+error setting read status on messages: ORA-01031: insufficient privileges
+
+[Ljava.lang.StackTraceElement;@ce796
+error setting read status on messages: ORA-01031: insufficient privileges
+
+[Ljava.lang.StackTraceElement;@1e26602
+Settings succesfully stored

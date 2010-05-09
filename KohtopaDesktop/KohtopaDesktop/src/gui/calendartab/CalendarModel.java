@@ -54,7 +54,6 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
 
         int key = getKey(task.getDate());
         if(!tasks.containsKey(key)) {
-            //System.out.println("new date found: "+key);
             tasks.put(key,new Vector<Task>());
         }
 
@@ -125,7 +124,6 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         int key = c.get(Calendar.DATE);
         key += c.get(Calendar.MONTH)*100;
         key += c.get(Calendar.YEAR)*10000;
-        //System.out.println(key);
 
         return key;
     }
@@ -156,7 +154,6 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
         int key = getKey(day);
         if(tasks.containsKey(key))
             return tasks.get(key);
-        //System.out.println("no tasks found");
         return new Vector<Task>();
     }
 

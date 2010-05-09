@@ -234,10 +234,9 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				int index = lstRentables.locationToIndex(e.getPoint());
 				if (e.getClickCount() > 1) {
 					if(instance == null){
-						System.out.println("instance == 0");
+						Main.logger.error("instance == null in buildingdialog");
 					}
 					new RentableDialog(instance, ((Rentable)lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 				}
@@ -307,7 +306,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					System.out.println("click");
 					if(CheckInput()){
 						try {
 							Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));

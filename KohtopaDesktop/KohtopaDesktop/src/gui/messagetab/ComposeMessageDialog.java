@@ -100,7 +100,7 @@ public class ComposeMessageDialog extends JDialog {
         content.add(new JLabel("To: ",JLabel.LEFT),gbc);
 
         // combobox with renters
-        Vector<Person> renterList = DataConnector.getRenters(ProgramSettings.getUserID());
+        Vector<Person> renterList = DataConnector.getRenters(ProgramSettings.getOwnerID());
         renters = new JComboBox();
 
         for(Person p:renterList) {
@@ -137,7 +137,7 @@ public class ComposeMessageDialog extends JDialog {
 
                 DataConnector.sendMessage(
                         new Message(((Person)renters.getSelectedItem()).getId(),
-                        ProgramSettings.getUserID(),
+                        ProgramSettings.getOwnerID(),
                         ProgramSettings.getUsername(),
                         subject.getText(),
                         new Date(System.currentTimeMillis()),

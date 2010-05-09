@@ -22,7 +22,6 @@ public class PictureRemoveAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("remove pictures");
 		try {
 			JRootPane root = ((JComponent) e.getSource()).getRootPane();
 			Vector<Integer> selected = new Vector<Integer>();

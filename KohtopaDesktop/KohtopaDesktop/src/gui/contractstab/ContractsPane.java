@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gui.contractstab;
 
 import data.DataConnector;
@@ -43,10 +38,7 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
         add(sppUserlistContractsList, BorderLayout.CENTER);
 
         //list of contracts on the left
-        contracts = data.getContracts(ProgramSettings.getUserID());
-        DefaultListModel dlm = new DefaultListModel();
-        initiateJList(dlm, contracts);
-		lstContracts = new JList(dlm);
+		lstContracts = new JList(data.getContracts());
 		lstContracts.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstContracts.setBackground(new Color(217, 217, 217));
 		lstContracts.setCellRenderer(new ContractCellRenderer());
@@ -94,11 +86,4 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
         }
         this.updateUI();
     }
-
-    public void initiateJList(DefaultListModel dlm, Vector<Contract> contracts) {
-        for (Contract contract: contracts) {
-            dlm.addElement(contract);
-        }
-    }
-
 }

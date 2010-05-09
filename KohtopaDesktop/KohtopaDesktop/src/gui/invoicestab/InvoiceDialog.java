@@ -327,14 +327,14 @@ public class InvoiceDialog extends JFrame {
 
 			//create item elements of every item in table
 			for (Object item : tmInvoices.getDataVector()) {
-				Element invoiceItem = doc.createElement("invoice_item");
-				Element desc = doc.createElement("description");
-				desc.setTextContent(((Vector<Object>) item).get(0).toString());
-				invoiceItem.appendChild(desc);
-				Element price = doc.createElement("price");
-				price.setTextContent(((Vector<Object>) item).get(1).toString());
-				invoiceItem.appendChild(price);
-				root.appendChild(invoiceItem);
+					Element invoiceItem = doc.createElement("invoice_item");
+					Element desc = doc.createElement("description");
+					desc.setTextContent(((Vector<Object>) item).get(0).toString());
+					invoiceItem.appendChild(desc);
+					Element price = doc.createElement("price");
+					price.setTextContent(((Vector<Object>) item).get(1).toString());
+					invoiceItem.appendChild(price);
+					root.appendChild(invoiceItem);
 			}
 
 			//owner info
@@ -399,9 +399,11 @@ public class InvoiceDialog extends JFrame {
 			DOMSource source = new DOMSource(doc);
 			trans.transform(source, result);
 
-			System.out.println("xml: " + sw.toString());
+			Main.logger.info("xml stored in database: \n" + sw.toString() + "\n\n");
 			return sw.toString();
 		} catch (Exception ex) {
+			Main.logger.error("Failed to generate XML file: " + ex.getMessage());
+			Main.logger.debug(ex.getStackTrace());
 			throw new XmlGenerationException("Failed to generate XML file:\n" + ex.getMessage());
 		}
 	}
@@ -424,6 +426,7 @@ public class InvoiceDialog extends JFrame {
 				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)) {
 			return true;
 		} else {
+			Main.logger.error(Language.getString("errInvoiceDates") + " in checkInput of invoice Dialog");
 			JOptionPane.showMessageDialog(instance, Language.getString("errInvoiceDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}

@@ -13,6 +13,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -23,24 +24,31 @@ import gui.addremovetab.AddRemovePane;
 import gui.calendartab.CalendarPanel;
 import gui.contractstab.ContractsPane;
 import gui.invoicestab.InvoicesPane;
+import gui.userstab.UsersPane;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 public class Main extends JFrame {
 
+	public static Logger logger = Logger.getRootLogger();
 	private static Main instance = new Main();
 	private static HashMap<String, Action> actions;
 	public final static boolean disableBtnText = false;
 	private static DataModel data;
 	private JPanel pnlAddremove;
+	private JPanel pnlUsers;
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
 	private JPanel pnlContracts;
 	private AddRemovePane pnlAddremoveInfo;
+	private UsersPane pnlUsersInfo;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
 	private ContractsPane pnlContractsInfo;
@@ -59,17 +67,22 @@ public class Main extends JFrame {
 	 */
 	private Main() {
 		try {
+			logger.addAppender(new FileAppender(new PatternLayout(), "log.txt"));
+		} catch (IOException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+		}
+		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception ex) {
-			System.out.println("");
+			Main.logger.warn("Look and Feel not found");
 			JOptionPane.showMessageDialog(this, "Look and Feel not found, make sure you have latest java version\n" + ex.getMessage(), "Look and Feel not found", JOptionPane.ERROR_MESSAGE);
 		}
 		Language.read(); //reads strings in specific language from xml file
 		ProgramSettings.read(); //reads settings from xml file using dom
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		setTitle(Language.getString("titleJFrameDesktopMain"));
 		data = new DataModel();
-//		dialogs = new ArrayList<IdentifiableI>();
 
 		//actions
 		actions = new HashMap<String, Action>();
@@ -77,6 +90,9 @@ public class Main extends JFrame {
 		actions.put("buildingAdd", new BuildingAddAction("buildingAdd", new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
 		actions.put("buildingEdit", new BuildingEditAction("buildingEdit", new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
 		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove", new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
+		actions.put("userAdd", new UserAddAction("userAdd", new ImageIcon(getClass().getResource("/images/user_add_23.png"))));
+		actions.put("userEdit", new UserEditAction("userEdit", new ImageIcon(getClass().getResource("/images/user_edit_23.png"))));
+		actions.put("userRemove", new UserRemoveAction("userRemove", new ImageIcon(getClass().getResource("/images/user_remove_23.png"))));
 		actions.put("pictureAdd", new PictureAddAction("pictureAdd", new ImageIcon(getClass().getResource("/images/picture_add_23.png"))));
 		actions.put("picturePreview", new PicturePreviewAction("picturePreview", new ImageIcon(getClass().getResource("/images/picture_preview_23.png"))));
 		actions.put("pictureRemove", new PictureRemoveAction("pictureRemove", new ImageIcon(getClass().getResource("/images/picture_remove_23.png"))));
@@ -103,16 +119,21 @@ public class Main extends JFrame {
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 		this.setExtendedState(this.getExtendedState() | Main.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		//TODO add onclose handler > check if dialogs have changed data if so ask if user wants to save
+		//TODO 001 add onclose handler > check if dialogs have changed data if so ask if user wants to save
 		this.setMinimumSize(new Dimension(370, 300));
 		this.setLayout(new BorderLayout());
 		tabbed = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		this.add(tabbed, BorderLayout.CENTER);
 
-		pnlAddremoveInfo = new AddRemovePane(data);
 
 		//adding Add/Remove panel
+		pnlAddremoveInfo = new AddRemovePane(data);
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/building_64.png")), createAddRemovePanel(), Language.getString("descriptionAddRemove"));
+		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+		pnlAddremove.add(pnlAddremoveInfo, BorderLayout.CENTER);
+
+		//adding Users panel
+		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/user_64.png")), createUsers(), Language.getString("descriptionUsers"));
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
 
 		//adding Calendar panel
@@ -129,13 +150,13 @@ public class Main extends JFrame {
 
 		//adding Contracts panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/contract_64.png")), createContractsPanel(), Language.getString("descriptionContracts"));
-		tabbed.setMnemonicAt(4, KeyEvent.VK_O);
+		tabbed.setMnemonicAt(4, KeyEvent.VK_C);
 
 //		//adding Settings Panel
 //		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
 //		tabbed.setMnemonicAt(5, KeyEvent.VK_S);
 
-		//adding Language Panel
+		//adding Language Panel //TODO 060 make language adjust
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/language_64.png")), createLanguagePanel(), Language.getString("descriptionLanguage"));
 		tabbed.setMnemonicAt(5, KeyEvent.VK_L);
 
@@ -158,7 +179,7 @@ public class Main extends JFrame {
 				}
 			}
 		});
-		pnlAddremove.add(pnlAddremoveInfo, BorderLayout.CENTER);
+
 
 		pack();
 		this.setLocationRelativeTo(null);
@@ -168,7 +189,7 @@ public class Main extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				//TODO check all open windows (dialogs) if there is unsaved data and request to save
+				//TODO 010 check all open windows (dialogs) if there is unsaved data and request to save
 				ProgramSettings.write();//store settings
 			}
 		});
@@ -207,7 +228,34 @@ public class Main extends JFrame {
 		JActionButton btnRemoveRentable = new JActionButton(Main.getAction("rentableRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveRentable);
 
+
+
 		return pnlAddremove;
+	}
+
+	/**
+	 * Creates the users panel
+	 * @return the users panel
+	 */
+	private JPanel createUsers() {
+		pnlUsers = new JPanel();
+		pnlUsers.setLayout(new BorderLayout());
+
+		JPanel pnlButtonsUsers = new JPanel();
+		pnlButtonsUsers.setBackground(new Color(180, 180, 180, 100));
+		pnlUsers.add(pnlButtonsUsers, BorderLayout.PAGE_START);
+
+		//user operations
+		JButton btnAddUser = new JButton(Main.getAction("userAdd"));
+		pnlButtonsUsers.add(btnAddUser);
+
+		JActionButton btnEditUser = new JActionButton(Main.getAction("userEdit"), pnlAddremoveInfo);
+		pnlButtonsUsers.add(btnEditUser);
+
+		JActionButton btnRemoveUser = new JActionButton(Main.getAction("userRemove"), pnlAddremoveInfo);
+		pnlButtonsUsers.add(btnRemoveUser);
+
+		return pnlUsers;
 	}
 
 	/**
@@ -458,6 +506,13 @@ public class Main extends JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
+
+
+
+				logger.setLevel(ProgramSettings.getLoggerLevel());
+
+				logger.info("------------------application started ---------------------");
+
 				boolean loginChecked = false;
 				DataConnector.init();
 				//check settings if remember pass is true:
@@ -465,11 +520,13 @@ public class Main extends JFrame {
 					//check if stored pass is correct
 					if (Main.getDataObject().checkLogin(ProgramSettings.getUsername(), ProgramSettings.getPassword())) {
 						loginChecked = true;
+						logger.info("logged in with stored pass");
 					} else {
 						//check user for login
 						new LoginDialog(instance, data).setVisible(true);
 						if (data.isLoggedIn()) {
 							loginChecked = true;
+							logger.info("logged in bu entering login data");
 						}
 					}
 				} else {
@@ -484,6 +541,7 @@ public class Main extends JFrame {
 					//logged in
 					Main.getInstance();
 				} else {
+					logger.info("program closed before login");
 					Main.getInstance().dispose();
 				}
 			}

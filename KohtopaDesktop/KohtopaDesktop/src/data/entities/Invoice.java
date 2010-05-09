@@ -25,9 +25,6 @@ public class Invoice {
 	}
 
 	public Person getOwner() {
-		if(owner == null){
-			System.out.println("owner is null");
-		}
 		return owner;
 	}
 
