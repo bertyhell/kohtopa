@@ -37,7 +37,6 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
      */
     public CalendarPanel() {
         this(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH));
-        //System.out.println(Calendar.getInstance().getTimeInMillis()-System.currentTimeMillis());
     }
 
     /**

@@ -11,6 +11,7 @@ import floorallocationmodule.objects.FireExtinguisher;
 import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.EmergencyExit;
 import floorallocationmodule.view.FloorImage;
+import gui.Main;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
@@ -247,7 +248,7 @@ public class FloorContent {
                 toBeRemoved = namedPolygon;
             }
         }
-        namedPolygons.remove(toBeRemoved);
+        namedPolygons.remove((NamedPolygon)toBeRemoved);
         toBeRemoved = null;
 
         for (Camera camera: cameras) {
@@ -255,7 +256,7 @@ public class FloorContent {
                 toBeRemoved = camera;
             }
         }
-        cameras.remove(toBeRemoved);
+        cameras.remove((Camera)toBeRemoved);
         toBeRemoved = null;
 
         for (FireExtinguisher fireExtinguisher: fireExtinguishers) {
@@ -263,7 +264,7 @@ public class FloorContent {
                 toBeRemoved = fireExtinguisher;
             }
         }
-        fireExtinguishers.remove(toBeRemoved);
+        fireExtinguishers.remove((FireExtinguisher)toBeRemoved);
         toBeRemoved = null;
 
         for (EmergencyExit emergencyExit: emergencyExits) {
@@ -271,7 +272,7 @@ public class FloorContent {
                 toBeRemoved = emergencyExit;
             }
         }
-        emergencyExits.remove(toBeRemoved);
+        emergencyExits.remove((EmergencyExit)toBeRemoved);
 
         floorImage.repaint();
     }
@@ -286,7 +287,7 @@ public class FloorContent {
             Point translatedPoint = new Point(point.x+floorImage.getImageRectangle().x,
                    point.y+floorImage.getImageRectangle().y );
             if(!floorImage.getImageRectangle().contains(translatedPoint)) {
-                //System.out.println("out of bounds");
+				Main.logger.warn("out of bounds problem in checkAvailability in floorContent");
                 return false;
             }
         } else {

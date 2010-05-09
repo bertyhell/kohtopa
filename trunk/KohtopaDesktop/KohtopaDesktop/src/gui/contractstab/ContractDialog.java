@@ -19,7 +19,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Vector;
 import javax.swing.BorderFactory;
@@ -64,7 +63,7 @@ public class ContractDialog extends JFrame {
 
         this.contract = contract;
 
-        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getUserID());
+        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getOwnerID());
         
         setTitle(Language.getString(contract == null ? "contractAdd" : "contractEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/contract_64.png")).getImage());
@@ -83,7 +82,7 @@ public class ContractDialog extends JFrame {
 		pnlInfo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		pnlInfo.add(pnlPersons, BorderLayout.NORTH);
 
-		pnlPersons.add(new PersonPanel(Main.getDataObject().getPerson(ProgramSettings.getUserID()), Language.getString("homeOwner")), BorderLayout.LINE_START);
+		pnlPersons.add(new PersonPanel(Main.getDataObject().getPerson(ProgramSettings.getOwnerID()), Language.getString("homeOwner")), BorderLayout.LINE_START);
         if (contract == null) {
             personInputPanel = new PersonInputPanel(null, Language.getString("renter"));
             pnlPersons.add(personInputPanel, BorderLayout.LINE_END);
@@ -120,10 +119,14 @@ public class ContractDialog extends JFrame {
 
 		cbbMonthFrom = new JComboBox(Language.getMonthsOfYear());
 		pnlDates.add(cbbMonthFrom);
+
+		Calendar contractStartDate = Calendar.getInstance();
+		contractStartDate.setTime(contract.getStart());
+
         if (contract == null) {
             cbbMonthFrom.setSelectedIndex(0);
         } else {
-            cbbMonthFrom.setSelectedIndex(contract.getStart().getMonth());
+            cbbMonthFrom.setSelectedIndex(contractStartDate.get(Calendar.MONTH));
         }
 
 		cbbYearFrom = new JComboBox();
@@ -135,17 +138,20 @@ public class ContractDialog extends JFrame {
         if (contract == null) {
             cbbYearFrom.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR));
         } else {
-            cbbYearFrom.setSelectedItem(contract.getStart().getYear());
+            cbbYearFrom.setSelectedItem(contractStartDate.get(Calendar.YEAR));
         }
 
 		pnlDates.add(new JLabel(Language.getString("to")));
+
+		Calendar contractEndDate = Calendar.getInstance();
+		contractStartDate.setTime(contract.getEnd());
 
 		cbbMonthTo = new JComboBox(Language.getMonthsOfYear());
 		pnlDates.add(cbbMonthTo);
         if (contract == null) {
             cbbMonthTo.setSelectedIndex(0);
         } else {
-            cbbMonthTo.setSelectedIndex(contract.getEnd().getMonth());
+            cbbMonthTo.setSelectedIndex(contractEndDate.get(Calendar.MONTH));
         }
 
 		cbbYearTo = new JComboBox();
@@ -157,7 +163,7 @@ public class ContractDialog extends JFrame {
         if (contract == null) {
             cbbYearTo.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR) + 1);
         } else {
-            cbbYearTo.setSelectedItem(contract.getEnd().getYear());
+            cbbYearTo.setSelectedItem(contractEndDate.get(Calendar.YEAR));
         }
 
         // kosten: price
@@ -214,8 +220,9 @@ public class ContractDialog extends JFrame {
             try {
                 Address address = ((Building)Main.getDataObject().getBuilding(rentable.getBuildingID())).getAddress();
                 cbbRentable.addItem(address.getStreetLine() + ", " + address.getZipcode() + " " + address.getCity() + ",  " + address.getCountry() + ": " + rentable.getDescription());
-            } catch (Exception exc) {
-                System.out.println("Error in getting Address from building");
+            } catch (Exception ex) {
+				Main.logger.error("Error in getting Address from building: " + ex.getMessage());
+				Main.logger.debug(ex.getStackTrace());
             }
         }
         if (contract == null) {

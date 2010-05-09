@@ -1,5 +1,6 @@
 package data;
 
+import gui.Main;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,6 +13,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.log4j.Level;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -23,15 +25,9 @@ public class ProgramSettings {
 	private static String connectionstring;
 	private static String username;
 	private static String password;
-        private static int userID;
+	private static int ownerId;
 	private static boolean savePass;
-	//confirm settings
-	private static boolean confirmDeleteBuildings;
-	private static boolean confirmDeletePictures;
-	private static boolean confirmDeleteRentables;
-	private static boolean confirmDeleteTasks;
-	private static boolean confirmDeleteInvoices;
-	private static boolean confirmDeleteFloors;
+	private static Level loggerLevel;
 
 	public static void write() {
 		try {
@@ -62,28 +58,8 @@ public class ProgramSettings {
 			child.setTextContent(savePass ? "true" : "false");
 			root.appendChild(child);
 
-			child = doc.createElement("confirmDeleteBuildings");
-			child.setTextContent(confirmDeleteBuildings ? "true" : "false");
-			root.appendChild(child);
-
-			child = doc.createElement("confirmDeletePictures");
-			child.setTextContent(confirmDeletePictures ? "true" : "false");
-			root.appendChild(child);
-
-			child = doc.createElement("confirmDeleteRentables");
-			child.setTextContent(confirmDeleteRentables ? "true" : "false");
-			root.appendChild(child);
-
-			child = doc.createElement("confirmDeleteTasks");
-			child.setTextContent(confirmDeleteTasks ? "true" : "false");
-			root.appendChild(child);
-
-			child = doc.createElement("confirmDeleteInvoices");
-			child.setTextContent(confirmDeleteInvoices ? "true" : "false");
-			root.appendChild(child);
-
-			child = doc.createElement("confirmDeleteFloors");
-			child.setTextContent(confirmDeleteFloors ? "true" : "false");
+			child = doc.createElement("loggerLevel");
+			child.setTextContent(loggerLevel.toString());
 			root.appendChild(child);
 
 			//Output the XML
@@ -105,54 +81,40 @@ public class ProgramSettings {
 			BufferedWriter output = new BufferedWriter(new FileWriter(new File("settings.xml")));
 			output.write(xmlString);
 			output.close();
-			System.out.println("Settings succesfully stored");
 
-		} catch (Exception e) {
-			System.out.println(e);
+			Main.logger.info("Settings succesfully stored");
+		} catch (Exception ex) {
+			Main.logger.warn("wrong parameters added to jar: \n" + ex.getMessage());
 		}
 	}
 
 	public static void read() {
 		File file = new File("settings.xml");
 		if (file.exists()) {
-			try{
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
-			doc.getDocumentElement().normalize();
+			try {
+				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+				DocumentBuilder db = dbf.newDocumentBuilder();
+				Document doc = db.parse(file);
+				doc.getDocumentElement().normalize();
 
-			//reading vars
-			NodeList nodeLst = doc.getElementsByTagName("connectionstring");
-			connectionstring = nodeLst.item(0).getTextContent();
+				//reading vars
+				NodeList nodeLst = doc.getElementsByTagName("connectionstring");
+				connectionstring = nodeLst.item(0).getTextContent();
 
-			nodeLst = doc.getElementsByTagName("username");
-			username = nodeLst.item(0).getTextContent();
+				nodeLst = doc.getElementsByTagName("username");
+				username = nodeLst.item(0).getTextContent();
 
-			nodeLst = doc.getElementsByTagName("password");
-			password = nodeLst.item(0).getTextContent();
-			
-			nodeLst = doc.getElementsByTagName("savePass");
-			savePass = nodeLst.item(0).getTextContent().equals("true") ? true : false;
+				nodeLst = doc.getElementsByTagName("password");
+				password = nodeLst.item(0).getTextContent();
 
-			nodeLst = doc.getElementsByTagName("confirmDeleteBuildings");
-			confirmDeleteBuildings = nodeLst.item(0).getTextContent().equals("true") ? true : false;
+				nodeLst = doc.getElementsByTagName("savePass");
+				savePass = nodeLst.item(0).getTextContent().equals("true") ? true : false;
 
-			nodeLst = doc.getElementsByTagName("confirmDeletePictures");
-			confirmDeletePictures = nodeLst.item(0).getTextContent().equals("true") ? true : false;
+				nodeLst = doc.getElementsByTagName("loggerLevel");
+				loggerLevel = Level.toLevel(nodeLst.item(0).getTextContent(), Level.ALL);
 
-			nodeLst = doc.getElementsByTagName("confirmDeleteRentables");
-			confirmDeleteRentables = nodeLst.item(0).getTextContent().equals("true") ? true : false;
-
-			nodeLst = doc.getElementsByTagName("confirmDeleteTasks");
-			confirmDeleteTasks = nodeLst.item(0).getTextContent().equals("true") ? true : false;
-
-			nodeLst = doc.getElementsByTagName("confirmDeleteInvoices");
-			confirmDeleteInvoices = nodeLst.item(0).getTextContent().equals("true") ? true : false;
-
-			nodeLst = doc.getElementsByTagName("confirmDeleteFloors");
-			confirmDeleteFloors = nodeLst.item(0).getTextContent().equals("true") ? true : false;
-			}catch(Exception ex){
-				System.out.println("couln't read settings file (using defaults): \n" + ex.getMessage()); //add to log file
+			} catch (Exception ex) {
+				Main.logger.warn("couln't read settings file (using defaults): \n" + ex.getMessage());
 				setDefaults();
 			}
 		} else {
@@ -164,15 +126,10 @@ public class ProgramSettings {
 		//default settings:
 		username = "";
 		password = "";
-                userID = 0;
+		ownerId = 0;
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
-		confirmDeleteBuildings = true;
-		confirmDeletePictures = true;
-		confirmDeleteRentables = true;
-		confirmDeleteTasks = true;
-		confirmDeleteInvoices = true;
-		confirmDeleteFloors = true;
+		loggerLevel = Level.OFF;
 	}
 
 	public static String getConnectionstring() {
@@ -199,60 +156,12 @@ public class ProgramSettings {
 		ProgramSettings.password = password;
 	}
 
-        public static int getUserID() {
-            return userID;
-        }
-
-        public static void setUserID(int userID) {
-            ProgramSettings.userID = userID;
-        }
-
-	public static boolean confirmDeleteBuildings() {
-		return confirmDeleteBuildings;
+	public static int getOwnerID() {
+		return ownerId;
 	}
 
-	public static void setconfirmDeleteBuildings(boolean confirmDeleteBuildings) {
-		ProgramSettings.confirmDeleteBuildings = confirmDeleteBuildings;
-	}
-
-	public static boolean confirmDeleteFloors() {
-		return confirmDeleteFloors;
-	}
-
-	public static void setconfirmDeleteFloors(boolean confirmDeleteFloors) {
-		ProgramSettings.confirmDeleteFloors = confirmDeleteFloors;
-	}
-
-	public static boolean confirmDeleteInvoices() {
-		return confirmDeleteInvoices;
-	}
-
-	public static void setconfirmDeleteInvoices(boolean confirmDeleteInvoices) {
-		ProgramSettings.confirmDeleteInvoices = confirmDeleteInvoices;
-	}
-
-	public static boolean confirmDeletePictures() {
-		return confirmDeletePictures;
-	}
-
-	public static void setconfirmDeletePictures(boolean confirmDeletePictures) {
-		ProgramSettings.confirmDeletePictures = confirmDeletePictures;
-	}
-
-	public static boolean confirmDeleteRentables() {
-		return confirmDeleteRentables;
-	}
-
-	public static void setconfirmDeleteRentables(boolean confirmDeleteRentables) {
-		ProgramSettings.confirmDeleteRentables = confirmDeleteRentables;
-	}
-
-	public static boolean confirmDeleteTasks() {
-		return confirmDeleteTasks;
-	}
-
-	public static void setconfirmDeleteTasks(boolean confirmDeleteTasks) {
-		ProgramSettings.confirmDeleteTasks = confirmDeleteTasks;
+	public static void setOwnerID(int userID) {
+		ProgramSettings.ownerId = userID;
 	}
 
 	public static boolean isRemeberPassword() {
@@ -261,5 +170,13 @@ public class ProgramSettings {
 
 	public static void setRemeberPassword(boolean remeberPassword) {
 		ProgramSettings.savePass = remeberPassword;
+	}
+
+	public static boolean isSavePass() {
+		return savePass;
+	}
+
+	public static Level getLoggerLevel() {
+		return loggerLevel;
 	}
 }

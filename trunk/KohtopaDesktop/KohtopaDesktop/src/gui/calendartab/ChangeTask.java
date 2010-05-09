@@ -149,7 +149,7 @@ public class ChangeTask extends JDialog {
         //JPanel rentablePanel = new JPanel();
 
         // add rentables to rentablePicker
-        Vector<Rentable> rentables = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getUserID());
+        Vector<Rentable> rentables = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getOwnerID());
         rentablePicker = new JComboBox();
         for(Rentable r:rentables)
             rentablePicker.addItem(r);

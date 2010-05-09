@@ -48,13 +48,12 @@ public class PictureAddAction extends AbstractIconAction {
 			//open button was pressed
 			File[] sourceimages = fc.getSelectedFiles();
 			JRootPane root = ((JComponent) e.getSource()).getRootPane();
-			System.out.println("root: " + root);
-
 			try {
 				// Read from Filelist
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
 					//in database laden
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
+					Main.logger.error("images add must be implemented");
 					System.out.println("images add must be implemented");
 					if (root instanceof IRentableListContainer) {
 						//add building picture

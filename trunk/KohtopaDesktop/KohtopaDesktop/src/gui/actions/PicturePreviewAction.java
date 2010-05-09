@@ -20,7 +20,6 @@ public class PicturePreviewAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("set preview");
 		try {
 			IIdentifiable root = ((JActionButton) e.getSource()).getRoot();
 			Object[] selected = ((IPictureListContainer) root).getSelectedPictures();

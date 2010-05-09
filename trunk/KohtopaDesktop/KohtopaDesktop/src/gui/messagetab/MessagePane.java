@@ -50,7 +50,7 @@ public class MessagePane extends JPanel implements MouseListener {
 
 
 		// make new JList and add to panel
-		messages = DataConnector.getMessageData(ProgramSettings.getUserID());
+		messages = DataConnector.getMessageData(ProgramSettings.getOwnerID());
 		list = new JList(messages);
 
 		list.addListSelectionListener(new ListSelectionListener() {

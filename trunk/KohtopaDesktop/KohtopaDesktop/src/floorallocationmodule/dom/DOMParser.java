@@ -10,6 +10,7 @@ import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.EmergencyExit;
 import floorallocationmodule.objects.FireExtinguisher;
 import floorallocationmodule.objects.NamedPolygon;
+import gui.Main;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -39,8 +40,9 @@ public class DOMParser {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             document = builder.newDocument();
-        } catch (Exception exc) {
-            System.out.println(exc.getMessage());
+        } catch (Exception ex) {
+			Main.logger.error("Exception in DOMParser " + ex.getMessage());
+			Main.logger.debug(ex.getStackTrace());
         }
     }
 
@@ -223,10 +225,10 @@ public class DOMParser {
                 emergencyExitPointY.appendChild(txtPointY);
             }
            
-        } catch (Exception exc) {
-            System.out.println(exc.getMessage());
+        } catch (Exception ex) {
+			Main.logger.error("Exception in parse in DOMParser " + ex.getMessage());
+			Main.logger.debug(ex.getStackTrace());
         }
-
         write();
     }
 
@@ -250,8 +252,9 @@ public class DOMParser {
 
             // Image
             
-        } catch (Exception exc) {
-            System.out.println(exc.getMessage());
+        } catch (Exception ex) {
+			Main.logger.error("Exception in write in DOMParser " + ex.getMessage());
+			Main.logger.debug(ex.getStackTrace());
         }
     }
 

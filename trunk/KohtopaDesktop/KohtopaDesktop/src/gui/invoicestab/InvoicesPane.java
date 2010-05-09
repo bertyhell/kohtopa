@@ -36,7 +36,7 @@ public class InvoicesPane extends JPanel {
 		sppUserlistInvoicesList.add(scrolRenters, 0);
 
 		//list of invoices
-		lstInvoices = new JList();
+		lstInvoices = new JList(); //TODO add invoices
 		if(lstRenters.getSelectedValue()!= null){
 			data.getInvoices(((Person)lstRenters.getSelectedValue()).getId());
 		}
