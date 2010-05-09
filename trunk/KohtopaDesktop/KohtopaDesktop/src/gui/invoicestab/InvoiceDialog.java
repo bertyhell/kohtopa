@@ -403,7 +403,7 @@ public class InvoiceDialog extends JFrame {
 			return sw.toString();
 		} catch (Exception ex) {
 			Main.logger.error("Failed to generate XML file: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new XmlGenerationException("Failed to generate XML file:\n" + ex.getMessage());
 		}
 	}

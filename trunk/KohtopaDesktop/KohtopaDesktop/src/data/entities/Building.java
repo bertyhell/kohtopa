@@ -57,7 +57,7 @@ public class Building extends AbstractPlace {
 			Main.logger.info(response);
 		} catch (IOException ex) {
 			Main.logger.error("Exception in geocode " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 
 	}

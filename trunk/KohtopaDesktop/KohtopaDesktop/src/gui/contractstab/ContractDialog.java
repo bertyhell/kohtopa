@@ -222,7 +222,7 @@ public class ContractDialog extends JFrame {
                 cbbRentable.addItem(address.getStreetLine() + ", " + address.getZipcode() + " " + address.getCity() + ",  " + address.getCountry() + ": " + rentable.getDescription());
             } catch (Exception ex) {
 				Main.logger.error("Error in getting Address from building: " + ex.getMessage());
-				Main.logger.debug(ex.getStackTrace());
+				Main.logger.debug("StackTrace: ", ex);
             }
         }
         if (contract == null) {

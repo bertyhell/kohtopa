@@ -67,7 +67,7 @@ public class Main extends JFrame {
 	 */
 	private Main() {
 		try {
-			logger.addAppender(new FileAppender(new PatternLayout(), "log.txt"));
+			logger.addAppender(new FileAppender(new PatternLayout(), "log.txt", false));
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
@@ -506,15 +506,9 @@ public class Main extends JFrame {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-
-
-
 				logger.setLevel(ProgramSettings.getLoggerLevel());
 
-				logger.info("------------------application started ---------------------");
-
 				boolean loginChecked = false;
-				DataConnector.init();
 				//check settings if remember pass is true:
 				if (ProgramSettings.isRemeberPassword()) {
 					//check if stored pass is correct

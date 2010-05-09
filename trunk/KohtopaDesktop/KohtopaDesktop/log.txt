@@ -1,67 +1,59 @@
 ------------------application started ---------------------
-logged in with stored pass
-Settings succesfully stored
-------------------application started ---------------------
-initializing DataConnector
-checking login
-logged in with stored pass
-Settings succesfully stored
 initializing DataConnector
 initializing DataModel
 getBuildingPreviews
 found 0 tasks.
-------------------application started ---------------------
-initializing DataConnector
-checking login
-logged in with stored pass
-getting Rentables by BuildingId
-found 32 messages.
-getting contracts
-getting Renters
-error setting read status on messages: ORA-01031: insufficient privileges
-
-[Ljava.lang.StackTraceElement;@14b9a74
-Settings succesfully stored
-initializing DataConnector
-initializing DataModel
-getBuildingPreviews
-found 0 tasks.
-------------------application started ---------------------
-initializing DataConnector
-checking login
-logged in with stored pass
-getting Rentables by BuildingId
-getting Rentable by id
-Settings succesfully stored
-initializing DataConnector
-initializing DataModel
-getBuildingPreviews
-found 0 tasks.
-------------------application started ---------------------
-initializing DataConnector
-checking login
-logged in with stored pass
-Settings succesfully stored
-initializing DataConnector
-initializing DataModel
-getBuildingPreviews
-found 0 tasks.
-------------------application started ---------------------
-initializing DataConnector
 checking login
 logged in with stored pass
 found 32 messages.
 getting Renters
-getting contracts
-getting Rentables by BuildingId
-found 32 messages.
 error setting read status on messages: ORA-01031: insufficient privileges
 
-[Ljava.lang.StackTraceElement;@1627c16
-error setting read status on messages: ORA-01031: insufficient privileges
+StackTrace: 
+java.sql.SQLException: ORA-01031: insufficient privileges
 
-[Ljava.lang.StackTraceElement;@ce796
-error setting read status on messages: ORA-01031: insufficient privileges
-
-[Ljava.lang.StackTraceElement;@1e26602
+	at oracle.jdbc.driver.DatabaseError.throwSqlException(DatabaseError.java:112)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:331)
+	at oracle.jdbc.driver.T4CTTIoer.processError(T4CTTIoer.java:288)
+	at oracle.jdbc.driver.T4C8Oall.receive(T4C8Oall.java:743)
+	at oracle.jdbc.driver.T4CPreparedStatement.doOall8(T4CPreparedStatement.java:216)
+	at oracle.jdbc.driver.T4CPreparedStatement.executeForRows(T4CPreparedStatement.java:955)
+	at oracle.jdbc.driver.OracleStatement.doExecuteWithTimeout(OracleStatement.java:1168)
+	at oracle.jdbc.driver.OraclePreparedStatement.executeInternal(OraclePreparedStatement.java:3316)
+	at oracle.jdbc.driver.OraclePreparedStatement.execute(OraclePreparedStatement.java:3422)
+	at data.DataConnector.updateMessageState(DataConnector.java:880)
+	at gui.messagetab.MessagePane$1.valueChanged(MessagePane.java:71)
+	at javax.swing.JList.fireSelectionValueChanged(JList.java:1765)
+	at javax.swing.JList$ListSelectionHandler.valueChanged(JList.java:1779)
+	at javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:167)
+	at javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:147)
+	at javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:194)
+	at javax.swing.DefaultListSelectionModel.changeSelection(DefaultListSelectionModel.java:388)
+	at javax.swing.DefaultListSelectionModel.changeSelection(DefaultListSelectionModel.java:398)
+	at javax.swing.DefaultListSelectionModel.setSelectionInterval(DefaultListSelectionModel.java:442)
+	at javax.swing.JList.setSelectionInterval(JList.java:2035)
+	at javax.swing.plaf.basic.BasicListUI$Handler.adjustSelection(BasicListUI.java:2727)
+	at javax.swing.plaf.basic.BasicListUI$Handler.mousePressed(BasicListUI.java:2683)
+	at java.awt.AWTEventMulticaster.mousePressed(AWTEventMulticaster.java:263)
+	at java.awt.AWTEventMulticaster.mousePressed(AWTEventMulticaster.java:262)
+	at java.awt.Component.processMouseEvent(Component.java:6260)
+	at javax.swing.JComponent.processMouseEvent(JComponent.java:3267)
+	at java.awt.Component.processEvent(Component.java:6028)
+	at java.awt.Container.processEvent(Container.java:2041)
+	at java.awt.Component.dispatchEventImpl(Component.java:4630)
+	at java.awt.Container.dispatchEventImpl(Container.java:2099)
+	at java.awt.Component.dispatchEvent(Component.java:4460)
+	at java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4574)
+	at java.awt.LightweightDispatcher.processMouseEvent(Container.java:4235)
+	at java.awt.LightweightDispatcher.dispatchEvent(Container.java:4168)
+	at java.awt.Container.dispatchEventImpl(Container.java:2085)
+	at java.awt.Window.dispatchEventImpl(Window.java:2478)
+	at java.awt.Component.dispatchEvent(Component.java:4460)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:599)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:269)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:184)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:174)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:169)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:161)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:122)
 Settings succesfully stored
