@@ -3,8 +3,6 @@ package data;
 import Exceptions.ContractNotValidException;
 import Exceptions.PersonNotFoundException;
 import Language.Language;
-import data.entities.Building;
-import data.entities.Invoice;
 import gui.Main;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -21,13 +19,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import data.entities.Message;
-import data.entities.Person;
-import data.entities.Picture;
-import data.entities.Rentable;
-import data.entities.Task;
-import data.entities.Contract;
-import data.entities.InvoiceItem;
+import data.entities.*;
 import gui.calendartab.CalendarModel;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +35,7 @@ public class DataConnector {
 	 */
 	public static void init() {
 		try {
+			Main.logger.info("------------------application started ---------------------");
 			Main.logger.warn("initializing DataConnector");
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Class.forName(DataBaseConstants.driver);
@@ -157,13 +150,13 @@ public class DataConnector {
 				}
 			} catch (SQLException ex) {
 				Main.logger.error("SQLException in getOptimalLogin " + ex.getMessage());
-				Main.logger.debug(ex.getStackTrace());
+				Main.logger.debug("StackTrace: ", ex);
 			} finally {
 				conn.close();
 			}
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in getOptimalLogin (connection failure) " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 		return "no owners found";
 
@@ -190,7 +183,7 @@ public class DataConnector {
 			}
 		} catch (SQLException ex) {
 			Main.logger.error("Exception in updateBuildings " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("update buildings"
 					+ " set latitude = " + b.getLatitude()
 					+ " set longitude = " + b.getLongitude()
@@ -220,12 +213,11 @@ public class DataConnector {
 			psAddBuilding.close();
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in addBuilding " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addBuilding: " + ex);
 		} catch (Exception ex) {
 			Main.logger.error("Exception in addBuilding " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
-			ex.printStackTrace();
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in addbuilding: unknown error \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -263,7 +255,7 @@ public class DataConnector {
 			}
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in addAddress " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException(ex.getMessage());
 		}
 		return addressID;
@@ -331,11 +323,11 @@ public class DataConnector {
 			psAddBuilding.close();
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in updateBuilding " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in updateBuilding: " + ex);
 		} catch (Exception ex) {
 			Main.logger.error("Exception in updateBuilding (encoding error?) " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in updateBuilding: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -402,11 +394,11 @@ public class DataConnector {
 			ps.close();
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in addFloorPlan " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addPicture: error inserting picture in database: " + ex);
 		} catch (Exception ex) {
 			Main.logger.error("SQLException in addFloorPlan " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in addPicture: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -427,7 +419,7 @@ public class DataConnector {
 			ps.close();
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in removePicture " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in RemovePicture: error removing picture: " + id + " from database: " + ex);
 		} finally {
 			conn.close();
@@ -489,7 +481,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("SQLException in getPictures " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getPicture: problems with connection: " + ex);
 		}
 		return pictures;
@@ -525,7 +517,7 @@ public class DataConnector {
 			}
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in getRentableFromOwner " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to get rentables from owner \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 		return rentables;
@@ -566,7 +558,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getTasks " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 		return tasks;
 	}
@@ -594,7 +586,7 @@ public class DataConnector {
 
 		} catch (SQLException ex) {
 			Main.logger.error("Exception in insertTask " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -619,7 +611,7 @@ public class DataConnector {
 
 		} catch (SQLException ex) {
 			Main.logger.error("Exception in removeTask " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -651,7 +643,7 @@ public class DataConnector {
 
 		} catch (SQLException ex) {
 			Main.logger.error("Exception in updateTask " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -689,7 +681,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getMessageData " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 		Main.logger.info("found " + messages.size() + " messages.");
 		return messages;
@@ -727,7 +719,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getRenters " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving renters:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -806,7 +798,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getContracts " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "Error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -830,7 +822,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in removeContract " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -866,7 +858,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("error retrieving person with id: " + id + ": " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 		return person;
 	}
@@ -891,7 +883,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("error setting read status on messages: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -919,7 +911,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in sendMessage: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 
 	}
@@ -958,7 +950,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getBuilding: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 		return building;
 	}
@@ -995,7 +987,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("error in getRentablesFromBuilding: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getRentablesFromBuilding: " + ex.getMessage());
 		}
 		return rentables;
@@ -1038,7 +1030,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("error in getRentable: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getRentable: " + ex.getMessage());
 		}
 		return rentable;
@@ -1066,7 +1058,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("error in get floors: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in get floors: " + ex.getMessage());
 		}
 		return floors;
@@ -1096,7 +1088,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("failed login: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed login: " + ex);
 		}
 		return userID;
@@ -1127,10 +1119,10 @@ public class DataConnector {
 
 		} catch (IOException ex) {
 			Main.logger.error("IOException in addDummyPictures: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		} catch (SQLException ex) {
 			Main.logger.error("SQLException in addDummyPictures: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -1175,12 +1167,12 @@ public class DataConnector {
 						}
 					} catch (Exception ex) {
 						Main.logger.error("Exception in getRentPriceOrGuarantee(1): " + ex.getMessage());
-						Main.logger.debug(ex.getStackTrace());
+						Main.logger.debug("StackTrace: ", ex);
 					}
 				}
 			} catch (Exception ex) {
 				Main.logger.error("Exception in getRentPriceOrGuarantee(2): " + ex.getMessage());
-				Main.logger.debug(ex.getStackTrace());
+				Main.logger.debug("StackTrace: ", ex);
 			}
 		} finally {
 			conn.close();
@@ -1214,7 +1206,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in getUtilitiesInvoiceItems: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed to get utilities: " + ex);
 		}
 	}
@@ -1240,7 +1232,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in insertInvoice: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed during insert Invoice: " + ex);
 		}
 	}
@@ -1263,7 +1255,7 @@ public class DataConnector {
 			}
 		} catch (Exception ex) {
 			Main.logger.error("Exception in createViewsForAllOwners: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in makeViews: " + ex);
 		}
 	}
@@ -1282,7 +1274,7 @@ public class DataConnector {
 			ps.close();
 		} catch (SQLException ex) {
 			Main.logger.error("error in remove rentable: " + rentableId + " from database: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in remove rentable: " + rentableId + " from database: " + ex.getMessage());
 		} finally {
 			conn.close();
@@ -1303,7 +1295,7 @@ public class DataConnector {
 			ps.close();
 		} catch (SQLException ex) {
 			Main.logger.error("error in remove building: " + buildingId + " from database: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in remove building: " + buildingId + " from database: " + ex.getMessage());
 		} finally {
 			conn.close();

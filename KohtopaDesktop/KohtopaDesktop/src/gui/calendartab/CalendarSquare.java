@@ -154,7 +154,7 @@ public class CalendarSquare extends JPanel implements MouseListener {
             }
         } catch (IllegalAccessException ex) {
 			Main.logger.error("IllegalAccessException in mouseReleased in CalendarSquare: " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
         }
     }
 

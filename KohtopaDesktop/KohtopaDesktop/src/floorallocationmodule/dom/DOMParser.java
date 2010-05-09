@@ -42,7 +42,7 @@ public class DOMParser {
             document = builder.newDocument();
         } catch (Exception ex) {
 			Main.logger.error("Exception in DOMParser " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
         }
     }
 
@@ -227,7 +227,7 @@ public class DOMParser {
            
         } catch (Exception ex) {
 			Main.logger.error("Exception in parse in DOMParser " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
         }
         write();
     }
@@ -254,7 +254,7 @@ public class DOMParser {
             
         } catch (Exception ex) {
 			Main.logger.error("Exception in write in DOMParser " + ex.getMessage());
-			Main.logger.debug(ex.getStackTrace());
+			Main.logger.debug("StackTrace: ", ex);
         }
     }
 

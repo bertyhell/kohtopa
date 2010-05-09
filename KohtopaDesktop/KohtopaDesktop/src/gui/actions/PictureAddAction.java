@@ -67,11 +67,13 @@ public class PictureAddAction extends AbstractIconAction {
 				}
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 			} catch (SQLException ex) {
+				Main.logger.error("SQLException in PictureAddAction " + ex.getMessage());
+				Main.logger.debug("StackTrace: ", ex);
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException ex) {
-				//ex.printStackTrace();
+				Main.logger.error("IOException in PictureAddAction " + ex.getMessage());
+				Main.logger.debug("StackTrace: ", ex);
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errReadingImage") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
 			}
 		}
 	}

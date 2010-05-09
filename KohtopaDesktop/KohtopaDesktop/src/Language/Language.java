@@ -1,5 +1,6 @@
 package Language;
 
+import gui.Main;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.io.File;
@@ -66,8 +67,9 @@ public class Language {
 			cbbCountry = new JComboBox(Language.getCountries());
 			//cbbCountry.setRenderer(new CountryCellRenderer());
 			cbbCountry.setPreferredSize(new Dimension(20, 23));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception ex) {
+			Main.logger.error("Exception in read ProgramSettings: " + ex.getMessage());
+		    Main.logger.debug("stacktrace: ", ex);
 		}
 	}
 
