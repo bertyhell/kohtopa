@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Configuration>
+    <webcam>
+        <name>Logitech QuickCam Pro 5000</name>
+        <number>0</number>
+        <testPixels>20</testPixels>
+        <colorTolerance>138</colorTolerance>
+        <motionTolerance>0.193</motionTolerance>
+    </webcam>
+</Configuration>
