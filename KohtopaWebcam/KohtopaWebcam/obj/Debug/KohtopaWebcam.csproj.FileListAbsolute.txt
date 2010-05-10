@@ -1,9 +1,0 @@
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
-C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
