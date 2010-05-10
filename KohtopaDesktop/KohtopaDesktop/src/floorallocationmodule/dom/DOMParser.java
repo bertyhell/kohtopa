@@ -10,7 +10,7 @@ import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.EmergencyExit;
 import floorallocationmodule.objects.FireExtinguisher;
 import floorallocationmodule.objects.NamedPolygon;
-import gui.Main;
+import gui.Logger;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -41,8 +41,8 @@ public class DOMParser {
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
             document = builder.newDocument();
         } catch (Exception ex) {
-			Main.logger.error("Exception in DOMParser " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in DOMParser " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
     }
 
@@ -226,8 +226,8 @@ public class DOMParser {
             }
            
         } catch (Exception ex) {
-			Main.logger.error("Exception in parse in DOMParser " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in parse in DOMParser " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
         write();
     }
@@ -248,13 +248,13 @@ public class DOMParser {
             DOMSource source = new DOMSource(document);
             transformer.transform(source, streamResult);
 
-			Main.logger.info("invoice xml file saved to: "+file.getAbsolutePath()); //TODO 100 put in database instead of on harddrive
+			Logger.logger.info("invoice xml file saved to: "+file.getAbsolutePath()); //TODO 100 put in database instead of on harddrive
 
             // Image
             
         } catch (Exception ex) {
-			Main.logger.error("Exception in write in DOMParser " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in write in DOMParser " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
     }
 

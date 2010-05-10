@@ -1,7 +1,7 @@
 package Language;
 
 import data.ProgramSettings;
-import gui.Main;
+import gui.Logger;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.io.File;
@@ -26,7 +26,7 @@ public class Language {
 
 	public static void read() {
 		try {
-			Main.logger.info("Reading language file: " + "language_" + ProgramSettings.getLanguage() + ".xml");
+			Logger.logger.info("Reading language file: " + "language_" + ProgramSettings.getLanguage() + ".xml");
 			language =  ProgramSettings.getLanguage();
 			File file = new File("language_" + ProgramSettings.getLanguage() + ".xml");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -72,8 +72,8 @@ public class Language {
 			//cbbCountry.setRenderer(new CountryCellRenderer());
 			cbbCountry.setPreferredSize(new Dimension(20, 23));
 		} catch (Exception ex) {
-			Main.logger.error("Exception in read ProgramSettings: " + ex.getMessage());
-		    Main.logger.debug("stacktrace: ", ex);
+			Logger.logger.error("Exception in read ProgramSettings: " + ex.getMessage());
+		    Logger.logger.debug("stacktrace: ", ex);
 		}
 	}
 

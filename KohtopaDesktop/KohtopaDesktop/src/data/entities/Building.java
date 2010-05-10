@@ -1,6 +1,6 @@
 package data.entities;
 
-import gui.Main;
+import gui.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -54,10 +54,10 @@ public class Building extends AbstractPlace {
 			do {
 				t1 = System.currentTimeMillis();
 			} while ((t1 - t0) < 200);
-			Main.logger.info(response);
+			Logger.logger.info(response);
 		} catch (IOException ex) {
-			Main.logger.error("Exception in geocode " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in geocode " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 
 	}

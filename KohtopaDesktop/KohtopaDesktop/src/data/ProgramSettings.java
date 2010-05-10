@@ -1,6 +1,6 @@
 package data;
 
-import gui.Main;
+import gui.Logger;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,13 +25,13 @@ public class ProgramSettings {
 	private static String connectionstring;
 	private static String username;
 	private static String password;
-	private static int ownerId;
+	private static Integer ownerId;
 	private static boolean savePass;
 	private static Level loggerLevel;
 	private static String language;
 
 	public static void write() {
-		Main.logger.info("Writing programsettings");
+		Logger.logger.info("Writing programsettings");
 		try {
 			//create xml string
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -48,17 +48,21 @@ public class ProgramSettings {
 			child.setTextContent(connectionstring);
 			root.appendChild(child);
 
-			child = doc.createElement("username");
-			child.setTextContent(username);
-			root.appendChild(child);
-
-			child = doc.createElement("password");
-			child.setTextContent(password);
-			root.appendChild(child);
 
 			child = doc.createElement("savePass");
 			child.setTextContent(savePass ? "true" : "false");
 			root.appendChild(child);
+
+			if (savePass) {
+				child = doc.createElement("username");
+				child.setTextContent(username);
+				root.appendChild(child);
+
+				child = doc.createElement("password");
+				child.setTextContent(password);
+				root.appendChild(child);
+			}
+
 
 			child = doc.createElement("loggerLevel");
 			child.setTextContent(loggerLevel.toString());
@@ -88,16 +92,17 @@ public class ProgramSettings {
 			output.write(xmlString);
 			output.close();
 
-			Main.logger.info("Settings succesfully stored");
+			Logger.logger.info("Settings succesfully stored");
 		} catch (Exception ex) {
-			Main.logger.warn("wrong parameters added to jar: \n" + ex.getMessage());
+			Logger.logger.warn("wrong parameters added to jar: \n" + ex.getMessage());
 		}
 	}
 
 	public static void read() {
-		Main.logger.info("reading program settings from settings.xml");
+		Logger.logger.info("reading program settings from settings.xml");
 		File file = new File("settings.xml");
 		if (file.exists()) {
+			Logger.logger.info("settingsfile found");
 			try {
 				DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 				DocumentBuilder db = dbf.newDocumentBuilder();
@@ -108,14 +113,18 @@ public class ProgramSettings {
 				NodeList nodeLst = doc.getElementsByTagName("connectionstring");
 				connectionstring = nodeLst.item(0).getTextContent();
 
-				nodeLst = doc.getElementsByTagName("username");
-				username = nodeLst.item(0).getTextContent();
-
-				nodeLst = doc.getElementsByTagName("password");
-				password = nodeLst.item(0).getTextContent();
 
 				nodeLst = doc.getElementsByTagName("savePass");
 				savePass = nodeLst.item(0).getTextContent().equals("true") ? true : false;
+
+				if (savePass) {
+					nodeLst = doc.getElementsByTagName("username");
+					username = nodeLst.item(0).getTextContent();
+
+					nodeLst = doc.getElementsByTagName("password");
+					password = nodeLst.item(0).getTextContent();
+				}
+
 
 				nodeLst = doc.getElementsByTagName("loggerLevel");
 				loggerLevel = Level.toLevel(nodeLst.item(0).getTextContent(), Level.ALL);
@@ -124,7 +133,7 @@ public class ProgramSettings {
 				language = nodeLst.item(0).getTextContent();
 
 			} catch (Exception ex) {
-				Main.logger.warn("couln't read settings file (using defaults): \n" + ex.getMessage());
+				Logger.logger.warn("couln't read settings file (using defaults): \n" + ex.getMessage());
 				setDefaults();
 			}
 		} else {
@@ -133,14 +142,14 @@ public class ProgramSettings {
 	}
 
 	private static void setDefaults() {
-		Main.logger.info("using default settings");
+		Logger.logger.info("using default settings");
 		//default settings:
 		username = "";
 		password = "";
-		ownerId = 0;
+		ownerId = null;
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
-		loggerLevel = Level.OFF;
+		loggerLevel = Level.ALL;
 		language = "English";
 	}
 
@@ -172,8 +181,12 @@ public class ProgramSettings {
 		return ownerId;
 	}
 
-	public static void setOwnerId(int ownerId) {
+	public static void setOwnerId(Integer ownerId) {
 		ProgramSettings.ownerId = ownerId;
+	}
+
+	public static boolean isLoggedIn() {
+		return ownerId != null;
 	}
 
 	public static boolean isRemeberPassword() {
@@ -198,5 +211,15 @@ public class ProgramSettings {
 
 	public static void setLanguage(String language) {
 		ProgramSettings.language = language;
+	}
+
+	public static void print() {
+		System.out.println(connectionstring);
+		System.out.println(username);
+		System.out.println(password);
+		System.out.println(ownerId);
+		System.out.println(savePass);
+		System.out.println(loggerLevel);
+		System.out.println(language);
 	}
 }

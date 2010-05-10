@@ -5,7 +5,7 @@
 package gui.calendartab;
 
 import data.entities.Task;
-import gui.Main;
+import gui.Logger;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -153,8 +153,8 @@ public class CalendarSquare extends JPanel implements MouseListener {
                 f.setVisible(true);
             }
         } catch (IllegalAccessException ex) {
-			Main.logger.error("IllegalAccessException in mouseReleased in CalendarSquare: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("IllegalAccessException in mouseReleased in CalendarSquare: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
     }
 

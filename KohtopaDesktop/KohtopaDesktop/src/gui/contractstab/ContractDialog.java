@@ -11,6 +11,7 @@ import data.entities.Address;
 import data.entities.Building;
 import data.entities.Contract;
 import data.entities.Rentable;
+import gui.Logger;
 import gui.Main;
 import gui.invoicestab.PersonPanel;
 import java.awt.BorderLayout;
@@ -63,7 +64,7 @@ public class ContractDialog extends JFrame {
 
         this.contract = contract;
 
-        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getOwnerId());
+        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner();
         
         setTitle(Language.getString(contract == null ? "contractAdd" : "contractEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/contract_64.png")).getImage());
@@ -221,8 +222,8 @@ public class ContractDialog extends JFrame {
                 Address address = ((Building)Main.getDataObject().getBuilding(rentable.getBuildingID())).getAddress();
                 cbbRentable.addItem(address.getStreetLine() + ", " + address.getZipcode() + " " + address.getCity() + ",  " + address.getCountry() + ": " + rentable.getDescription());
             } catch (Exception ex) {
-				Main.logger.error("Error in getting Address from building: " + ex.getMessage());
-				Main.logger.debug("StackTrace: ", ex);
+				Logger.logger.error("Error in getting Address from building: " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
             }
         }
         if (contract == null) {

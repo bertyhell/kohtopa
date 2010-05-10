@@ -1,7 +1,7 @@
 package gui;
 
-//TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
-//TODO add right click menu's in all panels
+//TODO 002 add possibility to access all functions trough ALT (maybe autohide file bar?)
+//TODO 005 add right click menu's in all panels
 import Language.Language;
 import gui.messagetab.MessagePane;
 import gui.actions.*;
@@ -10,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -28,14 +27,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 public class Main extends JFrame {
 
-	public static Logger logger = Logger.getRootLogger();
-	private static Main instance = new Main();
+	private static Main instance;
 	private static HashMap<String, Action> actions;
 	public final static boolean disableBtnText = false;
 	private static DataModel data;
@@ -53,6 +48,7 @@ public class Main extends JFrame {
 	private ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
 	private static JComboBox cbbLanguages;
+	private JFrame parent;
 
 	/**
 	 * Getter for the main instance
@@ -63,24 +59,27 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * initializes the program
+	 * Initializing the main frame
+	 * @return instance
 	 */
-	private Main() {
-		try {
-			logger.addAppender(new FileAppender(new PatternLayout(), "log.txt", false));
-		} catch (IOException ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-		}
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-		} catch (Exception ex) {
-			Main.logger.warn("Look and Feel not found");
-			JOptionPane.showMessageDialog(this, "Look and Feel not found, make sure you have latest java version\n" + ex.getMessage(), "Look and Feel not found", JOptionPane.ERROR_MESSAGE);
-		}
-		ProgramSettings.read(); //reads settings from xml file using dom
-		Language.read(); //reads strings in specific language from xml file
+	public static Main init(JFrame parent) {
+		instance = new Main(parent);
+		return instance;
+	}
+
+	/**
+	 * Constructs the Main class
+	 */
+	private Main(JFrame parent) {
+		Logger.logger.setLevel(ProgramSettings.getLoggerLevel());
+		Logger.logger.info("Logger.logger level is: " + ProgramSettings.getLoggerLevel());
+
+		Logger.logger.info("------------------application started ---------------------");
+
+		this.parent = parent;
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		this.setPreferredSize(new Dimension(1000,700));
+		this.setPreferredSize(new Dimension(1000, 700));
+		//setVisible(false);
 
 		setTitle(Language.getString("titleJFrameDesktopMain"));
 		data = new DataModel();
@@ -88,7 +87,7 @@ public class Main extends JFrame {
 		//actions
 		actions = new HashMap<String, Action>();
 
-		actions.put("restart", new RestartAction());
+		actions.put("restart", new RestartAction(new ImageIcon(getClass().getResource("/images/ok.png"))));
 		actions.put("buildingAdd", new BuildingAddAction("buildingAdd", new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
 		actions.put("buildingEdit", new BuildingEditAction("buildingEdit", new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
 		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove", new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
@@ -171,7 +170,7 @@ public class Main extends JFrame {
 				if (tab == 2) {
 					pnlCalendarInfo = new CalendarPane();
 					pnlCalendar.add(pnlCalendarInfo, BorderLayout.CENTER);
-				}else if (tab == 3) {
+				} else if (tab == 3) {
 					pnlMessagesInfo = new MessagePane();
 					pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 				} else if (tab == 4 && pnlInvoicesInfo == null) {
@@ -184,18 +183,18 @@ public class Main extends JFrame {
 			}
 		});
 
-
 		pack();
 		this.setLocationRelativeTo(null);
-		this.setVisible(true);
 
 		this.addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
 				//TODO 010 check all open windows (dialogs) if there is unsaved data and request to save
-				Main.logger.info("writing settings file on close main, settings language is: " + ProgramSettings.getLanguage());
+				Logger.logger.info("writing settings file on close main, settings language is: " + ProgramSettings.getLanguage());
 				ProgramSettings.write();//store settings
+				ProgramSettings.print();
+				instance.getParent().dispose();
 			}
 		});
 	}
@@ -415,9 +414,9 @@ public class Main extends JFrame {
 		int selected = 0;
 		for (int i = 0; i < languageFiles.length; i++) {
 			languages[i] = languageFiles[i].split("[\\._]")[1]; // split filename _or. and get part 2
-			if(languages[i].equals(ProgramSettings.getLanguage())){
+			if (languages[i].equals(ProgramSettings.getLanguage())) {
 				selected = i;
-				Main.logger.info("selected language is: " + languages[selected]);
+				Logger.logger.info("selected language is: " + languages[selected]);
 			}
 		}
 		cbbLanguages = new JComboBox(languages);
@@ -513,48 +512,8 @@ public class Main extends JFrame {
 		return (String) cbbLanguages.getSelectedItem();
 	}
 
-	/**
-	 * Main method, starts the program
-	 * @param args
-	 */
-	public static void main(String args[]) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-
-			public void run() {
-				logger.setLevel(ProgramSettings.getLoggerLevel());
-				logger.info("logger level is: " + ProgramSettings.getLoggerLevel());
-
-				boolean loginChecked = false;
-				//check settings if remember pass is true:
-				if (ProgramSettings.isRemeberPassword()) {
-					//check if stored pass is correct
-					if (Main.getDataObject().checkLogin(ProgramSettings.getUsername(), ProgramSettings.getPassword())) {
-						loginChecked = true;
-						logger.info("logged in with stored pass");
-					} else {
-						//check user for login
-						new LoginDialog(instance, data).setVisible(true);
-						if (data.isLoggedIn()) {
-							loginChecked = true;
-							logger.info("logged in bu entering login data");
-						}
-					}
-				} else {
-					//check user for login
-					new LoginDialog(instance, data).setVisible(true);
-					if (data.isLoggedIn()) {
-						loginChecked = true;
-					}
-				}
-
-				if (loginChecked) {
-					//logged in
-					Main.getInstance().setVisible(true);
-				} else {
-					logger.info("program closed before login");
-					Main.getInstance().dispose();
-				}
-			}
-		});
+	@Override
+	public JFrame getParent() {
+		return parent;
 	}
 }
