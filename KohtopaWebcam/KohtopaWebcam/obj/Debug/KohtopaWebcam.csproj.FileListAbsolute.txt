@@ -1,0 +1,46 @@
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+C:\Documents and Settings\Administrator\Bureaublad\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\bin\Debug\WebCam_Capture.dll
+C:\Documents and Settings\Ruben\Bureaublad\VOP\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+C:\kohtopa\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
+E:\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+E:\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+E:\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+E:\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.exe
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.pdb
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.exe
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\bin\Debug\KohtopaWebcam.pdb
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\bin\Debug\DirectShowLib-2005.dll
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.MainWindow.resources
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.Properties.Resources.resources
+C:\Users\Administrator\Desktop\KohtopaWebcam\KohtopaWebcam\obj\Debug\KohtopaWebcam.csproj.GenerateResource.Cache
