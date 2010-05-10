@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import javax.swing.*;
 import data.entities.Rentable;
+import gui.JActionButton;
 import java.awt.Window;
 
 public class RentableDialog extends JFrame implements IPictureListContainer {
@@ -61,19 +62,19 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 		gbl1.addLayoutComponent(lblPreview, gbc1);
 		pnlPictureButtons.add(lblPreview);
 
-		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
+		JActionButton btnPictureAdd = new JActionButton(Main.getAction("pictureAdd"), instance);
 		btnPictureAdd.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
 		pnlPictureButtons.add(btnPictureAdd);
 
-		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
+		JActionButton btnPicturePreview = new JActionButton(Main.getAction("picturePreview"), instance);
 		btnPicturePreview.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
 		pnlPictureButtons.add(btnPicturePreview);
 
-		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
+		JActionButton btnPictureRemove = new JActionButton(Main.getAction("pictureRemove"), instance);
 		btnPictureRemove.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureRemove, gbc1);

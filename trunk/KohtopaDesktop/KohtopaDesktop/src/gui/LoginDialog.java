@@ -149,14 +149,15 @@ public class LoginDialog extends JFrame implements ActionListener {
 		if (!stored) {
 			ProgramSettings.setUsername(txtUser.getText());
 			ProgramSettings.setPassword(txtPass.getText());
+			if (chkRemember.isSelected()) {
+				//store login
+				ProgramSettings.setRemeberPassword(true);
+			} else {
+				ProgramSettings.setRemeberPassword(false);
+			}
 		}
 		ProgramSettings.setOwnerId(ownerId);
-		if (chkRemember.isSelected()) {
-			//store login
-			ProgramSettings.setRemeberPassword(true);
-		}else{
-			ProgramSettings.setRemeberPassword(false);
-		}
+
 		instance.setVisible(false);
 		Main.init(instance).setVisible(true);
 	}
