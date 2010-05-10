@@ -1,6 +1,0 @@
-<Settings>
-<connectionstring>jdbc:oracle:thin:@192.168.58.128:1521:kohtopa</connectionstring>
-<savePass>false</savePass>
-<loggerLevel>ALL</loggerLevel>
-<language>English</language>
-</Settings>

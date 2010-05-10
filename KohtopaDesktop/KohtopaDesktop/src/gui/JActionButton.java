@@ -12,7 +12,7 @@ public class JActionButton extends JButton {
 
 	private IIdentifiable root;
 
-	JActionButton(Action action, IIdentifiable root) {
+	public JActionButton(Action action, IIdentifiable root) {
 		super(action);
 		this.root = root;
 	}

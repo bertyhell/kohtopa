@@ -2,17 +2,15 @@ package gui.actions;
 
 import Language.Language;
 import data.entities.Picture;
+import gui.JActionButton;
 import gui.Main;
 import gui.addremovetab.IIdentifiable;
 import gui.addremovetab.IPictureListContainer;
-import gui.addremovetab.IRentableListContainer;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
 
 public class PictureRemoveAction extends AbstractIconAction {
 
@@ -23,7 +21,7 @@ public class PictureRemoveAction extends AbstractIconAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		try {
-			JRootPane root = ((JComponent) e.getSource()).getRootPane();
+			IIdentifiable root = ((JActionButton) e.getSource()).getRoot();
 			Vector<Integer> selected = new Vector<Integer>();
 			for(Object picture :  ((IPictureListContainer) root).getSelectedPictures()){
 				//getting list of picture id's to be deleted

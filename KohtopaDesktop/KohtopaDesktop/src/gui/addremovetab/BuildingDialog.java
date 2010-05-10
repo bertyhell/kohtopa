@@ -13,9 +13,11 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import javax.swing.*;
 import data.entities.Building;
 import data.entities.Rentable;
+import gui.JActionButton;
 import gui.Logger;
 import java.awt.Window;
 import java.util.Vector;
@@ -64,32 +66,36 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		gbl1.addLayoutComponent(lblPreview, gbc1);
 		pnlPictureButtons.add(lblPreview);
 
-		JButton btnPictureAdd = new JButton(Main.getAction("pictureAdd"));
+		JActionButton btnPictureAdd = new JActionButton(Main.getAction("pictureAdd"), instance);
 		btnPictureAdd.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 0, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureAdd, gbc1);
 		pnlPictureButtons.add(btnPictureAdd);
 
-		JButton btnPicturePreview = new JButton(Main.getAction("picturePreview"));
+		JActionButton btnPicturePreview = new JActionButton(Main.getAction("picturePreview"), instance);
 		btnPicturePreview.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 1, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPicturePreview, gbc1);
 		pnlPictureButtons.add(btnPicturePreview);
 
-		JButton btnPictureRemove = new JButton(Main.getAction("pictureRemove"));
+		JActionButton btnPictureRemove = new JActionButton(Main.getAction("pictureRemove"), instance);
 		btnPictureRemove.setHideActionText(true);
 		Layout.buildConstraints(gbc1, 2, 1, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(btnPictureRemove, gbc1);
 		pnlPictureButtons.add(btnPictureRemove);
+		try {
+			//pictures
+			lstPicture = new JList(Main.getDataObject().getPicturesFromBuilding(buildingId));
 
-		//pictures
-		lstPicture = new JList();
-		lstPicture.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		lstPicture.setBackground(Color.DARK_GRAY);
-		lstPicture.setCellRenderer(new PictureCellRenderer());
-		JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		pnlImages.add(picScroller, BorderLayout.CENTER);
-
+			lstPicture.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			lstPicture.setBackground(Color.DARK_GRAY);
+			lstPicture.setCellRenderer(new PictureCellRenderer());
+			JScrollPane picScroller = new JScrollPane(lstPicture, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			pnlImages.add(picScroller, BorderLayout.CENTER);
+		} catch (SQLException ex) {
+			Logger.logger.error("SQLException in constructor BuildingDialog during getting pictures: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+		}
 
 		//info
 		JPanel pnlInformation = new JPanel(new BorderLayout());
@@ -174,18 +180,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		JPanel pnlRentablesInfo = new JPanel(gbl2);
 		pnlRentablesInfo.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		pnlInformation.add(pnlRentablesInfo, BorderLayout.CENTER);
-
-//		JLabel lblFloors = new JLabel(Language.getString("floors") + ":");//TODO 050 replace by titeled border
-//		Layout.buildConstraints(gbc, 0, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-//		gbl2.addLayoutComponent(lblFloors, gbc);
-//		pnlRentablesInfo.add(lblFloors);
-//
-//		JLabel lblRentable = new JLabel(Language.getString("rentables") + ":"); //TODO 050 replace by titeled border
-//		Layout.buildConstraints(gbc, 3, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-//		gbl2.addLayoutComponent(lblRentable, gbc);
-//		pnlRentablesInfo.add(lblRentable);
-//
-//		row++; //next row
 
 		try {
 			//lijst met floors

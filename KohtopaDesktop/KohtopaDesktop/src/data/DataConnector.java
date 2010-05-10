@@ -446,7 +446,7 @@ public class DataConnector {
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addPicture: error inserting picture in database: " + ex);
 		} catch (Exception ex) {
-			Logger.logger.error("SQLException in addFloorPlan " + ex.getMessage());
+			Logger.logger.error("Exception in addFloorPlan " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in addPicture: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {

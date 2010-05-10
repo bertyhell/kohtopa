@@ -2,6 +2,7 @@ package gui.actions;
 
 import Language.Language;
 import gui.GuiConstants;
+import gui.JActionButton;
 import gui.Logger;
 import gui.Main;
 import gui.actions.filefilters.FileFilterGif;
@@ -45,7 +46,7 @@ public class PictureAddAction extends AbstractIconAction {
 		if (fc.showOpenDialog(((JComponent) e.getSource()).getTopLevelAncestor()) == JFileChooser.APPROVE_OPTION) {
 			//open button was pressed
 			File[] sourceimages = fc.getSelectedFiles();
-			JRootPane root = ((JComponent) e.getSource()).getRootPane();
+			IIdentifiable root = ((JActionButton) e.getSource()).getRoot();
 			try {
 				// Read from Filelist
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
@@ -55,15 +56,15 @@ public class PictureAddAction extends AbstractIconAction {
 					System.out.println("images add must be implemented");
 					if (root instanceof IRentableListContainer) {
 						//add building picture
-						Main.getDataObject().addBuildingImage(((IIdentifiable) root).getId(), img);
+						Main.getDataObject().addBuildingImage(root.getId(), img);
 					} else {
 						// add rentable picture
-						Main.getDataObject().addRentableImage(((IIdentifiable) root).getId(), img);
+						Main.getDataObject().addRentableImage(root.getId(), img);
 					}
 					//update list
 					((IPictureListContainer) root).updatePictureList();
 				}
-				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+//				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 			} catch (SQLException ex) {
 				Logger.logger.error("SQLException in PictureAddAction " + ex.getMessage());
 				Logger.logger.debug("StackTrace: ", ex);
