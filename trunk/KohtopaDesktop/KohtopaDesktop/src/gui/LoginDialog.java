@@ -2,7 +2,6 @@ package gui;
 
 import Language.Language;
 import data.DataConnector;
-import data.DataModel;
 import data.ProgramSettings;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,25 +17,34 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTextUI.BasicCaret;
 
-public class LoginDialog extends JDialog implements ActionListener {
+public class LoginDialog extends JFrame implements ActionListener {
 
 	private final String defaultPasswordContent = "password";
 	private static LoginDialog instance;
-	private JTextField txtUser;
+	private static JTextField txtUser;
 	private JTextField txtPass;
 	private JLabel lblLoginFailed1;
 	private JLabel lblLoginFailed2;
 	private JCheckBox chkRemember;
 	private int tries;
 
-	public LoginDialog(JFrame parent, DataModel data) {
-		super(parent, Language.getString("login"), true);
+	public static LoginDialog getInstance() {
+		if (instance == null) {
+			instance = new LoginDialog();
+		}
+		return instance;
+	}
+
+	private LoginDialog() {
+		super(Language.getString("login"));
+
+		Logger.logger.info("login dialog displayed");
+
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/login_16.png")).getImage());
 		this.setPreferredSize(new Dimension(350, 200));
-		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
-		instance = this;
 		tries = 0;
 
 		this.setAlwaysOnTop(true);
@@ -79,7 +87,7 @@ public class LoginDialog extends JDialog implements ActionListener {
 				}
 			}
 		});
-		//TODO fix tab orders everywhere
+		//TODO 000 fix tab orders everywhere
 
 		chkRemember = new JCheckBox(Language.getString("savePass"));
 		Layout.buildConstraints(gbc, 0, 2, 1, 1, 40, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
@@ -115,24 +123,16 @@ public class LoginDialog extends JDialog implements ActionListener {
 		btnLogin.addActionListener(this);
 		getRootPane().setDefaultButton(btnLogin);
 
-		//TODO add password forgot button
+		//TODO 000 add password forgot button
 		pack();
-		setLocationRelativeTo(Main.getInstance());
-
+		setLocationRelativeTo(null);
 	}
 
 	public void checkLogin() {
 		//check login
-		if (Main.getDataObject().checkLogin(txtUser.getText(), txtPass.getText())) {
-			//log in
-			if(chkRemember.isSelected()){
-				//store login
-				ProgramSettings.setUsername(txtUser.getText());
-				ProgramSettings.setPassword(txtPass.getText());
-				data.
-				ProgramSettings.setRemeberPassword(true);
-			}
-			instance.dispose();
+		Integer ownerId = DataConnector.checkLogin(txtUser.getText(), txtPass.getText());
+		if (ownerId != null) {
+			logIn(ownerId, false);
 		} else {
 			//repeat ask
 			lblLoginFailed1.setText(Language.getString("errLoginFailed"));
@@ -143,11 +143,67 @@ public class LoginDialog extends JDialog implements ActionListener {
 		}
 	}
 
+	private void logIn(int ownerId, boolean stored) {
+		//logged in
+		Logger.logger.info("loggin succesfull");
+		if (!stored) {
+			ProgramSettings.setUsername(txtUser.getText());
+			ProgramSettings.setPassword(txtPass.getText());
+		}
+		ProgramSettings.setOwnerId(ownerId);
+		if (chkRemember.isSelected()) {
+			//store login
+			ProgramSettings.setRemeberPassword(true);
+		}else{
+			ProgramSettings.setRemeberPassword(false);
+		}
+		instance.setVisible(false);
+		Main.init(instance).setVisible(true);
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if (txtPass.getText().equals(defaultPasswordContent)) {
 			txtPass.requestFocus();
 		} else {
 			checkLogin();
 		}
+	}
+
+	/**
+	 * Main method, starts the program
+	 * @param args
+	 */
+	public static void main(String args[]) {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				try {
+					UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+				} catch (Exception ex) {
+					Logger.logger.warn("Look and Feel not found: " + ex.getMessage());
+				}
+
+				Logger.init();
+				DataConnector.init();
+
+				ProgramSettings.read(); //reads settings from xml file using dom
+				Language.read(); //reads strings in specific language from xml file
+
+				ProgramSettings.print();
+
+				//check settings if remember pass is true:
+				if (ProgramSettings.isRemeberPassword()) {
+					//check if stored pass is correct
+					Integer ownerId = DataConnector.checkLogin(ProgramSettings.getUsername(), ProgramSettings.getPassword());
+					if (ownerId == null) {
+						LoginDialog.getInstance().setVisible(true);
+					} else {
+						LoginDialog.getInstance().logIn(ownerId, true);
+					}
+				} else {
+					LoginDialog.getInstance().setVisible(true);
+				}
+			}
+		});
 	}
 }

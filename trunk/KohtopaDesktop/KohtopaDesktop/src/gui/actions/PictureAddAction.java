@@ -2,12 +2,12 @@ package gui.actions;
 
 import Language.Language;
 import gui.GuiConstants;
+import gui.Logger;
 import gui.Main;
 import gui.actions.filefilters.FileFilterGif;
 import gui.actions.filefilters.FileFilterImage;
 import gui.actions.filefilters.FileFilterJpg;
 import gui.actions.filefilters.FileFilterPng;
-import gui.addremovetab.IBuildingListContainer;
 import gui.addremovetab.IIdentifiable;
 import gui.addremovetab.IPictureListContainer;
 import gui.addremovetab.IRentableListContainer;
@@ -16,8 +16,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -53,7 +51,7 @@ public class PictureAddAction extends AbstractIconAction {
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
 					//in database laden
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
-					Main.logger.error("images add must be implemented");
+					Logger.logger.error("images add must be implemented");
 					System.out.println("images add must be implemented");
 					if (root instanceof IRentableListContainer) {
 						//add building picture
@@ -67,12 +65,12 @@ public class PictureAddAction extends AbstractIconAction {
 				}
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("PicturesSuccesAdd"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 			} catch (SQLException ex) {
-				Main.logger.error("SQLException in PictureAddAction " + ex.getMessage());
-				Main.logger.debug("StackTrace: ", ex);
+				Logger.logger.error("SQLException in PictureAddAction " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} catch (IOException ex) {
-				Main.logger.error("IOException in PictureAddAction " + ex.getMessage());
-				Main.logger.debug("StackTrace: ", ex);
+				Logger.logger.error("IOException in PictureAddAction " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
 				JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errReadingImage") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}

@@ -11,7 +11,7 @@ import floorallocationmodule.objects.FireExtinguisher;
 import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.EmergencyExit;
 import floorallocationmodule.view.FloorImage;
-import gui.Main;
+import gui.Logger;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
@@ -287,7 +287,7 @@ public class FloorContent {
             Point translatedPoint = new Point(point.x+floorImage.getImageRectangle().x,
                    point.y+floorImage.getImageRectangle().y );
             if(!floorImage.getImageRectangle().contains(translatedPoint)) {
-				Main.logger.warn("out of bounds problem in checkAvailability in floorContent");
+				Logger.logger.warn("out of bounds problem in checkAvailability in floorContent");
                 return false;
             }
         } else {

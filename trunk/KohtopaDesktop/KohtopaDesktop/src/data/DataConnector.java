@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.*;
+import gui.Logger;
 import gui.calendartab.CalendarModel;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,14 +36,13 @@ public class DataConnector {
 	 */
 	public static void init() {
 		try {
-			Main.logger.info("------------------application started ---------------------");
-			Main.logger.warn("initializing DataConnector");
+			Logger.logger.warn("initializing DataConnector");
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Class.forName(DataBaseConstants.driver);
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in init of dataconnector: " + ex.getMessage());
+			Logger.logger.error("SQLException in init of dataconnector: " + ex.getMessage());
 		} catch (ClassNotFoundException ex) {
-			Main.logger.error("ClassNotFoundException in init of dataconnector: " + ex.getMessage());
+			Logger.logger.error("ClassNotFoundException in init of dataconnector: " + ex.getMessage());
 		}
 	}
 
@@ -62,6 +62,57 @@ public class DataConnector {
 	 */
 	private static Connection geefVerbindingOwner() throws SQLException {
 		return DriverManager.getConnection(DataBaseConstants.connectiestring, ProgramSettings.getUsername(), ProgramSettings.getPassword());
+	}
+
+		/**
+	 * Checkes login usernale and password
+	 * @return boolean in login succeeded
+	 */
+	public static Integer checkLogin(String username, String password) {
+		Logger.logger.info("checking login");
+		Integer ownerId = null;
+		try {
+			ownerId = DataConnector.checkLoginInDatabase(username, password);
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(null, "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
+			return null;
+		}
+		if (ownerId != null) {
+			ProgramSettings.setOwnerId(ownerId);
+		}
+		return ownerId;
+	}
+	
+
+	/**
+	 * Checks the login
+	 * @param username the username to check
+	 * @param password the password to check
+	 * @return the userID, null if no user found
+	 * @throws SQLException thrown if select fails
+	 */
+	public static Integer checkLoginInDatabase(String username, String password) throws SQLException {
+		Integer ownerId = null;
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.checkLogin);
+				ps.setString(1, username);
+				ps.setString(2, password);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					Logger.logger.info("database returned ownerid (login succesfull)");
+					ownerId = Integer.parseInt(rs.getString(DataBaseConstants.personID));
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			Logger.logger.error("failed login: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("failed login: " + ex);
+		}
+		return ownerId;
 	}
 
 	/**
@@ -105,12 +156,11 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
-	public static Vector<Person> selectRenterPreviews(int ownerId) throws SQLException, IOException {
+	public static Vector<Person> selectRenterPreviews() throws SQLException, IOException {
 		Vector<Person> renters = new Vector<Person>();
 		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement psSelectRenters = conn.prepareStatement(DataBaseConstants.selectRenterPreviews);
-			psSelectRenters.setInt(1, ownerId);
 			ResultSet rsRenters = psSelectRenters.executeQuery();
 			while (rsRenters.next()) {
 				renters.add(new Person(
@@ -149,17 +199,16 @@ public class DataConnector {
 					return "Username: " + rs.getString(2) + " , Password: " + rs.getString(3);
 				}
 			} catch (SQLException ex) {
-				Main.logger.error("SQLException in getOptimalLogin " + ex.getMessage());
-				Main.logger.debug("StackTrace: ", ex);
+				Logger.logger.error("SQLException in getOptimalLogin " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
 			} finally {
 				conn.close();
 			}
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in getOptimalLogin (connection failure) " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in getOptimalLogin (connection failure) " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 		return "no owners found";
-
 	}
 
 	/**
@@ -182,8 +231,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (SQLException ex) {
-			Main.logger.error("Exception in updateBuildings " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in updateBuildings " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("update buildings"
 					+ " set latitude = " + b.getLatitude()
 					+ " set longitude = " + b.getLongitude()
@@ -206,18 +255,18 @@ public class DataConnector {
 			//adding building with correct address id
 			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.insertBuilding);
 			if (addressID == null) {
-				Main.logger.info("addressid is null > address doesn't exest yet");
+				Logger.logger.info("addressid is null > address doesn't exest yet");
 			}
 			psAddBuilding.setInt(1, addressID);
 			psAddBuilding.execute();
 			psAddBuilding.close();
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in addBuilding " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in addBuilding " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addBuilding: " + ex);
 		} catch (Exception ex) {
-			Main.logger.error("Exception in addBuilding " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in addBuilding " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in addbuilding: unknown error \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -249,13 +298,13 @@ public class DataConnector {
 				psAddAddress.execute();
 				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
 				if (addressID == null) {
-					Main.logger.error("addressid is null where it should not be in addAddress");
+					Logger.logger.error("addressid is null where it should not be in addAddress");
 					throw new NullPointerException("address id is still null > proigramming error");
 				}
 			}
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in addAddress " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in addAddress " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException(ex.getMessage());
 		}
 		return addressID;
@@ -290,12 +339,12 @@ public class DataConnector {
 				//address already exists
 				id = rsCheck.getInt(DataBaseConstants.addressID);
 			} else {
-				Main.logger.fatal("address nog niet gevonden na toevoegen address > error in sql or problem with database");
+				Logger.logger.fatal("address nog niet gevonden na toevoegen address > error in sql or problem with database");
 			}
 			rsCheck.close();
 			psCheckAddress.close();
 		} catch (SQLException ex) {
-			Main.logger.info("addressid is null where it should not be in addAddress");
+			Logger.logger.info("addressid is null where it should not be in addAddress");
 			throw new SQLException(ex.getMessage());
 		}
 		return id;
@@ -322,12 +371,12 @@ public class DataConnector {
 			psAddBuilding.execute();
 			psAddBuilding.close();
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in updateBuilding " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in updateBuilding " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in updateBuilding: " + ex);
 		} catch (Exception ex) {
-			Main.logger.error("Exception in updateBuilding (encoding error?) " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in updateBuilding (encoding error?) " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in updateBuilding: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -393,12 +442,12 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in addFloorPlan " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in addFloorPlan " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addPicture: error inserting picture in database: " + ex);
 		} catch (Exception ex) {
-			Main.logger.error("SQLException in addFloorPlan " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in addFloorPlan " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error in addPicture: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			conn.close();
@@ -418,8 +467,8 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in removePicture " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in removePicture " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in RemovePicture: error removing picture: " + id + " from database: " + ex);
 		} finally {
 			conn.close();
@@ -480,14 +529,14 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("SQLException in getPictures " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in getPictures " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getPicture: problems with connection: " + ex);
 		}
 		return pictures;
 	}
 
-	public static Vector<Rentable> getRentableFromOwner(int ownerID) {
+	public static Vector<Rentable> getRentableFromOwner() {
 		Vector<Rentable> rentables = new Vector<Rentable>();
 		try {
 			//int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
@@ -516,8 +565,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in getRentableFromOwner " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in getRentableFromOwner " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to get rentables from owner \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 		return rentables;
@@ -552,13 +601,13 @@ public class DataConnector {
 					tasks.get(key).add(new Task(taskID, rentableID, description, start, end, repeats));
 					i++;
 				}
-				Main.logger.info("found " + i + " tasks.");
+				Logger.logger.info("found " + i + " tasks.");
 			} finally {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getTasks " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getTasks " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 		return tasks;
 	}
@@ -585,8 +634,8 @@ public class DataConnector {
 			}
 
 		} catch (SQLException ex) {
-			Main.logger.error("Exception in insertTask " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in insertTask " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -610,8 +659,8 @@ public class DataConnector {
 			}
 
 		} catch (SQLException ex) {
-			Main.logger.error("Exception in removeTask " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in removeTask " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -642,8 +691,8 @@ public class DataConnector {
 			}
 
 		} catch (SQLException ex) {
-			Main.logger.error("Exception in updateTask " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in updateTask " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -680,19 +729,18 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getMessageData " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getMessageData " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
-		Main.logger.info("found " + messages.size() + " messages.");
+		Logger.logger.info("found " + messages.size() + " messages.");
 		return messages;
 	}
 
 	/**
 	 * Gets the renters of a certain owner
-	 * @param ownerID the id of the owner
 	 * @return an Vector of persons containing the renters of an owner
 	 */
-	public static Vector<Person> getRenters(int ownerID) {
+	public static Vector<Person> getRenters() {
 		Vector<Person> renters = new Vector<Person>();
 		try {
 			Connection conn = geefVerbindingOwner();
@@ -718,8 +766,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getRenters " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getRenters " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "error retrieving renters:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -730,7 +778,7 @@ public class DataConnector {
 	//public static Vector<Contract> getContracts() {
 	//TODO: een enkele query?
 	//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
-	public static Vector<Contract> getContracts(int ownerID) {
+	public static Vector<Contract> getContracts() {
 		//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
 		Vector<Contract> contracts = new Vector<Contract>();
 		try {
@@ -797,8 +845,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getContracts " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getContracts " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), "Error retrieving contracts:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -821,8 +869,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in removeContract " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in removeContract " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -857,8 +905,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("error retrieving person with id: " + id + ": " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error retrieving person with id: " + id + ": " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 		return person;
 	}
@@ -882,8 +930,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("error setting read status on messages: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error setting read status on messages: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -910,8 +958,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in sendMessage: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in sendMessage: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 
 	}
@@ -949,8 +997,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getBuilding: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getBuilding: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 		return building;
 	}
@@ -986,8 +1034,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("error in getRentablesFromBuilding: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error in getRentablesFromBuilding: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getRentablesFromBuilding: " + ex.getMessage());
 		}
 		return rentables;
@@ -1029,8 +1077,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("error in getRentable: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error in getRentable: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getRentable: " + ex.getMessage());
 		}
 		return rentable;
@@ -1057,41 +1105,11 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("error in get floors: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error in get floors: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in get floors: " + ex.getMessage());
 		}
 		return floors;
-	}
-
-	/**
-	 * Checks the login
-	 * @param username the username to check
-	 * @param password the password to check
-	 * @return the userID, null if no user found
-	 * @throws SQLException thrown if select fails
-	 */
-	static Integer checkLogin(String username, String password) throws SQLException {
-		Integer userID = null;
-		try {
-			Connection conn = geefVerbinding();
-			try {
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.checkLogin);
-				ps.setString(1, username);
-				ps.setString(2, password);
-				ResultSet rs = ps.executeQuery();
-				if (rs.next()) {
-					userID = Integer.parseInt(rs.getString(DataBaseConstants.personID));
-				}
-			} finally {
-				conn.close();
-			}
-		} catch (Exception ex) {
-			Main.logger.error("failed login: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
-			throw new SQLException("failed login: " + ex);
-		}
-		return userID;
 	}
 
 	/**
@@ -1118,11 +1136,11 @@ public class DataConnector {
 			}
 
 		} catch (IOException ex) {
-			Main.logger.error("IOException in addDummyPictures: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("IOException in addDummyPictures: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in addDummyPictures: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in addDummyPictures: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 
@@ -1166,13 +1184,13 @@ public class DataConnector {
 							throw new ContractNotValidException(Language.getString("errContractNotValid"));
 						}
 					} catch (Exception ex) {
-						Main.logger.error("Exception in getRentPriceOrGuarantee(1): " + ex.getMessage());
-						Main.logger.debug("StackTrace: ", ex);
+						Logger.logger.error("Exception in getRentPriceOrGuarantee(1): " + ex.getMessage());
+						Logger.logger.debug("StackTrace: ", ex);
 					}
 				}
 			} catch (Exception ex) {
-				Main.logger.error("Exception in getRentPriceOrGuarantee(2): " + ex.getMessage());
-				Main.logger.debug("StackTrace: ", ex);
+				Logger.logger.error("Exception in getRentPriceOrGuarantee(2): " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
 			}
 		} finally {
 			conn.close();
@@ -1181,7 +1199,7 @@ public class DataConnector {
 	}
 
 	static Vector<Invoice> getInvoices(int RenterId) {
-		Main.logger.warn("Not yet implemented");
+		Logger.logger.warn("Not yet implemented");
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
@@ -1205,8 +1223,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in getUtilitiesInvoiceItems: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in getUtilitiesInvoiceItems: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed to get utilities: " + ex);
 		}
 	}
@@ -1231,8 +1249,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in insertInvoice: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in insertInvoice: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed during insert Invoice: " + ex);
 		}
 	}
@@ -1254,8 +1272,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Main.logger.error("Exception in createViewsForAllOwners: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Exception in createViewsForAllOwners: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in makeViews: " + ex);
 		}
 	}
@@ -1273,8 +1291,8 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			Main.logger.error("error in remove rentable: " + rentableId + " from database: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error in remove rentable: " + rentableId + " from database: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in remove rentable: " + rentableId + " from database: " + ex.getMessage());
 		} finally {
 			conn.close();
@@ -1294,8 +1312,8 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			Main.logger.error("error in remove building: " + buildingId + " from database: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("error in remove building: " + buildingId + " from database: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in remove building: " + buildingId + " from database: " + ex.getMessage());
 		} finally {
 			conn.close();

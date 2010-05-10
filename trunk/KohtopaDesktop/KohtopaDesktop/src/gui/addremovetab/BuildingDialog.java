@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 import data.entities.Building;
 import data.entities.Rentable;
+import gui.Logger;
 import java.awt.Window;
 import java.util.Vector;
 
@@ -206,8 +207,8 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 			gbl2.addLayoutComponent(scrollFloor, gbc);
 			pnlRentablesInfo.add(scrollFloor);
 		} catch (SQLException ex) {
-			Main.logger.error("SQLException in getting floors from database in constructor BuildingDialog: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("SQLException in getting floors from database in constructor BuildingDialog: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 
 		//buttons floor
@@ -242,7 +243,7 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
 					if (instance == null) {
-						Main.logger.error("instance == null in buildingdialog");
+						Logger.logger.error("instance == null in buildingdialog");
 					}
 					new RentableDialog(instance, ((Rentable) lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 				}

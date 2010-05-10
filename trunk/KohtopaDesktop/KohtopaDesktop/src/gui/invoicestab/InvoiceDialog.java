@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import data.entities.Invoice;
 import data.entities.InvoiceItem;
+import gui.Logger;
 import gui.Main;
 import java.io.StringWriter;
 import java.util.Calendar;
@@ -352,13 +353,16 @@ public class InvoiceDialog extends JFrame {
 			property.setTextContent(invoice.getOwner().getAddress().getCityLine());
 			owner.appendChild(property);
 			property = doc.createElement("country");
-			property.setTextContent(invoice.getOwner().getAddress().getCountry());
+			property.setTextContent(Language.getCountryByCode(invoice.getOwner().getAddress().getCountry()));
 			owner.appendChild(property);
 			property = doc.createElement("telephone");
 			property.setTextContent(invoice.getOwner().getTelephone());
 			owner.appendChild(property);
 			property = doc.createElement("cellphone");
 			property.setTextContent(invoice.getOwner().getCellphone());
+			owner.appendChild(property);
+			property = doc.createElement("email");
+			property.setTextContent(invoice.getOwner().getEmail());
 			owner.appendChild(property);
 			root.appendChild(owner);
 
@@ -377,13 +381,16 @@ public class InvoiceDialog extends JFrame {
 			property.setTextContent(invoice.getRenter().getAddress().getCityLine());
 			renter.appendChild(property);
 			property = doc.createElement("country");
-			property.setTextContent(invoice.getRenter().getAddress().getCountry());
+			property.setTextContent(Language.getCountryByCode(invoice.getRenter().getAddress().getCountry()));
 			renter.appendChild(property);
 			property = doc.createElement("telephone");
 			property.setTextContent(invoice.getRenter().getTelephone());
 			renter.appendChild(property);
 			property = doc.createElement("cellphone");
 			property.setTextContent(invoice.getRenter().getCellphone());
+			renter.appendChild(property);
+			property = doc.createElement("email");
+			property.setTextContent(invoice.getRenter().getEmail());
 			renter.appendChild(property);
 			root.appendChild(renter);
 
@@ -399,11 +406,11 @@ public class InvoiceDialog extends JFrame {
 			DOMSource source = new DOMSource(doc);
 			trans.transform(source, result);
 
-			Main.logger.info("xml stored in database: \n" + sw.toString() + "\n\n");
+			Logger.logger.info("xml stored in database: \n" + sw.toString() + "\n\n");
 			return sw.toString();
 		} catch (Exception ex) {
-			Main.logger.error("Failed to generate XML file: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Failed to generate XML file: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new XmlGenerationException("Failed to generate XML file:\n" + ex.getMessage());
 		}
 	}
@@ -426,7 +433,7 @@ public class InvoiceDialog extends JFrame {
 				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)) {
 			return true;
 		} else {
-			Main.logger.error(Language.getString("errInvoiceDates") + " in checkInput of invoice Dialog");
+			Logger.logger.error(Language.getString("errInvoiceDates") + " in checkInput of invoice Dialog");
 			JOptionPane.showMessageDialog(instance, Language.getString("errInvoiceDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}

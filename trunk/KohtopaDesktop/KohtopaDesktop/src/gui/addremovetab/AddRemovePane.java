@@ -5,6 +5,7 @@ import Language.Language;
 import data.DataModel;
 import data.entities.Building;
 import data.entities.Rentable;
+import gui.Logger;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -89,8 +90,8 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 			scrolRentable.setViewportView(lstRentables);
 		} catch (Exception ex) {
-			Main.logger.error("Failed to get buildings info in AddRemovePane: " + ex.getMessage());
-			Main.logger.debug("StackTrace: ", ex);
+			Logger.logger.error("Failed to get buildings info in AddRemovePane: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
 

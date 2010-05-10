@@ -2,10 +2,11 @@ package gui.actions;
 
 import Language.Language;
 import data.ProgramSettings;
+import gui.Logger;
 import gui.Main;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,12 +15,12 @@ import javax.swing.JOptionPane;
  */
 public class RestartAction extends AbstractAction {
 
-	public RestartAction() {
-		super("Restart");
+	public RestartAction(ImageIcon img) {
+		super("Apply",img);
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		Main.logger.info("Restart action triggert");
+		Logger.logger.info("Restart action triggert");
 		if (!Main.getSelectedLanguage().equals(Language.getLanguage())) {
 			//language selection changed
 			Object[] options = {"Now", "Later", "Cancel"};
@@ -36,20 +37,20 @@ public class RestartAction extends AbstractAction {
 				//change language
 				ProgramSettings.setLanguage(Main.getSelectedLanguage());
 				if (choise == 0) {
-					Main.logger.info("option 0: restart now");
+					Logger.logger.info("option 0: restart now");
 					//restart now
 					try {
 						Main.getInstance().dispose();
 						System.exit(100);
 					} catch (Exception ex) {
-						Main.logger.error("Exception during restart attempt " + ex.getMessage());
-						Main.logger.debug("StackTrace: ", ex);
+						Logger.logger.error("Exception during restart attempt " + ex.getMessage());
+						Logger.logger.debug("StackTrace: ", ex);
 					}
 				}else{
-					Main.logger.info("option 1: restart later");
+					Logger.logger.info("option 1: restart later");
 				}
 			}else{
-				Main.logger.info("option 2: cancel");
+				Logger.logger.info("option 2: cancel");
 				JOptionPane.showMessageDialog(Main.getInstance(), "Language already applied", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
 			}
 		}

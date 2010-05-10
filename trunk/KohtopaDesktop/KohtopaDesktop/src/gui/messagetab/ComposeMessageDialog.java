@@ -19,16 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.Vector;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  * ComposeMessageDialog class, this is used to write a message to somebody
@@ -100,7 +91,7 @@ public class ComposeMessageDialog extends JDialog {
         content.add(new JLabel("To: ",JLabel.LEFT),gbc);
 
         // combobox with renters
-        Vector<Person> renterList = DataConnector.getRenters(ProgramSettings.getOwnerId());
+        Vector<Person> renterList = DataConnector.getRenters();
         renters = new JComboBox();
 
         for(Person p:renterList) {
