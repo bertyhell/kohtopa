@@ -102,7 +102,7 @@ public class DataModel {
 			return false;
 		}
 		if (ownerId != null) {
-			ProgramSettings.setOwnerID(ownerId);
+			ProgramSettings.setOwnerId(ownerId);
 		}
 		return ownerId != null;
 	}

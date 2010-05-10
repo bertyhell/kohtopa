@@ -1,9 +1,11 @@
 package gui.invoicestab;
 
+import Language.Language;
 import data.DataModel;
 import data.entities.Person;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,12 +33,13 @@ public class InvoicesPane extends JPanel {
 		lstRenters.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstRenters.setBackground(new Color(217, 217, 217));
 		lstRenters.setCellRenderer(new RenterCellRenderer());
-		JScrollPane scrolRenters = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrolRenters.setViewportView(lstRenters);
-		sppUserlistInvoicesList.add(scrolRenters, 0);
+		JScrollPane scrollRenters = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollRenters.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("renters")));
+		scrollRenters.setViewportView(lstRenters);
+		sppUserlistInvoicesList.add(scrollRenters, 0);
 
 		//list of invoices
-		lstInvoices = new JList(); //TODO add invoices
+		lstInvoices = new JList(); //TODO 100 add invoices
 		if(lstRenters.getSelectedValue()!= null){
 			data.getInvoices(((Person)lstRenters.getSelectedValue()).getId());
 		}
@@ -44,6 +47,7 @@ public class InvoicesPane extends JPanel {
 		lstInvoices.setBackground(new Color(217, 217, 217));
 		lstInvoices.setCellRenderer(new RenterCellRenderer());
 		JScrollPane scrolInvoices = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrolInvoices.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("invoices")));
 		scrolInvoices.setViewportView(lstInvoices);
 		sppUserlistInvoicesList.add(scrolInvoices, 1);
 

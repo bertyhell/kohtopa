@@ -4,6 +4,7 @@
  */
 package gui.calendartab;
 
+import Language.Language;
 import data.entities.Task;
 import gui.Main;
 import java.awt.BorderLayout;
@@ -25,7 +26,7 @@ import javax.swing.SpinnerDateModel;
  * Panel that represents the calendar
  * @author Jelle
  */
-public class CalendarPanel extends JPanel implements MouseWheelListener {
+public class CalendarPane extends JPanel implements MouseWheelListener {
 
     private JPanel calendar;
     private CalendarModel model;
@@ -35,7 +36,7 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
     /**
      * Creates a new CalendarPanel of the current month
      */
-    public CalendarPanel() {
+    public CalendarPane() {
         this(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH));
     }
 
@@ -44,7 +45,8 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
      * @param year year of Calendar
      * @param month month of calendar
      */
-    public CalendarPanel(int year, int month) {
+    public CalendarPane(int year, int month) {
+		this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         nextSquareOdd = true;
 
         this.model = new CalendarModel(year, month, this);
@@ -64,7 +66,7 @@ public class CalendarPanel extends JPanel implements MouseWheelListener {
         JPanel dayPanel = new JPanel(new GridLayout(0, 7));
         calendarPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         for (int i = 0; i < 7; i++) {
-            JLabel l = new JLabel(Language.Language.getDaysOfWeek()[i]);
+            JLabel l = new JLabel(Language.getDaysOfWeek()[i]);
             l.setOpaque(true);
             l.setBackground(Color.DARK_GRAY);
             l.setForeground(Color.white);

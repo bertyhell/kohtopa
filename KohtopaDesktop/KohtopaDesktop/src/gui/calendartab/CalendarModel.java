@@ -26,7 +26,7 @@ import javax.swing.event.ChangeListener;
  */
 public class CalendarModel extends GregorianCalendar implements ChangeListener {
     //public static final long CONVERTMSTODAY = 86400000;
-    CalendarPanel calendarPanel;
+    CalendarPane calendarPanel;
     HashMap<Integer,Vector<Task>> tasks;
 
     /**
@@ -36,7 +36,7 @@ public class CalendarModel extends GregorianCalendar implements ChangeListener {
      * @param month the month
      * @param panel the CalendarPanel to monitor
      */
-    protected CalendarModel(int year, int month, CalendarPanel panel) {
+    protected CalendarModel(int year, int month, CalendarPane panel) {
         super(year, month, 1);
         this.calendarPanel = panel;
         tasks = new HashMap<Integer,Vector<Task>>();

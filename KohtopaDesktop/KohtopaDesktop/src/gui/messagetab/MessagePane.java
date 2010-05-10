@@ -23,6 +23,7 @@ import data.entities.Message;
 import gui.Main;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.BorderFactory;
 
 /**
  * MessagePane, this is used for the tab messages
@@ -46,11 +47,11 @@ public class MessagePane extends JPanel implements MouseListener {
 	public MessagePane() {
 
 		// create the left pane (containing list of messages)
-		leftpane = new JScrollPane();
-
+		leftpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		leftpane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("messages")));
 
 		// make new JList and add to panel
-		messages = DataConnector.getMessageData(ProgramSettings.getOwnerID());
+		messages = DataConnector.getMessageData(ProgramSettings.getOwnerId());
 		list = new JList(messages);
 
 		list.addListSelectionListener(new ListSelectionListener() {
@@ -80,8 +81,8 @@ public class MessagePane extends JPanel implements MouseListener {
 		leftpane.setViewportView(list);
 
 		// create the right pane
-		rightpane = new JScrollPane();
-
+		rightpane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		rightpane.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("message")));
 
 		// textfield
 		text = new JTextArea();
@@ -99,7 +100,7 @@ public class MessagePane extends JPanel implements MouseListener {
 
 		// make splitpane, set resizeweight to 20% left
 		splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftpane, rightpane);
-		splitpane.setDividerSize(5);
+		splitpane.setDividerSize(10);
 		splitpane.setResizeWeight(0.2);
 		splitpane.setDividerLocation(350);
 

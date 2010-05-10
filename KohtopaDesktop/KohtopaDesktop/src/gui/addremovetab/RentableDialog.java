@@ -36,13 +36,6 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 	public RentableDialog(Window parent, int id, boolean newRentable) { //TODO when new rentable > use id as building id
 		this.rentableId = id;
 		instance = this;
-//		this.addWindowFocusListener(new WindowAdapter() {
-//
-//			@Override
-//			public void windowGainedFocus(WindowEvent e) {
-//				Main.setFocusedDialog(instance);
-//			}
-//		});
 		setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setPreferredSize(new Dimension(700, 500));

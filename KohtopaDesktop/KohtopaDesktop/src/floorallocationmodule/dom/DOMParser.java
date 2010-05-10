@@ -248,7 +248,7 @@ public class DOMParser {
             DOMSource source = new DOMSource(document);
             transformer.transform(source, streamResult);
 
-            System.out.println("file saved to: "+file.getAbsolutePath());
+			Main.logger.info("invoice xml file saved to: "+file.getAbsolutePath()); //TODO 100 put in database instead of on harddrive
 
             // Image
             

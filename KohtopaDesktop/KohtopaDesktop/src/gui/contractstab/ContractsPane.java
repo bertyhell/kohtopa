@@ -1,14 +1,15 @@
 package gui.contractstab;
 
+import Language.Language;
 import data.DataConnector;
 import data.DataModel;
-import data.ProgramSettings;
 import data.entities.Contract;
 import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Vector;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -32,7 +33,7 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
 		setPreferredSize(new Dimension(500, 600));
 
         JSplitPane sppUserlistContractsList = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        sppUserlistContractsList.setDividerSize(5);
+        sppUserlistContractsList.setDividerSize(10);
         sppUserlistContractsList.setResizeWeight(0.2);
         sppUserlistContractsList.setDividerLocation(250);
         add(sppUserlistContractsList, BorderLayout.CENTER);
@@ -47,13 +48,15 @@ public class ContractsPane extends JPanel implements ListSelectionListener {
         Main.getAction("contractEdit").setEnabled(false);
         Main.getAction("contractRemove").setEnabled(false);
         
-		JScrollPane scrolContracts = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrolContracts.setViewportView(lstContracts);
-		sppUserlistContractsList.add(scrolContracts, 0);
+		JScrollPane scrollContracts = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollContracts.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("contracts")));
+		scrollContracts.setViewportView(lstContracts);
+		sppUserlistContractsList.add(scrollContracts, 0);
 
         //contract info on the right
-        JScrollPane scrolContractInfo = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        sppUserlistContractsList.add(scrolContractInfo, 0);
+        JScrollPane scrollContractInfo = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollContractInfo.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("contract")));
+		sppUserlistContractsList.add(scrollContractInfo, 1);
     }
 
     public void valueChanged(ListSelectionEvent e) {
