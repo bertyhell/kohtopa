@@ -110,5 +110,6 @@ public class DataBaseConstants {
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//dataconnector statement strings
 
-	public static String selectInvoicesToBeSend = "SELECT * FROM " + tableInvoices + " WHERE " + invoiceDate + " >= sysdate AND " + invoiceSend + " = 0";
+	public static String selectInvoicesToBeSend = "SELECT * FROM " + tableInvoices +
+			" WHERE " + invoiceDate + " >= sysdate AND " + invoiceSend + " = 0";
 }

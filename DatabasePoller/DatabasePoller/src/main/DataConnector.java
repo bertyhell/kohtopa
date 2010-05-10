@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -49,7 +50,8 @@ public class DataConnector {
 			Statement selectBuildings = conn.createStatement();
 			ResultSet rsInvoices = selectBuildings.executeQuery(DataBaseConstants.selectInvoicesToBeSend);
 			while (rsInvoices.next()) {
-				invoices.add(rsInvoices.getString(DataBaseConstants.invoiceXml));
+				Blob blob = rsInvoices.getBlob(DataBaseConstants.invoiceXml);
+				invoices.add(new String(blob.getBytes(1, (int) blob.length())));
 			}
 		} finally {
 			conn.close();
