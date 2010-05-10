@@ -11,12 +11,14 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 
 /**
  *
@@ -37,7 +39,9 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 			//add lists of buildings and Rentables
 			JScrollPane scrolBuilding = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrolBuilding.setBorder(BorderFactory.createTitledBorder(new EmptyBorder(0, 0, 0, 0), Language.getString("buildings")));
 			JScrollPane scrolRentable = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrolRentable.setBorder(BorderFactory.createTitledBorder(new EmptyBorder(0, 0, 0, 0), Language.getString("rentables")));
 			JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrolBuilding, scrolRentable);
 			splitter.setDividerLocation(325);
 			splitter.setDividerSize(10);

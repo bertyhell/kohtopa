@@ -174,35 +174,41 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		pnlRentablesInfo.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
 		pnlInformation.add(pnlRentablesInfo, BorderLayout.CENTER);
 
-		JLabel lblFloors = new JLabel(Language.getString("floors") + ":");
-		Layout.buildConstraints(gbc, 0, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl2.addLayoutComponent(lblFloors, gbc);
-		pnlRentablesInfo.add(lblFloors);
+//		JLabel lblFloors = new JLabel(Language.getString("floors") + ":");//TODO 050 replace by titeled border
+//		Layout.buildConstraints(gbc, 0, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
+//		gbl2.addLayoutComponent(lblFloors, gbc);
+//		pnlRentablesInfo.add(lblFloors);
+//
+//		JLabel lblRentable = new JLabel(Language.getString("rentables") + ":"); //TODO 050 replace by titeled border
+//		Layout.buildConstraints(gbc, 3, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
+//		gbl2.addLayoutComponent(lblRentable, gbc);
+//		pnlRentablesInfo.add(lblRentable);
+//
+//		row++; //next row
 
-		JLabel lblRentable = new JLabel(Language.getString("rentables") + ":");
-		Layout.buildConstraints(gbc, 3, row, 1, 1, 30, 1, GridBagConstraints.EAST, GridBagConstraints.WEST);
-		gbl2.addLayoutComponent(lblRentable, gbc);
-		pnlRentablesInfo.add(lblRentable);
+		try {
+			//lijst met floors
+			lstFloors = new JList(Main.getDataObject().getFloors(buildingId));
+			lstFloors.setBackground(new Color(217, 217, 217));
+			lstFloors.addMouseListener(new MouseAdapter() {
 
-		row++; //next row
-
-		//lijst met floors
-		String[] testFloors = {"testFloor1", "testFloor2", "testFloor3"};
-		lstFloors = new JList(testFloors);
-		lstFloors.setBackground(new Color(217, 217, 217));
-		lstFloors.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() > 1) {
-					new FloorDialog(instance.getRootPane(), instance.getBuildingId(), (Integer)lstFloors.getSelectedValue(), false).setVisible(true);
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() > 1) {
+						new FloorDialog(instance.getRootPane(), instance.getBuildingId(), (Integer) lstFloors.getSelectedValue(), false).setVisible(true);
+					}
 				}
-			}
-		});
-		JScrollPane scrolFloor = new JScrollPane(lstFloors, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		Layout.buildConstraints(gbc, 0, row, 1, 2, 20, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
-		gbl2.addLayoutComponent(scrolFloor, gbc);
-		pnlRentablesInfo.add(scrolFloor);
+			});
+
+			JScrollPane scrollFloor = new JScrollPane(lstFloors, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			scrollFloor.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), Language.getString("floors")));
+			Layout.buildConstraints(gbc, 0, row, 1, 2, 20, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
+			gbl2.addLayoutComponent(scrollFloor, gbc);
+			pnlRentablesInfo.add(scrollFloor);
+		} catch (SQLException ex) {
+			Main.logger.error("SQLException in getting floors from database in constructor BuildingDialog: " + ex.getMessage());
+			Main.logger.debug("StackTrace: ", ex);
+		}
 
 		//buttons floor
 		JPanel pnlFloorBtns = new JPanel();
@@ -235,17 +241,18 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() > 1) {
-					if(instance == null){
+					if (instance == null) {
 						Main.logger.error("instance == null in buildingdialog");
 					}
-					new RentableDialog(instance, ((Rentable)lstRentables.getSelectedValue()).getId(), false).setVisible(true);
+					new RentableDialog(instance, ((Rentable) lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 				}
 			}
 		});
-		JScrollPane scrolRentable = new JScrollPane(lstRentables, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollRentable = new JScrollPane(lstRentables, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollRentable.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.GRAY), Language.getString("rentables")));
 		Layout.buildConstraints(gbc, 3, row, 1, 2, 120, 4, GridBagConstraints.BOTH, GridBagConstraints.WEST);
-		gbl2.addLayoutComponent(scrolRentable, gbc);
-		pnlRentablesInfo.add(scrolRentable);
+		gbl2.addLayoutComponent(scrollRentable, gbc);
+		pnlRentablesInfo.add(scrollRentable);
 
 		//buttons rentables
 		JPanel pnlRentableBtns = new JPanel();
@@ -290,7 +297,7 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					if(CheckInput()){
+					if (CheckInput()) {
 						try {
 							Main.getDataObject().addBuilding(txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
 							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
@@ -306,10 +313,10 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 				@Override
 				public void mouseReleased(MouseEvent e) {
-					if(CheckInput()){
+					if (CheckInput()) {
 						try {
 							Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
-						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 						} catch (SQLException ex) {
 							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 						}
@@ -360,7 +367,7 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 				lstRentables.setListData(Main.getDataObject().getRentablesFromBuilding(buildingId));
 
-				
+
 				floors = Main.getDataObject().getFloors(buildingId);
 				lstFloors.setListData(floors);
 				btnConfirm.setText(Language.getString("update"));

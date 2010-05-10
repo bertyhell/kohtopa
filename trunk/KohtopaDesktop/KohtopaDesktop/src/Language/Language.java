@@ -1,5 +1,6 @@
 package Language;
 
+import data.ProgramSettings;
 import gui.Main;
 import java.awt.Dimension;
 import java.util.HashMap;
@@ -21,10 +22,13 @@ public class Language {
 	private static String[] rentableTypes;
 	private static String[] windDir;
 	private static JComboBox cbbCountry;
+	private static String language;
 
 	public static void read() {
 		try {
-			File file = new File("language_EN_English.xml");
+			Main.logger.info("Reading language file: " + "language_" + ProgramSettings.getLanguage() + ".xml");
+			language =  ProgramSettings.getLanguage();
+			File file = new File("language_" + ProgramSettings.getLanguage() + ".xml");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			Document doc = db.parse(file);
@@ -128,5 +132,7 @@ public class Language {
 		return monthsOfYear;
 	}
 
-
+	public static String getLanguage() {
+		return language;
+	}
 }

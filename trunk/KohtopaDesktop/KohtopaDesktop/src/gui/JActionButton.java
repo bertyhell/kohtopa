@@ -8,7 +8,7 @@ import javax.swing.JButton;
  *
  * @author Bert Verhelst <verhelst_bert@hotmail.com>
  */
-public class JActionButton extends JButton{
+public class JActionButton extends JButton {
 
 	private IIdentifiable root;
 

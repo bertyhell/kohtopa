@@ -28,8 +28,10 @@ public class ProgramSettings {
 	private static int ownerId;
 	private static boolean savePass;
 	private static Level loggerLevel;
+	private static String language;
 
 	public static void write() {
+		Main.logger.info("Writing programsettings");
 		try {
 			//create xml string
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -62,6 +64,10 @@ public class ProgramSettings {
 			child.setTextContent(loggerLevel.toString());
 			root.appendChild(child);
 
+			child = doc.createElement("language");
+			child.setTextContent(language);
+			root.appendChild(child);
+
 			//Output the XML
 
 			//set up a transformer
@@ -89,6 +95,7 @@ public class ProgramSettings {
 	}
 
 	public static void read() {
+		Main.logger.info("reading program settings from settings.xml");
 		File file = new File("settings.xml");
 		if (file.exists()) {
 			try {
@@ -113,6 +120,9 @@ public class ProgramSettings {
 				nodeLst = doc.getElementsByTagName("loggerLevel");
 				loggerLevel = Level.toLevel(nodeLst.item(0).getTextContent(), Level.ALL);
 
+				nodeLst = doc.getElementsByTagName("language");
+				language = nodeLst.item(0).getTextContent();
+
 			} catch (Exception ex) {
 				Main.logger.warn("couln't read settings file (using defaults): \n" + ex.getMessage());
 				setDefaults();
@@ -123,6 +133,7 @@ public class ProgramSettings {
 	}
 
 	private static void setDefaults() {
+		Main.logger.info("using default settings");
 		//default settings:
 		username = "";
 		password = "";
@@ -130,6 +141,7 @@ public class ProgramSettings {
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
 		loggerLevel = Level.OFF;
+		language = "English";
 	}
 
 	public static String getConnectionstring() {
@@ -156,12 +168,12 @@ public class ProgramSettings {
 		ProgramSettings.password = password;
 	}
 
-	public static int getOwnerID() {
+	public static int getOwnerId() {
 		return ownerId;
 	}
 
-	public static void setOwnerID(int userID) {
-		ProgramSettings.ownerId = userID;
+	public static void setOwnerId(int ownerId) {
+		ProgramSettings.ownerId = ownerId;
 	}
 
 	public static boolean isRemeberPassword() {
@@ -178,5 +190,13 @@ public class ProgramSettings {
 
 	public static Level getLoggerLevel() {
 		return loggerLevel;
+	}
+
+	public static String getLanguage() {
+		return language;
+	}
+
+	public static void setLanguage(String language) {
+		ProgramSettings.language = language;
 	}
 }

@@ -29,7 +29,7 @@ public class BuildingRemoveAction extends AbstractIconAction {
 		}
 		if (JOptionPane.showConfirmDialog(
 				null,
-				Language.getString("confirmDelete") + " " + selected.size() + " " + Language.getString("buildings"), //TODO p000 change building(s) to building if 1 else buildings
+				Language.getString("confirmDelete") + " " + selected.size() + " " + Language.getString("building_s"), //TODO p000 change building(s) to building if 1 else buildings
 				Language.getString("confirm"),
 				JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {

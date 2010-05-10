@@ -2,10 +2,7 @@ package gui;
 
 //TODO add possibility to access all functions trough ALT (maybe autohide file bar?)
 //TODO add right click menu's in all panels
-//TODO logging
-//TODO add titles to all lists
 import Language.Language;
-import data.DataConnector;
 import gui.messagetab.MessagePane;
 import gui.actions.*;
 import gui.messagetab.MessageListPanel;
@@ -21,7 +18,7 @@ import javax.swing.event.ChangeListener;
 import data.DataModel;
 import data.ProgramSettings;
 import gui.addremovetab.AddRemovePane;
-import gui.calendartab.CalendarPanel;
+import gui.calendartab.CalendarPane;
 import gui.contractstab.ContractsPane;
 import gui.invoicestab.InvoicesPane;
 import gui.userstab.UsersPane;
@@ -44,15 +41,18 @@ public class Main extends JFrame {
 	private static DataModel data;
 	private JPanel pnlAddremove;
 	private JPanel pnlUsers;
+	private JPanel pnlCalendar;
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
 	private JPanel pnlContracts;
 	private AddRemovePane pnlAddremoveInfo;
 	private UsersPane pnlUsersInfo;
+	private CalendarPane pnlCalendarInfo;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
 	private ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
+	private static JComboBox cbbLanguages;
 
 	/**
 	 * Getter for the main instance
@@ -77,9 +77,10 @@ public class Main extends JFrame {
 			Main.logger.warn("Look and Feel not found");
 			JOptionPane.showMessageDialog(this, "Look and Feel not found, make sure you have latest java version\n" + ex.getMessage(), "Look and Feel not found", JOptionPane.ERROR_MESSAGE);
 		}
-		Language.read(); //reads strings in specific language from xml file
 		ProgramSettings.read(); //reads settings from xml file using dom
+		Language.read(); //reads strings in specific language from xml file
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setPreferredSize(new Dimension(1000,700));
 
 		setTitle(Language.getString("titleJFrameDesktopMain"));
 		data = new DataModel();
@@ -87,6 +88,7 @@ public class Main extends JFrame {
 		//actions
 		actions = new HashMap<String, Action>();
 
+		actions.put("restart", new RestartAction());
 		actions.put("buildingAdd", new BuildingAddAction("buildingAdd", new ImageIcon(getClass().getResource("/images/building_add_23.png"))));
 		actions.put("buildingEdit", new BuildingEditAction("buildingEdit", new ImageIcon(getClass().getResource("/images/building_edit_23.png"))));
 		actions.put("buildingRemove", new BuildingRemoveAction("buildingRemove", new ImageIcon(getClass().getResource("/images/building_remove_23.png"))));
@@ -118,7 +120,6 @@ public class Main extends JFrame {
 		//jframe
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
 		this.setExtendedState(this.getExtendedState() | Main.MAXIMIZED_BOTH);
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		//TODO 001 add onclose handler > check if dialogs have changed data if so ask if user wants to save
 		this.setMinimumSize(new Dimension(370, 300));
 		this.setLayout(new BorderLayout());
@@ -168,12 +169,15 @@ public class Main extends JFrame {
 
 				//TODO 020 adjust tab 1 to fit like rest
 				if (tab == 2) {
+					pnlCalendarInfo = new CalendarPane();
+					pnlCalendar.add(pnlCalendarInfo, BorderLayout.CENTER);
+				}else if (tab == 3) {
 					pnlMessagesInfo = new MessagePane();
 					pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
-				} else if (tab == 3 && pnlInvoicesInfo == null) {
+				} else if (tab == 4 && pnlInvoicesInfo == null) {
 					pnlInvoicesInfo = new InvoicesPane(data);
 					pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
-				} else if (tab == 4 && pnlContractsInfo == null) {
+				} else if (tab == 5 && pnlContractsInfo == null) {
 					pnlContractsInfo = new ContractsPane(data);
 					pnlContracts.add(pnlContractsInfo, BorderLayout.CENTER);
 				}
@@ -190,6 +194,7 @@ public class Main extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				//TODO 010 check all open windows (dialogs) if there is unsaved data and request to save
+				Main.logger.info("writing settings file on close main, settings language is: " + ProgramSettings.getLanguage());
 				ProgramSettings.write();//store settings
 			}
 		});
@@ -265,7 +270,7 @@ public class Main extends JFrame {
 	private JPanel createCalendarPanel() {
 
 		//Calendar tab
-		JPanel pnlCalendar = new JPanel();
+		pnlCalendar = new JPanel();
 		pnlCalendar.setLayout(new BorderLayout());
 
 		//TODO 5 change workflow to fit rest of app > on click > select cel > then use buttons on top
@@ -284,11 +289,6 @@ public class Main extends JFrame {
 //		JButton btnRemoveTask = new JButton(actions.get("taskRemove"));
 //		btnRemoveTask.setHideActionText(disableBtnText);
 //		pnlButtonsCalendar.add(btnRemoveTask);
-
-		JPanel pnlDays = new CalendarPanel();
-		pnlDays.setPreferredSize(new Dimension(500, 600));
-		pnlDays.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		pnlCalendar.add(pnlDays, BorderLayout.CENTER);
 
 		return pnlCalendar;
 	}
@@ -407,16 +407,27 @@ public class Main extends JFrame {
 		FilenameFilter filter = new FilenameFilter() {
 
 			public boolean accept(File dir, String name) {
-				return name.matches("language_[A-Z]{2}_.*\\.xml");
+				return name.matches("language_.*\\.xml");
 			}
 		};
 		String[] languageFiles = new File(".").list(filter);
 		String[] languages = new String[languageFiles.length];
+		int selected = 0;
 		for (int i = 0; i < languageFiles.length; i++) {
-			languages[i] = languageFiles[i].split("[\\._]")[2]; // split filename _or. and get part 2
+			languages[i] = languageFiles[i].split("[\\._]")[1]; // split filename _or. and get part 2
+			if(languages[i].equals(ProgramSettings.getLanguage())){
+				selected = i;
+				Main.logger.info("selected language is: " + languages[selected]);
+			}
 		}
-		JComboBox cbbLanguages = new JComboBox(languages);
+		cbbLanguages = new JComboBox(languages);
+		cbbLanguages.setSelectedIndex(selected);
 		pnlLanguage.add(cbbLanguages);
+
+		//apply button
+		JButton btnApply = new JButton(getAction("restart"));
+		pnlLanguage.add(btnApply);
+
 		return pnlLanguage;
 	}
 
@@ -498,6 +509,10 @@ public class Main extends JFrame {
 		instance.tabbed.updateUI();
 	}
 
+	public static String getSelectedLanguage() {
+		return (String) cbbLanguages.getSelectedItem();
+	}
+
 	/**
 	 * Main method, starts the program
 	 * @param args
@@ -507,6 +522,7 @@ public class Main extends JFrame {
 
 			public void run() {
 				logger.setLevel(ProgramSettings.getLoggerLevel());
+				logger.info("logger level is: " + ProgramSettings.getLoggerLevel());
 
 				boolean loginChecked = false;
 				//check settings if remember pass is true:
@@ -533,7 +549,7 @@ public class Main extends JFrame {
 
 				if (loginChecked) {
 					//logged in
-					Main.getInstance();
+					Main.getInstance().setVisible(true);
 				} else {
 					logger.info("program closed before login");
 					Main.getInstance().dispose();

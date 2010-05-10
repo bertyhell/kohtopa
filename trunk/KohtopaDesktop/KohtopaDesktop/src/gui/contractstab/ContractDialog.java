@@ -63,7 +63,7 @@ public class ContractDialog extends JFrame {
 
         this.contract = contract;
 
-        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getOwnerID());
+        rentablesFromOwner = Main.getDataObject().getRentablesFromOwner(ProgramSettings.getOwnerId());
         
         setTitle(Language.getString(contract == null ? "contractAdd" : "contractEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/contract_64.png")).getImage());
@@ -82,7 +82,7 @@ public class ContractDialog extends JFrame {
 		pnlInfo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		pnlInfo.add(pnlPersons, BorderLayout.NORTH);
 
-		pnlPersons.add(new PersonPanel(Main.getDataObject().getPerson(ProgramSettings.getOwnerID()), Language.getString("homeOwner")), BorderLayout.LINE_START);
+		pnlPersons.add(new PersonPanel(Main.getDataObject().getPerson(ProgramSettings.getOwnerId()), Language.getString("homeOwner")), BorderLayout.LINE_START);
         if (contract == null) {
             personInputPanel = new PersonInputPanel(null, Language.getString("renter"));
             pnlPersons.add(personInputPanel, BorderLayout.LINE_END);
