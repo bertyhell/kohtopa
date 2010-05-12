@@ -99,6 +99,7 @@
             </asp:TableCell>
         </asp:TableRow>                        
     </asp:Table>
+    <asp:Table ID="tblPictures" runat="server"></asp:Table>
 </asp:Content>
 
 

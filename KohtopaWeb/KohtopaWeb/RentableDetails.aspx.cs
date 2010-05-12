@@ -59,6 +59,26 @@ namespace KohtopaWeb
                 lblWindowAreaValue.Text = "" + rentable.WindowArea;
                 lblDescriptionDescription.Text = Language.getstring("Description", language);
                 lblDescriptionValue.Text = rentable.Description;
+
+                DataTable dt = DataConnector.getBuildingPictureIds(rentable.Building.Id);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    TableRow tr = new TableRow();
+                    Image img = new Image();
+                    img.ImageUrl = "ShowPicture.aspx?imageId=" + dr[0];
+                    tr.Controls.Add(img);
+                    tblPictures.Rows.Add(tr);
+                }
+
+                dt = DataConnector.getRentablePictureIds(rentable.RentableId);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    TableRow tr = new TableRow();
+                    Image img = new Image();
+                    img.ImageUrl = "ShowPicture.aspx?imageId=" + dr[0];
+                    tr.Controls.Add(img);
+                    tblPictures.Rows.Add(tr);
+                }
             }
             catch { }
         }
