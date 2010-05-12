@@ -14,48 +14,61 @@ namespace KohtopaWeb
         {
             if (!IsPostBack)
             {
-                kalender.SelectedDate = DateTime.Today;
-                //kalender.TitleStyle.BackColor = System.Drawing.Color.DarkBlue;
-                //kalender.TitleStyle.ForeColor = System.Drawing.Color.Snow;
-                
-                DataTable t = DataConnector.getTasks(((Person)Session["user"]).PersonId);
-                   // , kalender.SelectedDate.AddDays(-kalender.SelectedDate.Day)
-                   // , kalender.SelectedDate.AddMonths(1).AddDays(-kalender.SelectedDate.Day));
-                t.PrimaryKey = new DataColumn[] {t.Columns["start_time"]};
+                try
+                {
+                    kalender.SelectedDate = DateTime.Today;
+                    //kalender.TitleStyle.BackColor = System.Drawing.Color.DarkBlue;
+                    //kalender.TitleStyle.ForeColor = System.Drawing.Color.Snow;
 
-                DataView v = new DataView(t);
-                v.Table.Columns.Remove("RENTABLEID");
-                Session["tasks"] = v;
+                    DataTable t = DataConnector.getTasks(((Person)Session["user"]).PersonId);
+                    // , kalender.SelectedDate.AddDays(-kalender.SelectedDate.Day)
+                    // , kalender.SelectedDate.AddMonths(1).AddDays(-kalender.SelectedDate.Day));
+                    t.PrimaryKey = new DataColumn[] { t.Columns["start_time"] };
 
+                    DataView v = new DataView(t);
+                    v.Table.Columns.Remove("RENTABLEID");
+                    Session["tasks"] = v;
+                }
+                catch (Exception exc)
+                {
+                    Logger.log(Server,exc.Message);
+                }
 
             }
         }
 
         protected void RenderDay(object sender, DayRenderEventArgs e)
         {
-            DataView v = (DataView)Session["tasks"];//DataConnector.getTasks(((Person)Session["user"]).PersonId, e.Day.Date, e.Day.Date.AddDays(1));
-            
-            DateTime dt = e.Day.Date;
-            DateTime dn = e.Day.Date.AddDays(1);
-            
-            //mm/dd/yyyy
-            v.RowFilter = "start_time >= #" + dt.ToString("M/dd/yyyy") + "# AND start_time < #" + dn.ToString("M/dd/yyyy") + "#";
-            
-            
-            //string s = String.Format("start_time >= #{0:M/dd/yyyy}# AND start_time <= #{1:M/dd/yyyy}#",dt, dn);
-            //DataRow[] rijen = v.Select(s);
+            try
+            {
+                DataView v = (DataView)Session["tasks"];//DataConnector.getTasks(((Person)Session["user"]).PersonId, e.Day.Date, e.Day.Date.AddDays(1));
 
-            
-            
-            if (v.Count > 0)
-            {
-                e.Cell.BackColor = kalender.TitleStyle.BackColor;
-                e.Cell.ForeColor = kalender.TitleStyle.ForeColor;
+                DateTime dt = e.Day.Date;
+                DateTime dn = e.Day.Date.AddDays(1);
+
+                //mm/dd/yyyy
+                v.RowFilter = "start_time >= #" + dt.ToString("M/dd/yyyy") + "# AND start_time < #" + dn.ToString("M/dd/yyyy") + "#";
+
+
+                //string s = String.Format("start_time >= #{0:M/dd/yyyy}# AND start_time <= #{1:M/dd/yyyy}#",dt, dn);
+                //DataRow[] rijen = v.Select(s);
+
+
+
+                if (v.Count > 0)
+                {
+                    e.Cell.BackColor = kalender.TitleStyle.BackColor;
+                    e.Cell.ForeColor = kalender.TitleStyle.ForeColor;
+                }
+                else
+                {
+                    e.Cell.BackColor = kalender.DayStyle.BackColor;
+                    e.Cell.ForeColor = kalender.DayStyle.ForeColor;
+                }
             }
-            else
+            catch (Exception exc)
             {
-                e.Cell.BackColor = kalender.DayStyle.BackColor;
-                e.Cell.ForeColor = kalender.DayStyle.ForeColor;
+                Logger.log(Server,exc.Message);
             }
         }
 
@@ -63,21 +76,28 @@ namespace KohtopaWeb
 
         protected void SelectDate(object sender, EventArgs e)
         {
-            DataView v = (DataView)Session["tasks"];//DataConnector.getTasks(((Person)Session["user"]).PersonId);//, kalender.SelectedDate.Date, DateTime.MaxValue);
+            try
+            {
+                DataView v = (DataView)Session["tasks"];//DataConnector.getTasks(((Person)Session["user"]).PersonId);//, kalender.SelectedDate.Date, DateTime.MaxValue);
 
 
 
-            DateTime dt = kalender.SelectedDate.Date;
-            DateTime dn = DateTime.MaxValue;
+                DateTime dt = kalender.SelectedDate.Date;
+                DateTime dn = DateTime.MaxValue;
 
-            v.RowFilter = "start_time >= #" + dt.ToString("M/dd/yyyy") + "# AND start_time < #" + dn.ToString("M/dd/yyyy") + "#";
-            //string s = String.Format("start_time >= #{0:M/dd/yyyy}# AND start_time <= #{1:M/dd/yyyy}#",dt, dn);
-           
+                v.RowFilter = "start_time >= #" + dt.ToString("M/dd/yyyy") + "# AND start_time < #" + dn.ToString("M/dd/yyyy") + "#";
+                //string s = String.Format("start_time >= #{0:M/dd/yyyy}# AND start_time <= #{1:M/dd/yyyy}#",dt, dn);
 
-            
 
-            data.DataSource = v;
-            data.DataBind();
+
+
+                data.DataSource = v;
+                data.DataBind();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
     }

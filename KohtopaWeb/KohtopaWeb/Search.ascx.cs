@@ -18,216 +18,272 @@ namespace KohtopaWeb
     {        
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack || Session["LanguageChanged"].Equals(true))
+            try
             {
-                Session["LanguageChanged"] = false;
-
-                string language = "" + Session["Language"];
-                lblFilter.Text = Language.getstring("Filter", language);
-
-                ViewState["rentableOrder"] = DataConnector.RentableOrder.PRICE;
-                updateFilterView();
-
-                DataTable dtFilters = new DataTable();
-                dtFilters.Columns.Add("id");
-                dtFilters.Columns.Add("text");
-                dtFilters.Columns.Add("type");
-                DataColumn[] key = new DataColumn[1];
-                key[0] = dtFilters.Columns[0];
-                dtFilters.PrimaryKey = key;
-                string[] s = ConfigurationManager.AppSettings["Filters"].Split(';');
-                for (int i = 0; i < s.Length / 2; i++)
+                if (!IsPostBack || Session["LanguageChanged"].Equals(true))
                 {
-                    DataRow dr = dtFilters.NewRow();
-                    dr["id"] = s[i * 2];
-                    dr["text"] = Language.getstring(s[i * 2], language);
-                    dr["type"] = s[i * 2 + 1];
-                    dtFilters.Rows.Add(dr);
+                    Session["LanguageChanged"] = false;
+
+                    string language = "" + Session["Language"];
+                    lblFilter.Text = Language.getstring("Filter", language);
+
+                    ViewState["rentableOrder"] = DataConnector.RentableOrder.PRICE;
+                    updateFilterView();
+
+                    DataTable dtFilters = new DataTable();
+                    dtFilters.Columns.Add("id");
+                    dtFilters.Columns.Add("text");
+                    dtFilters.Columns.Add("type");
+                    DataColumn[] key = new DataColumn[1];
+                    key[0] = dtFilters.Columns[0];
+                    dtFilters.PrimaryKey = key;
+                    string[] s = ConfigurationManager.AppSettings["Filters"].Split(';');
+                    for (int i = 0; i < s.Length / 2; i++)
+                    {
+                        DataRow dr = dtFilters.NewRow();
+                        dr["id"] = s[i * 2];
+                        dr["text"] = Language.getstring(s[i * 2], language);
+                        dr["type"] = s[i * 2 + 1];
+                        dtFilters.Rows.Add(dr);
+                    }
+                    ViewState["filters"] = dtFilters;
+                    ddlFilters.DataSource = dtFilters;
+                    ddlFilters.DataTextField = "text";
+                    ddlFilters.DataValueField = "id";
+                    ddlFilters.DataBind();
+
+                    lblMin.Text = Language.getstring("Min", language);
+                    rfvMin.ErrorMessage = Language.getstring("RequiredField", language);
+                    rvMin.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
+                    lblMax.Text = Language.getstring("Max", language);
+                    rfvMax.ErrorMessage = Language.getstring("RequiredField", language);
+                    rvMax.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
+                    cvBetween.ErrorMessage = Language.getstring("RequiredGreaterThanMin", language);
+                    btnBetween.Text = Language.getstring("Add", language);
+
+                    btnRequired.Text = Language.getstring("Required", language);
+                    btnReject.Text = Language.getstring("Reject", language);
+
+                    lblContains.Text = Language.getstring("Contains", language);
+                    btnContains.Text = Language.getstring("Add", language);
+
+                    lblStreet.Text = Language.getstring("Street", language);
+                    lblStreetNumber.Text = Language.getstring("StreetNumber", language);
+                    lblCity.Text = Language.getstring("City", language);
+                    lblCountry.Text = Language.getstring("Country", language);
+                    lblMaxDistance.Text = Language.getstring("MaxDistanceKM", language);
+                    rfvMaxDistance.ErrorMessage = Language.getstring("RequiredField", language);
+                    rfvStreet.ErrorMessage = Language.getstring("RequiredField", language);
+                    rvMaxDistance.ErrorMessage = Language.getstring("NumberBetween0_100", language);
+                    btnMaxDistance.Text = Language.getstring("Add", language);
+
+                    ddlFilters_Selected_Index_Changed(null, null);
+
                 }
-                ViewState["filters"] = dtFilters;
-                ddlFilters.DataSource = dtFilters;
-                ddlFilters.DataTextField = "text";
-                ddlFilters.DataValueField = "id";
-                ddlFilters.DataBind();
-
-                lblMin.Text = Language.getstring("Min", language);
-                rfvMin.ErrorMessage = Language.getstring("RequiredField", language);
-                rvMin.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
-                lblMax.Text = Language.getstring("Max", language);
-                rfvMax.ErrorMessage = Language.getstring("RequiredField", language);
-                rvMax.ErrorMessage = Language.getstring("RequiredPositiveNumber", language);
-                cvBetween.ErrorMessage = Language.getstring("RequiredGreaterThanMin", language);
-                btnBetween.Text = Language.getstring("Add", language);
-
-                btnRequired.Text = Language.getstring("Required", language);
-                btnReject.Text = Language.getstring("Reject", language);
-
-                lblContains.Text = Language.getstring("Contains", language);
-                btnContains.Text = Language.getstring("Add", language);
-
-                lblStreet.Text = Language.getstring("Street", language);
-                lblStreetNumber.Text = Language.getstring("StreetNumber", language);
-                lblCity.Text = Language.getstring("City", language);
-                lblCountry.Text = Language.getstring("Country", language);
-                lblMaxDistance.Text = Language.getstring("MaxDistanceKM", language);
-                rfvMaxDistance.ErrorMessage = Language.getstring("RequiredField", language);
-                rfvStreet.ErrorMessage = Language.getstring("RequiredField", language);                
-                rvMaxDistance.ErrorMessage = Language.getstring("NumberBetween0_100", language);
-                btnMaxDistance.Text = Language.getstring("Add", language);
-
-                ddlFilters_Selected_Index_Changed(null, null);
-                
+                else
+                {
+                    updateFilterView();
+                }
             }
-            else
+            catch (Exception exc)
             {
-                updateFilterView();
-            }            
+                Logger.log(Server, exc.Message);
+            }
         }        
 
         protected void ddlFilters_Selected_Index_Changed(object sender, EventArgs e)
         {
-            DataTable dtFilters = (DataTable)ViewState["filters"];
-            setSearchTables("" + dtFilters.Rows.Find(ddlFilters.SelectedValue)["type"]);
+            try
+            {
+                DataTable dtFilters = (DataTable)ViewState["filters"];
+                setSearchTables("" + dtFilters.Rows.Find(ddlFilters.SelectedValue)["type"]);
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         private void setSearchTables(string type)
         {
-            tblBetween.Visible = type.Equals("Between");
-            tblRequired.Visible = type.Equals("Required");
-            tblContains.Visible = type.Equals("Contains");
-            tblDistance.Visible = type.Equals("Distance");
+            try
+            {
+                tblBetween.Visible = type.Equals("Between");
+                tblRequired.Visible = type.Equals("Required");
+                tblContains.Visible = type.Equals("Contains");
+                tblDistance.Visible = type.Equals("Distance");
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void btnBetween_Click(object sender, EventArgs e)
         {
-            DataTable searchTable = getSearchTable();
-            DataView dv = new DataView(searchTable);
-            dv.RowFilter = ("data = '" + ddlFilters.SelectedValue) + "'";
-            DataRow dr;
-            if (dv.ToTable().Rows.Count > 0)
-            {
-                dr = dv.ToTable().Rows[0];
-                string[] keys = { "" + dr["data"], "" + dr["value1"] };
-                dr = searchTable.Rows.Find(keys);
-            }
-            else
-            {
-                dr = searchTable.NewRow();
-            }        
-            dr["data"] = ddlFilters.SelectedValue;
-            dr["operation"] = "Between";
-            dr["value1"] = Double.Parse(txtMin.Text,CultureInfo.InvariantCulture);
-            dr["value2"] = Double.Parse(txtMax.Text, CultureInfo.InvariantCulture);
             try
             {
-                searchTable.Rows.Add(dr);
+                DataTable searchTable = getSearchTable();
+                DataView dv = new DataView(searchTable);
+                dv.RowFilter = ("data = '" + ddlFilters.SelectedValue) + "'";
+                DataRow dr;
+                if (dv.ToTable().Rows.Count > 0)
+                {
+                    dr = dv.ToTable().Rows[0];
+                    string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                    dr = searchTable.Rows.Find(keys);
+                }
+                else
+                {
+                    dr = searchTable.NewRow();
+                }
+                dr["data"] = ddlFilters.SelectedValue;
+                dr["operation"] = "Between";
+                dr["value1"] = Double.Parse(txtMin.Text, CultureInfo.InvariantCulture);
+                dr["value2"] = Double.Parse(txtMax.Text, CultureInfo.InvariantCulture);
+                try
+                {
+                    searchTable.Rows.Add(dr);
+                }
+                catch{} //if dr is not a new row;
+                updateFilterView();
             }
-            catch {} //if dr is not a new row;
-
-            updateFilterView();
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void btnRequired_Click(object sender, EventArgs e)
         {
-            DataTable searchTable = getSearchTable();
-            DataView dv = new DataView(searchTable);
-            dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
-            
-            DataRow dr;
-            if (dv.ToTable().Rows.Count == 1)
-            {
-                dr = dv.ToTable().Rows[0];
-                string[] keys = { "" + dr["data"], "" + dr["value1"] };
-                dr = searchTable.Rows.Find(keys);
-            }
-            else
-            {
-                dr = searchTable.NewRow();
-            }
-            
-            dr["data"] = ddlFilters.SelectedValue;
-            dr["operation"] = "Required";
-            if (((Button)sender).Equals(btnRequired))
-            {
-                dr["value1"] = 1;
-            }
-            else
-            {
-                dr["value1"] = 0;
-            }            
             try
             {
-                searchTable.Rows.Add(dr);                
-            }
-            catch {} //if dr is not a new row;
-            updateFilterView();
-        }
+                DataTable searchTable = getSearchTable();
+                DataView dv = new DataView(searchTable);
+                dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
 
-        protected void btnContains_Click(object sender, EventArgs e)
-        {
-            DataTable searchTable = getSearchTable();            
-            DataRow dr = searchTable.NewRow();            
-            dr["data"] = ddlFilters.SelectedValue;
-            dr["operation"] = "Contains";
-            dr["value1"] = txtContains.Text;
-            try
-            {
-                searchTable.Rows.Add(dr);
-            }
-            catch {} //if dr is not a new row;
-            updateFilterView();
-        }
+                DataRow dr;
+                if (dv.ToTable().Rows.Count == 1)
+                {
+                    dr = dv.ToTable().Rows[0];
+                    string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                    dr = searchTable.Rows.Find(keys);
+                }
+                else
+                {
+                    dr = searchTable.NewRow();
+                }
 
-        protected void btnMaxDistance_Click(object sender, EventArgs e)
-        {
-            DataTable searchTable = getSearchTable();
-            DataView dv = new DataView(searchTable);
-            dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
-            DataRow dr;
-            if (dv.ToTable().Rows.Count == 1)
-            {
-                dr = dv.ToTable().Rows[0];
-                string[] keys = { "" + dr["data"], "" + dr["value1"] };
-                dr = searchTable.Rows.Find(keys);
-            }
-            else
-            {
-                dr = searchTable.NewRow();
-            }
-            dr["data"] = ddlFilters.SelectedValue;
-            dr["operation"] = "Distance";
-            string address = txtStreet.Text + " " + txtStreetNumber.Text + " , " + txtCity.Text + " , " + txtCountry.Text;
-            Pair longLat = GoogleGeocoding.getLongLat(address);            
-            if (longLat != null)
-            {                
+                dr["data"] = ddlFilters.SelectedValue;
+                dr["operation"] = "Required";
+                if (((Button)sender).Equals(btnRequired))
+                {
+                    dr["value1"] = 1;
+                }
+                else
+                {
+                    dr["value1"] = 0;
+                }
                 try
-                {                    
-                    dr["value1"] = address;
-                    string longLatDist = "" + longLat.First + ";" + longLat.Second + ";" + txtMaxDistance.Text;
-                    longLatDist = longLatDist.Replace(',', '.');
-                    dr["value2"] = longLatDist;
+                {
                     searchTable.Rows.Add(dr);
                 }
                 catch { } //if dr is not a new row;
                 updateFilterView();
             }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
+        }
+
+        protected void btnContains_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable searchTable = getSearchTable();
+                DataRow dr = searchTable.NewRow();
+                dr["data"] = ddlFilters.SelectedValue;
+                dr["operation"] = "Contains";
+                dr["value1"] = txtContains.Text;
+                try
+                {
+                    searchTable.Rows.Add(dr);
+                }
+                catch { } //if dr is not a new row;
+                updateFilterView();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
+        }
+
+        protected void btnMaxDistance_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DataTable searchTable = getSearchTable();
+                DataView dv = new DataView(searchTable);
+                dv.RowFilter = "data = '" + ddlFilters.SelectedValue + "'";
+                DataRow dr;
+                if (dv.ToTable().Rows.Count == 1)
+                {
+                    dr = dv.ToTable().Rows[0];
+                    string[] keys = { "" + dr["data"], "" + dr["value1"] };
+                    dr = searchTable.Rows.Find(keys);
+                }
+                else
+                {
+                    dr = searchTable.NewRow();
+                }
+                dr["data"] = ddlFilters.SelectedValue;
+                dr["operation"] = "Distance";
+                string address = txtStreet.Text + " " + txtStreetNumber.Text + " , " + txtCity.Text + " , " + txtCountry.Text;
+                Pair longLat = GoogleGeocoding.getLongLat(address);
+                if (longLat != null)
+                {
+                    try
+                    {
+                        dr["value1"] = address;
+                        string longLatDist = "" + longLat.First + ";" + longLat.Second + ";" + txtMaxDistance.Text;
+                        longLatDist = longLatDist.Replace(',', '.');
+                        dr["value2"] = longLatDist;
+                        searchTable.Rows.Add(dr);
+                    }
+                    catch { } //if dr is not a new row;
+                    updateFilterView();
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         private DataTable getSearchTable()
         {
-            DataTable searchTable = (DataTable)Session["searchTable"];
-            if (searchTable == null)
+            try
             {
-                searchTable = new DataTable();
-                DataColumn primary = searchTable.Columns.Add("data");
-                searchTable.Columns.Add("operation");
-                DataColumn secondary = searchTable.Columns.Add("value1");
-                searchTable.Columns.Add("value2");
-                DataColumn[] keys = {primary,secondary};
-                searchTable.PrimaryKey = keys;                
-                Session["searchTable"] = searchTable;
+                DataTable searchTable = (DataTable)Session["searchTable"];
+                if (searchTable == null)
+                {
+                    searchTable = new DataTable();
+                    DataColumn primary = searchTable.Columns.Add("data");
+                    searchTable.Columns.Add("operation");
+                    DataColumn secondary = searchTable.Columns.Add("value1");
+                    searchTable.Columns.Add("value2");
+                    DataColumn[] keys = { primary, secondary };
+                    searchTable.PrimaryKey = keys;
+                    Session["searchTable"] = searchTable;
+                }
+                return searchTable;
             }
-            return searchTable;
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+                return new DataTable();
+            }
         }
 
         private void updateFilterView()
@@ -343,240 +399,269 @@ namespace KohtopaWeb
 
                 gvFilters.DataBind();
             }
-            catch{}
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         private void updateRentableColumns()
         {
+            try
+            {
+                string language = "" + Session["Language"];
+                gvRentables.Columns.Clear();
 
-            string language = "" + Session["Language"];
-            gvRentables.Columns.Clear();
+                Label lbl = new Label();
+                lbl.Text = "DataBind:DateType:Free";
+                TableCell tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                TableRow tr = new TableRow();
+                tr.Cells.Add(tc);
+                Table table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                GridViewTemplate gvt = new GridViewTemplate(table, language);
+                TemplateField tf = new TemplateField();
+                tf.HeaderText = Language.getstring("FreeFrom", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.FREE;
+                gvRentables.Columns.Add(tf);
 
-            Label lbl = new Label();
-            lbl.Text = "DataBind:DateType:Free";
-            TableCell tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            TableRow tr = new TableRow();
-            tr.Cells.Add(tc);
-            Table table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            GridViewTemplate gvt = new GridViewTemplate(table, language);
-            TemplateField tf = new TemplateField();
-            tf.HeaderText = Language.getstring("FreeFrom",language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.FREE;
-            gvRentables.Columns.Add(tf);            
+                lbl = new Label();
+                lbl.Text = "DataBind:RentableType:Type";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Type", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.TYPE;
+                gvRentables.Columns.Add(tf);
 
-            lbl = new Label();
-            lbl.Text="DataBind:RentableType:Type";                        
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);            
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);                        
-            gvt = new GridViewTemplate(table,language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Type", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.TYPE;
-            gvRentables.Columns.Add(tf);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                tr = new TableRow();
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:Street";
+                tc = new TableCell();
+                tc.Controls.Add(lbl);
+                lbl = new Label();
+                lbl.Text = " ";
+                tc.Controls.Add(lbl);
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:Street_Number";
+                tc.Controls.Add(lbl);
+                tr.Cells.Add(tc);
+                table.Rows.Add(tr);
+                tr = new TableRow();
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:ZipCode";
+                tc = new TableCell();
+                tc.Controls.Add(lbl);
+                lbl = new Label();
+                lbl.Text = " ";
+                tc.Controls.Add(lbl);
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:City";
+                tc.Controls.Add(lbl);
+                tr.Cells.Add(tc);
+                table.Rows.Add(tr);
+                tr = new TableRow();
+                lbl = new Label();
+                lbl.Text = "DataBind:CountryType:Country";
+                tc = new TableCell();
+                tc.Controls.Add(lbl);
+                tr.Cells.Add(tc);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Address", language);
+                tf.ItemTemplate = gvt;
+                gvRentables.Columns.Add(tf);
 
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            tr = new TableRow();            
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:Street";            
-            tc = new TableCell();
-            tc.Controls.Add(lbl);
-            lbl = new Label();
-            lbl.Text = " ";
-            tc.Controls.Add(lbl);
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:Street_Number";            
-            tc.Controls.Add(lbl);
-            tr.Cells.Add(tc);
-            table.Rows.Add(tr);
-            tr = new TableRow();            
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:ZipCode";
-            tc = new TableCell();            
-            tc.Controls.Add(lbl);
-            lbl = new Label();
-            lbl.Text = " ";
-            tc.Controls.Add(lbl);
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:City";            
-            tc.Controls.Add(lbl);
-            tr.Cells.Add(tc);
-            table.Rows.Add(tr);
-            tr = new TableRow();
-            lbl = new Label();
-            lbl.Text = "DataBind:CountryType:Country";
-            tc = new TableCell();
-            tc.Controls.Add(lbl);
-            tr.Cells.Add(tc);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Address", language);
-            tf.ItemTemplate = gvt;
-            gvRentables.Columns.Add(tf);
+                lbl = new Label();
+                lbl.Text = "DataBind:Currency:Price";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Price", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.PRICE;
+                gvRentables.Columns.Add(tf);
 
-            lbl = new Label();
-            lbl.Text = "DataBind:Currency:Price";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Price", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.PRICE;
-            gvRentables.Columns.Add(tf);
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:Floor";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Floor", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.FLOOR;
+                gvRentables.Columns.Add(tf);
 
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:Floor";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Floor", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.FLOOR;
-            gvRentables.Columns.Add(tf);
+                lbl = new Label();
+                lbl.Text = "DataBind:Area:Area";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Area", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.AREA;
+                gvRentables.Columns.Add(tf);
 
-            lbl = new Label();
-            lbl.Text = "DataBind:Area:Area";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Area", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.AREA;
-            gvRentables.Columns.Add(tf);
+                Image img = new Image();
+                img.ImageUrl = "DataBind:Boolean:Internet";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(img);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Internet", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.INTERNET;
+                gvRentables.Columns.Add(tf);
 
-            Image img = new Image();            
-            img.ImageUrl = "DataBind:Boolean:Internet";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(img);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();            
-            tf.HeaderText = Language.getstring("Internet", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.INTERNET;
-            gvRentables.Columns.Add(tf);
+                img = new Image();
+                img.ImageUrl = "DataBind:Boolean:Cable";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(img);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Cable", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.CABLE;
+                gvRentables.Columns.Add(tf);
 
-            img = new Image();
-            img.ImageUrl = "DataBind:Boolean:Cable";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(img);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Cable", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.CABLE;
-            gvRentables.Columns.Add(tf);
-            
-            /*
-            lbl = new Label();
-            lbl.Text = "DataBind:Normal:Outlet_count";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbl);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("OutletCount", language);
-            tf.ItemTemplate = gvt;
-            tf.SortExpression = DataConnector.RentableOrder.OUTLET_COUNT;
-            gvRentables.Columns.Add(tf);
-            */
+                /*
+                lbl = new Label();
+                lbl.Text = "DataBind:Normal:Outlet_count";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbl);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("OutletCount", language);
+                tf.ItemTemplate = gvt;
+                tf.SortExpression = DataConnector.RentableOrder.OUTLET_COUNT;
+                gvRentables.Columns.Add(tf);
+                */
 
-            LinkButton  lbtn = new LinkButton();            
-            lbtn.Text = Language.getstring("Details", language);
-            lbtn.PostBackUrl = "DataBind:clickDetails:rentableId";
-            tc = new TableCell();
-            tc.HorizontalAlign = HorizontalAlign.Center;
-            tc.Controls.Add(lbtn);
-            tr = new TableRow();
-            tr.Cells.Add(tc);
-            table = new Table();
-            table.Width = Unit.Percentage(100);
-            table.Rows.Add(tr);
-            gvt = new GridViewTemplate(table, language);
-            tf = new TemplateField();
-            tf.HeaderText = Language.getstring("Details", language);
-            tf.ItemTemplate = gvt;            
-            gvRentables.Columns.Add(tf); 
-
+                LinkButton lbtn = new LinkButton();
+                lbtn.Text = Language.getstring("Details", language);
+                lbtn.PostBackUrl = "DataBind:clickDetails:rentableId";
+                tc = new TableCell();
+                tc.HorizontalAlign = HorizontalAlign.Center;
+                tc.Controls.Add(lbtn);
+                tr = new TableRow();
+                tr.Cells.Add(tc);
+                table = new Table();
+                table.Width = Unit.Percentage(100);
+                table.Rows.Add(tr);
+                gvt = new GridViewTemplate(table, language);
+                tf = new TemplateField();
+                tf.HeaderText = Language.getstring("Details", language);
+                tf.ItemTemplate = gvt;
+                gvRentables.Columns.Add(tf);
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void gvFilters_RowDeleting(object sender, EventArgs e)
         {
-            DataTable searchTable = (DataTable)Session["searchTable"];
-            if (searchTable != null)
+            try
             {
-                searchTable.Rows[((GridViewDeleteEventArgs)e).RowIndex].Delete();
+                DataTable searchTable = (DataTable)Session["searchTable"];
+                if (searchTable != null)
+                {
+                    searchTable.Rows[((GridViewDeleteEventArgs)e).RowIndex].Delete();
+                }
+                updateFilterView();
             }
-            updateFilterView();
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void gvRentables_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
-            gvRentables.PageIndex = e.NewPageIndex;
-            updateFilterView();
+            try
+            {
+                gvRentables.PageIndex = e.NewPageIndex;
+                updateFilterView();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void gvRentables_Sorting(object sender, GridViewSortEventArgs e)
         {
-            if (ViewState["rentableOrder"].Equals(e.SortExpression))
+            try
             {
-                ViewState["rentableOrder"] = e.SortExpression + " desc";
+                if (ViewState["rentableOrder"].Equals(e.SortExpression))
+                {
+                    ViewState["rentableOrder"] = e.SortExpression + " desc";
+                }
+                else
+                {
+                    ViewState["rentableOrder"] = e.SortExpression;
+                }
+                updateFilterView();
             }
-            else
+            catch (Exception exc)
             {
-                ViewState["rentableOrder"] = e.SortExpression;
+                Logger.log(Server, exc.Message);
             }
-            updateFilterView();
         }
         
     }

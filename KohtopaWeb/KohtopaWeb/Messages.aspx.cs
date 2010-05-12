@@ -18,46 +18,60 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack || (bool)Session["LanguageChanged"])
+            try
             {
-                Session["LanguageChanged"] = false;
-                string language = "" + Session["Language"];
-                lblSubject.Text = Language.getstring("Subject", language);
-                lblMessage.Text = Language.getstring("Message", language);
-                btnSend.Text = Language.getstring("Send",language);
-
-                Person user = (Person)Session["user"];
-                if (user != null && user.RoleId != "user")
+                if (!IsPostBack || (bool)Session["LanguageChanged"])
                 {
-                    sendMessageTable.Visible = false;
+                    Session["LanguageChanged"] = false;
+                    string language = "" + Session["Language"];
+                    lblSubject.Text = Language.getstring("Subject", language);
+                    lblMessage.Text = Language.getstring("Message", language);
+                    btnSend.Text = Language.getstring("Send", language);
+
+                    Person user = (Person)Session["user"];
+                    if (user != null && user.RoleId != "user")
+                    {
+                        sendMessageTable.Visible = false;
+                    }
                 }
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
             }
         }
 
         protected void btnSend_Click(object sender, EventArgs e)
         {
-            Person user = (Person)Session["user"];
-            Message m = new Message();
-            m.DateSent = DateTime.Now;
-            m.Recipient = user.Rentable.Owner;
-            m.Sender = user;
-            m.Subject = txtSubject.Text;
-            m.Text = txtMessage.Text;
-            bool succeeded = m.sendMessage();
-            if (succeeded)
+            try
             {
-                lblSucceeded.Text = Language.getstring("MessageSendSucceeded", "" + Session["Language"]);
-                lblSucceeded.ForeColor = System.Drawing.Color.Black;
-                txtMessage.Text = "";
-                txtSubject.Text = "";
-                txtSubject.Focus();                
-                lblSucceeded.Visible = true;
+                Person user = (Person)Session["user"];
+                Message m = new Message();
+                m.DateSent = DateTime.Now;
+                m.Recipient = user.Rentable.Owner;
+                m.Sender = user;
+                m.Subject = txtSubject.Text;
+                m.Text = txtMessage.Text;
+                bool succeeded = m.sendMessage();
+                if (succeeded)
+                {
+                    lblSucceeded.Text = Language.getstring("MessageSendSucceeded", "" + Session["Language"]);
+                    lblSucceeded.ForeColor = System.Drawing.Color.Black;
+                    txtMessage.Text = "";
+                    txtSubject.Text = "";
+                    txtSubject.Focus();
+                    lblSucceeded.Visible = true;
+                }
+                else
+                {
+                    lblSucceeded.Text = Language.getstring("MessageSendFailed", "" + Session["Language"]);
+                    lblSucceeded.ForeColor = System.Drawing.Color.Red;
+                    lblSucceeded.Visible = true;
+                }
             }
-            else
+            catch (Exception exc)
             {
-                lblSucceeded.Text = Language.getstring("MessageSendFailed", "" + Session["Language"]);
-                lblSucceeded.ForeColor = System.Drawing.Color.Red;
-                lblSucceeded.Visible = true;
+                Logger.log(Server, exc.Message);
             }
         }
     }

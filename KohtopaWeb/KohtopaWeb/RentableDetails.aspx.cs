@@ -80,7 +80,10 @@ namespace KohtopaWeb
                     tblPictures.Rows.Add(tr);
                 }
             }
-            catch { }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
     }
 }

@@ -15,14 +15,28 @@ namespace KohtopaWeb
     {
 
         protected void Application_Start(object sender, EventArgs e)
-        {            
-            Language.read(Server);
-            SmtpMail.SmtpServer = "mail-out.hogent.be";            
+        {
+            try
+            {
+                Language.read(Server);
+                SmtpMail.SmtpServer = "mail-out.hogent.be";
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
-        protected void Session_Start(object sender, EventArgs e)
+        protected void Session_Start(object sender, EventArgs e)            
         {
-            Session["language"] = ConfigurationManager.AppSettings["DefaultLanguage"];
+            try
+            {
+                Session["language"] = ConfigurationManager.AppSettings["DefaultLanguage"];
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
