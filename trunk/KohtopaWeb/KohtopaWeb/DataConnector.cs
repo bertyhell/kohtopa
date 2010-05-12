@@ -40,6 +40,8 @@ namespace KohtopaWeb
         private static string getLongLatByRentableIdSQL = "select b.longitude, b.latitude from rentables r join buildings b on b.buildingid = r.buildingid where r.rentableid = ?";
         private static string getBuildingByIdSQL = "select * from buildings where buildingId = ?";
 
+        private static string getBuildingPictureIDsByIdSQL = "select pictureID from pictures where type_floor = -3 and rentable_building_id = ?";
+        private static string getRentablePictureIDsByIdSQL = "select pictureID from pictures where type_floor = -1 and rentable_building_id = ?";
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
         
@@ -626,6 +628,40 @@ namespace KohtopaWeb
                 }catch{}
             }
             return pair;
+        }
+
+        public static DataTable getBuildingPictureIds(int BuildingId)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getBuildingPictureIDsByIdSQL;
+
+            OleDbParameter p = new OleDbParameter();
+            p.Value = BuildingId;
+            command.Parameters.Add(p);
+
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+
+            da.Fill(ds);
+            return ds.Tables[0];
+        }
+
+        public static DataTable getRentablePictureIds(int BuildingId)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = getBuildingPictureIDsByIdSQL;
+
+            OleDbParameter p = new OleDbParameter();
+            p.Value = BuildingId;
+            command.Parameters.Add(p);
+
+            OleDbDataAdapter da = new OleDbDataAdapter(command);
+            DataSet ds = new DataSet();
+
+            da.Fill(ds);
+            return ds.Tables[0];
         }
     }
 }
