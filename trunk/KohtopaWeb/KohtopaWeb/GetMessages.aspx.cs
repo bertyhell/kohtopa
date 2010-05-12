@@ -20,31 +20,52 @@ namespace KohtopaWeb
 
         private void reloadMessages()
         {
-            Person user = (Person)Session["user"];
-            List<Message> m = DataConnector.getMessages(user.PersonId);
-            Session["messages"] = m;
-            messages.DataSource = m;
-            messages.DataBind();    
+            try
+            {
+                Person user = (Person)Session["user"];
+                List<Message> m = DataConnector.getMessages(user.PersonId);
+                Session["messages"] = m;
+                messages.DataSource = m;
+                messages.DataBind();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
 
         protected void SelectMessage(object sender, GridViewCommandEventArgs e)
         {
-            //tmp.Text = e.CommandSource.ToString();
-            int index = int.Parse(e.CommandArgument.ToString())+messages.PageIndex*messages.PageSize;
-            Message m = ((List<Message>)Session["messages"])[index];
-            Person user = (Person)Session["user"];
-            DataConnector.setRead(m, user);
-            message.Text = m.Text;
+            try
+            {
+                //tmp.Text = e.CommandSource.ToString();
+                int index = int.Parse(e.CommandArgument.ToString()) + messages.PageIndex * messages.PageSize;
+                Message m = ((List<Message>)Session["messages"])[index];
+                Person user = (Person)Session["user"];
+                DataConnector.setRead(m, user);
+                message.Text = m.Text;
 
-            reloadMessages();
+                reloadMessages();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
 
         }
 
         protected void indexChange(object sender, GridViewPageEventArgs e)
         {
-            messages.PageIndex = e.NewPageIndex; 
-            messages.DataSource  = (List<Message>)Session["messages"];
-            messages.DataBind();
+            try
+            {
+                messages.PageIndex = e.NewPageIndex;
+                messages.DataSource = (List<Message>)Session["messages"];
+                messages.DataBind();
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
 
         }
     }

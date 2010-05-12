@@ -23,7 +23,10 @@ namespace KohtopaWeb
                 int id = Int32.Parse(Request["imageId"]);
                 Response.BinaryWrite(DataConnector.getPicture(id));
             }
-            catch {}
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
     }
 }

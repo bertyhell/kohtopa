@@ -20,13 +20,19 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            lblWelcome.Text = Language.getstring("Welcome", "" + Session["language"]);
-
-            /* example to extract image from databank
-            Image image = new Image();
-            image.ImageUrl = "ShowPicture.aspx?imageId=-2147483642";
-            this.Controls.Add(image);
-            */ 
+            try
+            {
+                lblWelcome.Text = Language.getstring("Welcome", "" + Session["language"]);
+                /* example to extract image from databank
+                Image image = new Image();
+                image.ImageUrl = "ShowPicture.aspx?imageId=-2147483642";
+                this.Controls.Add(image);
+                */
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }       
     }
 }

@@ -14,71 +14,78 @@ namespace KohtopaWeb
         {
             if (!IsPostBack)
             {
-
-                XmlTextReader textReader = new XmlTextReader(Server.MapPath("floor.xml"));
-                
-                XmlDocument xd = new XmlDocument();
-                xd.Load(textReader);
-
-                XmlNode basenode = xd.DocumentElement;
-
-                basenode.Normalize();
-
-                foreach(XmlNode n in basenode.ChildNodes) 
+                try
                 {
-                    if(n.Name == "width") 
+                    XmlTextReader textReader = new XmlTextReader(Server.MapPath("floor.xml"));
+                    XmlDocument xd = new XmlDocument();
+                    xd.Load(textReader);
+                    XmlNode basenode = xd.DocumentElement;
+                    basenode.Normalize();
+
+                    foreach (XmlNode n in basenode.ChildNodes)
                     {
-                        
-                        floorplan.Width = int.Parse(n.FirstChild.Value);
-                    }
-                    else if(n.Name == "height") 
-                    {
-                        floorplan.Height = int.Parse(n.FirstChild.Value);
-                    }
-                    else if(n.Name == "namedpolygons")
-                    {
-                        foreach (XmlNode polygon in n.ChildNodes)
+                        if (n.Name == "width")
                         {
-                            readHotspot(polygon.ChildNodes);
+
+                            floorplan.Width = int.Parse(n.FirstChild.Value);
+                        }
+                        else if (n.Name == "height")
+                        {
+                            floorplan.Height = int.Parse(n.FirstChild.Value);
+                        }
+                        else if (n.Name == "namedpolygons")
+                        {
+                            foreach (XmlNode polygon in n.ChildNodes)
+                            {
+                                readHotspot(polygon.ChildNodes);
+                            }
                         }
                     }
                 }
-                
+                catch (Exception exc)
+                {
+                    Logger.log(Server, exc.Message);
+                }                
             }
         }
 
         void readHotspot(XmlNodeList nodes)
         {
-            // add new polygon
-
-            PolygonHotSpot hs = new PolygonHotSpot();
-            string coords = "";
-
-            foreach(XmlNode n in nodes) 
+            try
             {
-                if(n.Name == "name")
-                {                    
-                    string name = n.FirstChild.Value;
-                    hs.PostBackValue = name;
-                    hs.AlternateText = name;
-                    hs.HotSpotMode = HotSpotMode.Navigate;
-                    hs.NavigateUrl = "~/RentableDetails.aspx?id=" + name;
-                }
-                else if(n.Name == "points")
-                {
-                    foreach(XmlNode child in n.ChildNodes) 
-                    {
-                        foreach (XmlNode point in child.ChildNodes)
-                        {
-                            coords += point.FirstChild.Value + ",";
+                // add new polygon            
+                PolygonHotSpot hs = new PolygonHotSpot();
+                string coords = "";
 
+                foreach (XmlNode n in nodes)
+                {
+                    if (n.Name == "name")
+                    {
+                        string name = n.FirstChild.Value;
+                        hs.PostBackValue = name;
+                        hs.AlternateText = name;
+                        hs.HotSpotMode = HotSpotMode.Navigate;
+                        hs.NavigateUrl = "~/RentableDetails.aspx?id=" + name;
+                    }
+                    else if (n.Name == "points")
+                    {
+                        foreach (XmlNode child in n.ChildNodes)
+                        {
+                            foreach (XmlNode point in child.ChildNodes)
+                            {
+                                coords += point.FirstChild.Value + ",";
+
+                            }
                         }
                     }
                 }
+                hs.Coordinates = coords.Substring(0, coords.Length - 1);
+                floorplan.HotSpots.Add(hs);
             }
-            hs.Coordinates = coords.Substring(0,coords.Length-1);
-            floorplan.HotSpots.Add(hs);
-
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
+            }
         }
     }
 }

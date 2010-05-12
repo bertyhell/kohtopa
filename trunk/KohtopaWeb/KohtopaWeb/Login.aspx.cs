@@ -17,34 +17,47 @@ namespace KohtopaWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            login.UserNameLabelText = Language.getstring("Username", (string)Session["Language"]);
-            login.PasswordLabelText = Language.getstring("Password", (string)Session["Language"]);
-            login.LoginButtonText = Language.getstring("Login", "EN");
-            login.UserNameRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
-            login.PasswordRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
-            login.FailureText = Language.getstring("UsernamePasswordWrong", (string)Session["Language"]);
-
-            if (!User.Identity.IsAuthenticated)
+            try
             {
-                Session["user"] = null;
+                login.UserNameLabelText = Language.getstring("Username", (string)Session["Language"]);
+                login.PasswordLabelText = Language.getstring("Password", (string)Session["Language"]);
+                login.LoginButtonText = Language.getstring("Login", "EN");
+                login.UserNameRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+                login.PasswordRequiredErrorMessage = Language.getstring("RequiredField", (string)Session["Language"]);
+                login.FailureText = Language.getstring("UsernamePasswordWrong", (string)Session["Language"]);
+
+                if (!User.Identity.IsAuthenticated)
+                {
+                    Session["user"] = null;
+                }
+            }
+            catch (Exception exc)
+            {
+                Logger.log(Server, exc.Message);
             }
         }
 
         protected void login_Authenticate(object sender, AuthenticateEventArgs e)
         {
-            Person p = DataConnector.getPerson(login.UserName);
-            if (p != null && p.Password.Equals(login.Password))
+            try
             {
-                Session["user"] = p;
-                
-                e.Authenticated = true;
+                Person p = DataConnector.getPerson(login.UserName);
+                if (p != null && p.Password.Equals(login.Password))
+                {
+                    Session["user"] = p;
+
+                    e.Authenticated = true;
+                }
+                else
+                {
+                    e.Authenticated = false;
+
+                }
             }
-            else
+            catch (Exception exc)
             {
-                e.Authenticated = false;
-
+                Logger.log(Server, exc.Message);
             }
-
         }
 
 
