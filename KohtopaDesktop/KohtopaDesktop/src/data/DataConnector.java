@@ -580,11 +580,16 @@ public class DataConnector {
 		//TODO: select by rentable/owner/...?
 		HashMap<Integer, Vector<Task>> tasks = new HashMap<Integer, Vector<Task>>();
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
+
 			try {
 				Statement selectTasks = conn.createStatement();
+                                System.out.println(DataBaseConstants.selectTasks);
 				ResultSet rsTasks = selectTasks.executeQuery(DataBaseConstants.selectTasks);
-				// taskID, rentableID, description,start_time,end_time,repeats_every
+
+
+
+                                // taskID, rentableID, description,start_time,end_time,repeats_every
 				int i = 0;
 				while (rsTasks.next()) {
 					int taskID = rsTasks.getInt(1);
@@ -618,7 +623,7 @@ public class DataConnector {
 	 */
 	public static void insertTask(Task t) {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.insertTask);
 				//rentableID, description,start_time,end_time,repeats_every
@@ -628,7 +633,8 @@ public class DataConnector {
 				psTasks.setTimestamp(3, new java.sql.Timestamp(t.getDate().getTime()));
 				psTasks.setTimestamp(4, new java.sql.Timestamp(t.getEnd().getTime()));
 				psTasks.setInt(5, t.getRepeats());
-				psTasks.execute();
+                                
+                                psTasks.executeUpdate();
 			} finally {
 				conn.close();
 			}
@@ -645,7 +651,7 @@ public class DataConnector {
 	 */
 	public static void removeTask(Task t) {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.deleteTask);
 				//rentableID,description,start_time
@@ -671,7 +677,7 @@ public class DataConnector {
 	 */
 	public static void updateTask(Task originalTask, Task newTask) {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.updateTask);
 
@@ -941,7 +947,7 @@ public class DataConnector {
 	 */
 	public static void sendMessage(Message m) {
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertMessage);
