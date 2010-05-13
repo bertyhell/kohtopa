@@ -33,6 +33,13 @@ public class Contract {
         this.guarentee = guarentee;
     }
 
+	public Contract(int id, Person renter, Date start, Date end) {
+		this.id = id;
+		this.renter = renter;
+		this.start = start;
+		this.end = end;
+	}
+
     public Date getEnd() {
         return end;
     }

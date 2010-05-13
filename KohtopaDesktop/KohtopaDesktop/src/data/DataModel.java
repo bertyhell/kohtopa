@@ -26,7 +26,6 @@ public class DataModel {
 	private Integer ownerId;
 
 	public DataModel() {
-		DataConnector.init();
 		Logger.logger.info("initializing DataModel");
 	}
 
@@ -70,6 +69,16 @@ public class DataModel {
 		return DataConnector.getInvoices(RenterId);
 	}
 
+	public Vector<Contract> getPreviewContractsFromRenter(int renterId) {
+		Logger.logger.info("getting Preview contracts from renters");
+		return DataConnector.getPreviewContractsFromRenter(renterId);
+	}
+
+	public Contract getContract( int contractId) {
+		Logger.logger.info("getting contract with id: " + contractId);
+		return DataConnector.getContract(contractId);
+	}
+
 	public Vector<Contract> getContracts() {
 		Logger.logger.info("getting contracts");
 		return DataConnector.getContracts();
@@ -111,6 +120,7 @@ public class DataModel {
 	public void deleteSelectedPictures(Vector<Integer> ids) throws SQLException {
 		Logger.logger.info("deleting Selected Pictures");
 		for (Integer id : ids) {
+			Logger.logger.info("\t" + id);
 			DataConnector.removePicture(id); //TODO more efficient in dataconnector?
 		}
 	}
@@ -162,30 +172,30 @@ public class DataModel {
 	}
 
 	public void addRentablePreviewPicture(int id, BufferedImage img) throws SQLException {
-		
-			Logger.logger.info("adding Rentable PreviewPicture");
+
+		Logger.logger.info("adding Rentable PreviewPicture");
 		DataConnector.addRentablePreviewPicture(id, img);
 	}
 
 	public void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
-		
-			Logger.logger.info("add building");
+
+		Logger.logger.info("add building");
 		DataConnector.addBuilding(street, streetNumber, zip, city, country);
 	}
 
 	public void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
-		
-			Logger.logger.info("update building");
+
+		Logger.logger.info("update building");
 		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country);
 	}
 
 	public Vector<Integer> getFloors(int buildingId) throws SQLException {
-			Logger.logger.info("getting floors");
+		Logger.logger.info("getting floors");
 		return DataConnector.getFloors(buildingId);
 	}
 
 	public Vector<InvoiceItem> getInvoiceItems(int renterId, boolean newInvoice, boolean utilities, boolean guarantee, int months) throws ContractNotValidException {
-		
+
 		Logger.logger.info("getInvoiceItems");
 		Vector<InvoiceItem> items = new Vector<InvoiceItem>();
 

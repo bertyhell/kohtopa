@@ -2,24 +2,31 @@ initializing DataConnector
 reading program settings from settings.xml
 settingsfile found
 Reading language file: language_English.xml
+ProgramSettings: 
+	connectionstring: jdbc:oracle:thin:@192.168.58.128:1521:kohtopa
+	username: Lieske
+	password: Lieppes
+	ownerId: null
+	savePass: true
+	loggerLevel: ALL
+	language: English
 checking login
 database returned ownerid (login succesfull)
 login dialog displayed
 loggin succesfull
 Logger.logger level is: ALL
 ------------------application started ---------------------
-initializing DataConnector
 initializing DataModel
 getBuildingPreviews
 selected language is: English
-getting Rentables by BuildingId
-getting Rentable by id
-images add must be implemented
-adding Rentable Image
-getPicturesFromRentable
-adding Rentable PreviewPicture
-deleting Selected Pictures
-getting Rentable by id
 writing settings file on close main, settings language is: English
 Writing programsettings
 Settings succesfully stored
+ProgramSettings: 
+	connectionstring: jdbc:oracle:thin:@192.168.58.128:1521:kohtopa
+	username: Lieske
+	password: Lieppes
+	ownerId: -2147483171
+	savePass: true
+	loggerLevel: ALL
+	language: English

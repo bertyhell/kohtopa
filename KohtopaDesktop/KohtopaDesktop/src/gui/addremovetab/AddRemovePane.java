@@ -1,5 +1,7 @@
 package gui.addremovetab;
 
+import gui.interfaces.IBuildingListContainer;
+import gui.interfaces.IRentableListContainer;
 import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import data.DataModel;
@@ -62,7 +64,7 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 						new BuildingDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId(), false).setVisible(true);
 					} else {
 						try {
-							instance.getLstRentables().setListData(instance.getDataModel().getRentablesFromBuilding(((Building) lstBuildings.getSelectedValue()).getId()));
+							instance.getLstRentables().setListData(Main.getDataObject().getRentablesFromBuilding(((Building) lstBuildings.getSelectedValue()).getId()));
 						} catch (SQLException ex) {
 							JOptionPane.showMessageDialog(Main.getInstance(), "could not get rentables from selected building from database: \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 						}
@@ -97,10 +99,6 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 	public JList getLstRentables() {
 		return lstRentables;
-	}
-
-	public DataModel getDataModel() {
-		return data;
 	}
 
 	public int getId() {

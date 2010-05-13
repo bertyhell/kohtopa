@@ -214,12 +214,14 @@ public class ProgramSettings {
 	}
 
 	public static void print() {
-		System.out.println(connectionstring);
-		System.out.println(username);
-		System.out.println(password);
-		System.out.println(ownerId);
-		System.out.println(savePass);
-		System.out.println(loggerLevel);
-		System.out.println(language);
+
+		Logger.logger.info("ProgramSettings: ");
+		Logger.logger.info("\tconnectionstring: " + connectionstring);
+		Logger.logger.info("\tusername: " + username);
+		Logger.logger.info("\tpassword: " + password);
+		Logger.logger.info("\townerId: " + ownerId);
+		Logger.logger.info("\tsavePass: " + savePass);
+		Logger.logger.info("\tloggerLevel: " + loggerLevel);
+		Logger.logger.info("\tlanguage: " + language);
 	}
 }

@@ -4,7 +4,7 @@ import Language.Language;
 import data.entities.Building;
 import gui.JActionButton;
 import gui.Main;
-import gui.addremovetab.IBuildingListContainer;
+import gui.interfaces.IBuildingListContainer;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Vector;

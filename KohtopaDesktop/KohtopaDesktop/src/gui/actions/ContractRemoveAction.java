@@ -5,7 +5,6 @@
 
 package gui.actions;
 
-import gui.Main;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 
@@ -21,7 +20,7 @@ public class ContractRemoveAction extends AbstractIconAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Main.getContractsPane().removeSelectedContract();
+//        Main.getContractsPane().removeSelectedContract();
     }
 
 }

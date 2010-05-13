@@ -5,7 +5,7 @@ import data.entities.Building;
 import gui.JActionButton;
 import gui.Main;
 import gui.addremovetab.BuildingDialog;
-import gui.addremovetab.IBuildingListContainer;
+import gui.interfaces.IBuildingListContainer;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;

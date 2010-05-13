@@ -4,7 +4,7 @@ import Language.Language;
 import data.entities.Rentable;
 import gui.JActionButton;
 import gui.Main;
-import gui.addremovetab.IRentableListContainer;
+import gui.interfaces.IRentableListContainer;
 import gui.addremovetab.RentableDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;

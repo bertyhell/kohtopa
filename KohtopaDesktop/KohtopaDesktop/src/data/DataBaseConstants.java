@@ -2,7 +2,7 @@ package data;
 
 public class DataBaseConstants {
 
-		//dataconnector connection strings
+	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
 //	public static String pw = "admin";
@@ -10,7 +10,6 @@ public class DataBaseConstants {
 	public static String driver = "oracle.jdbc.driver.OracleDriver";
 //	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
 	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
-
 	//database table labels
 	public static String tableAddresses = "addresses";
 	public static String tableAddressesRead = "system.addressesview";
@@ -136,7 +135,6 @@ public class DataBaseConstants {
 	public static String pictureID = "pictureid";
 	public static String RentBuildID = "rentable_building_id";
 	public static String pictureData = "picture";
-
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
 			+ " FROM " + tablePersons
@@ -313,12 +311,36 @@ public class DataBaseConstants {
 			+ "(SELECT ?,?,?,?,? from dual)"
 			+ "where " + rentableID + " = ? AND " + description + " = ? AND " + start_time + " = ?";
 	// contracts
-	public static String selectContracts = "SELECT DISTINCT c." + contractID + ", c." + rentableID + ", c." + renterID + ", c." + contract_start + ", c." + contract_end + ", c." + price + ", c." + monthly_cost + ", c." + guarantee
-			+ ", r." + buildingID + ", r." + ownerID + ", r." + rentableType + ", r." + description + ", r." + rentableArea + ", r." + windowDirection + ", r." + windowArea + ", r." + internet + ", r." + cable + ", r." + outletCount + ", r." + floor + ", r." + rented + ", r." + price
-			+ ", p." + addressID + ", p." + roleID + ", p." + personName + ", p." + firstName + ", p." + email + ", p." + telephone + ", p." + cellphone + ", p." + username + ", p." + password
-			+ ", a." + streetNumber + ", a." + street + ", a." + zipCode + ", a." + city + ", a." + country + " FROM " + tableContracts + " c"
-			+ " JOIN " + tableRentablesRead + " r ON r." + rentableID + " = c." + rentableID
+	public static String selectContract = "SELECT  "
+			+ contractID
+			+ ", " + rentableID
+			+ ", " + renterID
+			+ ", " + contract_start
+			+ ", " + contract_end
+			+ ", " + price
+			+ ", " + monthly_cost
+			+ ", " + guarantee
+			+ " FROM " + tableContractsRead
+			+ " WHERE " + contractID + " = ?";
+	public static String selectContracts = "SELECT  "
+			+ contractID
+			+ ", " + rentableID
+			+ ", " + renterID
+			+ ", " + contract_start
+			+ ", " + contract_end
+			+ ", " + price
+			+ ", " + monthly_cost
+			+ ", " + guarantee
+			+ " FROM " + tableContractsRead;
+	public static String selectPreviewContracts = "SELECT"
+			+ "  c." + contractID
+			+ ", c." + contract_start
+			+ ", c." + contract_end
+			+ ", p." + personID
+			+ ", p." + firstName
+			+ ", p." + personName
+			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
-			+ " JOIN " + tableAddressesRead + " a ON a." + addressID + " = p." + addressID;
+			+ " WHERE c." + renterID + " = ?";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
 }

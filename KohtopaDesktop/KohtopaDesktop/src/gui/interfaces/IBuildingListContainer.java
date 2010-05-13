@@ -1,4 +1,6 @@
-package gui.addremovetab;
+package gui.interfaces;
+
+import gui.interfaces.IIdentifiable;
 
 /**
  *
