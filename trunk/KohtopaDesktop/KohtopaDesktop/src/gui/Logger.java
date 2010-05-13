@@ -17,7 +17,7 @@ public class Logger {
 	public static void init() {
 		try {
 			logger = org.apache.log4j.Logger.getRootLogger();
-			logger.addAppender(new FileAppender(new PatternLayout(), "log.txt", false));
+			logger.addAppender(new FileAppender(new PatternLayout(), System.getProperty("user.home") + "\\Local Settings\\Application Data\\kohtopa\\log.txt", false));
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}

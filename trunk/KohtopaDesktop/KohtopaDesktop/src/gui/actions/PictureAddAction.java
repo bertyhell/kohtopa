@@ -9,9 +9,9 @@ import gui.actions.filefilters.FileFilterGif;
 import gui.actions.filefilters.FileFilterImage;
 import gui.actions.filefilters.FileFilterJpg;
 import gui.actions.filefilters.FileFilterPng;
-import gui.addremovetab.IIdentifiable;
-import gui.addremovetab.IPictureListContainer;
-import gui.addremovetab.IRentableListContainer;
+import gui.interfaces.IIdentifiable;
+import gui.interfaces.IPictureListContainer;
+import gui.interfaces.IRentableListContainer;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,8 +52,6 @@ public class PictureAddAction extends AbstractIconAction {
 				for (File file : sourceimages) {//TODO add loading bar in second thread that updates between images
 					//in database laden
 					BufferedImage img = Main.resizeImage(ImageIO.read(file), GuiConstants.maxSize);
-					Logger.logger.error("images add must be implemented");
-					System.out.println("images add must be implemented");
 					if (root instanceof IRentableListContainer) {
 						//add building picture
 						Main.getDataObject().addBuildingImage(root.getId(), img);

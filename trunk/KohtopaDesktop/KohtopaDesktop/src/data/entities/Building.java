@@ -82,4 +82,14 @@ public class Building extends AbstractPlace {
 	public Address getAddress() {
 		return address;
 	}
+
+	@Override
+	public String toString() {
+		try {
+			return address.getStreetLine() + ", " + address.getCityLine();
+		} catch (Exception ex) {
+			System.out.println("exception in tostring of building: " + ex.getMessage());
+			return null;
+		}
+	}
 }

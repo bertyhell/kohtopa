@@ -1,6 +1,6 @@
 package gui;
 
-import gui.addremovetab.IIdentifiable;
+import gui.interfaces.IIdentifiable;
 import javax.swing.Action;
 import javax.swing.JButton;
 

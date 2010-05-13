@@ -1,17 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gui.actions;
 
+import gui.Main;
 import gui.contractstab.ContractDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 
 /**
  *
- * @author Ruben
+ * @author Bert
  */
 public class ContractAddAction extends AbstractIconAction {
 
@@ -21,6 +17,6 @@ public class ContractAddAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-        new ContractDialog(null).setVisible(true);
+		new ContractDialog(0, true,Main.getDataObject());
 	}
 }

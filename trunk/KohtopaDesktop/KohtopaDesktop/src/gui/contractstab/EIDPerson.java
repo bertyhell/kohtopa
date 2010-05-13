@@ -70,7 +70,7 @@ public class EIDPerson {
         return firstName;
     }
 
-    public Address getHomeAddress() {
+    public Address getAddress() {
         return homeAddress;
     }
 

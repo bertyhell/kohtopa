@@ -1,5 +1,8 @@
 package gui.addremovetab;
 
+import gui.interfaces.IPictureListContainer;
+import gui.interfaces.IRentableListContainer;
+import gui.interfaces.IFloorListContainer;
 import Language.CountryNotFoundException;
 import Language.Language;
 import gui.Layout;

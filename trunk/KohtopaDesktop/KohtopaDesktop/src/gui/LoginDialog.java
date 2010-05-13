@@ -3,17 +3,21 @@ package gui;
 import Language.Language;
 import data.DataConnector;
 import data.ProgramSettings;
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.SplashScreen;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTextUI.BasicCaret;
 
@@ -159,7 +163,7 @@ public class LoginDialog extends JFrame implements ActionListener {
 		ProgramSettings.setOwnerId(ownerId);
 
 		instance.setVisible(false);
-		Main.init(instance).setVisible(true);
+		Main.init().setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {

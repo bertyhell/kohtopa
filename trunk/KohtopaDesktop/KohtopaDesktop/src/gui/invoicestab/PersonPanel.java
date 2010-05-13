@@ -23,7 +23,6 @@ public class PersonPanel extends JPanel {
 		this.setLayout(gbl);
 		this.setBorder(BorderFactory.createTitledBorder(title));
 
-
 		JLabel lblName = new JLabel(person.toString());
 		Layout.buildConstraints(gbc, 0, 0, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(lblName, gbc);

@@ -1,5 +1,6 @@
 package gui.addremovetab;
 
+import gui.interfaces.IPictureListContainer;
 import Language.Language;
 import gui.Layout;
 import gui.Main;

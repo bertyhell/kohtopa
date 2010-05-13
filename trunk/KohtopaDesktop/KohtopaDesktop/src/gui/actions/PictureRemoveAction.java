@@ -4,8 +4,8 @@ import Language.Language;
 import data.entities.Picture;
 import gui.JActionButton;
 import gui.Main;
-import gui.addremovetab.IIdentifiable;
-import gui.addremovetab.IPictureListContainer;
+import gui.interfaces.IIdentifiable;
+import gui.interfaces.IPictureListContainer;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -23,11 +23,15 @@ public class PictureRemoveAction extends AbstractIconAction {
 		try {
 			IIdentifiable root = ((JActionButton) e.getSource()).getRoot();
 			Vector<Integer> selected = new Vector<Integer>();
-			for(Object picture :  ((IPictureListContainer) root).getSelectedPictures()){
+			for (Object picture : ((IPictureListContainer) root).getSelectedPictures()) {
 				//getting list of picture id's to be deleted
-				selected.add(((Picture)picture).getId());
+				selected.add(((Picture) picture).getId());
 			}
 			Main.getDataObject().deleteSelectedPictures(selected);
+			//update list
+
+			System.out.println("updating picturelist");
+			((IPictureListContainer) root).updatePictureList();
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}

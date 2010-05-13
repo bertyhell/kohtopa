@@ -1,4 +1,4 @@
-package gui.addremovetab;
+package gui.interfaces;
 
 /**
  *

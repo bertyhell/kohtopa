@@ -20,13 +20,14 @@ import gui.addremovetab.AddRemovePane;
 import gui.calendartab.CalendarPane;
 import gui.contractstab.ContractsPane;
 import gui.invoicestab.InvoicesPane;
-import gui.userstab.UsersPane;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+
+//TODO 090 fix settingsfile in deployment (sore in different location?
 
 public class Main extends JFrame {
 
@@ -35,20 +36,17 @@ public class Main extends JFrame {
 	public final static boolean disableBtnText = false;
 	private static DataModel data;
 	private JPanel pnlAddremove;
-	private JPanel pnlUsers;
 	private JPanel pnlCalendar;
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
 	private JPanel pnlContracts;
 	private AddRemovePane pnlAddremoveInfo;
-	private UsersPane pnlUsersInfo;
 	private CalendarPane pnlCalendarInfo;
 	private MessagePane pnlMessagesInfo;
 	private InvoicesPane pnlInvoicesInfo;
 	private ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
 	private static JComboBox cbbLanguages;
-	private JFrame parent;
 
 	/**
 	 * Getter for the main instance
@@ -62,24 +60,22 @@ public class Main extends JFrame {
 	 * Initializing the main frame
 	 * @return instance
 	 */
-	public static Main init(JFrame parent) {
-		instance = new Main(parent);
+	public static Main init() {
+		instance = new Main();
 		return instance;
 	}
 
 	/**
 	 * Constructs the Main class
 	 */
-	private Main(JFrame parent) {
+	private Main() {
 		Logger.logger.setLevel(ProgramSettings.getLoggerLevel());
 		Logger.logger.info("Logger.logger level is: " + ProgramSettings.getLoggerLevel());
 
 		Logger.logger.info("------------------application started ---------------------");
 
-		this.parent = parent;
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setPreferredSize(new Dimension(1000, 700));
-		//setVisible(false);
 
 		setTitle(Language.getString("titleJFrameDesktopMain"));
 		data = new DataModel();
@@ -132,10 +128,6 @@ public class Main extends JFrame {
 		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
 		pnlAddremove.add(pnlAddremoveInfo, BorderLayout.CENTER);
 
-		//adding Users panel
-		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/user_64.png")), createUsers(), Language.getString("descriptionUsers"));
-		tabbed.setMnemonicAt(0, KeyEvent.VK_A);
-
 		//adding Calendar panel
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/calendar_64.png")), createCalendarPanel(), Language.getString("descriptionCalendar"));
 		tabbed.setMnemonicAt(1, KeyEvent.VK_C);
@@ -167,16 +159,16 @@ public class Main extends JFrame {
 				int tab = tabbed.getSelectedIndex();
 
 				//TODO 020 adjust tab 1 to fit like rest
-				if (tab == 2) {
+				if (tab == 1) {
 					pnlCalendarInfo = new CalendarPane();
 					pnlCalendar.add(pnlCalendarInfo, BorderLayout.CENTER);
-				} else if (tab == 3) {
+				} else if (tab == 2) {
 					pnlMessagesInfo = new MessagePane();
 					pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
-				} else if (tab == 4 && pnlInvoicesInfo == null) {
+				} else if (tab == 3 && pnlInvoicesInfo == null) {
 					pnlInvoicesInfo = new InvoicesPane(data);
 					pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
-				} else if (tab == 5 && pnlContractsInfo == null) {
+				} else if (tab == 4 && pnlContractsInfo == null) {
 					pnlContractsInfo = new ContractsPane(data);
 					pnlContracts.add(pnlContractsInfo, BorderLayout.CENTER);
 				}
@@ -194,7 +186,6 @@ public class Main extends JFrame {
 				Logger.logger.info("writing settings file on close main, settings language is: " + ProgramSettings.getLanguage());
 				ProgramSettings.write();//store settings
 				ProgramSettings.print();
-				instance.getParent().dispose();
 			}
 		});
 	}
@@ -218,7 +209,9 @@ public class Main extends JFrame {
 		JActionButton btnEditBuilding = new JActionButton(Main.getAction("buildingEdit"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnEditBuilding);
 
-		//TODO also multiple selection on buildings > show multiple rentables
+		//TODO 010 add drag drop images
+
+		//TODO 040 also multiple selection on buildings > show multiple rentables
 		JActionButton btnRemoveBuilding = new JActionButton(Main.getAction("buildingRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveBuilding);
 
@@ -235,31 +228,6 @@ public class Main extends JFrame {
 
 
 		return pnlAddremove;
-	}
-
-	/**
-	 * Creates the users panel
-	 * @return the users panel
-	 */
-	private JPanel createUsers() {
-		pnlUsers = new JPanel();
-		pnlUsers.setLayout(new BorderLayout());
-
-		JPanel pnlButtonsUsers = new JPanel();
-		pnlButtonsUsers.setBackground(new Color(180, 180, 180, 100));
-		pnlUsers.add(pnlButtonsUsers, BorderLayout.PAGE_START);
-
-		//user operations
-		JButton btnAddUser = new JButton(Main.getAction("userAdd"));
-		pnlButtonsUsers.add(btnAddUser);
-
-		JActionButton btnEditUser = new JActionButton(Main.getAction("userEdit"), pnlAddremoveInfo);
-		pnlButtonsUsers.add(btnEditUser);
-
-		JActionButton btnRemoveUser = new JActionButton(Main.getAction("userRemove"), pnlAddremoveInfo);
-		pnlButtonsUsers.add(btnRemoveUser);
-
-		return pnlUsers;
 	}
 
 	/**
@@ -312,10 +280,6 @@ public class Main extends JFrame {
 		btnEditMessage.setHideActionText(disableBtnText);
 		pnlButtonsMessage.add(btnEditMessage);
 
-		MessageListPanel.addIcon("0", new ImageIcon(getClass().getResource("/images/message_new_23.png")));
-		MessageListPanel.addIcon("1", new ImageIcon(getClass().getResource("/images/message_read_23.png")));
-		MessageListPanel.addIcon("2", new ImageIcon(getClass().getResource("/images/message_reply_23.png")));
-
 		return pnlMessages;
 	}
 
@@ -354,13 +318,13 @@ public class Main extends JFrame {
 		pnlButtonsContract.setBackground(new Color(180, 180, 180, 100));
 		pnlContracts.add(pnlButtonsContract, BorderLayout.PAGE_START);
 
-		JButton btnAddContract = new JButton(actions.get("contractAdd"));
+		JActionButton btnAddContract = new JActionButton(actions.get("contractAdd"), pnlContractsInfo);
 		btnAddContract.setHideActionText(disableBtnText);
 		pnlButtonsContract.add(btnAddContract);
-		JButton btnEditContract = new JButton(actions.get("contractEdit"));
+		JActionButton btnEditContract = new JActionButton(actions.get("contractEdit"), pnlContractsInfo);
 		btnEditContract.setHideActionText(disableBtnText);
 		pnlButtonsContract.add(btnEditContract);
-		JButton btnRemoveContract = new JButton(actions.get("contractRemove"));
+		JActionButton btnRemoveContract = new JActionButton(actions.get("contractRemove"), pnlContractsInfo);
 		btnRemoveContract.setHideActionText(disableBtnText);
 		pnlButtonsContract.add(btnRemoveContract);
 
@@ -511,9 +475,9 @@ public class Main extends JFrame {
 	public static String getSelectedLanguage() {
 		return (String) cbbLanguages.getSelectedItem();
 	}
-
-	@Override
-	public JFrame getParent() {
-		return parent;
-	}
+//
+//	@Override
+//	public JFrame getParent() {
+//		return parent;
+//	}
 }
