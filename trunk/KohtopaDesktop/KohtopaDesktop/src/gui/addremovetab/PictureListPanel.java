@@ -12,11 +12,11 @@ public class PictureListPanel extends AbstractListPanel {
 	private BufferedImage picture;
 	private boolean isSelected;
 
-	public PictureListPanel(BufferedImage img, boolean isSelected) {
-		this.picture = img;
+	public PictureListPanel(BufferedImage picture, boolean isSelected) {
+		this.picture = picture;
 		this.isSelected = isSelected;
-		this.setMinimumSize(new Dimension(GuiConstants.previewSize, img.getHeight() + 10));
-		this.setPreferredSize(new Dimension(GuiConstants.previewSize, img.getHeight() + 10));
+		this.setMinimumSize(new Dimension(GuiConstants.previewSize, picture.getHeight() + 10));
+		this.setPreferredSize(new Dimension(GuiConstants.previewSize, picture.getHeight() + 10));
 	}
 
 	@Override

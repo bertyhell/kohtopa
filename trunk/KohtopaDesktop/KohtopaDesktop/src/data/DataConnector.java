@@ -122,32 +122,32 @@ public class DataConnector {
 	 */
 	public static Vector<Building> selectBuildingPreviews() throws SQLException, IOException {
 		Vector<Building> buildings = new Vector<Building>();
-		try{
-		Connection conn = geefVerbindingOwner();
 		try {
-			Statement selectBuildings = conn.createStatement();
-			ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
-			while (rsBuildings.next()) {
-				ImageIcon img = null;
-				byte[] imgData = rsBuildings.getBytes(DataBaseConstants.pictureData);
-				if (imgData != null) {
-					img = new ImageIcon(ImageIO.read(new ByteArrayInputStream(imgData)));
+			Connection conn = geefVerbindingOwner();
+			try {
+				Statement selectBuildings = conn.createStatement();
+				ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
+				while (rsBuildings.next()) {
+					BufferedImage img = null;
+					byte[] imgData = rsBuildings.getBytes(DataBaseConstants.pictureData);
+					if (imgData != null) {
+						img = ImageIO.read(new ByteArrayInputStream(imgData));
+					}
+					buildings.add(new Building(
+							rsBuildings.getInt(DataBaseConstants.buildingID),
+							img,
+							rsBuildings.getString(DataBaseConstants.street),
+							rsBuildings.getString(DataBaseConstants.streetNumber),
+							rsBuildings.getString(DataBaseConstants.zipCode),
+							rsBuildings.getString(DataBaseConstants.city),
+							rsBuildings.getString(DataBaseConstants.country),
+							rsBuildings.getDouble(DataBaseConstants.latitude),
+							rsBuildings.getDouble(DataBaseConstants.longitude)));
 				}
-				buildings.add(new Building(
-						rsBuildings.getInt(DataBaseConstants.buildingID),
-						img,
-						rsBuildings.getString(DataBaseConstants.street),
-						rsBuildings.getString(DataBaseConstants.streetNumber),
-						rsBuildings.getString(DataBaseConstants.zipCode),
-						rsBuildings.getString(DataBaseConstants.city),
-						rsBuildings.getString(DataBaseConstants.country),
-						rsBuildings.getDouble(DataBaseConstants.latitude),
-						rsBuildings.getDouble(DataBaseConstants.longitude)));
+			} finally {
+				conn.close();
 			}
-		} finally {
-			conn.close();
-		}
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			System.out.println("exception during selectBuildingPreviews: " + ex.getMessage());
 
 		}
@@ -221,7 +221,7 @@ public class DataConnector {
 	 * @param b the building containing the new data
 	 * @throws SQLException thrown if something goes wrong with the update command
 	 */
-	public static void updateBuildings(Building b) throws SQLException {
+	public static void updateBuildingPosition(Building b) throws SQLException {
 		try {
 			Connection conn = geefVerbinding();
 			try {
@@ -291,9 +291,12 @@ public class DataConnector {
 	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 
 		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country, true);
+		System.out.println("address gevonden on first try: " + addressID);
 		try {
 			if (addressID == null) {
+				System.out.println("address niet gevonden op 1e try");
 				//address does not exists > make it and then get id
+				System.out.println("adding address (should end up in notconnectedview");
 				PreparedStatement psAddAddress = conn.prepareStatement(DataBaseConstants.addAddress);
 				psAddAddress.setString(1, streetNumber);
 				psAddAddress.setString(2, street);
@@ -332,8 +335,16 @@ public class DataConnector {
 			if (connected) {
 				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressConnected);
 			} else {
+				System.out.println("getting address from not connected");
 				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressNotConnected);
 			}
+
+			System.out.println("command: " + DataBaseConstants.checkAddressConnected);
+			System.out.println("street: " + street);
+			System.out.println("streetNumber: " + streetNumber);
+			System.out.println("zip: " + zip);
+			System.out.println("city: " + city);
+			System.out.println("country: " + country);
 			psCheckAddress.setString(1, street);
 			psCheckAddress.setString(2, streetNumber);
 			psCheckAddress.setString(3, zip);
@@ -341,10 +352,11 @@ public class DataConnector {
 			psCheckAddress.setString(5, country);
 			ResultSet rsCheck = psCheckAddress.executeQuery();
 			if (rsCheck.next()) {
+				System.out.println("address has been found: " + rsCheck.getInt(DataBaseConstants.addressID));
 				//address already exists
 				id = rsCheck.getInt(DataBaseConstants.addressID);
 			} else {
-				Logger.logger.fatal("address nog niet gevonden na toevoegen address > error in sql or problem with database");
+				Logger.logger.fatal("!!!!!!!!!!!!! address nog niet gevonden na toevoegen address > error in sql or problem with database");
 			}
 			rsCheck.close();
 			psCheckAddress.close();
@@ -367,8 +379,11 @@ public class DataConnector {
 	public static void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
 		Connection conn = geefVerbinding();
 		try {
-			//TODO: adding new address with new data (old address: has to be cleaned up by garbagecollect if it is not used anymore)
+			//TODO: old address: has to be cleaned up by garbagecollect if it is not used anymore
+			System.out.println("checking address");
 			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
+			System.out.println("addres is: " + addressID);
+			System.out.println("updating building****");
 			//adding building with correct address id
 			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
 			psAddBuilding.setInt(1, addressID);
@@ -591,12 +606,12 @@ public class DataConnector {
 
 			try {
 				Statement selectTasks = conn.createStatement();
-                                System.out.println(DataBaseConstants.selectTasks);
+				System.out.println(DataBaseConstants.selectTasks);
 				ResultSet rsTasks = selectTasks.executeQuery(DataBaseConstants.selectTasks);
 
 
 
-                                // taskID, rentableID, description,start_time,end_time,repeats_every
+				// taskID, rentableID, description,start_time,end_time,repeats_every
 				int i = 0;
 				while (rsTasks.next()) {
 					int taskID = rsTasks.getInt(1);
@@ -640,8 +655,8 @@ public class DataConnector {
 				psTasks.setTimestamp(3, new java.sql.Timestamp(t.getDate().getTime()));
 				psTasks.setTimestamp(4, new java.sql.Timestamp(t.getEnd().getTime()));
 				psTasks.setInt(5, t.getRepeats());
-                                
-                                psTasks.executeUpdate();
+
+				psTasks.executeUpdate();
 			} finally {
 				conn.close();
 			}
@@ -1078,10 +1093,10 @@ public class DataConnector {
 				ps.setInt(1, buildingID);
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
-					ImageIcon img = null;
+					BufferedImage img = null;
 					byte[] imgData = rs.getBytes(DataBaseConstants.pictureData);
 					if (imgData != null) {
-						img = new ImageIcon(ImageIO.read(new ByteArrayInputStream(imgData)));
+						img = ImageIO.read(new ByteArrayInputStream(imgData));
 					}
 					rentables.add(new Rentable(
 							rs.getInt(DataBaseConstants.rentableID),
@@ -1390,6 +1405,29 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
+	}
+
+	static String getRenterInRentable(int rentableId) throws SQLException {
+		String name = Language.getString("notRented");
+		try {
+			Connection conn = geefVerbinding();
+			try {
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenterInRentable);
+				ps.setInt(1, rentableId);
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					name = rs.getString(DataBaseConstants.firstName) + rs.getString(DataBaseConstants.personName);
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			System.out.println("Exception in getRenterInRentable: " + rentableId + ", : " + ex.getMessage());
+			Logger.logger.error("Exception in getRenterInRentable: " + rentableId + ", : " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			//throw new SQLException("error in getRenterInRentable with rentableId: " + rentableId + ", : " + ex.getMessage());
+		}
+		return name;
 	}
 }
 

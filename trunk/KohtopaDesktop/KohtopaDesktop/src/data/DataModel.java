@@ -187,6 +187,7 @@ public class DataModel {
 
 		Logger.logger.info("update building");
 		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country);
+		Main.updatePanels();
 	}
 
 	public Vector<Integer> getFloors(int buildingId) throws SQLException {
@@ -258,5 +259,10 @@ public class DataModel {
 	public Vector<Picture> getPicturesFromRentable(int rentableId) throws SQLException {
 		Logger.logger.info("getPicturesFromRentable");
 		return DataConnector.getRentablePictures(rentableId);
+	}
+
+	public String getRenterInRentable(int rentableId) throws SQLException{
+		Logger.logger.info("getting RenterInRentable");
+		return DataConnector.getRenterInRentable(rentableId);
 	}
 }

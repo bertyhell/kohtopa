@@ -16,6 +16,7 @@ public class Logger {
 
 	public static void init() {
 		try {
+			System.out.println("log file under: " + System.getProperty("user.home") + "\\Local Settings\\Application Data\\kohtopa\\log.txt");
 			logger = org.apache.log4j.Logger.getRootLogger();
 			logger.addAppender(new FileAppender(new PatternLayout(), System.getProperty("user.home") + "\\Local Settings\\Application Data\\kohtopa\\log.txt", false));
 		} catch (IOException ex) {

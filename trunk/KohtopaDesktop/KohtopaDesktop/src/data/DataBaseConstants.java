@@ -342,5 +342,11 @@ public class DataBaseConstants {
 			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
 			+ " WHERE c." + renterID + " = ?";
+	public static String selectRenterInRentable = "SELECT "
+			+ "p." + firstName
+			+ ", p." + personName
+			+ " FROM " + tableContractsRead + " c"
+			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
+			+ " WHERE c." + rentableID + " = ?";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
 }

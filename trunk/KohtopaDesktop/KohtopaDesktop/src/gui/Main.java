@@ -5,7 +5,6 @@ package gui;
 import Language.Language;
 import gui.messagetab.MessagePane;
 import gui.actions.*;
-import gui.messagetab.MessageListPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
