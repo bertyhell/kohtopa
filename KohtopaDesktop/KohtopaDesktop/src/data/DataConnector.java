@@ -17,12 +17,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.*;
 import gui.Logger;
 import gui.calendartab.CalendarModel;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 /**
@@ -127,6 +128,7 @@ public class DataConnector {
 			try {
 				Statement selectBuildings = conn.createStatement();
 				ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
+				Logger.logger.debug("command select building previews: " + DataBaseConstants.selectBuildingPreviews);
 				while (rsBuildings.next()) {
 					BufferedImage img = null;
 					byte[] imgData = rsBuildings.getBytes(DataBaseConstants.pictureData);
@@ -1245,6 +1247,7 @@ public class DataConnector {
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
 				ps.setInt(1, renterId);
+				Logger.logger.debug("command getRentPriceOrGuarantee: " + DataBaseConstants.selectRentPrice);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					//existing active contract
@@ -1259,17 +1262,15 @@ public class DataConnector {
 					//no active contract, final contract?
 					try {
 						ps = conn.prepareStatement(DataBaseConstants.selectRentPriceFinal);
+						Logger.logger.debug("command getRentPriceOrGuarantee (final contracts): " + DataBaseConstants.selectRentPriceFinal);
 						ps.setInt(1, renterId);
 						rs = ps.executeQuery();
 						if (rs.next()) {
-
 							if (guarantee) {
 								value = rs.getInt(DataBaseConstants.guarantee);
 							} else {
 								value = rs.getInt(DataBaseConstants.price);
 							}
-
-
 						} else {
 							throw new ContractNotValidException(Language.getString("errContractNotValid"));
 						}
@@ -1288,9 +1289,37 @@ public class DataConnector {
 		return value;
 	}
 
-	static Vector<Invoice> getInvoices(int RenterId) {
-		Logger.logger.warn("Not yet implemented");
-		throw new UnsupportedOperationException("Not yet implemented");
+	/**
+	 * gets information about invoices from a specified renter
+	 * @param RenterId specifies from wich renter the invoices are requested
+	 * @throws SQLException thrown if select fails
+	 */
+	static Vector<Invoice> getInvoicesPreviews(int RenterId) throws SQLException {
+		Vector<Invoice> invoices = null;
+		try {
+			Connection conn = geefVerbindingOwner();
+			try {
+				PreparedStatement psInvoices = conn.prepareStatement(DataBaseConstants.selectInvoices);
+				psInvoices.setInt(1, RenterId);
+				ResultSet rsInvoices = psInvoices.executeQuery();
+				while (rsInvoices.next()) {
+					Calendar cal = GregorianCalendar.getInstance();
+					cal.setTime(rsInvoices.getDate(DataBaseConstants.invoiceDate));
+					invoices.add(new Invoice(
+							rsInvoices.getInt(DataBaseConstants.invoiceId),
+							cal.getTime(),
+							rsInvoices.getString(DataBaseConstants.invoiceSend).equals("1")?true:false,
+							rsInvoices.getString(DataBaseConstants.invoicePaid).equals("1")?true:false));
+				}
+			} finally {
+				conn.close();
+			}
+		} catch (Exception ex) {
+			Logger.logger.error("error in get InvoicesPreviews: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in get invoicesPreviews: " + ex.getMessage());
+		}
+		return invoices;
 	}
 
 	/**
@@ -1339,7 +1368,7 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			Logger.logger.error("Exception in insertInvoice: " + ex.getMessage());
+			Logger.logger.error("Exception in insertInvoice: " + ex.getMessage()); //TODO 020 catch double invoices (unique contraint) > ask to replace
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("failed during insert Invoice: " + ex);
 		}
@@ -1431,6 +1460,86 @@ public class DataConnector {
 			//throw new SQLException("error in getRenterInRentable with rentableId: " + rentableId + ", : " + ex.getMessage());
 		}
 		return name;
+	}
+
+	static void deletePictures(int rentBuildId, int type) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePictures);
+			ps.setInt(1, rentBuildId);
+			ps.setInt(2, type);
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			Logger.logger.error("error in remove preview pictures (type: " + type + " from : " + rentBuildId + " from database: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in remove preview pictures (type: " + type + " from : " + rentBuildId + " from database: " + ex.getMessage());
+		} finally {
+			conn.close();
+		}
+	}
+
+	static void addRentable(int buildingId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertRentable);
+
+			System.out.println("add rentables command: " + DataBaseConstants.insertRentable);
+
+			ps.setInt(1, buildingId);
+			ps.setInt(2, ProgramSettings.getOwnerId());
+			ps.setInt(3, type);
+			ps.setString(4, "description"); //TODO 010 add description to gui so owner can add usefull info to this field
+			ps.setDouble(5, area);
+			ps.setString(6, winDir);
+			ps.setDouble(7, winArea);
+			ps.setString(8, internet);
+			ps.setString(9, cable);
+			ps.setInt(10, outlet);
+			ps.setInt(11, floor);
+			ps.setString(12, "0"); //TODO 000 check if rented is correctly fixed with triggers
+			ps.setDouble(13, price);
+
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			Logger.logger.error("error in adding rentable: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in adding rentable: " + ex.getMessage());
+		} finally {
+			conn.close();
+		}
+	}
+
+	static void updateRentable(int rentableId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateRentable);
+
+			System.out.println("update rentables command: " + DataBaseConstants.updateRentable);
+
+			ps.setInt(1, type);
+			ps.setString(2, "description"); //TODO 010 add description to gui so owner can add usefull info to this field
+			ps.setDouble(3, area);
+			ps.setString(4, winDir);
+			ps.setDouble(5, winArea);
+			ps.setString(6, internet);
+			ps.setString(7, cable);
+			ps.setInt(8, outlet);
+			ps.setInt(9, floor);
+			ps.setDouble(10, price);
+			ps.setInt(11, rentableId);
+
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			Logger.logger.error("error in adding rentable: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in adding rentable: " + ex.getMessage());
+		} finally {
+			conn.close();
+		}
 	}
 }
 

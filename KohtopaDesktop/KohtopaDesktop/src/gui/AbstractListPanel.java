@@ -4,12 +4,20 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import javax.swing.JPanel;
 
+
+/**
+ * base class for items that can be identified
+ * @author Bert Verhelst <verhelst_bert@hotmail.com>
+ */
 public abstract class AbstractListPanel extends JPanel {
 
 	private Color bgColor;
+	/**
+	 * stores the id of abstractlistpanel (eg: integer id of building or rentable)
+	 */
 	protected int id;
 
-        public AbstractListPanel() {
+	public AbstractListPanel() {
             this.id = 0;
         }
 

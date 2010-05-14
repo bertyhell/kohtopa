@@ -246,7 +246,7 @@ public class InvoiceDialog extends JFrame {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				tmInvoices.addRow(new Object[]{Language.getString("newInvoiceItem"), 0});
+				tmInvoices.addRow(new Object[]{Language.getString("newInvoiceItem"), 0.0});
 			}
 		});
 		boxButtons.add(btnAddInvoiceItem);
@@ -315,6 +315,7 @@ public class InvoiceDialog extends JFrame {
 		setLocationRelativeTo(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	private String generateXMLString() throws XmlGenerationException {
 		try {
 			//create xml string

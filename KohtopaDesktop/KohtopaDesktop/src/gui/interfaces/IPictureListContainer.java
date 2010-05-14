@@ -8,4 +8,5 @@ public interface IPictureListContainer extends IIdentifiable{
 
 	public Object[] getSelectedPictures();
 	public void updatePictureList();
+	public void updatePreview();
 }
