@@ -304,11 +304,14 @@ public class DataConnector {
 				psAddAddress.setString(4, city);
 				psAddAddress.setString(5, country);
 				psAddAddress.execute();
+				System.out.println("adding succesfull");
 				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
+
 				if (addressID == null) {
 					Logger.logger.error("addressid is null where it should not be in addAddress");
 					throw new NullPointerException("address id is still null > proigramming error");
 				}
+				System.out.println("address is nu gevonden na toevoegen: " + addressID);
 			}
 		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in addAddress " + ex.getMessage());
