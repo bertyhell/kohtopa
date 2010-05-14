@@ -149,7 +149,7 @@ public class ProgramSettings {
 		ownerId = null;
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
 		savePass = false;
-		loggerLevel = Level.ALL;
+		loggerLevel = Level.DEBUG;
 		language = "English";
 	}
 

@@ -1,6 +1,7 @@
 package data.entities;
 
-import Language.Language;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 public class Rentable extends AbstractPlace {
@@ -16,15 +17,15 @@ public class Rentable extends AbstractPlace {
 	private boolean rented;
 	private double price;
 	private String description;
-	private ImageIcon previewImage;
-    private int buildingID;
+	private BufferedImage previewImage;
+	private int buildingID;
 
-    public Rentable(int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description, int buildingID) {
-        this(id, previewImage, type, area, windowDirection, windowArea, internet, cable, outletCount, floor, rented, price, description);
-        this.buildingID = buildingID;
-    }
+	public Rentable(int id, BufferedImage previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description, int buildingID) {
+		this(id, previewImage, type, area, windowDirection, windowArea, internet, cable, outletCount, floor, rented, price, description);
+		this.buildingID = buildingID;
+	}
 
-	public Rentable(int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
+	public Rentable(int id, BufferedImage previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {
 		this(id, previewImage, type, floor, description);
 		this.area = area;
 		this.windowDirection = windowDirection;
@@ -36,10 +37,13 @@ public class Rentable extends AbstractPlace {
 		this.price = price;
 	}
 
-	public Rentable(int id, ImageIcon previewImage, int type, int floor, String description) {
+	public Rentable(int id, BufferedImage previewImage, int type, int floor, String description) {
 		super(id);
 		if (previewImage == null) {
-			this.previewImage = new ImageIcon(getClass().getResource("/images/dummy_rentable_preview.png"));
+			Image image = new ImageIcon(getClass().getResource("/images/dummy_rentable_preview.png")).getImage();
+			BufferedImage img = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			img.getGraphics().drawImage(image, 0, 0, null);
+			this.previewImage = img;
 		} else {
 			this.previewImage = previewImage;
 		}
@@ -64,9 +68,9 @@ public class Rentable extends AbstractPlace {
 		return internet;
 	}
 
-    public int getBuildingID() {
-        return buildingID;
-    }
+	public int getBuildingID() {
+		return buildingID;
+	}
 
 	public int getOutletCount() {
 		return outletCount;
@@ -100,7 +104,7 @@ public class Rentable extends AbstractPlace {
 		this.description = description;
 	}
 
-	public ImageIcon getPreviewImage() {
+	public BufferedImage getPreviewImage() {
 		return previewImage;
 	}
 

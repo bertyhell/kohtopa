@@ -1,6 +1,8 @@
 package data.entities;
 
 import gui.Logger;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,19 +14,22 @@ import javax.swing.ImageIcon;
 public class Building extends AbstractPlace {
 
 	private Address address;
-	private ImageIcon previewImage;
+	private BufferedImage previewImage;
 	private double latitude;
 	private double longitude;
 
-	public Building(int id, ImageIcon previewImage, String street, String number, String zipcode, String city) {
+	public Building(int id, BufferedImage previewImage, String street, String number, String zipcode, String city) {
 		this(id, previewImage, street, number, zipcode, city, "BE", 0, 0);
 		geocode(street + " " + number + ", " + zipcode + " " + city);
 	}
 
-	public Building(int id, ImageIcon previewImage, String street, String number, String zipcode, String city, String country, double latitude, double longitude) {
+	public Building(int id, BufferedImage previewImage, String street, String number, String zipcode, String city, String country, double latitude, double longitude) {
 		super(id);
 		if (previewImage == null) {
-			this.previewImage = new ImageIcon(getClass().getResource("/images/dummy_building_preview.png"));
+			Image image = new ImageIcon(getClass().getResource("/images/dummy_building_preview.png")).getImage();
+			BufferedImage img = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+			img.getGraphics().drawImage(image, 0, 0, null);
+			this.previewImage = img;
 		} else {
 			this.previewImage = previewImage;
 		}
@@ -70,7 +75,7 @@ public class Building extends AbstractPlace {
 		return longitude;
 	}
 
-	public ImageIcon getPreviewImage() {
+	public BufferedImage getPreviewImage() {
 		return previewImage;
 	}
 

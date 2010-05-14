@@ -292,13 +292,9 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 				btnConfirm.setText(Language.getString("update"));
 
 
-				lblPreview.setIcon(rentable.getPreviewImage());
+				lblPreview.setIcon(new ImageIcon(rentable.getPreviewImage()));
 
-//				//TODO make multihreaded
-//				lstPicture.setModel(Main.getDataObject().updateRentablePictures(rentableId));
-//			} catch (IOException ex) {
-//				JOptionPane.showMessageDialog(this, Language.getString("errConnectDatabaseFail") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);//TODO change message?
-
+				//TODO 000 make collecting images from database multihreaded
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(this, Language.getString("errRentableData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
