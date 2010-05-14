@@ -2,10 +2,12 @@ package Language;
 
 import data.ProgramSettings;
 import gui.Logger;
+import gui.Main;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.io.File;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -27,7 +29,7 @@ public class Language {
 	public static void read() {
 		try {
 			Logger.logger.info("Reading language file: " + "language_" + ProgramSettings.getLanguage() + ".xml");
-			language =  ProgramSettings.getLanguage();
+			language = ProgramSettings.getLanguage();
 			File file = new File("language_" + ProgramSettings.getLanguage() + ".xml");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
@@ -59,7 +61,7 @@ public class Language {
 				} else if (name.startsWith("lstRentableType")) {
 					rentableTypes[k] = entryNode.getTextContent();
 					k++;
-				} else if (name.startsWith("lstWindDir")) {
+				} else if (name.startsWith("lstWindowDir")) {
 					windDir[m] = entryNode.getTextContent();
 					m++;
 				} else if (name.startsWith("lstMonth")) {
@@ -73,7 +75,7 @@ public class Language {
 			cbbCountry.setPreferredSize(new Dimension(20, 23));
 		} catch (Exception ex) {
 			Logger.logger.error("Exception in read ProgramSettings: " + ex.getMessage());
-		    Logger.logger.debug("stacktrace: ", ex);
+			Logger.logger.debug("stacktrace: ", ex);
 		}
 	}
 
@@ -125,7 +127,55 @@ public class Language {
 	}
 
 	public static String[] getWindDir() {
-		return windDir;
+		return windDir; //TODO 000 replace by hashmap instead of array
+	}
+
+	public static String getWindDir(String dir) {
+		if (dir == null) {
+			//JOptionPane.showMessageDialog(Main.getInstance(), "Failed to find window direction", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("n")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("ne")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("e")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("se")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("s")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("sw")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("w")) {
+			return windDir[0];
+		} else if (dir.toLowerCase().equals("nw")) {
+			return windDir[0];
+		} else {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to find window direction", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			return windDir[0];
+		}
+	}
+
+	public static String getWindDirCodeFromIndex(int index) {
+		if (index == 0) {
+			return "n";
+		} else if (index == 1) {
+			return "ne";
+		} else if (index == 2) {
+			return "e";
+		} else if (index == 3) {
+			return "se";
+		} else if (index == 4) {
+			return "s";
+		} else if (index == 5) {
+			return "sw";
+		} else if (index == 6) {
+			return "w";
+		} else if (index == 7) {
+			return "nw";
+		} else {
+			return null;
+		}
 	}
 
 	public static String[] getMonthsOfYear() {

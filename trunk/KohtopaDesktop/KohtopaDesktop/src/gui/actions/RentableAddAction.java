@@ -26,7 +26,7 @@ public class RentableAddAction extends AbstractIconAction {
 		try {
 			new RentableDialog(null, ((IRentableListContainer) ((JActionButton)e.getSource()).getRoot()).getBuildingId(), true).setVisible(true); //TODO show what building your adding the rentable to
 		} catch (WrongNumberOfSelectedItemsException ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 rentable to edit", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 building to add the rentable to", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			//TODO main.getinstance isn't really correct
 		}
 	}

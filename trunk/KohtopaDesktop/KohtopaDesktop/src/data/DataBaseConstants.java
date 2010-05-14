@@ -161,6 +161,28 @@ public class DataBaseConstants {
 			+ price + "," + guarantee
 			+ " FROM " + tableContractsRead
 			+ " WHERE " + renterID + " = ? AND sysdate BETWEEN " + contract_start + " AND " + contract_end;
+	public static String insertRentable = "INSERT INTO " + tableRentablesWrite + " VALUES (0,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static String updateRentable = "UPDATE " + tableRentablesWrite + " SET "
+			+ rentableType + " =?, "
+			+ rentableDescription + " =?, "
+			+ rentableArea + " =?, "
+			+ windowDirection + " =?, "
+			+ windowArea + " =?, "
+			+ internet + " =?, "
+			+ cable + " =?, "
+			+ outletCount + " =?, "
+			+ floor + " =?, "
+			+ price + " =? "
+			+ " WHERE " + rentableID + " = ?";
+		public static String selectInvoices = "SELECT "
+			+ "i." + invoiceDate
+			+ ",i." + invoiceId
+			+ ",i." + invoicePaid
+			+ ",i." + invoiceSend
+			+ " FROM " + tableContractsRead + " c"
+			+ " JOIN " + tableInvoicesRead + " i ON i." + contractID + " = c." + contractID
+			+ " WHERE c." + renterID + " = ?"
+			+ " ORDER BY i." + invoiceDate;
 	public static String insertInvoice = "INSERT INTO " + tableInvoicesWrite + " VALUES (0, ("
 			+ " SELECT " + contractID
 			+ " FROM ("
@@ -172,7 +194,7 @@ public class DataBaseConstants {
 			+ price + "," + guarantee + ", rank() OVER(ORDER BY " + contract_end + " asc) rank"
 			+ " FROM " + tableContractsRead
 			+ " WHERE " + renterID + " = ? AND sysdate - " + contract_end + " >= 0)"
-			+ " SELECT " + price
+			+ " SELECT " + price  + "," + guarantee
 			+ " FROM x WHERE rank = 1";
 	public static String selectUtilities = "SELECT "
 			+ "u." + gasPrice
@@ -349,4 +371,6 @@ public class DataBaseConstants {
 			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
 			+ " WHERE c." + rentableID + " = ?";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
+	public static String deletePictures = "DELETE FROM " + tablePicturesWrite
+			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = ?";
 }

@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JRootPane;
 
 public class PictureAddAction extends AbstractIconAction {
 

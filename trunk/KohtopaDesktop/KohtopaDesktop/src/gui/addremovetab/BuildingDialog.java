@@ -63,7 +63,7 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		JPanel pnlPictureButtons = new JPanel(gbl1);
 		pnlImages.add(pnlPictureButtons, BorderLayout.PAGE_START);
 
-		pnlPreview = new PicturePreviewPanel(null, true);
+		pnlPreview = new PicturePreviewPanel("building");
 		Layout.buildConstraints(gbc1, 0, 0, 3, 1, 3, 3, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
 		gbl1.addLayoutComponent(pnlPreview, gbc1);
 		pnlPictureButtons.add(pnlPreview);
@@ -352,6 +352,7 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 
 		} else {
 			try {
+				Logger.logger.info("filling building info");
 				//fill building info
 				Building building = Main.getDataObject().getBuilding(buildingId);
 				txtStreet.setText(building.getAddress().getStreet());
@@ -364,9 +365,9 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 					JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 
-				pnlPreview.setImage(building.getPreviewImage());
 
-				this.repaint();
+				pnlPreview.setImage(building.getPreviewImage());
+				pnlPreview.repaint();
 
 				lstRentables.setListData(Main.getDataObject().getRentablesFromBuilding(buildingId));
 
@@ -465,5 +466,9 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect pictures from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public void updatePreview() {
+		fillInfo(false);
 	}
 }

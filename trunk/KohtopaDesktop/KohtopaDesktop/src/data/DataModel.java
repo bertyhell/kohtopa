@@ -64,9 +64,9 @@ public class DataModel {
 		return DataConnector.getRenters();
 	}
 
-	public Vector<Invoice> getInvoices(int RenterId) {
+	public Vector<Invoice> getInvoicesPreviews(int RenterId) throws SQLException {
 		Logger.logger.info("getting Invoices");
-		return DataConnector.getInvoices(RenterId);
+		return DataConnector.getInvoicesPreviews(RenterId);
 	}
 
 	public Vector<Contract> getPreviewContractsFromRenter(int renterId) {
@@ -264,5 +264,20 @@ public class DataModel {
 	public String getRenterInRentable(int rentableId) throws SQLException{
 		Logger.logger.info("getting RenterInRentable");
 		return DataConnector.getRenterInRentable(rentableId);
+	}
+
+	public void deletePreviewPictures(int rentBuildId, int type) throws SQLException {
+		Logger.logger.info("deleting preview pictures");
+		DataConnector.deletePictures(rentBuildId, type);
+	}
+
+	public void addRentable(int buildingId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
+		Logger.logger.info("adding rentable");
+		DataConnector.addRentable(buildingId,type, area, winDir, winArea, internet, cable, outlet, floor, price);
+	}
+
+	public void updateRentable(int rentableId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
+		Logger.logger.info("updating rentable");
+		DataConnector.updateRentable(rentableId,type, area, winDir, winArea, internet, cable, outlet, floor, price);
 	}
 }

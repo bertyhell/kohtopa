@@ -21,7 +21,7 @@ import java.awt.Window;
 public class RentableDialog extends JFrame implements IPictureListContainer {
 
 	private RentableDialog instance;
-	private int rentableId;
+	private int id;
 	private JComboBox cbbType;
 	private JTextField txtArea;
 	private JComboBox cbbWindowDir;
@@ -35,8 +35,8 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 	private JLabel lblPreview;
 	private JList lstPicture;
 
-	public RentableDialog(Window parent, int id, boolean newRentable) { //TODO when new rentable > use id as building id
-		this.rentableId = id;
+	public RentableDialog(Window parent, int rentableId, boolean newRentable) {
+		this.id = rentableId;
 		instance = this;
 		setTitle(Language.getString(newRentable ? "rentableAdd" : "rentableEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
@@ -238,14 +238,64 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 		pnlButtons.add(btnCancel);
 
 		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
-		btnConfirm.addMouseListener(new MouseAdapter() {
+		if (newRentable) {
+			//set button action to: add
+			btnConfirm.setText(Language.getString("add"));
+			btnConfirm.addMouseListener(new MouseAdapter() {
 
-			@Override
-			public void mouseReleased(MouseEvent e) {
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if (CheckInput()) {
+						try {
+							Main.getDataObject().addRentable(
+									instance.getId(), //is buildngid
+									cbbType.getSelectedIndex(),
+									Double.parseDouble(txtArea.getText()),
+									Language.getWindDirCodeFromIndex(cbbWindowDir.getSelectedIndex()),
+									Double.parseDouble(txtWindowArea.getText()),
+									ckbInternet.isSelected() ? "1" : "0",
+									ckbCable.isSelected() ? "1" : "0",
+									Integer.parseInt(txtOutlets.getText()),
+									Integer.parseInt(txtFloor.getText()),
+									Double.parseDouble(txtPrice.getText()));
+							JOptionPane.showMessageDialog(Main.getInstance(), "Rentable succesfully added", Language.getString("succes"), JOptionPane.ERROR_MESSAGE, new ImageIcon(getClass().getResource("/images/ok.png")));
+							instance.dispose();
+						} catch (SQLException ex) {
+							JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
+		} else {
+			//set button action to: update
+			btnConfirm.setText(Language.getString("update"));
+			btnConfirm.addMouseListener(new MouseAdapter() {
 
-				JOptionPane.showMessageDialog(null, "Not yet implemented", "implement error", JOptionPane.ERROR_MESSAGE);
-			}
-		});
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					if (CheckInput()) {
+						try {
+							Main.getDataObject().updateRentable(
+									instance.getRentableId(),
+									cbbType.getSelectedIndex(),
+									Double.parseDouble(txtArea.getText()),
+									Language.getWindDirCodeFromIndex(cbbWindowDir.getSelectedIndex()),
+									Double.parseDouble(txtWindowArea.getText()),
+									ckbInternet.isSelected() ? "1" : "0",
+									ckbCable.isSelected() ? "1" : "0",
+									Integer.parseInt(txtOutlets.getText()),
+									Integer.parseInt(txtFloor.getText()),
+									Double.parseDouble(txtPrice.getText()));
+							JOptionPane.showMessageDialog(Main.getInstance(), "Rentable succesfully updated", Language.getString("succes"), JOptionPane.ERROR_MESSAGE, new ImageIcon(getClass().getResource("/images/ok.png")));
+							instance.dispose();
+						} catch (SQLException ex) {
+							JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
+		}
+
 		pnlButtons.add(btnConfirm);
 
 		pack();
@@ -256,7 +306,7 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 	}
 
 	public int getId() {
-		return rentableId;
+		return id;
 	}
 
 	public String getType() {
@@ -275,22 +325,21 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 			txtOutlets.setText("5");
 			txtFloor.setText("1");
 			txtPrice.setText("");
-			btnConfirm.setText(Language.getString("add"));
 		} else {
 			try {
 				//fill building info
-				Rentable rentable = Main.getDataObject().getRentable(rentableId);
+				Rentable rentable = Main.getDataObject().getRentable(id);
 				cbbType.setSelectedIndex(rentable.getType());
 				txtArea.setText(Integer.toString(rentable.getArea()));
-				//cbbWindowDir.setSelectedIndex(rentable.getWindowsDirection());
+				cbbWindowDir.setSelectedItem(Language.getWindDir(rentable.getWindowsDirection()));
 				txtWindowArea.setText(Integer.toString(rentable.getWindowArea()));
 				ckbInternet.setSelected(rentable.isInternet());
 				ckbCable.setSelected(rentable.isCable());
 				txtOutlets.setText(Integer.toString(rentable.getOutletCount()));
 				txtFloor.setText(Integer.toString(rentable.getFloor()));
 				txtPrice.setText(Double.toString(rentable.getPrice()));
-				btnConfirm.setText(Language.getString("update"));
 
+				updatePictureList();
 
 				lblPreview.setIcon(new ImageIcon(rentable.getPreviewImage()));
 
@@ -345,10 +394,6 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 		return !error;
 	}
 
-	public void UpdatePictures() {
-		//lstPicture.repaint();
-	}
-
 	public void UpdateDataLists() {
 		//TODO add current user to rentable dialog
 	}
@@ -363,9 +408,17 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 
 	public void updatePictureList() {
 		try {
-			lstPicture.setListData(Main.getDataObject().getPicturesFromRentable(rentableId));
+			lstPicture.setListData(Main.getDataObject().getPicturesFromRentable(id));
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect pictures from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public void updatePreview() {
+		fillInfo(false);
+	}
+
+	private int getRentableId() {
+		return id;
 	}
 }
