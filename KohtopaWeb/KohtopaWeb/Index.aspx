@@ -4,7 +4,7 @@
     <asp:Label ID="lblWelcome" runat="server" />
     <br />
     
-    <uc1:FloorPlan ID="FloorPlan1" runat="server" />
+    <uc1:FloorPlan ID="FloorPlan1" BuildingID="42" Floor="42" runat="server" />
     
 </asp:Content>
 

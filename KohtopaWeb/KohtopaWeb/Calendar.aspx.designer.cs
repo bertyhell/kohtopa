@@ -14,6 +14,15 @@ namespace KohtopaWeb {
     public partial class Calendar {
         
         /// <summary>
+        /// tabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Table tabel;
+        
+        /// <summary>
         /// kalender control.
         /// </summary>
         /// <remarks>

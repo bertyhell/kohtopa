@@ -9,7 +9,7 @@
           <siteMapNode title="Facturen" url="~/Invoices.aspx" description="Bekijk facturen" />
           <siteMapNode title="Verbruik" url="~/Consumptions.aspx" description="Beheer verbruik" />
         </siteMapNode>
-        <siteMapNode title="Boodschappen" description="Berichten">
+        <siteMapNode title="Berichten" description="Berichten">
           <siteMapNode title="Lees" url="~/GetMessages.aspx" description="Lees bericht"/>
           <siteMapNode title="Schrijf" url="~/Messages.aspx" description="Schrijf een bericht"/>
         </siteMapNode>

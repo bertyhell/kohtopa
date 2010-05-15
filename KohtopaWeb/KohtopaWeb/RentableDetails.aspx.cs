@@ -65,7 +65,7 @@ namespace KohtopaWeb
                 {
                     TableRow tr = new TableRow();
                     Image img = new Image();
-                    img.ImageUrl = "ShowPicture.aspx?imageId=" + dr[0];
+                    img.ImageUrl = "~/ShowPicture.aspx?imageId=" + dr[0];
                     tr.Controls.Add(img);
                     tblPictures.Rows.Add(tr);
                 }
