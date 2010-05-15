@@ -1,7 +1,11 @@
 Stukken verslag klaar:
 
-Jelle, Ruben
+Jelle
 
-<a href="http://docs.google.com/fileview?id=0Bx3BQRWW3ESeM2UxMmViNDctMzBmMi00ZTAzLTkxMmUtYmVkODEzMTE1MWYy&hl=en">link</a>
+Ruben(beschrijving klassen eventueel? Heb die interfaces verhuisd naar handleiding, wat denk ik de bedoeling was, problematiek staat nog steeds bij beschrijving)
 
-<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeZDIzOTk0MzMtYjMyOC00MzQ4LTgzZGYtZDVlYzljMmQ3OTQy&hl=en">latex bron voor de liefhebbers(en als backup :))</a>
+Jannes: webapplicatie, databank, scenarios nog(have fun ^^)
+
+<a href="http://docs.google.com/fileview?id=0Bx3BQRWW3ESeMTRlYWJiYjktYjI0NS00NDUxLWJmODItN2I3NzVmOTZiODNj&hl=en">link</a>
+
+<a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeMjA3MzQyZWUtMjExNC00OTEwLWI1YzEtNmY4ZGJmOTczNGI3&hl=en">latex bron voor de liefhebbers(en als backup :))</a>
