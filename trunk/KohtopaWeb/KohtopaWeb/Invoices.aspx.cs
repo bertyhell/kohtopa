@@ -56,16 +56,16 @@ namespace KohtopaWeb
 
                 int index = int.Parse(e.CommandArgument.ToString());
 
-                FileStream fs = new FileStream("C:\\Users\\Jelle\\Desktop\\kohtopa\\database\\database.pdf", FileMode.OpenOrCreate,
-                  FileAccess.Read);
+                //FileStream fs = new FileStream("C:\\Users\\Jelle\\Desktop\\kohtopa\\database\\database.pdf", FileMode.OpenOrCreate,
+                //  FileAccess.Read);
 
-                byte[] data = new byte[fs.Length];
-                fs.Read(data, 0, (int)fs.Length);
+                //byte[] data = new byte[fs.Length];
+                //fs.Read(data, 0, (int)fs.Length);
 
-                fs.Close();
+                //fs.Close();
 
-                t.Rows[index][3] = data;
-                t.AcceptChanges();
+                //t.Rows[index][3] = data;
+                //t.AcceptChanges();
 
 
                 byte[] MyData;

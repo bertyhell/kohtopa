@@ -5,20 +5,60 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml;
+using System.IO;
+using System.Data;
 
 namespace KohtopaWeb
 {
     public partial class FloorPlan : System.Web.UI.UserControl
     {
+        private int buildingID;
+        private int floor;
+
+        public int BuildingID { 
+            get { return buildingID;  }
+            set { buildingID = value; }
+        }
+        public int Floor
+        {
+            get { return floor; }
+            set { floor = value; }
+        }
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 try
                 {
-                    XmlTextReader textReader = new XmlTextReader(Server.MapPath("floor.xml"));
+
+                    byte[] xmlFile = DataConnector.getFloorPlan(buildingID, floor);
+                    MemoryStream input = null;
+                    // geen gevonden => doe niets
+                    if (xmlFile == null)
+                    {
+                        //return;
+                    }
+                    else
+                    {
+                        input = new MemoryStream(xmlFile);
+                    }
+
+                    // tijdelijk
+                    FileStream fs = new FileStream(Server.MapPath("floor.xml"), FileMode.OpenOrCreate,
+                      FileAccess.Read);
+
+                    byte[] data = new byte[fs.Length];
+                    fs.Read(data, 0, (int)fs.Length);
+
+                    fs.Close();
+                    MemoryStream inputtmp = new MemoryStream(data);
+
+                    XmlReader reader = new XmlTextReader(inputtmp);
+
+
+                    //XmlTextReader textReader = new XmlTextReader(Server.MapPath("floor.xml"));
                     XmlDocument xd = new XmlDocument();
-                    xd.Load(textReader);
+                    xd.Load(reader);
                     XmlNode basenode = xd.DocumentElement;
                     basenode.Normalize();
 
@@ -32,6 +72,18 @@ namespace KohtopaWeb
                         else if (n.Name == "height")
                         {
                             floorplan.Height = int.Parse(n.FirstChild.Value);
+                        }
+                        else if (n.Name == "image")
+                        {
+                            String name = n.ChildNodes[0].FirstChild.Value;
+                            int id = int.Parse(n.ChildNodes[1].FirstChild.Value);
+
+                            // get image data
+
+                            floorplan.AlternateText = name;
+                            
+                            //floorplan.ImageUrl = "~/Images/ico.png";
+                            floorplan.ImageUrl = "~/ShowPicture.aspx?imageId=" + id;
                         }
                         else if (n.Name == "namedpolygons")
                         {

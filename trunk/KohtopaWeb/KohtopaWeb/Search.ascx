@@ -126,7 +126,8 @@
 <asp:GridView ID="gvRentables" runat="server" AutoGenerateColumns="false" 
     AllowPaging="True" AllowSorting="True" 
     onpageindexchanging="gvRentables_PageIndexChanging" 
-    onsorting="gvRentables_Sorting">
+    onsorting="gvRentables_Sorting" AlternatingRowStyle-BackColor="LightGray">
+    <HeaderStyle BackColor="ControlDarkDark" ForeColor="White" />
 </asp:GridView>
 <asp:Label ID="lblDatabaseError" runat="server" Text="" Visible="false"></asp:Label>
 

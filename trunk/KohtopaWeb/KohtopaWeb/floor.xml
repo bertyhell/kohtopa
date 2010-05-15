@@ -1,57 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <floorcontent>
     <name>1</name>
-    <width>396</width>
-    <height>396</height>
-	<namedpolygons>
+    <width>392</width>
+    <height>392</height>
+    <image>
+        <name>floor.jpg</name>
+        <imageid>-2147483648</imageid>
+    </image>
+    <namedpolygons>
         <namedpolygon>
-            <name>top</name>
+            <name>1</name>
             <points>
                 <point>
-                    <x>33</x>
-                    <y>227</y>
+                    <x>22</x>
+                    <y>23</y>
                 </point>
                 <point>
-                    <x>212</x>
-                    <y>50</y>
+                    <x>19</x>
+                    <y>90</y>
                 </point>
                 <point>
-                    <x>357</x>
-                    <y>199</y>
+                    <x>95</x>
+                    <y>96</y>
                 </point>
                 <point>
-                    <x>138</x>
-                    <y>201</y>
-                </point>
-                <point>
-                    <x>137</x>
-                    <y>226</y>
-                </point>
-            </points>
-        </namedpolygon>
-        <namedpolygon>
-            <name>bottom</name>
-            <points>
-                <point>
-                    <x>135</x>
-                    <y>229</y>
-                </point>
-                <point>
-                    <x>134</x>
-                    <y>336</y>
-                </point>
-                <point>
-                    <x>291</x>
-                    <y>335</y>
-                </point>
-                <point>
-                    <x>293</x>
-                    <y>227</y>
+                    <x>91</x>
+                    <y>34</y>
                 </point>
             </points>
         </namedpolygon>
     </namedpolygons>
-    <cameras/>
-    <fireextinguisher/>
-    <emergencyexits/>
+    <cameras>
+        <camera>
+            <point>
+                <x>290</x>
+                <y>95</y>
+            </point>
+        </camera>
+        <camera>
+            <point>
+                <x>148</x>
+                <y>89</y>
+            </point>
+        </camera>
+        <camera>
+            <point>
+                <x>223</x>
+                <y>188</y>
+            </point>
+        </camera>
+    </cameras>
+    <fireextinguishers/>
+    <emergencyexits>
+        <emergencyexit>
+            <point>
+                <x>208</x>
+                <y>107</y>
+            </point>
+        </emergencyexit>
+        <emergencyexit>
+            <point>
+                <x>102</x>
+                <y>224</y>
+            </point>
+        </emergencyexit>
+    </emergencyexits>
 </floorcontent>

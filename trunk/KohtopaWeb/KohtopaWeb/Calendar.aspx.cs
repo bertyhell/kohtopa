@@ -70,6 +70,10 @@ namespace KohtopaWeb
             {
                 Logger.log(Server,exc.Message);
             }
+            if (e.Day.IsSelected)
+            {
+                e.Cell.BackColor = System.Drawing.Color.DeepSkyBlue;
+            }
         }
 
 

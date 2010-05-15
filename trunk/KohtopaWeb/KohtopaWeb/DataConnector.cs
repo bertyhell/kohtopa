@@ -43,25 +43,29 @@ namespace KohtopaWeb
         private static string getBuildingPictureIDsByIdSQL = "select pictureID from pictures where type_floor = -3 and rentable_building_id = ?";
         private static string getRentablePictureIDsByIdSQL = "select pictureID from pictures where type_floor = -1 and rentable_building_id = ?";
 
-        private static string updateMessageSQL = "update messages set message_read = '1' where date_sent = ? and subject = ? and recipientid = ?";
+        private static string updateMessageSQL = "update messages set message_read = '1' where date_sent between ? and ? and subject = ? and recipientid = ?";
         
         private static string addMessageSQL = "insert into messages values(?,?,?,?,?,?)";
 
         private static string selectTasks = "select distinct description,start_time,c.rentableid " +
                                     "from tasks t " +
                                     "join contracts c on t.rentableid = c.rentableid and c.renterid = ?" +
-                                    "order by start_time desc" ;
+                                    "order by start_time asc" ;
         private static string selectConsumptions =
             "select distinct gas,water,electricity, date_consumption from consumption c " +
             "join contracts co on co.rentableid = c.rentableid " +
             "where co.renterid = ? " +
             "order by date_consumption desc";
         private static string selectInvoices = "select invoiceid, invoicedate, paid, invoice_xml, send from invoices i "+
-            "join contracts c on c.renterid = ? and c.contractid = i.contractid order by paid asc";
+            "join contracts c on c.renterid = ? and c.contractid = i.contractid where send <> 0 order by paid asc";
 
         private static string insertConsumptions = "insert into consumption values(?,?,?,?,?,?)";
 
+        public static string selectFloorPlan = "select XML from floors where buildingid = ? and floor = ?";
+
         public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
+
+       
 
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
@@ -174,13 +178,39 @@ namespace KohtopaWeb
 
         }
 
-        
+        public static byte[] getFloorPlan(int buildingID, int floor)
+        {
+            OleDbConnection conn = getConnection();
+            OleDbCommand command = conn.CreateCommand();
+            command.CommandText = selectFloorPlan;
+
+            
+            OleDbParameter p = new OleDbParameter("buildingID", buildingID);
+            command.Parameters.Add(p);
+
+            p = new OleDbParameter("floor", floor);
+            command.Parameters.Add(p);
+
+            conn.Open();
+            OleDbDataReader r = command.ExecuteReader();
+
+            byte[] data = null;
+            if (r.NextResult())
+            {
+                data = (byte[])r[0];
+            }
+
+            r.Close();
+            conn.Close();
+            return data;
+
+        }
 
         //todo parameters
         public static byte[] getPicture(int ImageId){
             OleDbConnection conn = getConnection();
             OleDbCommand command = conn.CreateCommand();
-            command.CommandText = "select data from pictures where pictureId = " + ImageId;
+            command.CommandText = "select picture from pictures where pictureId = " + ImageId;
             command.Connection = conn;
             conn.Open();    
             OleDbDataReader reader = command.ExecuteReader();
@@ -525,8 +555,14 @@ namespace KohtopaWeb
             c.CommandText = updateMessageSQL;
             //"update messages set message_read = 1 where Date_Sent = ? and subject = ? and recipientid = ?";
             OleDbParameter p = new OleDbParameter();
-            p.ParameterName = "date_sent";
-            p.Value = message.DateSent;
+            p.ParameterName = "begin";
+            p.Value = message.DateSent.AddSeconds(-1);
+            p.OleDbType = OleDbType.DBTimeStamp;
+            c.Parameters.Add(p);
+
+            p = new OleDbParameter();
+            p.ParameterName = "end";
+            p.Value = message.DateSent.AddSeconds(1);
             p.OleDbType = OleDbType.DBTimeStamp;
             c.Parameters.Add(p);
 
