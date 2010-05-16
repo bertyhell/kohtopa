@@ -14,6 +14,7 @@ namespace KohtopaWeb
 {
     public class Rentable
     {
+        //a class to represent a rentable from the database
         int rentableId,type, outletCount, floor;
         bool internet, cable, rented;
         double area, windowArea, price;

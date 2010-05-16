@@ -17,12 +17,19 @@ using System.Globalization;
 namespace KohtopaWeb
 {
     public class DataConnector
-    {        
-        private static string usernameDB = "system";
-        private static string password = "admin";
-        private static string databaseName = "XE";        
+    {
+        //a class to add, update and retrieve data from te database.
+
+        //login data for the database, data that is variable is stored in the web.config file.
+        private static string usernameDB = ConfigurationManager.AppSettings["dbUsername"];
+        private static string password = ConfigurationManager.AppSettings["dbPassword"];
+        private static string databaseName = ConfigurationManager.AppSettings["dbName"];
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
-        public static string rentableTypes = "Room;Appartment;House";
+
+        //data to define the different types of rentables in the database.
+        public static string rentableTypes = ConfigurationManager.AppSettings["RentableTypes"];
+
+        //sql statements to add, retrieve or update data from the database.
         private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area,r.window_area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,coalesce(max(c.contract_end),sysdate) as free "
                                                     + "from rentables r "
                                                     + "join buildings b on b.buildingid = r.buildingid "
@@ -46,6 +53,7 @@ namespace KohtopaWeb
 
         private static string getBuildingPictureIDsByIdSQL = "select pictureID from pictures where type_floor = -3 and rentable_building_id = ?";
         private static string getRentablePictureIDsByIdSQL = "select pictureID from pictures where type_floor = -1 and rentable_building_id = ?";
+        private static string getPictureByIdSQL = "select * from pictures where pictureid = ?";
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent between ? and ? and subject = ? and recipientid = ?";
         
@@ -67,14 +75,15 @@ namespace KohtopaWeb
 
         public static string selectFloorPlan = "select XML from floors where buildingid = ? and floor = ?";
 
-        public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";
+        // a sql statement who calculates the distance between 2 given points.
+        public static string distanceFilterSQL = "where (ACOS(SIN(latitude*3.14159265/180) * SIN( ? *3.14159265/180) + COS(latitude * 3.14159265/180) * COS( ? * 3.14159265/180) * COS((longitude - ? )*3.14159265/180))/ 3.14159265 * 180) * 111.18957696 <= ?";      
 
-       
-
+        //a function to return an instance of a connection with the database.
         private static OleDbConnection getConnection(){
             return new OleDbConnection(connectionString);            
         }
 
+        //a function to insert a consumption in the database.
         public static void insertConsumption(Consumption c)
         {
             //CONSUMPTIONID  RENTABLEID  GAS  WATER  ELECTRICITY  DATE_CONSUMPTION 
@@ -106,6 +115,7 @@ namespace KohtopaWeb
             conn.Close();
         }
 
+        // a function to retrieve all the invoices from a renter from the database.
         public static DataTable getInvoices(int id)
         {
             OleDbConnection conn = getConnection();
@@ -124,6 +134,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        // a function to retrieve all the consumptions from a renter from the database.
         public static DataTable getConsumptions(int id)
         {
             OleDbConnection conn = getConnection();
@@ -142,6 +153,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        //a function to retrieve all the messages from a person from the database.
         public static List<Message> getMessages(int id)
         {
             List<Message> messages = new List<Message>();
@@ -182,6 +194,7 @@ namespace KohtopaWeb
 
         }
 
+        //a function to retreive an xml file from a floorplan from the database.
         public static byte[] getFloorPlan(int buildingID, int floor)
         {
             OleDbConnection conn = getConnection();
@@ -210,11 +223,15 @@ namespace KohtopaWeb
 
         }
 
-        //todo parameters
+        //a function to retrieve a picture from the database.
         public static byte[] getPicture(int ImageId){
             OleDbConnection conn = getConnection();
-            OleDbCommand command = conn.CreateCommand();
-            command.CommandText = "select picture from pictures where pictureId = " + ImageId;
+            OleDbCommand command = conn.CreateCommand();            
+            //command.CommandText = "select picture from pictures where pictureId = " + ImageId;
+            command.CommandText = getPictureByIdSQL;
+            OleDbParameter p = new OleDbParameter();
+            p.Value = ImageId;
+            command.Parameters.Add(p);
             command.Connection = conn;
             conn.Open();    
             OleDbDataReader reader = command.ExecuteReader();
@@ -227,6 +244,7 @@ namespace KohtopaWeb
             return data;
         }
 
+        //a function to retreive all the tasks from a given person.
         public static DataTable getTasks(int userId)
         {
             OleDbConnection conn = getConnection();
@@ -252,6 +270,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        //a function to retreive all the rentables from the database.
         public static DataTable getRentables(string order)
         {
             OleDbConnection conn = getConnection();
@@ -262,6 +281,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        //a function to retreive all the rentables in a given distance from an point.
         public static DataTable getRentables(double longitude, double latitude, double distance, string order)
         {
             OleDbConnection conn = getConnection();
@@ -285,6 +305,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        //a function to test if a username en password match in the database.
         public static bool isValidPerson(string username,string password)
         {
             OleDbConnection conn = getConnection();
@@ -307,6 +328,7 @@ namespace KohtopaWeb
             }            
         }
 
+        //a function to retrieve the personid from a person from its username and password.
         public static int getPersonId(string username, string password)
         {
             OleDbConnection conn = getConnection();
@@ -329,6 +351,7 @@ namespace KohtopaWeb
             return 1;
         }
 
+        //a function to fill an instance of the Person class when given the username.
         public static Person getPerson(string userName)
         {
             OleDbConnection conn = getConnection();
@@ -361,6 +384,7 @@ namespace KohtopaWeb
             return null;
         }
 
+        // a function to fill an instance of the Persons class when given the id.
         public static Person getPerson(int personId)
         {
             OleDbConnection conn = getConnection();
@@ -393,6 +417,7 @@ namespace KohtopaWeb
             return null;
         }
 
+        // a function to fill an instance of the Building class when given the id.
         public static Building getBuilding(int buildingId)
         {
             OleDbConnection conn = getConnection();
@@ -432,6 +457,7 @@ namespace KohtopaWeb
             return null;
         }
 
+        //a function to fill an instance of the Address class when given the id.
         public static Address getAddress(int addressId)
         {
             OleDbConnection conn = getConnection();
@@ -459,6 +485,7 @@ namespace KohtopaWeb
             return null;
         }              
 
+        // a function to fill an instance of the Rentable class when given the id
         public static Rentable getRentable(int rentableId)
         {
             OleDbConnection conn = getConnection();
@@ -516,6 +543,7 @@ namespace KohtopaWeb
             return null;
         }
 
+        //a function to fill an instance of the Rentable class  when given the id of the renter.
         public static Rentable getCurrentRentable(int renterId)
         {
             try
@@ -529,6 +557,7 @@ namespace KohtopaWeb
             }
         }
 
+        //a function to retrieve the id from a rentable when given the id of the renter.
         private static int getCurrentRentableId(int renterId)
         {
             OleDbConnection conn = getConnection();
@@ -553,6 +582,8 @@ namespace KohtopaWeb
             }
             throw new Exception("can't find rentableId");
         }
+
+        //a function to mark a message as read when given the message and the person.
         public static void setRead(Message message, Person person)
         {
             OleDbConnection conn = getConnection();
@@ -587,6 +618,9 @@ namespace KohtopaWeb
             int i = c.ExecuteNonQuery();
             conn.Close();
         }
+
+        //a function to add a message to the database, this function does not commit but returns the
+        //transaction object.
         public static OleDbTransaction sendMessage(Message message)
         {            
             OleDbConnection conn = getConnection();
@@ -635,6 +669,7 @@ namespace KohtopaWeb
             }            
         }
 
+        //a class to represent the order values that can be used in getRentables.
         public static class RentableOrder
         {
             public static string TYPE = "order by r.type";            
@@ -647,6 +682,7 @@ namespace KohtopaWeb
             public static string OUTLET_COUNT = "order by r.outlet_count";
         }
 
+        // a function to retreive the position of a rentable when given the id.
         public static Pair getLongLat(int rentableId)
         {
             Pair pair = null;
@@ -671,6 +707,7 @@ namespace KohtopaWeb
             return pair;
         }
 
+        //a function to retreive all te pictures from a building when given the id.
         public static DataTable getBuildingPictureIds(int BuildingId)
         {
             OleDbConnection conn = getConnection();
@@ -688,6 +725,7 @@ namespace KohtopaWeb
             return ds.Tables[0];
         }
 
+        //a function to retreive all te pictures from a rentable when given the id.
         public static DataTable getRentablePictureIds(int BuildingId)
         {
             OleDbConnection conn = getConnection();

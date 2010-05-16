@@ -12,6 +12,8 @@ using System.Xml.Linq;
 
 namespace KohtopaWeb
 {
+    //a class to represent an address from the database
+
     public class Address
     {
         private int addressId;

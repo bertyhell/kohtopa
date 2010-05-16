@@ -17,6 +17,8 @@ namespace KohtopaWeb
 {
     public class GoogleGeocoding
     {
+        //a class that uses google maps to convert a address in a pair of latitude and longitude.
+
         private static string googleKey = ConfigurationManager.AppSettings["GoogleMapsKey"];
 
         private static double deg2rad(double deg)

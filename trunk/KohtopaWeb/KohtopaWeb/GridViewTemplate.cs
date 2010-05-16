@@ -15,6 +15,8 @@ namespace KohtopaWeb
 {
     public class GridViewTemplate : ITemplate
     {
+        // a class to change the appearance of a grid view.
+
         private Table table;
         private string language;
         public GridViewTemplate(Table table,string language)
@@ -25,6 +27,7 @@ namespace KohtopaWeb
      
         void ITemplate.InstantiateIn(System.Web.UI.Control container)
         {
+            //Each cell in the gridview is represented by a table this table will be converted to give the output.
             Table tbl = new Table();
             tbl.Width = table.Width;
             container.Controls.Add(tbl);
@@ -64,7 +67,7 @@ namespace KohtopaWeb
                             label.ToolTip = lbl.ToolTip;
                             label.Visible = lbl.Visible;
                             label.Width = lbl.Width;                                                        
-                            if (label.Text.StartsWith("DataBind:"))
+                            if (label.Text.StartsWith("DataBind:")) //a protocol to define the text of this label sits in the datasource
                             {                                
                                 label.DataBinding += new EventHandler(lbl_DataBinding);
                             }                            
@@ -104,7 +107,7 @@ namespace KohtopaWeb
                             textbox.Visible = txt.Visible;
                             textbox.Width = txt.Width;
                             textbox.Wrap = txt.Wrap;
-                            if (textbox.Text.StartsWith("DataBind:"))
+                            if (textbox.Text.StartsWith("DataBind:"))//a protocol to define the text of this textbox sits in the datasource
                             {
                                 textbox.DataBinding += new EventHandler(txt_DataBinding);
                             }
@@ -137,7 +140,7 @@ namespace KohtopaWeb
                             image.ToolTip = img.ToolTip;
                             image.Visible = img.Visible;
                             image.Width = img.Width;
-                            if (image.ImageUrl.StartsWith("DataBind:"))
+                            if (image.ImageUrl.StartsWith("DataBind:"))//a protocol to define the ImageURL of this image sits in the datasource
                             {
                                 image.DataBinding += new EventHandler(img_DataBinding);                                
                             }
@@ -172,7 +175,7 @@ namespace KohtopaWeb
                             linkButton.ValidationGroup = lbtn.ValidationGroup;
                             linkButton.Visible = lbtn.Visible;
                             linkButton.Width = lbtn.Width;
-                            if (linkButton.PostBackUrl.StartsWith("DataBind:"))
+                            if (linkButton.PostBackUrl.StartsWith("DataBind:"))//a protocol to define the postbackURL of this linkbutton sits in the datasource
                             {
                                 linkButton.DataBinding += new EventHandler(lbtn_DataBinding);
                             }
@@ -183,11 +186,8 @@ namespace KohtopaWeb
             }
         }
      
-        /// <summary>
-        /// This is the event, which will be raised when the binding happens.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        //the next functions all put the information from the datasource in the object.
+
         void lbl_DataBinding(object sender, EventArgs e)
         {
             Label lbl = (Label)sender;                   

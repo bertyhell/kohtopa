@@ -33,7 +33,7 @@ namespace KohtopaWeb
                     {
                         sendMessageTable.Visible = false;                        
                     }
-                    if (user != null && user.Rentable == null)
+                    if (user != null && user.Rentable == null) //if the user does not have a contract he can not send any messages.
                     {
                         sendMessageTable.Visible = false;
                         lblError.Visible = true;
@@ -46,6 +46,8 @@ namespace KohtopaWeb
             }
         }
 
+        //a function to send the message, this is adding it to de database and sending a mail to the owner.
+        //if one of the 2 things fail notting is added in the database.
         protected void btnSend_Click(object sender, EventArgs e)
         {
             try

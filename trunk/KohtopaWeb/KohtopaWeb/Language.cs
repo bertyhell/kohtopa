@@ -20,6 +20,7 @@ namespace KohtopaWeb
         private static Hashtable languages = new Hashtable();
         private static DataTable dtLanguages = new DataTable("languages");
 
+        //reads wich languages are stored on the server.
         public static void read(HttpServerUtility server)
         {
             readLanguages(server);
@@ -29,6 +30,7 @@ namespace KohtopaWeb
             }
         }
 
+        //read a specific language from the server and puts the language in the hashtable.
         private static void read(string language,HttpServerUtility server)
         {
             if (languages[language] == null)
@@ -65,6 +67,7 @@ namespace KohtopaWeb
             }
         }
 
+        //adds a key,value pair to a language, this function does not change the stored file.
         public static void add(string key, string value, string language)
         {
             Hashtable h = (Hashtable)languages[languages];
@@ -75,13 +78,14 @@ namespace KohtopaWeb
             }            
             h.Add(key, value);
         }
-
+        
         public static string getstring(string key,string language)
         {
             Hashtable h = (Hashtable)languages[language];            
             return (string)h[key];            
         }
 
+        //writes a language from the memory to an xml file.
         public static void write(string language,HttpServerUtility server)
         {
             try
@@ -114,6 +118,7 @@ namespace KohtopaWeb
             catch {}
         }       
 
+        //writes the choices of languages to a table so they can be shown in the menu.
         private static void readLanguages(HttpServerUtility server)
         {
             dtLanguages.Clear();

@@ -15,7 +15,8 @@ using System.Text.RegularExpressions;
 namespace KohtopaWeb
 {
     public class Message
-    {        
+    {
+        //a class to represent a message from the database
 
         private Person sender, recipient;
         private string subject, text;
