@@ -29,4 +29,5 @@
             </asp:TableCell>
         </asp:TableRow>       
     </asp:Table>
+    <asp:Label runat="server" ID="lblError" ForeColor="Red" Visible="false" />
 </asp:Content>

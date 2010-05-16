@@ -69,4 +69,8 @@
 	<entry name="InvalidValue">Gelieve een geldige waarde in te geven.</entry>
 	<entry name="Submit">Opsturen</entry>
     <entry name="Welcome">Welkom op kohotpa, een website waar studenten hun kot kunnen zoeken.</entry>
+    <entry name="OwnerMail">Mail van de verhuurder</entry>
+    <entry name="OwnerTelephone">Telefoon van de verhuurder</entry>
+    <entry name="OwnerCellphone">Gsmnummer van de verhuurder</entry>
+    <entry name="NoContract">U hebt geen contract</entry>
 </Language>

@@ -22,19 +22,23 @@ namespace KohtopaWeb
         private static string password = "admin";
         private static string databaseName = "XE";        
         private static string connectionString = "Provider=OraOLEDB.Oracle;Data Source=localhost:1521/" + databaseName + ";User Id=" + usernameDB + ";Password=" + password + ";";        
-        public static string rentableTypes = "Room;Appartment;House";        
-        private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,max(c.contract_end) as free "
+        public static string rentableTypes = "Room;Appartment;House";
+        private static string getRentablesSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area,r.window_area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode,a.country ,coalesce(max(c.contract_end),sysdate) as free "
                                                     + "from rentables r "
                                                     + "join buildings b on b.buildingid = r.buildingid "
                                                     + "join addresses a on b.addressid = a.addressid "
                                                     + "join contracts c on c.rentableid = r.rentableid "
-                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";        
+                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area,r.window_area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,b.addressid, b.latitude, b.longitude, a.street, a.street_number, a.city, a.zipcode, a.country";        
         private static string getPersonIdSQL = "select personId from persons where username = ? and password = ?";
         private static string getPasswordSQL = "select password from persons where username = ?";
         private static string getPersonByUsernameSQL = "select * from persons where userName = ?";
         private static string getPersonByIdSQL = "select * from persons where personId = ?";
         private static string getAddressSQL = "select * from addresses where addressId = ?";
-        private static string getRentableByIdSQL = "select * from rentables where rentableId = ?";
+        private static string getRentableByIdSQL = "select r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price, r.floor,r.description,coalesce(max(c.contract_end),sysdate) as free "
+                                                    + "from rentables r "
+                                                    + "join contracts c on c.rentableid = r.rentableid "
+                                                    + "where r.rentableid = ? "
+                                                    + "group by r.rentableid, r.buildingid, r.ownerid, r.type, r.area, r.window_area, r.window_direction, r.internet, r.cable, r.outlet_count,r.price,r.description, r.floor";
         private static string getCurrentRentableIdSQL = "select rentableId as rentableId from contracts where renterid = ? and contract_start < ? and contract_end > ?";
         private static string getMessagesByIdSQL = "select * from messages where recipientId = ?";
         private static string getLongLatByRentableIdSQL = "select b.longitude, b.latitude from rentables r join buildings b on b.buildingid = r.buildingid where r.rentableid = ?";
@@ -481,6 +485,7 @@ namespace KohtopaWeb
                 r.Owner = getPerson(Int32.Parse("" + dr["OwnerId"]));
                 r.Price = Double.Parse("" + dr["Price"]);
                 r.RentableId = rentableId;
+                r.FreeFrom = (DateTime)dr["Free"];
                 try
                 {
                     r.Rented = ("" + dr["Rented"]).Equals("1");

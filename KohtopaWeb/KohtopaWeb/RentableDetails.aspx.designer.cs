@@ -230,6 +230,60 @@ namespace KohtopaWeb {
         protected global::System.Web.UI.WebControls.Label lblDescriptionValue;
         
         /// <summary>
+        /// lblOwnerMail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerMail;
+        
+        /// <summary>
+        /// lblOwnerMailValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerMailValue;
+        
+        /// <summary>
+        /// lblOwnerTelephone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerTelephone;
+        
+        /// <summary>
+        /// lblOwnerTelephoneValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerTelephoneValue;
+        
+        /// <summary>
+        /// lblOwnerCellphone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerCellphone;
+        
+        /// <summary>
+        /// lblOwnerCellphoneValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblOwnerCellphoneValue;
+        
+        /// <summary>
         /// tblPictures control.
         /// </summary>
         /// <remarks>

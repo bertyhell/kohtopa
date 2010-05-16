@@ -109,8 +109,8 @@ namespace KohtopaWeb
                             return false;
                         }
                     }
-                    catch
-                    {
+                    catch(Exception exc)
+                    {                        
                         try
                         {
                             transaction.Rollback();

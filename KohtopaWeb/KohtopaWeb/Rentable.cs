@@ -20,6 +20,13 @@ namespace KohtopaWeb
         Person owner;
         string description, windowDirection;
         Building building;
+        DateTime freeFrom;        
+
+        public DateTime FreeFrom
+        {
+            get { return freeFrom; }
+            set { freeFrom = value; }
+        }
 
         public string WindowDirection
         {
