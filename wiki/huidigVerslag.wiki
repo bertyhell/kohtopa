@@ -6,6 +6,10 @@ Ruben(beschrijving klassen eventueel? Heb die interfaces verhuisd naar handleidi
 
 Jannes: klaar
 
-<a href="http://docs.google.com/fileview?id=0Bx3BQRWW3ESeZjgxMzA5YTUtY2QyNi00MWE0LTgzYzItOGIwZjNiZGViY2U1&hl=en">link</a>
+Bert: 
+
+Ik heb het takendiagram aangepast zodat het overeenkomt met de use cases.
+
+<a href="http://docs.google.com/fileview?id=0Bx3BQRWW3ESeNjY2ODliNjgtZGJmMy00YjAxLTkzYzYtOGM5MzEwMDM5MmRk&hl=en">link</a>
 
 <a href="http://docs.google.com/leaf?id=0Bx3BQRWW3ESeYjlhZTQwOWYtMzYyYS00YjUxLWFmZWItZTBjMWNmM2I4ODhi&hl=en">latex bron voor de liefhebbers(en als backup :))</a>
