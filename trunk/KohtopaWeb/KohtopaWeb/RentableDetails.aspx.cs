@@ -22,7 +22,7 @@ namespace KohtopaWeb
                 Rentable rentable = DataConnector.getRentable(Int32.Parse(Request.Params["id"]));
                 string language = "" + Session["Language"];
                 lblFreeFromDescription.Text = Language.getstring("FreeFrom",language);
-                //lblFreeFromValue.Text = rentable.
+                lblFreeFromValue.Text = rentable.FreeFrom.ToShortDateString();
                 lblTypeDescription.Text = Language.getstring("Type", language);
                 lblTypeValue.Text = Language.getstring(DataConnector.rentableTypes.Split(';')[rentable.Type], language);
                 lblAddressDescription.Text = Language.getstring("Address", language);
@@ -49,7 +49,7 @@ namespace KohtopaWeb
                 }
                 else
                 {
-                    imgCable.ImageUrl = "Image/cancel.png";
+                    imgCable.ImageUrl = "Images/cancel.png";
                 }
                 lblOutletCountDescription.Text = Language.getstring("OutletCount", language);
                 lblOutletCountValue.Text = "" + rentable.OutletCount;
@@ -59,6 +59,12 @@ namespace KohtopaWeb
                 lblWindowAreaValue.Text = "" + rentable.WindowArea;
                 lblDescriptionDescription.Text = Language.getstring("Description", language);
                 lblDescriptionValue.Text = rentable.Description;
+                lblOwnerMail.Text = Language.getstring("OwnerMail", language);
+                lblOwnerMailValue.Text = rentable.Owner.Email;
+                lblOwnerTelephone.Text = Language.getstring("OwnerTelephone", language);
+                lblOwnerTelephoneValue.Text = rentable.Owner.Telephone;
+                lblOwnerCellphone.Text = Language.getstring("OwnerCellphone", language);
+                lblOwnerCellphoneValue.Text = rentable.Owner.Cellphone;
 
                 DataTable dt = DataConnector.getBuildingPictureIds(rentable.Building.Id);
                 foreach (DataRow dr in dt.Rows)
@@ -66,7 +72,9 @@ namespace KohtopaWeb
                     TableRow tr = new TableRow();
                     Image img = new Image();
                     img.ImageUrl = "~/ShowPicture.aspx?imageId=" + dr[0];
-                    tr.Controls.Add(img);
+                    TableCell tc = new TableCell();
+                    tc.Controls.Add(img);
+                    tr.Controls.Add(tc);
                     tblPictures.Rows.Add(tr);
                 }
 
@@ -76,7 +84,9 @@ namespace KohtopaWeb
                     TableRow tr = new TableRow();
                     Image img = new Image();
                     img.ImageUrl = "ShowPicture.aspx?imageId=" + dr[0];
-                    tr.Controls.Add(img);
+                    TableCell tc = new TableCell();
+                    tc.Controls.Add(img);
+                    tr.Controls.Add(tc);
                     tblPictures.Rows.Add(tr);
                 }
             }

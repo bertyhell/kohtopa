@@ -70,4 +70,8 @@
 	<entry name="InvalidValue">Please fill in a valid value.</entry>
 	<entry name="Submit">Submit</entry>
     <entry name="Welcome">Welcome on kohtopa, a website where students can find their room to study.</entry>
+    <entry name="OwnerMail">Mail of owner</entry>
+    <entry name="OwnerTelephone">Telephone of owner</entry>
+    <entry name="OwnerCellphone">Cellphone of owner</entry>
+    <entry name="NoContract">You do not have a contract.</entry>
 </Language>

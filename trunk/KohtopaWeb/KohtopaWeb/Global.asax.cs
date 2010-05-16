@@ -18,8 +18,8 @@ namespace KohtopaWeb
         {
             try
             {
-                Language.read(Server);
-                SmtpMail.SmtpServer = "mail-out.hogent.be";
+                Language.read(Server);                
+                SmtpMail.SmtpServer = ConfigurationManager.AppSettings["smtpServer"];
             }
             catch (Exception exc)
             {

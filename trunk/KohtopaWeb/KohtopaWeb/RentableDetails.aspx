@@ -73,7 +73,7 @@
             <asp:TableCell>
                 <asp:Label ID="lblOutletCountValue" runat="server" />
             </asp:TableCell>
-        </asp:TableRow>
+        </asp:TableRow>                 
         <asp:TableRow>            
             <asp:TableCell>
                 <asp:Label ID="lblWindowDirectionDescription" runat="server" />
@@ -97,7 +97,31 @@
             <asp:TableCell>
                 <asp:Label ID="lblDescriptionValue" runat="server" />
             </asp:TableCell>
-        </asp:TableRow>                        
+        </asp:TableRow>
+        <asp:TableRow>            
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerMail" runat="server" />
+            </asp:TableCell>
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerMailValue" runat="server" />
+            </asp:TableCell>
+        </asp:TableRow>     
+        <asp:TableRow>            
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerTelephone" runat="server" />
+            </asp:TableCell>
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerTelephoneValue" runat="server" />
+            </asp:TableCell>
+        </asp:TableRow>                         
+        <asp:TableRow>            
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerCellphone" runat="server" />
+            </asp:TableCell>
+            <asp:TableCell>
+                <asp:Label ID="lblOwnerCellphoneValue" runat="server" />
+            </asp:TableCell>
+        </asp:TableRow>     
     </asp:Table>
     <asp:Table ID="tblPictures" runat="server"></asp:Table>
 </asp:Content>

@@ -27,11 +27,16 @@ namespace KohtopaWeb
                     lblSubject.Text = Language.getstring("Subject", language);
                     lblMessage.Text = Language.getstring("Message", language);
                     btnSend.Text = Language.getstring("Send", language);
-
+                    lblError.Text = Language.getstring("NoContract", language);
                     Person user = (Person)Session["user"];
                     if (user != null && user.RoleId != "user")
                     {
+                        sendMessageTable.Visible = false;                        
+                    }
+                    if (user != null && user.Rentable == null)
+                    {
                         sendMessageTable.Visible = false;
+                        lblError.Visible = true;
                     }
                 }
             }
