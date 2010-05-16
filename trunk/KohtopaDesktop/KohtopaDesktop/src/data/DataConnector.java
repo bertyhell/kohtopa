@@ -53,7 +53,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong creating the connection
 	 */
 	private static Connection geefVerbinding() throws SQLException {
-		return DriverManager.getConnection(DataBaseConstants.connectiestring, DataBaseConstants.un, DataBaseConstants.pw);
+		return DriverManager.getConnection(ProgramSettings.getConnectionstring(), DataBaseConstants.un, DataBaseConstants.pw);
 	}
 
 	/**
@@ -928,6 +928,7 @@ public class DataConnector {
 	 * @param contract the contract to remove
 	 */
 	public static void removeContract(Contract contract) {
+	    //TODO 100 can not be possible, only if contract is not active its possible to delete, else: edit to shorten enddate
 		try {
 			Connection conn = geefVerbinding();
 
