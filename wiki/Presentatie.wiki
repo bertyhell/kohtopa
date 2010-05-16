@@ -12,9 +12,9 @@ gewoon deze 3 afbeeldingen + databank schema
 
 
 
-overzicht van de gebruikers groepen
-<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_gebruikers.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_gebruikers.png" border="0"><br/><br/><br/>
-overzicht van een deel van de belangrijkste klassen
-<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_entities.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_entities.png" border="0"  ><br/><br/><br/>
-overzicht van de verschillende programma's
-<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_programmas.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_programmas.png" border="0" ><br/><br/><br/>
+overzicht van de gebruikers groepen<br/>
+<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_gebruikers.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_gebruikers.png" border="0"><a/><br/><br/><br/>
+overzicht van een deel van de belangrijkste klassen<br/>
+<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_entities.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_entities.png" border="0"><a/><br/><br/><br/>
+overzicht van de verschillende programma's<br/>
+<a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_programmas.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_programmas.png" border="0"><a/><br/><br/><br/>
