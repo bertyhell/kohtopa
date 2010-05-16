@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -57,5 +58,73 @@ public class DataConnector {
 			conn.close();
 		}
 	}
+
+        public static Vector<Integer> selectBuildingsToBeDeleted() throws SQLException, IOException {
+            Connection conn = geefVerbinding();
+            Vector<Integer> buildingIds = new Vector<Integer>();
+            try {
+
+                    Statement selectBuildings = conn.createStatement();
+                    ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingsToBeDeleted);
+                    while (rsBuildings.next()) {
+                            buildingIds.add(rsBuildings.getInt("buildingid"));
+                    }
+            } finally {
+                    conn.close();
+            }
+            return buildingIds;
+        }
+
+        public static void removeBuildings(Vector<Integer> buildingIds) throws SQLException, IOException {
+            Connection conn = geefVerbinding();
+            try{
+                for(int i = 0; i < buildingIds.size(); i++){
+                    PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteBuildingById);
+                    try{
+                        ps.setInt(1, buildingIds.get(i));
+                        ps.executeUpdate();
+                    }finally{
+                        ps.close();
+                    }
+                }
+            }finally{
+                conn.close();
+            }
+        }
+        public static Vector<Integer> selectAddressesToBeDeleted() throws SQLException, IOException {
+            Connection conn = geefVerbinding();
+            Vector<Integer> addressIds = new Vector<Integer>();
+		try {
+
+			Statement selectAddresses = conn.createStatement();
+			ResultSet rsAddresses = selectAddresses.executeQuery(DataBaseConstants.selectAddressesToBeDeleted);
+			while (rsAddresses.next()) {
+				addressIds.add(rsAddresses.getInt("addressid"));
+			}
+		} finally {
+			conn.close();
+		}
+            return addressIds;
+        }
+
+        public static void removeAddresses(Vector<Integer> addressIds) throws SQLException, IOException {            
+            Connection conn = geefVerbinding();
+            try{
+                for(int i = 0; i < addressIds.size(); i++){
+                    PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteAddressById);
+                    try{
+                        ps.setInt(1, addressIds.get(i));
+                        ps.executeUpdate();
+                    }finally{
+                        ps.close();
+                    }
+                }
+            }catch(Exception exc){
+                System.out.println(exc);
+            }
+            finally{
+                conn.close();
+            }
+        }
 }
 

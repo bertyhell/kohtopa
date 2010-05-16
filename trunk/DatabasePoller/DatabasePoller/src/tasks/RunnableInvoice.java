@@ -190,7 +190,7 @@ public class RunnableInvoice implements Runnable {
 			} catch (MessagingException ex) {
 				System.out.println("Failed to send mail: " + ex.getMessage());
 				ex.printStackTrace();
-			}
+			}                       
 		}
 	}
 }

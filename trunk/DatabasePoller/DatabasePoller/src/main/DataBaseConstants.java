@@ -103,13 +103,38 @@ public class DataBaseConstants {
 	//dataconnector connection strings
 	//driver and connectionstring for oracle express
 	public static String un = "system";
-//	public static String pw = "admin";
-	public static String pw = "e=mc**2"; //ruben
+	public static String pw = "admin";
+//	public static String pw = "e=mc**2"; //ruben
 	public static String driver = "oracle.jdbc.driver.OracleDriver";
-//	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
-	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	public static String connectiestring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
+//	public static String connectiestring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//dataconnector statement strings
 
 	public static String selectInvoicesToBeSend = "SELECT * FROM " + tableInvoices +
 			" WHERE " + invoiceDate + " >= sysdate AND " + invoiceSend + " = 0";
+
+        public static String selectBuildingsToBeDeleted = "with x as( "
+            + "select b.buildingid,max(r.rentableid) as rentableid "
+            + "from buildings b "
+            + "left join rentables r on r.buildingid = b.buildingid "
+            + "group by b.buildingid)"
+            + " select buildingid "
+            + "from x "
+            + "where rentableid is null ";
+
+       public static String deleteBuildingById = "delete from buildings where buildingid = ?";
+
+       public static String selectAddressesToBeDeleted = "with x as(select a.addressid,b.buildingid "
+            + "from addresses a "
+            + "left join buildings b on a.addressid = b.addressid "
+            + "),y as( "
+            + "select  x.addressid,p.personid "
+            + "from x x "
+            + "left join persons p on p.addressid = x.addressid "
+            + "where x.buildingid is null ) "
+            + "select y.addressid "
+            + "from y y "
+            + "where y.personid is null ";
+
+       public static String deleteAddressById = "delete from addresses where addressid = ?";
 }
