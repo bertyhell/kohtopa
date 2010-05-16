@@ -26,8 +26,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
 
-//TODO 090 fix settingsfile in deployment (sore in different location?
-
 public class Main extends JFrame {
 
 	private static Main instance;
@@ -39,11 +37,11 @@ public class Main extends JFrame {
 	private JPanel pnlMessages;
 	private JPanel pnlInvoices;
 	private JPanel pnlContracts;
-	private AddRemovePane pnlAddremoveInfo;
+	private static AddRemovePane pnlAddremoveInfo;
 	private CalendarPane pnlCalendarInfo;
-	private MessagePane pnlMessagesInfo;
-	private InvoicesPane pnlInvoicesInfo;
-	private ContractsPane pnlContractsInfo;
+	private static MessagePane pnlMessagesInfo;
+	private static InvoicesPane pnlInvoicesInfo;
+	private static ContractsPane pnlContractsInfo;
 	private JTabbedPane tabbed;
 	private static JComboBox cbbLanguages;
 
@@ -147,7 +145,6 @@ public class Main extends JFrame {
 //		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/settings_64.png")), createSettingsPanel(), Language.getString("descriptionSettings"));
 //		tabbed.setMnemonicAt(5, KeyEvent.VK_S);
 
-		//adding Language Panel //TODO 060 make language adjust
 		tabbed.addTab(null, new ImageIcon(getClass().getResource("/images/language_64.png")), createLanguagePanel(), Language.getString("descriptionLanguage"));
 		tabbed.setMnemonicAt(5, KeyEvent.VK_L);
 
@@ -295,13 +292,13 @@ public class Main extends JFrame {
 		pnlButtonsInvoice.setBackground(new Color(180, 180, 180, 100));
 		pnlInvoices.add(pnlButtonsInvoice, BorderLayout.PAGE_START);
 
-		JButton btnAddInvoice = new JButton(actions.get("invoiceAdd"));
+		JActionButton btnAddInvoice = new JActionButton(actions.get("invoiceAdd"), pnlInvoicesInfo);
 		btnAddInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnAddInvoice);
-		JButton btnEditInvoice = new JButton(actions.get("invoiceEdit"));
+		JActionButton btnEditInvoice = new JActionButton(actions.get("invoiceEdit"), pnlInvoicesInfo);
 		btnEditInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnEditInvoice);
-		JButton btnRemoveInvoice = new JButton(actions.get("invoiceRemove"));
+		JActionButton btnRemoveInvoice = new JActionButton(actions.get("invoiceRemove"), pnlInvoicesInfo);
 		btnRemoveInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnRemoveInvoice);
 
@@ -474,9 +471,25 @@ public class Main extends JFrame {
 	public static String getSelectedLanguage() {
 		return (String) cbbLanguages.getSelectedItem();
 	}
-//
-//	@Override
-//	public JFrame getParent() {
-//		return parent;
-//	}
+
+	public static void updateBuildingList(){
+		pnlAddremoveInfo.updateBuildingList();
+	}
+
+	public static void updateRentableList(){
+		pnlAddremoveInfo.updateRentableList();
+	}
+
+	public static void updateInvoiceList(){
+		pnlInvoicesInfo.updateInvoicesList();
+	}
+
+	public static void updateRenterList(){
+		pnlInvoicesInfo.updateRenterList();
+		pnlContractsInfo.updateRenterList();
+	}
+
+	public static void updateContractList(){
+		pnlContractsInfo.updateContractList();
+	}
 }

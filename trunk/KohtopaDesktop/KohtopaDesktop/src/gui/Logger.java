@@ -14,12 +14,13 @@ import org.apache.log4j.PatternLayout;
 public class Logger {
 
 	public static org.apache.log4j.Logger logger;
+	private static final String LOG_FILE = System.getProperty("user.home") + "\\AppData\\Roaming\\kohtopa\\log.txt";
 
 	public static void init() {
 		try {
-			System.out.println("log file under: " + System.getProperty("user.home") + "\\Local Settings\\Application Data\\kohtopa\\log.txt");
+			System.out.println("log file under: " + LOG_FILE);
 			logger = org.apache.log4j.Logger.getRootLogger();
-			logger.addAppender(new FileAppender(new PatternLayout(), System.getProperty("user.home") + "\\Local Settings\\Application Data\\kohtopa\\log.txt", false));
+			logger.addAppender(new FileAppender(new PatternLayout(), LOG_FILE, false));
 			logger.addAppender(new ConsoleAppender(new PatternLayout()));
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);

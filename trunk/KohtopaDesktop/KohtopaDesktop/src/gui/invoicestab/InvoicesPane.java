@@ -1,10 +1,14 @@
 package gui.invoicestab;
 
+import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import data.DataModel;
+import data.entities.Invoice;
 import data.entities.Person;
 import gui.Logger;
 import gui.Main;
+import gui.interfaces.IInvoiceListContainer;
+import gui.interfaces.IRenterListContainer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -22,7 +26,7 @@ import javax.swing.ListSelectionModel;
  *
  * @author Bert Verhelst
  */
-public class InvoicesPane extends JPanel {
+public class InvoicesPane extends JPanel implements IInvoiceListContainer, IRenterListContainer{
 
 	private JList lstRenters;
 	private JList lstInvoices;
@@ -46,6 +50,7 @@ public class InvoicesPane extends JPanel {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				Logger.logger.info("clicked on renter");
 				try {
 					lstInvoices.setListData(Main.getDataObject().getInvoicesPreviews(((Person) lstRenters.getSelectedValue()).getId()));
 				} catch (SQLException ex) {
@@ -69,7 +74,7 @@ public class InvoicesPane extends JPanel {
 		
 		lstInvoices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstInvoices.setBackground(new Color(217, 217, 217));
-		lstInvoices.setCellRenderer(new RenterCellRenderer());
+		lstInvoices.setCellRenderer(new InvoiceCellRenderer());
 		JScrollPane scrolInvoices = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrolInvoices.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("invoices")));
 		scrolInvoices.setViewportView(lstInvoices);
@@ -83,5 +88,35 @@ public class InvoicesPane extends JPanel {
 
 	public Object[] getSelectedInvoices() {
 		return lstInvoices.getSelectedValues();
+	}
+
+	public int getRenterId() throws WrongNumberOfSelectedItemsException {
+		return ((Person)lstRenters.getSelectedValue()).getId();
+	}
+
+	public void updateInvoicesList() {
+		Logger.logger.info("updating invoice list in invoicePane");
+		//list of invoices
+		if (lstRenters.getSelectedIndices().length != 0) {
+			try {
+				lstInvoices = new JList(Main.getDataObject().getInvoicesPreviews(((Person) lstRenters.getSelectedValue()).getId()));
+			} catch (SQLException ex) {
+				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			lstInvoices = new JList();
+		}
+	}
+
+	public int getId() {
+				if (lstInvoices.getSelectedIndices().length == 0) {
+			return ((Person) lstRenters.getSelectedValue()).getId();
+		} else {
+			return ((Invoice) lstInvoices.getSelectedValue()).getId();
+		}
+	}
+
+	public void updateRenterList() {
+		lstRenters.setListData(Main.getDataObject().getRenters());
 	}
 }

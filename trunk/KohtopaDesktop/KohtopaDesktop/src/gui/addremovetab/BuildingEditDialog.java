@@ -24,9 +24,9 @@ import gui.Logger;
 import java.awt.Window;
 import java.util.Vector;
 
-public class BuildingDialog extends JFrame implements IRentableListContainer, IFloorListContainer, IPictureListContainer {
+public class BuildingEditDialog extends JFrame implements IRentableListContainer, IFloorListContainer, IPictureListContainer {
 
-	private BuildingDialog instance;
+	private BuildingEditDialog instance;
 	private int buildingId;
 	private JTextField txtStreet;
 	private JTextField txtStreetNumber;
@@ -40,10 +40,10 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 	private Vector<Integer> floors;
 	private PicturePreviewPanel pnlPreview;
 
-	public BuildingDialog(Window parent, int buildingId, boolean newBuilding) {
+	public BuildingEditDialog(Window parent, int buildingId) {
 		this.buildingId = buildingId;
 		instance = this;
-		setTitle(Language.getString(newBuilding ? "buildingAdd" : "buildingEdit"));
+		setTitle(Language.getString("buildingEdit"));
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/building_edit_23.png")).getImage());
 		this.setPreferredSize(new Dimension(1000, 600));
 		this.setMinimumSize(new Dimension(600, 405));
@@ -240,8 +240,9 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 				if (e.getClickCount() > 1) {
 					if (instance == null) {
 						Logger.logger.error("instance == null in buildingdialog");
+					} else {
+						new RentableDialog(instance, ((Rentable) lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 					}
-					new RentableDialog(instance, ((Rentable) lstRentables.getSelectedValue()).getId(), false).setVisible(true);
 				}
 			}
 		});
@@ -287,45 +288,28 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		});
 		pnlButtons.add(btnCancel);
 
-		btnConfirm = new JButton("", new ImageIcon(getClass().getResource("/images/ok.png")));
-		if (newBuilding) {
-			//add building to database
-			btnConfirm.addMouseListener(new MouseAdapter() {
+		//update database
+		btnConfirm = new JButton(Language.getString("update"), new ImageIcon(getClass().getResource("/images/ok.png")));
+		btnConfirm.addMouseListener(new MouseAdapter() {
 
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					if (CheckInput()) {
-						try {
-							Main.getDataObject().addBuilding(txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
-							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-						} catch (SQLException ex) {
-							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errAddBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-						}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (CheckInput()) {
+					try {
+						Logger.logger.info("update building");
+						Main.updateBuildingList();
+						Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()));
+						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+					} catch (SQLException ex) {
+						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 					}
 				}
-			});
-		} else {
-			//update database
-			btnConfirm.addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					if (CheckInput()) {
-						try {
-							System.out.println("update building");
-							Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryByIndex(cbbCountry.getSelectedIndex()));
-							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-						} catch (SQLException ex) {
-							JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
-						}
-					}
-				}
-			});
-		}
+			}
+		});
 		pnlButtons.add(btnConfirm);
 
 		//info opvullen:
-		fillInfo(newBuilding);
+		fillInfo();
 		pack();
 		setLocationRelativeTo(parent);
 	}
@@ -334,53 +318,35 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 		return "BuildingDialog";
 	}
 
-	public void fillInfo(boolean isNew) {
-		if (isNew) {
-			//clear fields
-			txtStreet.setText("");
-			txtStreetNumber.setText("");
-			txtZip.setText("");
-			txtCity.setText("");
+	public void fillInfo() {
+		try {
+			Logger.logger.info("filling building info");
+			//fill building info
+			Building building = Main.getDataObject().getBuilding(buildingId);
+			txtStreet.setText(building.getAddress().getStreet());
+			txtStreetNumber.setText(building.getAddress().getStreetNumber());
+			txtZip.setText(building.getAddress().getZipcode());
+			txtCity.setText(building.getAddress().getCity());
 			try {
-				cbbCountry.setSelectedIndex(Language.getIndexByCountryCode("BE"));
+				cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getAddress().getCountry()));
 			} catch (CountryNotFoundException ex) {
 				JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
-			btnConfirm.setText(Language.getString("add"));
-
-			//set preview image
-
-		} else {
-			try {
-				Logger.logger.info("filling building info");
-				//fill building info
-				Building building = Main.getDataObject().getBuilding(buildingId);
-				txtStreet.setText(building.getAddress().getStreet());
-				txtStreetNumber.setText(building.getAddress().getStreetNumber());
-				txtZip.setText(building.getAddress().getZipcode());
-				txtCity.setText(building.getAddress().getCity());
-				try {
-					cbbCountry.setSelectedIndex(Language.getIndexByCountryCode(building.getAddress().getCountry()));
-				} catch (CountryNotFoundException ex) {
-					JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				}
 
 
-				pnlPreview.setImage(building.getPreviewImage());
-				pnlPreview.repaint();
+			pnlPreview.setImage(building.getPreviewImage());
+			pnlPreview.repaint();
 
-				lstRentables.setListData(Main.getDataObject().getRentablesFromBuilding(buildingId));
+			lstRentables.setListData(Main.getDataObject().getRentablesFromBuilding(buildingId));
 
 
-				floors = Main.getDataObject().getFloors(buildingId);
-				lstFloors.setListData(floors);
-				btnConfirm.setText(Language.getString("update"));
-			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			}
-
-//			//TODO 000 make picture get dfrom dartabase multihreaded
+			floors = Main.getDataObject().getFloors(buildingId);
+			lstFloors.setListData(floors);
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(this, Language.getString("errBuildingData") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
+
+		//TODO 000 make picture get dfrom dartabase multihreaded
 	}
 
 	public boolean CheckInput() {
@@ -418,10 +384,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 			JOptionPane.showMessageDialog(this, errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 		return !error;
-	}
-
-	public void UpdateData() {
-		fillInfo(false);
 	}
 
 	public Object[] getSelectedPictures() {
@@ -469,6 +431,6 @@ public class BuildingDialog extends JFrame implements IRentableListContainer, IF
 	}
 
 	public void updatePreview() {
-		fillInfo(false);
+		//TODO 000 fix preview in building and rentable dialogs
 	}
 }

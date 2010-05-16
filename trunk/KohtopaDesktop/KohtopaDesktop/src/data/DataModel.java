@@ -280,4 +280,14 @@ public class DataModel {
 		Logger.logger.info("updating rentable");
 		DataConnector.updateRentable(rentableId,type, area, winDir, winArea, internet, cable, outlet, floor, price);
 	}
+
+	public void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+		Logger.logger.info("adding contract");
+		//TODO 100 implement
+	}
+
+	public void updateContract(int contractId, int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+		Logger.logger.info("updating contract");
+		//TODO 100 implement
+	}
 }

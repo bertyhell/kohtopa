@@ -61,7 +61,7 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 				public void mouseClicked(MouseEvent e) {
 					if (e.getClickCount() == 2) {
 						//open building dialog
-						new BuildingDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId(), false).setVisible(true);
+						new BuildingEditDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId()).setVisible(true);
 					} else {
 						try {
 							instance.getLstRentables().setListData(Main.getDataObject().getRentablesFromBuilding(((Building) lstBuildings.getSelectedValue()).getId()));

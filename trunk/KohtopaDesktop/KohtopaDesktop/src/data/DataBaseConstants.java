@@ -246,7 +246,7 @@ public class DataBaseConstants {
 			+ "," + rentableDescription
 			+ " FROM " + tableRentablesRead
 			+ " WHERE " + rentableID + " = ?";
-	public static String selectRentablesFromOwner = "SELECT " //TODO jelle dont use this in contracts > depricated
+	public static String selectRentablesFromOwner = "SELECT "
 			+ rentableID + ", "
 			+ buildingID + ", "
 			+ rentableType + ", "

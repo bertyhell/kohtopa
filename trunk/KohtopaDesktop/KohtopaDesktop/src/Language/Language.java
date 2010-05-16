@@ -6,6 +6,7 @@ import gui.Main;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.io.File;
+import java.util.Vector;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -21,7 +22,7 @@ public class Language {
 	private static String[] countries;
 	private static String[] daysOfWeek;
 	private static String[] monthsOfYear;
-	private static String[] rentableTypes;
+	private static Vector<String> rentableTypes;
 	private static String[] windDir;
 	private static JComboBox cbbCountry;
 	private static String language;
@@ -41,11 +42,10 @@ public class Language {
 			countries = new String[250];
 			daysOfWeek = new String[7];
 			monthsOfYear = new String[12];
-			rentableTypes = new String[100]; //max 100 different types
+			rentableTypes = new Vector<String>();
 			windDir = new String[8];
 			int i = 0;
 			int j = 0;
-			int k = 0;
 			int m = 0;
 			int n = 0;
 			for (int s = 0; s < nodeLst.getLength(); s++) {
@@ -59,8 +59,7 @@ public class Language {
 					daysOfWeek[j] = entryNode.getTextContent();
 					j++;
 				} else if (name.startsWith("lstRentableType")) {
-					rentableTypes[k] = entryNode.getTextContent();
-					k++;
+					rentableTypes.add(entryNode.getTextContent());
 				} else if (name.startsWith("lstWindowDir")) {
 					windDir[m] = entryNode.getTextContent();
 					m++;
@@ -73,6 +72,10 @@ public class Language {
 			cbbCountry = new JComboBox(Language.getCountries());
 			//cbbCountry.setRenderer(new CountryCellRenderer());
 			cbbCountry.setPreferredSize(new Dimension(20, 23));
+
+			for(String type : rentableTypes){
+				Logger.logger.info("type: " + type);
+			}
 		} catch (Exception ex) {
 			Logger.logger.error("Exception in read ProgramSettings: " + ex.getMessage());
 			Logger.logger.debug("stacktrace: ", ex);
@@ -87,7 +90,7 @@ public class Language {
 		return countryCodes;
 	}
 
-	public static String getCountryByIndex(int i) {
+	public static String getCountryCodeByIndex(int i) {
 		return countryCodes[i];
 	}
 
@@ -122,8 +125,12 @@ public class Language {
 		return daysOfWeek;
 	}
 
-	public static String[] getRentableTypes() {
-		return rentableTypes;
+	public static Object[] getRentableTypes() {
+		return rentableTypes.toArray();
+	}
+
+	public static String getRentableType(int index){
+		return rentableTypes.get(index);
 	}
 
 	public static String[] getWindDir() {

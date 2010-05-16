@@ -4,7 +4,7 @@ import Language.Language;
 import data.entities.Building;
 import gui.JActionButton;
 import gui.Main;
-import gui.addremovetab.BuildingDialog;
+import gui.addremovetab.BuildingEditDialog;
 import gui.interfaces.IBuildingListContainer;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
@@ -20,7 +20,7 @@ public class BuildingEditAction extends AbstractIconAction {
 	public void actionPerformed(ActionEvent e) {
 		Object[] selected = ((IBuildingListContainer)((JActionButton)e.getSource()).getRoot()).getSelectedBuildings();
 		if(selected.length == 1){
-			new BuildingDialog(Main.getInstance(), ((Building)selected[0]).getId(), false).setVisible(true);
+			new BuildingEditDialog(Main.getInstance(), ((Building)selected[0]).getId()).setVisible(true);
 		}else{
 			JOptionPane.showMessageDialog(Main.getInstance(), "please select exacly 1 building to Edit",Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}

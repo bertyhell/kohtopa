@@ -29,6 +29,7 @@ public class ProgramSettings {
 	private static boolean savePass;
 	private static Level loggerLevel;
 	private static String language;
+	private static String SETTINGS_FILE = System.getProperty("user.home") + "\\AppData\\Roaming\\kohtopa\\settings.xml";
 
 	public static void write() {
 		Logger.logger.info("Writing programsettings");
@@ -88,7 +89,7 @@ public class ProgramSettings {
 			String xmlString = sw.toString();
 
 			//print xml
-			BufferedWriter output = new BufferedWriter(new FileWriter(new File("settings.xml")));
+			BufferedWriter output = new BufferedWriter(new FileWriter(new File(SETTINGS_FILE)));
 			output.write(xmlString);
 			output.close();
 
@@ -99,8 +100,8 @@ public class ProgramSettings {
 	}
 
 	public static void read() {
-		Logger.logger.info("reading program settings from settings.xml");
-		File file = new File("settings.xml");
+		Logger.logger.info("reading program settings from " + SETTINGS_FILE);
+		File file = new File(SETTINGS_FILE);
 		if (file.exists()) {
 			Logger.logger.info("settingsfile found");
 			try {
@@ -148,6 +149,7 @@ public class ProgramSettings {
 		password = "";
 		ownerId = null;
 		connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa";
+		connectionstring = "jdbc:oracle:thin:@localhost:1521:XE";
 		savePass = false;
 		loggerLevel = Level.DEBUG;
 		language = "English";
@@ -214,7 +216,6 @@ public class ProgramSettings {
 	}
 
 	public static void print() {
-
 		Logger.logger.info("ProgramSettings: ");
 		Logger.logger.info("\tconnectionstring: " + connectionstring);
 		Logger.logger.info("\tusername: " + username);
