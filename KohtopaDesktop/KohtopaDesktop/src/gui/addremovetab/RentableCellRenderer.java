@@ -20,7 +20,7 @@ public class RentableCellRenderer implements ListCellRenderer {
 			pnlRentable = new RentableListPanel(
 					rentable.getId(),
 					rentable.getPreviewImage(),
-					Language.getRentableTypes()[rentable.getType()],
+					Language.getRentableType(rentable.getType()),
 					Main.getDataObject().getRenterInRentable(rentable.getId()),
 					rentable.getFloor(),
 					rentable.getDescription());
@@ -29,7 +29,7 @@ public class RentableCellRenderer implements ListCellRenderer {
 			pnlRentable = new RentableListPanel(
 					rentable.getId(),
 					rentable.getPreviewImage(),
-					Language.getRentableTypes()[rentable.getType()],
+					Language.getRentableType(rentable.getType()),
 					"",
 					rentable.getFloor(),
 					rentable.getDescription());

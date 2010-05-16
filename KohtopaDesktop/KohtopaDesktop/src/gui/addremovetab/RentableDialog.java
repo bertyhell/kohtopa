@@ -258,6 +258,7 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 									Integer.parseInt(txtOutlets.getText()),
 									Integer.parseInt(txtFloor.getText()),
 									Double.parseDouble(txtPrice.getText()));
+							Main.updateRentableList();
 							JOptionPane.showMessageDialog(Main.getInstance(), "Rentable succesfully added", Language.getString("succes"), JOptionPane.ERROR_MESSAGE, new ImageIcon(getClass().getResource("/images/ok.png")));
 							instance.dispose();
 						} catch (SQLException ex) {
@@ -286,6 +287,7 @@ public class RentableDialog extends JFrame implements IPictureListContainer {
 									Integer.parseInt(txtOutlets.getText()),
 									Integer.parseInt(txtFloor.getText()),
 									Double.parseDouble(txtPrice.getText()));
+							Main.updateRentableList();
 							JOptionPane.showMessageDialog(Main.getInstance(), "Rentable succesfully updated", Language.getString("succes"), JOptionPane.ERROR_MESSAGE, new ImageIcon(getClass().getResource("/images/ok.png")));
 							instance.dispose();
 						} catch (SQLException ex) {

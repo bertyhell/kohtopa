@@ -6,6 +6,7 @@ import data.DataModel;
 import data.entities.Contract;
 import data.entities.Person;
 import gui.Main;
+import gui.interfaces.IRenterListContainer;
 import gui.invoicestab.RenterCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,7 +24,7 @@ import javax.swing.ListSelectionModel;
  *
  * @author Bert Verhelst <verhelst_bert@hotmail.com>
  */
-public class ContractsPane extends JPanel implements IContractsListContainer {
+public class ContractsPane extends JPanel implements IContractsListContainer, IRenterListContainer {
 
 	private JList lstRenters;
 	private JList lstContracts;
@@ -98,5 +99,13 @@ public class ContractsPane extends JPanel implements IContractsListContainer {
 
 	public int getId() {
 		return ((Contract) lstContracts.getSelectedValue()).getId();
+	}
+
+	public Object[] getSelectedRenters() {
+		return lstRenters.getSelectedValues();
+	}
+
+	public void updateRenterList() {
+		lstRenters.setListData(Main.getDataObject().getRenters());
 	}
 }

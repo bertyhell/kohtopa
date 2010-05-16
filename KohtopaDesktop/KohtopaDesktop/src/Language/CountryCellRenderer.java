@@ -16,7 +16,7 @@ public class CountryCellRenderer implements ListCellRenderer {
 			lbl.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 			return lbl;
 		} else {
-			JLabel lbl = new JLabel(value.toString(), new ImageIcon(getClass().getResource("/images/flags/" + Language.getCountryByIndex(index).toLowerCase() + ".gif")), SwingConstants.LEADING);
+			JLabel lbl = new JLabel(value.toString(), new ImageIcon(getClass().getResource("/images/flags/" + Language.getCountryCodeByIndex(index).toLowerCase() + ".gif")), SwingConstants.LEADING);
 			lbl.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
 			return lbl;
 		}

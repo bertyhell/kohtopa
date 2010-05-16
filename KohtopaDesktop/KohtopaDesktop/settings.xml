@@ -1,8 +1,6 @@
 <Settings>
 <connectionstring>jdbc:oracle:thin:@192.168.58.128:1521:kohtopa</connectionstring>
-<savePass>true</savePass>
-<username>Lieske</username>
-<password>Lieppes</password>
+<savePass>false</savePass>
 <loggerLevel>DEBUG</loggerLevel>
 <language>English</language>
 </Settings>

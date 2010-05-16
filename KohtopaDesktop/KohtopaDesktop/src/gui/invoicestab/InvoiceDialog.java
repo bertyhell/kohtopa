@@ -14,6 +14,7 @@ import data.entities.Invoice;
 import data.entities.InvoiceItem;
 import gui.Logger;
 import gui.Main;
+import gui.interfaces.IInvoiceListContainer;
 import java.io.StringWriter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -151,7 +152,7 @@ public class InvoiceDialog extends JFrame {
 				if (checkInput()) {
 
 					DefaultTableModel tmItems = instance.getTmInvoices();
-					tmItems.setNumRows(0);//TODO make sure added items by homeowner are not deleted
+					tmItems.setNumRows(0);//TODO 010 make sure added items by homeowner are not deleted
 
 					//adding Invoice items
 
@@ -163,6 +164,8 @@ public class InvoiceDialog extends JFrame {
 								+ ((Integer) cbbYearTo.getSelectedItem() - (Integer) cbbYearFrom.getSelectedItem()) * 12
 								+ cbbMonthTo.getSelectedIndex() + 1;
 					}
+					//TODO 020 fix utilities prices by use over specified period of time
+					//TODO 000 store times in invoices so that there is no overlap possible
 					try {
 						for (InvoiceItem item : Main.getDataObject().getInvoiceItems(instance.getRenterId(), instance.isNewInvoice(), rdbConsumption.isSelected() || rdbFinal.isSelected(), rdbFinal.isSelected(), months)) {
 							tmItems.addRow(item.toObject());
@@ -289,6 +292,7 @@ public class InvoiceDialog extends JFrame {
 						//add new invoice
 						//generate xml file and put it in database
 						Main.getDataObject().addInvoice(invoice.getRenter().getId(), dch.getDate(), generateXMLString());
+						Main.updateInvoiceList();
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("invoiceSuccesAdd") + "\n" + Language.getString("invoiceSuccesAdd2"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 						instance.dispose();
 					} catch (XmlGenerationException ex) {
@@ -329,14 +333,14 @@ public class InvoiceDialog extends JFrame {
 
 			//create item elements of every item in table
 			for (Object item : tmInvoices.getDataVector()) {
-					Element invoiceItem = doc.createElement("invoice_item");
-					Element desc = doc.createElement("description");
-					desc.setTextContent(((Vector<Object>) item).get(0).toString());
-					invoiceItem.appendChild(desc);
-					Element price = doc.createElement("price");
-					price.setTextContent(((Vector<Object>) item).get(1).toString());
-					invoiceItem.appendChild(price);
-					root.appendChild(invoiceItem);
+				Element invoiceItem = doc.createElement("invoice_item");
+				Element desc = doc.createElement("description");
+				desc.setTextContent(((Vector<Object>) item).get(0).toString());
+				invoiceItem.appendChild(desc);
+				Element price = doc.createElement("price");
+				price.setTextContent(((Vector<Object>) item).get(1).toString());
+				invoiceItem.appendChild(price);
+				root.appendChild(invoiceItem);
 			}
 
 			//owner info
@@ -434,8 +438,8 @@ public class InvoiceDialog extends JFrame {
 				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1)) {
 			return true;
 		} else {
-			Logger.logger.error(Language.getString("errInvoiceDates") + " in checkInput of invoice Dialog");
-			JOptionPane.showMessageDialog(instance, Language.getString("errInvoiceDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			Logger.logger.error(Language.getString("errDates") + " in checkInput of invoice Dialog");
+			JOptionPane.showMessageDialog(instance, Language.getString("errDates"), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 	}

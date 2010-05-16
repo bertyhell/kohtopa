@@ -62,7 +62,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if something goes wrong creating the connection
 	 */
 	private static Connection geefVerbindingOwner() throws SQLException {
-		return DriverManager.getConnection(DataBaseConstants.connectiestring, ProgramSettings.getUsername(), ProgramSettings.getPassword());
+		return DriverManager.getConnection(ProgramSettings.getConnectionstring(), ProgramSettings.getUsername(), ProgramSettings.getPassword());
 	}
 
 	/**
@@ -1295,7 +1295,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if select fails
 	 */
 	static Vector<Invoice> getInvoicesPreviews(int RenterId) throws SQLException {
-		Vector<Invoice> invoices = null;
+		Vector<Invoice> invoices = new Vector<Invoice>();
 		try {
 			Connection conn = geefVerbindingOwner();
 			try {

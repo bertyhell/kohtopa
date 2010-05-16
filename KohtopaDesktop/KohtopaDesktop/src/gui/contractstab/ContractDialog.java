@@ -8,11 +8,13 @@ import data.entities.Address;
 import data.entities.Building;
 import data.entities.Contract;
 import data.entities.Person;
+import data.entities.Rentable;
 import gui.Layout;
 import gui.Logger;
 import gui.Main;
 import gui.invoicestab.PersonPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -23,7 +25,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -44,7 +50,7 @@ import javax.swing.JTextField;
 public class ContractDialog extends JDialog {
 
 	private ContractDialog instance;
-	private PersonInputPanel personInputPanel;
+	private int contractId;
 	private JComboBox cbbMonthFrom;
 	private JComboBox cbbYearFrom;
 	private JComboBox cbbMonthTo;
@@ -59,7 +65,7 @@ public class ContractDialog extends JDialog {
 	private JTextField txtStreet;
 	private JTextField txtZip;
 	private JTextField txtCity;
-	private JTextField txtCountry;
+	private JComboBox cbbCountry;
 	private JTextField txtTel;
 	private JTextField txtCellphone;
 	private JTextField txtEmail;
@@ -72,8 +78,10 @@ public class ContractDialog extends JDialog {
 		} else {
 			this.setTitle(Language.getString("contractEdit"));
 		}
+
 		this.setLayout(new BorderLayout());
 
+		this.contractId = contractId;
 		instance = this;
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/user_23.png")).getImage());
 
@@ -169,10 +177,10 @@ public class ContractDialog extends JDialog {
 		gbl.addLayoutComponent(lblCountry, gbc);
 		pnlInputRenter.add(lblCountry);
 
-		txtCountry = new JTextField();
+		cbbCountry = new JComboBox(Language.getCountries());
 		Layout.buildConstraints(gbc, 1, row, 2, 1, 10, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(txtCountry, gbc);
-		pnlInputRenter.add(txtCountry);
+		gbl.addLayoutComponent(cbbCountry, gbc);
+		pnlInputRenter.add(cbbCountry);
 
 		JLabel lblTel = new JLabel(Language.getString("telephone") + ":");
 		Layout.buildConstraints(gbc, 0, ++row, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
@@ -329,7 +337,7 @@ public class ContractDialog extends JDialog {
 			Logger.logger.debug("StackTrace: ", ex);
 			cbbRentables = new JComboBox(new Object[]{Language.getString("error")});
 		}
-		pnlRentable.add(cbbRentables);
+		pnlRentable.add(cbbRentables); //TODO 100 check if dropbox upades correctly and gets filled correctly
 
 
 		//buttons// final Buttons
@@ -347,7 +355,105 @@ public class ContractDialog extends JDialog {
 		});
 		pnlButtons.add(btnCancel);
 
-		btnOK = new JButton(Language.getString(newContract ? "add" : "update"), new ImageIcon(getClass().getResource("/images/ok.png")));
+
+		if (newContract) {
+			//add button
+			btnOK = new JButton(Language.getString("add"), new ImageIcon(getClass().getResource("/images/ok.png")));
+			btnOK.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (checkInput()) {
+						//correct input
+
+						//getting start and end date
+						DateFormat df = new SimpleDateFormat("MMyyyy");
+						Date start = null;
+						Date end = null;
+						try {
+
+							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + (String) cbbYearFrom.getSelectedItem());
+
+							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + (String) cbbYearTo.getSelectedItem());
+							Calendar c = Calendar.getInstance();
+							c.setTime(end);
+							c.add(Calendar.DATE, -1);
+							end = c.getTime();
+						} catch (ParseException ex) {
+							ex.printStackTrace();
+						}
+
+						//adding contract to database
+						Main.getDataObject().addContract(
+								((Rentable)cbbRentables.getSelectedItem()).getId(),
+								txtFirstName.getText(),
+								txtLastName.getText(),
+								txtStreet.getText(),
+								txtStreetNumber.getText(),
+								txtZip.getText(),
+								txtCity.getText(),
+								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
+								txtTel.getText(),
+								txtCellphone.getText(),
+								txtEmail.getText(),
+								start,
+								end,
+								Double.parseDouble(txtPrice.getText()),
+								Double.parseDouble(txtMonthlyCost.getText()),
+								Double.parseDouble(txtGuarantee.getText()));
+					}
+				}
+			});
+		} else {
+			//update button
+			btnOK = new JButton(Language.getString("update"), new ImageIcon(getClass().getResource("/images/ok.png")));
+			btnOK.addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (checkInput()) {
+						//correct input
+												//getting start and end date
+						DateFormat df = new SimpleDateFormat("MMyyyy");
+						Date start = null;
+						Date end = null;
+						try {
+
+							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + (String) cbbYearFrom.getSelectedItem());
+
+							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + (String) cbbYearTo.getSelectedItem());
+							Calendar c = Calendar.getInstance();
+							c.setTime(end);
+							c.add(Calendar.DATE, -1);
+							end = c.getTime();
+						} catch (ParseException ex) {
+							ex.printStackTrace();
+						}
+
+						Main.getDataObject().updateContract(
+								instance.getContractId(),
+								((Rentable)cbbRentables.getSelectedItem()).getId(),
+								txtFirstName.getText(),
+								txtLastName.getText(),
+								txtStreet.getText(),
+								txtStreetNumber.getText(),
+								txtZip.getText(),
+								txtCity.getText(),
+								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
+								txtTel.getText(),
+								txtCellphone.getText(),
+								txtEmail.getText(),
+								start,
+								end,
+								Double.parseDouble(txtPrice.getText()),
+								Double.parseDouble(txtGuarantee.getText()),
+								Double.parseDouble(txtMonthlyCost.getText()));
+					}
+				}
+			});
+		}
+
+		//TODO 100 implement this button (add mouse listner)
 		pnlButtons.add(btnOK);
 
 		this.pack();
@@ -364,7 +470,7 @@ public class ContractDialog extends JDialog {
 			txtStreetNumber.setText("");
 			txtZip.setText("");
 			txtCity.setText("");
-			txtCountry.setText("");
+			cbbCountry.setSelectedItem(Language.getCountryByCode("BE"));
 			txtTel.setText("");
 			txtCellphone.setText("");
 			txtEmail.setText("");
@@ -387,7 +493,7 @@ public class ContractDialog extends JDialog {
 			txtStreetNumber.setText(renter.getAddress().getStreetNumber());
 			txtZip.setText(renter.getAddress().getZipcode());
 			txtCity.setText(renter.getAddress().getCity());
-			txtCountry.setText(renter.getAddress().getCountry());
+			cbbCountry.setSelectedItem(Language.getCountryByCode(renter.getAddress().getCountry()));
 			txtTel.setText(renter.getTelephone());
 			txtCellphone.setText(renter.getCellphone());
 			txtEmail.setText(renter.getEmail());
@@ -416,24 +522,127 @@ public class ContractDialog extends JDialog {
 		}
 	}
 
+	private boolean checkInput() {
+		String errorMessage = Language.getString("wrongInput") + ":\n";
+		boolean error = false;
+		if (!txtFirstName.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errFirstName") + "\n";
+			error = true;
+			txtFirstName.setBackground(Color.pink);
+		} else {
+			txtFirstName.setBackground(Color.white);
+		}
+		if (!txtLastName.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errLastName") + "\n";
+			error = true;
+			txtLastName.setBackground(Color.pink);
+		} else {
+			txtLastName.setBackground(Color.white);
+		}
+		if (!txtStreet.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errStreet") + "\n";
+			error = true;
+			txtTel.setBackground(Color.pink);
+		} else {
+			txtTel.setBackground(Color.white);
+		}
+		if (!txtStreetNumber.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errStreetNumber") + "\n";
+			error = true;
+			txtStreetNumber.setBackground(Color.pink);
+		} else {
+			txtStreetNumber.setBackground(Color.white);
+		}
+		if (!txtZip.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errZipCode") + "\n";
+			error = true;
+			txtZip.setBackground(Color.pink);
+		} else {
+			txtZip.setBackground(Color.white);
+		}
+		if (!txtCity.getText().matches("[^0-9]+")) {
+			errorMessage += "   * " + Language.getString("errCity") + "\n";
+			error = true;
+			txtCity.setBackground(Color.pink);
+		} else {
+			txtCity.setBackground(Color.white);
+		}
+
+		if (!txtTel.getText().matches("[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errTelephone") + "\n";
+			error = true;
+			txtTel.setBackground(Color.pink);
+		} else {
+			txtTel.setBackground(Color.white);
+		}
+		if (!txtCellphone.getText().matches("[0-9]*")) {
+			errorMessage += "   * " + Language.getString("errCellphone") + "\n";
+			error = true;
+			txtCellphone.setBackground(Color.pink);
+		} else {
+			txtCellphone.setBackground(Color.white);
+		}
+		if (!txtEmail.getText().matches("[a-z0-9][a-z0-9_.\\-]*@([a-z0-9]+\\.)*[a-z0-9][a-z0-9\\-]+\\.([a-z]{2,6})")) {
+			errorMessage += "   * " + Language.getString("errEmail") + "\n";
+			error = true;
+			txtEmail.setBackground(Color.pink);
+		} else {
+			txtEmail.setBackground(Color.white);
+		}
+		if (!(((Integer) cbbYearFrom.getSelectedItem()).intValue() < ((Integer) cbbYearTo.getSelectedItem()).intValue()
+				|| ((Integer) cbbYearTo.getSelectedItem()).equals((Integer) cbbYearFrom.getSelectedItem())
+				&& (cbbMonthFrom.getSelectedIndex() + 1) <= (cbbMonthTo.getSelectedIndex() + 1))) {
+			errorMessage += "   * " + Language.getString("errDates") + "\n";
+			error = true;
+		}
+		if (!txtGuarantee.getText().matches("[\\.0-9]+")) {
+			errorMessage += "   * " + Language.getString("errGuarantee") + "\n";
+			error = true;
+			txtGuarantee.setBackground(Color.pink);
+		} else {
+			txtGuarantee.setBackground(Color.white);
+		}
+		if (!txtPrice.getText().matches("[\\.0-9]+")) {
+			errorMessage += "   * " + Language.getString("errPrice") + "\n";
+			error = true;
+			txtPrice.setBackground(Color.pink);
+		} else {
+			txtPrice.setBackground(Color.white);
+		}
+		if (!txtMonthlyCost.getText().matches("[\\.0-9]+")) {
+			errorMessage += "   * " + Language.getString("errMontlyCost") + "\n";
+			error = true;
+			txtMonthlyCost.setBackground(Color.pink);
+		} else {
+			txtMonthlyCost.setBackground(Color.white);
+		}
+		if (error) {
+			JOptionPane.showMessageDialog(Main.getInstance(), errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	private void fetchDataFromEIDCard() {
 		try {
 			EIDPerson person = new EIDPerson();
-			personInputPanel.setTxtFirstName(person.getFirstName());
-			personInputPanel.setTxtName(person.getName());
-			Address homeAddress = person.getAddress();
-			personInputPanel.setTxtStreet(homeAddress.getStreet());
-			personInputPanel.setTxtStreetNumber(homeAddress.getStreetNumber());
-			personInputPanel.setTxtZipCode(homeAddress.getZipcode());
-			personInputPanel.setTxtCountry(homeAddress.getCountry());
-			personInputPanel.setTxtCity(homeAddress.getCity());
-			personInputPanel.setTxtCellphone("");
-			personInputPanel.setTxtTelephone("");
-			personInputPanel.setTxtEmail("");
+			txtFirstName.setText(person.getFirstName());
+			txtLastName.setText(person.getName());
+			Address address = person.getAddress();
+			txtStreet.setText(address.getStreet());
+			txtStreetNumber.setText(address.getStreetNumber());
+			txtZip.setText(address.getZipcode());
+			cbbCountry.setSelectedItem(address.getCountry()); //wont work if language is different from id card
+			txtCity.setText(address.getCity());
 		} catch (Exception ex) {
 			Logger.logger.error("Exception in fetchDataFromEIDCard in contractspane: " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errFetchEIDPerson") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+
+	public int getContractId() {
+		return contractId;
 	}
 }

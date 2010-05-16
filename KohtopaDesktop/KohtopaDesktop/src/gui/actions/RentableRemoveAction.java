@@ -30,7 +30,7 @@ public class RentableRemoveAction extends AbstractIconAction {
 		}
 		if(JOptionPane.showConfirmDialog(
 				null,
-				Language.getString("confirmDelete") + " " + selected.size() + " " + Language.getString("rentable_s"), //TODO p000 change rentable(s) to rentable if 1 else rentables
+				Language.getString("confirmDelete") + " " + selected.size() + " " + Language.getString("rentable_s"), //TODO 000 change rentable(s) to rentable if 1 else rentables
 				Language.getString("confirm"),
 				JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
