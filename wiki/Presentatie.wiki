@@ -8,12 +8,13 @@ enkel wat afbeeldingen en bespreking van de verschillende programma's
 ziet iemand het zitten om deze afbeeldingen in een powerpoint te steken?
 niet veel werk :)
 
-gewoon deze 2 afbeeldingen + databank schema
-
-ik maak ook nog een overzicht van de verschillende programma's
+gewoon deze 3 afbeeldingen + databank schema
 
 
 
+overzicht van de gebruikers groepen
 <a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_gebruikers.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_gebruikers.png" border="0"><br/><br/><br/>
+overzicht van een deel van de belangrijkste klassen
 <a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_entities.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_entities.png" border="0"  ><br/><br/><br/>
+overzicht van de verschillende programma's
 <a href="http://s77.photobucket.com/albums/j74/bertyhell/vop/?action=view&current=overzicht_programmas.png" target="_blank"><img src="http://i77.photobucket.com/albums/j74/bertyhell/vop/th_overzicht_programmas.png" border="0" ><br/><br/><br/>
