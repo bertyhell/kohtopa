@@ -15,6 +15,7 @@ namespace KohtopaWeb
 {
     public class Logger
     {
+        //a class to log messages to a file on the server.
         private static object lockObject = new object();
         public static void log(HttpServerUtility server,string message)
         {

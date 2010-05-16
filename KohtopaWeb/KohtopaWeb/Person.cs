@@ -14,6 +14,7 @@ namespace KohtopaWeb
 {
     public class Person
     {
+        //a class to represent a person from the database
         int personId;
         Address address;
         string roleId, name, firstName, email, telephone, cellphone, username, password;

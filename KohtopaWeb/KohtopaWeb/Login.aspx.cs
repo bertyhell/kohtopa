@@ -14,7 +14,7 @@ using System.Xml.Linq;
 namespace KohtopaWeb
 {
     public partial class Login : System.Web.UI.Page
-    {
+    {        
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -44,7 +44,7 @@ namespace KohtopaWeb
                 Person p = DataConnector.getPerson(login.UserName);
                 if (p != null && p.Password.Equals(login.Password))
                 {
-                    Session["user"] = p;
+                    Session["user"] = p; //if the person is valid an instance of the Person class is placed on the session.
 
                     e.Authenticated = true;
                 }

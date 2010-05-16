@@ -14,6 +14,7 @@ namespace KohtopaWeb
 {
     public class Consumption
     {
+        //a class to represent a consumption from the database
         //CONSUMPTIONID  RENTABLEID  GAS  WATER  ELECTRICITY  DATE_CONSUMPTION 
 
         private int consumptionid,rentableid,gas,water,electricity;

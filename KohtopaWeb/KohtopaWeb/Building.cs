@@ -12,6 +12,7 @@ using System.Xml.Linq;
 
 namespace KohtopaWeb
 {
+    //a class to represent a building from the database
     public class Building
     {
         private double longitude, latitude;

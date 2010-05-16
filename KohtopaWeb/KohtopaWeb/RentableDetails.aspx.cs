@@ -15,6 +15,8 @@ namespace KohtopaWeb
 {
     public partial class RentableDetails : System.Web.UI.Page
     {
+        //this page shows all the information about a given rentable, it also shows the contact information of
+        //the owner of that rentable.        
         protected void Page_Load(object sender, EventArgs e)
         {
             try
