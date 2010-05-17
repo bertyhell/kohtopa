@@ -173,6 +173,7 @@
     <entry name="invoiceGuarantee">Garantie</entry>
     <entry name="invoiceSuccesAdd">Factuur is succesvol opgeslagen</entry>
     <entry name="invoiceSuccesAdd2">En zal verzonden worden op het aangeduidde tijdstip.</entry>
+	<entry name="contractSuccesAdd">Contract is succesvol toegevoegd</entry>
     <entry name="picturesSuccesAdd">Foto's zijn succesvol toegevoegd</entry>
     <entry name="contractInterval">Contract interval</entry>
     <entry name="contractPrice">Prijs</entry>

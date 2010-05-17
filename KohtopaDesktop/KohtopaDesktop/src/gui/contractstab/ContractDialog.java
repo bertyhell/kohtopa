@@ -108,7 +108,7 @@ public class ContractDialog extends JDialog {
 		pnlPersons.add(pnlInputRenter);
 		pnlInputRenter.setBorder(BorderFactory.createTitledBorder(Language.getString("renter")));
 		pnlInputRenter.setMinimumSize(new Dimension(200, 300));
-		pnlInputRenter.setPreferredSize(new Dimension(300, 300));
+		pnlInputRenter.setPreferredSize(new Dimension(400, 300));
 
 		int row = 0;
 
@@ -148,6 +148,7 @@ public class ContractDialog extends JDialog {
 		pnlInputRenter.add(lblStreetNumber);
 
 		txtStreetNumber = new JTextField();
+        txtStreetNumber.setColumns(3);
 		Layout.buildConstraints(gbc, 4, row, 1, 1, 5, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtStreetNumber, gbc);
 		pnlInputRenter.add(txtStreetNumber);
@@ -366,22 +367,33 @@ public class ContractDialog extends JDialog {
 					if (checkInput()) {
 						//correct input
 
-						//getting start and end date
-						DateFormat df = new SimpleDateFormat("MMyyyy");
-						Date start = null;
-						Date end = null;
-						try {
+//						//getting start and end date
+//						DateFormat df = new SimpleDateFormat("MMyyyy");
+//						Date start = null;
+//						Date end = null;
+//						try {
+//
+//							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + cbbYearFrom.getSelectedItem());
+//
+//							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + cbbYearTo.getSelectedItem());
+//							Calendar c = Calendar.getInstance();
+//							c.setTime(end);
+//							c.add(Calendar.DATE, -1);
+//							end = c.getTime();
+//						} catch (ParseException ex) {
+//							ex.printStackTrace();
+//						}
+                        
+                        Calendar calendar = Calendar.getInstance();
+                        System.out.println("year start: " + (Integer)cbbYearFrom.getSelectedItem());
+                        System.out.println("year end: " + (Integer)cbbYearTo.getSelectedItem());
+                        calendar.set((Integer)cbbYearFrom.getSelectedItem(), cbbMonthFrom.getSelectedIndex(), 1);
+                        Date start = calendar.getTime();
+                        calendar.set((Integer)cbbYearTo.getSelectedItem(), cbbMonthTo.getSelectedIndex(), 1);
+                        calendar.add(Calendar.MONTH, 1);
+                        calendar.add(Calendar.DATE, -1);
+                        Date end = calendar.getTime();
 
-							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + (String) cbbYearFrom.getSelectedItem());
-
-							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + (String) cbbYearTo.getSelectedItem());
-							Calendar c = Calendar.getInstance();
-							c.setTime(end);
-							c.add(Calendar.DATE, -1);
-							end = c.getTime();
-						} catch (ParseException ex) {
-							ex.printStackTrace();
-						}
 
 						//adding contract to database
 						Main.getDataObject().addContract(
@@ -401,6 +413,9 @@ public class ContractDialog extends JDialog {
 								Double.parseDouble(txtPrice.getText()),
 								Double.parseDouble(txtMonthlyCost.getText()),
 								Double.parseDouble(txtGuarantee.getText()));
+
+                        JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("contractSuccesAdd") + "\n" + Language.getString("contractSuccesAdd2"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+                        instance.dispose();
 					}
 				}
 			});
@@ -414,21 +429,30 @@ public class ContractDialog extends JDialog {
 					if (checkInput()) {
 						//correct input
 												//getting start and end date
-						DateFormat df = new SimpleDateFormat("MMyyyy");
-						Date start = null;
-						Date end = null;
-						try {
-
-							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + (String) cbbYearFrom.getSelectedItem());
-
-							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + (String) cbbYearTo.getSelectedItem());
-							Calendar c = Calendar.getInstance();
-							c.setTime(end);
-							c.add(Calendar.DATE, -1);
-							end = c.getTime();
-						} catch (ParseException ex) {
-							ex.printStackTrace();
-						}
+//						DateFormat df = new SimpleDateFormat("ddMMyyyy");
+//						Date start = null;
+//						Date end = null;
+//						try {
+//
+//							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + cbbYearFrom.getSelectedItem());
+//
+//							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + cbbYearTo.getSelectedItem());
+//							Calendar c = Calendar.getInstance();
+//							c.setTime(end);
+//							c.add(Calendar.DATE, -1);
+//							end = c.getTime();
+//						} catch (ParseException ex) {
+//							ex.printStackTrace();
+//						}
+                        
+                        Calendar calendar = Calendar.getInstance();
+                        System.out.println("year start: " + (Integer)cbbYearFrom.getSelectedItem());
+                        System.out.println("year end: " + (Integer)cbbYearTo.getSelectedItem());
+                        calendar.set((Integer)cbbYearFrom.getSelectedItem(), (Integer)cbbMonthFrom.getSelectedItem(), 1);
+                        Date start = calendar.getTime();
+                        calendar.set((Integer)cbbYearTo.getSelectedItem(), (Integer)cbbMonthTo.getSelectedItem() + 1, 1);
+                        calendar.add(Calendar.DATE, -1);
+                        Date end = calendar.getTime();
 
 						Main.getDataObject().updateContract(
 								instance.getContractId(),
@@ -546,7 +570,7 @@ public class ContractDialog extends JDialog {
 		} else {
 			txtTel.setBackground(Color.white);
 		}
-		if (!txtStreetNumber.getText().matches("[^0-9]+")) {
+		if (!txtStreetNumber.getText().matches("[0-9]+.*")) {
 			errorMessage += "   * " + Language.getString("errStreetNumber") + "\n";
 			error = true;
 			txtStreetNumber.setBackground(Color.pink);
