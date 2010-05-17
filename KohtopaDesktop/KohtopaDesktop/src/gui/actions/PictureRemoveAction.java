@@ -30,7 +30,6 @@ public class PictureRemoveAction extends AbstractIconAction {
 			Main.getDataObject().deleteSelectedPictures(selected);
 			//update list
 
-			System.out.println("updating picturelist");
 			((IPictureListContainer) root).updatePictureList();
 		} catch (SQLException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errInSql") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

@@ -47,17 +47,16 @@ public class Building extends AbstractPlace {
 			String response = br.readLine();
                         
                         while(br.ready()) {
-                            //System.out.println(response);
                             if(response.contains("<lat>")) {
                                 String[] parts = response.split("[<>]");
                                 if(parts.length > 3) {
-                                    //Logger.logger.debug("Latitude: "+ parts[2]);
+                                    Logger.logger.debug("Latitude: "+ parts[2]);
                                     latitude = Double.valueOf(parts[2]);
                                 }
                             } else if(response.contains("<lng>")) {
                                 String[] parts = response.split("[<>]");
                                 if(parts.length > 3) {
-                                    //Logger.logger.debug("Longitude: "+ parts[2]);
+                                    Logger.logger.debug("Longitude: "+ parts[2]);
                                     longitude = Double.valueOf(parts[2]);
                                 }
                             }
@@ -127,7 +126,8 @@ public class Building extends AbstractPlace {
 		try {
 			return address.getStreetLine() + ", " + address.getCityLine() +"("+ latitude +","+longitude+")";
 		} catch (Exception ex) {
-			System.out.println("exception in tostring of building: " + ex.getMessage());
+			Logger.logger.error("Exception in toString of Building " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 			return null;
 		}
 	}

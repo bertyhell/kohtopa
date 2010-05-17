@@ -399,12 +399,10 @@ public class FloorContent {
             parser.setFloorContent(this, pictureID);
             parser.parse();
             parser.write(buildingID, Integer.parseInt(floorName));
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            System.out.println(exc.getMessage());
-            Logger.logger.error("Exception in saving FloorPlan " + exc.getMessage());
-			Logger.logger.debug("StackTrace: ", exc);
-			JOptionPane.showMessageDialog(Main.getInstance(), "Error in saving FloorPlan \n" + exc.getMessage(), "Failed to save FloorPlan", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            Logger.logger.error("Exception in saving FloorPlan " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			JOptionPane.showMessageDialog(Main.getInstance(), "Error in saving FloorPlan \n" + ex.getMessage(), "Failed to save FloorPlan", JOptionPane.ERROR_MESSAGE);
         }
     }
 

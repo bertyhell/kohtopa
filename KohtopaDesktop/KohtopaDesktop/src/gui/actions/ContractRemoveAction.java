@@ -20,7 +20,7 @@ public class ContractRemoveAction extends AbstractIconAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        Main.getContractsPane().removeSelectedContract();
+		//TODO 000 only able to delete contract before active else error
     }
 
 }

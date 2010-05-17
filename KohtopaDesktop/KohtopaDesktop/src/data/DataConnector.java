@@ -34,7 +34,7 @@ import java.util.HashMap;
  */
 public class DataConnector {
 
-	//TODO add aspectJ for dataconnection to avoid duplicate code
+	//TODO 000 add aspectJ for dataconnection to avoid duplicate code
 	/**
 	 * initiazlize, registers and starts the JDBC oracle-driver
 	 */
@@ -66,7 +66,7 @@ public class DataConnector {
 	public static Integer checkLogin() throws SQLException {
 		Logger.logger.info("checking login");
 		Integer ownerId = null;
-			ownerId = DataConnector.checkLoginInDatabase();
+		ownerId = DataConnector.checkLoginInDatabase();
 		if (ownerId != null) {
 			ProgramSettings.setOwnerId(ownerId);
 		}
@@ -137,10 +137,9 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			System.out.println("exception during selectBuildingPreviews: " + ex.getMessage());
-
+			Logger.logger.error("Exception in  selectBuildingPreviews: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		}
-		System.out.println("buildings: " + buildings);
 		return buildings;
 	}
 
@@ -193,131 +192,6 @@ public class DataConnector {
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("Exception in updateBuildingPosition " + ex.getMessage());
 		}
-	}
-
-	/**
-	 * Adds a building to the database
-	 * @param street the street of the building
-	 * @param streetNumber the streetnumber of the building
-	 * @param zip zip code of the city of the buidling
-	 * @param city the city of the building
-	 * @throws SQLException thrown if insert fails
-	 */
-	static void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
-		Connection conn = geefVerbindingOwner();
-		try {
-			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
-			//adding building with correct address id
-			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.insertBuilding);
-			if (addressID == null) {
-				Logger.logger.info("addressid is null > address doesn't exest yet");
-			}
-			psAddBuilding.setInt(1, addressID);
-			psAddBuilding.execute();
-			psAddBuilding.close();
-		} catch (SQLException ex) {
-			Logger.logger.error("SQLException in addBuilding " + ex.getMessage());
-			Logger.logger.debug("StackTrace: ", ex);
-			throw new SQLException("error in addBuilding: " + ex);
-		} catch (Exception ex) {
-			Logger.logger.error("Exception in addBuilding " + ex.getMessage());
-			Logger.logger.debug("StackTrace: ", ex);
-			JOptionPane.showMessageDialog(Main.getInstance(), "error in addbuilding: unknown error \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
-		} finally {
-			conn.close();
-		}
-	}
-
-	/**
-	 * Adds an address tot the database
-	 * @param conn the connection to use
-	 * @param street the street
-	 * @param streetNumber the streetnumber
-	 * @param zip zipcode of the address
-	 * @param city city of the address
-	 * @return the id of the address that is used in the database
-	 * @throws SQLException thrown if there is a problem in the commands used
-	 */
-	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
-
-		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country, true);
-		System.out.println("address gevonden on first try: " + addressID);
-		try {
-			if (addressID == null) {
-				System.out.println("address niet gevonden op 1e try");
-				//address does not exists > make it and then get id
-				System.out.println("adding address (should end up in notconnectedview");
-				PreparedStatement psAddAddress = conn.prepareStatement(DataBaseConstants.addAddress);
-				psAddAddress.setString(1, streetNumber);
-				psAddAddress.setString(2, street);
-				psAddAddress.setString(3, zip);
-				psAddAddress.setString(4, city);
-				psAddAddress.setString(5, country);
-				psAddAddress.execute();
-				System.out.println("adding succesfull");
-				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
-
-				if (addressID == null) {
-					Logger.logger.error("addressid is null where it should not be in addAddress");
-					throw new NullPointerException("address id is still null > proigramming error");
-				}
-				System.out.println("address is nu gevonden na toevoegen: " + addressID);
-			}
-		} catch (SQLException ex) {
-			Logger.logger.error("SQLException in addAddress " + ex.getMessage());
-			Logger.logger.debug("StackTrace: ", ex);
-			throw new SQLException(ex.getMessage());
-		}
-		return addressID;
-	}
-
-	/**
-	 * Getter for the id of an address
-	 * @param conn the connection to use
-	 * @param street the street of the address
-	 * @param streetNumber the streetnumber of the address
-	 * @param zip the zipcode
-	 * @param city the city of the address
-	 * @return the ID used in the database
-	 * @throws SQLException thrown if the select statement fails
-	 */
-	private static Integer getAddressID(Connection conn, String street, String streetNumber, String zip, String city, String country, boolean connected) throws SQLException {
-		Integer id = null;
-		try {
-			PreparedStatement psCheckAddress = null;
-			if (connected) {
-				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressConnected);
-			} else {
-				System.out.println("getting address from not connected");
-				psCheckAddress = conn.prepareStatement(DataBaseConstants.checkAddressNotConnected);
-			}
-
-			System.out.println("command: " + DataBaseConstants.checkAddressConnected);
-			System.out.println("street: " + street);
-			System.out.println("streetNumber: " + streetNumber);
-			System.out.println("zip: " + zip);
-			System.out.println("city: " + city);
-			System.out.println("country: " + country);
-			psCheckAddress.setString(1, street);
-			psCheckAddress.setString(2, streetNumber);
-			psCheckAddress.setString(3, zip);
-			psCheckAddress.setString(4, city);
-			psCheckAddress.setString(5, country);
-			ResultSet rsCheck = psCheckAddress.executeQuery();
-			if (rsCheck.next()) {
-				System.out.println("address has been found: " + rsCheck.getInt(DataBaseConstants.addressID));
-				//address already exists
-				id = rsCheck.getInt(DataBaseConstants.addressID);
-			} else {
-				Logger.logger.fatal("!!!!!!!!!!!!! address nog niet gevonden na toevoegen address > error in sql or problem with database");
-			}
-			rsCheck.close();
-			psCheckAddress.close();
-		} catch (SQLException ex) {
-			Logger.logger.info("addressid is null where it should not be in addAddress");
-			throw new SQLException(ex.getMessage());
-		}
-		return id;
 	}
 
 	/**
@@ -410,7 +284,7 @@ public class DataConnector {
 			if (rs.next()) {
 				IPAddress = rs.getString(DataBaseConstants.ipaddress);
 			} else {
-				System.out.println("building niet gevonden");
+				Logger.logger.info("getIPAddress returned empty result set");
 			}
 			rs.close();
 			ps.close();
@@ -439,7 +313,7 @@ public class DataConnector {
 				ByteArrayInputStream bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.picture));
 				picture = new Picture(pictureID, ImageIO.read(bais));
 			} else {
-				System.out.println("picture niet gevonden");
+				Logger.logger.info("get picture returned empty resultset");
 			}
 			rs.close();
 			ps.close();
@@ -469,7 +343,7 @@ public class DataConnector {
 				Blob blob = rs.getBlob(DataBaseConstants.xml);
 				blobString = new String(blob.getBytes(1, (int) blob.length()));
 			} else {
-				System.out.println("floor niet gevonden");
+				Logger.logger.info("get floor returned empty resultset");
 			}
 			rs.close();
 			ps.close();
@@ -593,17 +467,17 @@ public class DataConnector {
 				//picture already exists
 				id = rsCheck.getInt(DataBaseConstants.pictureID);
 			} else {
-				System.out.println("picuterid niet gevonden");
 				Logger.logger.fatal("picture nog niet gevonden na toevoegen picture > error in sql or problem with database");
 			}
 			rsCheck.close();
 			psCheckPicture.close();
 		} catch (SQLException ex) {
-			System.out.println("FATAL");
-			Logger.logger.info("picture is null where it should not be in addFloorPlan");
+			Logger.logger.fatal("pictureid is null where it should not be in getPictureId");
+			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException(ex.getMessage());
-		} catch (Exception exc) {
-			System.out.println("Ander exceptie: " + exc.getMessage());
+		} catch (Exception ex) {
+			Logger.logger.error("Exception in  " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
 		} finally {
 			conn.close();
 		}
@@ -619,8 +493,9 @@ public class DataConnector {
 		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePicture);
-			System.out.println("coommand: " + DataBaseConstants.deletePicture);
-			System.out.println("id: " + id);
+
+			Logger.logger.debug("command from removePicture: " + DataBaseConstants.deletePicture);
+			Logger.logger.debug("id: " + id);
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			ps.close();
@@ -742,7 +617,8 @@ public class DataConnector {
 
 			try {
 				Statement selectTasks = conn.createStatement();
-				System.out.println(DataBaseConstants.selectTasks);
+
+				Logger.logger.debug("command for getTasks: " + DataBaseConstants.selectTasks);
 				ResultSet rsTasks = selectTasks.executeQuery(DataBaseConstants.selectTasks);
 
 
@@ -989,9 +865,9 @@ public class DataConnector {
 				while (rs.next()) {
 
 					Person renter = getPerson(rs.getInt(DataBaseConstants.renterID), conn);
-					System.out.println("rentable id: " + rs.getInt(DataBaseConstants.rentableID));
+					Logger.logger.debug("rentable id in getContract: " + rs.getInt(DataBaseConstants.rentableID));
 					Rentable rentable = getRentable(rs.getInt(DataBaseConstants.rentableID), conn);
-					System.out.println("buildingid: " + rentable.getBuildingID());
+					Logger.logger.debug("buildingid in getrentable: " + rentable.getBuildingID());
 					contract = new Contract(
 							rs.getInt(DataBaseConstants.contractID),
 							rentable,
@@ -1060,15 +936,7 @@ public class DataConnector {
 	public static void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
 		try {
 			Connection conn = geefVerbindingOwner();
-
 			try {
-//                System.out.println("start: " + contractStart.toString());
-//                System.out.println("end: " + contractEnd.toString());
-//                java.sql.Date start = new java.sql.Date(contractStart.getTime());
-//                System.out.println("start: " + start.toString());
-//                java.sql.Date end = new java.sql.Date(contractEnd.getTime());
-//                System.out.println("end: " + end.toString());
-
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.addContract);
 				ps.setInt(1, rentableId);
 				ps.setDate(2, new java.sql.Date(contractStart.getTime()));
@@ -1087,34 +955,12 @@ public class DataConnector {
 				ps.setString(15, telephone);
 				ps.setString(16, city);
 				ps.execute();
-				System.out.println("Contract added!");
+				Logger.logger.info("Contract added!");
 			} finally {
 				conn.close();
 			}
 		} catch (Exception ex) {
 			Logger.logger.error("Exception in addContract " + ex.getMessage());
-			Logger.logger.debug("StackTrace: ", ex);
-		}
-	}
-
-	/**
-	 * Removes a contract from the database
-	 * @param contract the contract to remove
-	 */
-	public static void removeContract(Contract contract) {
-		//TODO 100 can not be possible, only if contract is not active its possible to delete, else: edit to shorten enddate
-		try {
-			Connection conn = geefVerbindingOwner();
-
-			try {
-				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeContract);
-				ps.setInt(1, contract.getId());
-				ps.execute();
-			} finally {
-				conn.close();
-			}
-		} catch (Exception ex) {
-			Logger.logger.error("Exception in removeContract " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 		}
 	}
@@ -1477,8 +1323,8 @@ public class DataConnector {
 			try {
 				PreparedStatement psInvoices = conn.prepareStatement(DataBaseConstants.selectInvoices);
 
-				Logger.logger.info("command get invoice previews: " + DataBaseConstants.selectInvoices);
-				Logger.logger.info("renterid: " + RenterId);
+				Logger.logger.debug("command get invoice previews: " + DataBaseConstants.selectInvoices);
+				Logger.logger.debug("renterid: " + RenterId);
 
 				psInvoices.setInt(1, RenterId);
 				ResultSet rsInvoices = psInvoices.executeQuery();
@@ -1486,7 +1332,6 @@ public class DataConnector {
 					Logger.logger.info("i found 1 invoice :)");
 					Calendar cal = GregorianCalendar.getInstance();
 					cal.setTime(rsInvoices.getDate(DataBaseConstants.invoiceDate));
-					System.out.println(DataBaseConstants.selectInvoices);
 					invoices.add(new Invoice(
 							rsInvoices.getInt(DataBaseConstants.invoiceId),
 							cal.getTime(),
@@ -1544,9 +1389,9 @@ public class DataConnector {
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertInvoice);
 
-				Logger.logger.info("command invoice add: " + DataBaseConstants.insertInvoice);
-				Logger.logger.info("date to send invoice: " + new java.sql.Date(sendDate.getTime()));
-				Logger.logger.info("renter id: " + renterId);
+				Logger.logger.debug("command invoice add: " + DataBaseConstants.insertInvoice);
+				Logger.logger.debug("date to send invoice: " + new java.sql.Date(sendDate.getTime()));
+				Logger.logger.debug("renter id: " + renterId);
 
 				ps.setInt(1, renterId);
 				ps.setDate(2, new java.sql.Date(sendDate.getTime()));
@@ -1584,7 +1429,6 @@ public class DataConnector {
 //			throw new SQLException("error in makeViews: " + ex);
 //		}
 //	}
-
 	/**
 	 * Deletes the specified rentable from database
 	 * @param rentableId the identification of the rentable that has to be deleted
@@ -1640,10 +1484,8 @@ public class DataConnector {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			System.out.println("Exception in getRenterInRentable: " + rentableId + ", : " + ex.getMessage());
 			Logger.logger.error("Exception in getRenterInRentable: " + rentableId + ", : " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
-			//throw new SQLException("error in getRenterInRentable with rentableId: " + rentableId + ", : " + ex.getMessage());
 		}
 		return name;
 	}
@@ -1670,7 +1512,7 @@ public class DataConnector {
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertRentable);
 
-			System.out.println("add rentables command: " + DataBaseConstants.insertRentable);
+			Logger.logger.debug("command add rentable: " + DataBaseConstants.insertRentable);
 
 			ps.setInt(1, buildingId);
 			ps.setInt(2, ProgramSettings.getOwnerId());
@@ -1703,7 +1545,7 @@ public class DataConnector {
 
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateRentable);
 
-			System.out.println("update rentables command: " + DataBaseConstants.updateRentable);
+			Logger.logger.debug("command update rentable: " + DataBaseConstants.updateRentable);
 
 			ps.setInt(1, type);
 			ps.setString(2, Language.getRentableType(type) + "," + area + "m²," + price + "€"); //TODO 010 add description to gui so owner can add usefull info to this field
@@ -1749,7 +1591,7 @@ public class DataConnector {
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertBuilding);
 
-			System.out.println("add building command: " + DataBaseConstants.insertBuilding);
+			Logger.logger.debug("command add building: " + DataBaseConstants.insertBuilding);
 
 			ps.setString(1, streetNumber);
 			ps.setString(2, street);
@@ -1785,7 +1627,7 @@ public class DataConnector {
 
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateContract);
 
-			System.out.println("update contract command: " + DataBaseConstants.updateContract);
+			Logger.logger.debug("command update contract: " + DataBaseConstants.updateContract);
 
 			ps.setDate(1, new java.sql.Date(contractEnd.getTime()));
 			ps.setInt(2, contractId);
@@ -1808,13 +1650,12 @@ public class DataConnector {
 			try {
 				PreparedStatement psInvoiceXml = conn.prepareStatement(DataBaseConstants.selectInvoiceXmlString);
 
-				Logger.logger.info("command getInvoiceXmlString : " + DataBaseConstants.selectInvoiceXmlString);
-				Logger.logger.info("invoiceid: " + invoiceId);
+				Logger.logger.debug("command getInvoiceXmlString : " + DataBaseConstants.selectInvoiceXmlString);
+				Logger.logger.debug("invoiceid: " + invoiceId);
 
 				psInvoiceXml.setInt(1, invoiceId);
 				ResultSet rsInvoiceXml = psInvoiceXml.executeQuery();
 				if (rsInvoiceXml.next()) {
-					System.out.println("****************************");
 					Blob blob = rsInvoiceXml.getBlob(DataBaseConstants.invoiceXml);
 					xmlString = new String(blob.getBytes(1, (int) blob.length()));
 				}
@@ -1833,12 +1674,9 @@ public class DataConnector {
 			Connection conn = geefVerbindingOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateInvoice);
-
-				Logger.logger.info("////////////////////////////////////////////////////////////");
-				Logger.logger.info("command invoice add: " + DataBaseConstants.updateInvoice);
-				Logger.logger.info("date to send invoice: " + new java.sql.Date(sendDate.getTime()));
-				Logger.logger.info("invoice id: " + invoiceId);
-				Logger.logger.info("////////////////////////////////////////////////////////////");
+				Logger.logger.debug("command invoice add: " + DataBaseConstants.updateInvoice);
+				Logger.logger.debug("date to send invoice: " + new java.sql.Date(sendDate.getTime()));
+				Logger.logger.debug("invoice id: " + invoiceId);
 
 				ps.setDate(1, new java.sql.Date(sendDate.getTime()));
 				ps.setBytes(2, xmlString.getBytes());
@@ -1862,20 +1700,18 @@ public class DataConnector {
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectInvoiceSendingDate);
 
-				Logger.logger.info("command getInvoiceSendingDate: " + DataBaseConstants.selectInvoiceSendingDate);
-				Logger.logger.info("invoice id: " + invoiceId);
+				Logger.logger.debug("command getInvoiceSendingDate: " + DataBaseConstants.selectInvoiceSendingDate);
+				Logger.logger.debug("invoice id: " + invoiceId);
 
 				ps.setInt(1, invoiceId);
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
-					System.out.println("i'm getting date!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 					sendDate = new Date(rs.getDate(DataBaseConstants.invoiceDate).getTime());
 				}
 			} finally {
 				conn.close();
 			}
 		} catch (Exception ex) {
-			System.out.println("Exception in getInvoiceSendingDate: " + invoiceId + ", : " + ex.getMessage());
 			Logger.logger.error("Exception in getInvoiceSendingDate: " + invoiceId + ", : " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			//throw new SQLException("error in getRenterInRentable with rentableId: " + rentableId + ", : " + ex.getMessage());
@@ -1887,8 +1723,8 @@ public class DataConnector {
 		Connection conn = geefVerbindingOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteInvoice);
-			System.out.println("command delete invoice: " + DataBaseConstants.deleteInvoice);
-			System.out.println("id: " + id);
+			Logger.logger.debug("command delete invoice: " + DataBaseConstants.deleteInvoice);
+			Logger.logger.debug("id: " + id);
 			ps.setInt(1, id);
 			ps.executeUpdate();
 			ps.close();

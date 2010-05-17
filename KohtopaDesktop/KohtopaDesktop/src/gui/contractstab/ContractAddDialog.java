@@ -295,11 +295,8 @@ public class ContractAddDialog extends JDialog {
 		pnlInfo.add(pnlRentable);
 
 		try {
-			System.out.println("building previews at combo: " + data.getBuildingPreviews());
 			cbbBuildings = new JComboBox(data.getBuildingPreviews());
 		} catch (Exception ex) {
-			System.out.println("Exception in constructor ContractsPane while getting buildingpreviews: " + ex.getMessage());
-			ex.printStackTrace();
 			Logger.logger.error("Exception in constructor ContractsPane while getting buildingpreviews: " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			cbbBuildings = new JComboBox();
@@ -308,8 +305,6 @@ public class ContractAddDialog extends JDialog {
 
 			public void itemStateChanged(ItemEvent e) {
 				try {
-					//TODO 080 trows nullpointer
-					System.out.println("combo building item changed");
 					cbbRentables = new JComboBox(DataConnector.getRentablesFromBuilding(((Building) ((JComboBox) e.getSource()).getSelectedItem()).getId()));
 
 				} catch (SQLException ex) {
@@ -321,15 +316,13 @@ public class ContractAddDialog extends JDialog {
 		pnlRentable.add(cbbBuildings);
 		try {
 			//choise rentable from building
-			System.out.println("setting rentables combobox with rentables from building: " + ((Building) cbbBuildings.getSelectedItem()).getId());
 			cbbRentables = new JComboBox(DataConnector.getRentablesFromBuilding(((Building) cbbBuildings.getSelectedItem()).getId()));
 		} catch (SQLException ex) {
 			Logger.logger.error("Exception in constructor ContractsPane while getting rentables from building: " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			cbbRentables = new JComboBox(new Object[]{Language.getString("error")});
 		}
-		pnlRentable.add(cbbRentables); //TODO 100 check if dropbox upades correctly and gets filled correctly
-
+		pnlRentable.add(cbbRentables);
 
 		//buttons// final Buttons
 		JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -391,9 +384,6 @@ public class ContractAddDialog extends JDialog {
 				}
 			}
 		});
-
-
-		//TODO 100 implement this button (add mouse listner)
 		pnlButtons.add(btnOK);
 
 		this.pack();
