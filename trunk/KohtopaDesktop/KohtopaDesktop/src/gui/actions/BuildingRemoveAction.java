@@ -35,6 +35,7 @@ public class BuildingRemoveAction extends AbstractIconAction {
 				JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
 			//delete images
 			Main.getDataObject().deleteSelectedBuildings(selected);
+			Main.updateAddRemoveList();
 		}
 	}
 }

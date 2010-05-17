@@ -6,8 +6,6 @@ import data.DataModel;
 import data.ProgramSettings;
 import data.entities.Address;
 import data.entities.Building;
-import data.entities.Contract;
-import data.entities.Person;
 import data.entities.Rentable;
 import gui.Layout;
 import gui.Logger;
@@ -25,9 +23,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -47,10 +42,9 @@ import javax.swing.JTextField;
  *
  * @author Bert Verhelst <verhelst_bert@hotmail.com>
  */
-public class ContractDialog extends JDialog {
+public class ContractAddDialog extends JDialog {
 
-	private ContractDialog instance;
-	private int contractId;
+	private ContractAddDialog instance;
 	private JComboBox cbbMonthFrom;
 	private JComboBox cbbYearFrom;
 	private JComboBox cbbMonthTo;
@@ -72,16 +66,12 @@ public class ContractDialog extends JDialog {
 	private JTextField txtStreetNumber;
 	private JButton btnOK;
 
-	public ContractDialog(int contractId, boolean newContract, DataModel data) {
-		if (newContract) {
-			this.setTitle(Language.getString("contractAdd"));
-		} else {
-			this.setTitle(Language.getString("contractEdit"));
-		}
+	public ContractAddDialog(DataModel data) {
+		this.setTitle(Language.getString("contractAdd"));
 
 		this.setLayout(new BorderLayout());
 
-		this.contractId = contractId;
+
 		instance = this;
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/user_23.png")).getImage());
 
@@ -148,7 +138,7 @@ public class ContractDialog extends JDialog {
 		pnlInputRenter.add(lblStreetNumber);
 
 		txtStreetNumber = new JTextField();
-        txtStreetNumber.setColumns(3);
+		txtStreetNumber.setColumns(3);
 		Layout.buildConstraints(gbc, 4, row, 1, 1, 5, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(txtStreetNumber, gbc);
 		pnlInputRenter.add(txtStreetNumber);
@@ -357,125 +347,51 @@ public class ContractDialog extends JDialog {
 		pnlButtons.add(btnCancel);
 
 
-		if (newContract) {
-			//add button
-			btnOK = new JButton(Language.getString("add"), new ImageIcon(getClass().getResource("/images/ok.png")));
-			btnOK.addMouseListener(new MouseAdapter() {
 
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (checkInput()) {
-						//correct input
+		//add button
+		btnOK = new JButton(Language.getString("add"), new ImageIcon(getClass().getResource("/images/ok.png")));
+		btnOK.addMouseListener(new MouseAdapter() {
 
-//						//getting start and end date
-//						DateFormat df = new SimpleDateFormat("MMyyyy");
-//						Date start = null;
-//						Date end = null;
-//						try {
-//
-//							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + cbbYearFrom.getSelectedItem());
-//
-//							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + cbbYearTo.getSelectedItem());
-//							Calendar c = Calendar.getInstance();
-//							c.setTime(end);
-//							c.add(Calendar.DATE, -1);
-//							end = c.getTime();
-//						} catch (ParseException ex) {
-//							ex.printStackTrace();
-//						}
-                        
-                        Calendar calendar = Calendar.getInstance();
-                        System.out.println("year start: " + (Integer)cbbYearFrom.getSelectedItem());
-                        System.out.println("year end: " + (Integer)cbbYearTo.getSelectedItem());
-                        calendar.set((Integer)cbbYearFrom.getSelectedItem(), cbbMonthFrom.getSelectedIndex(), 1);
-                        Date start = calendar.getTime();
-                        calendar.set((Integer)cbbYearTo.getSelectedItem(), cbbMonthTo.getSelectedIndex(), 1);
-                        calendar.add(Calendar.MONTH, 1);
-                        calendar.add(Calendar.DATE, -1);
-                        Date end = calendar.getTime();
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (checkInput()) {
+					//correct input
 
 
-						//adding contract to database
-						Main.getDataObject().addContract(
-								((Rentable)cbbRentables.getSelectedItem()).getId(),
-								txtFirstName.getText(),
-								txtLastName.getText(),
-								txtStreet.getText(),
-								txtStreetNumber.getText(),
-								txtZip.getText(),
-								txtCity.getText(),
-								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
-								txtTel.getText(),
-								txtCellphone.getText(),
-								txtEmail.getText(),
-								start,
-								end,
-								Double.parseDouble(txtPrice.getText()),
-								Double.parseDouble(txtMonthlyCost.getText()),
-								Double.parseDouble(txtGuarantee.getText()));
+					Calendar calendar = Calendar.getInstance();
+					calendar.set((Integer) cbbYearFrom.getSelectedItem(), cbbMonthFrom.getSelectedIndex(), 1);
+					Date start = calendar.getTime();
+					calendar.set((Integer) cbbYearTo.getSelectedItem(), cbbMonthTo.getSelectedIndex(), 1);
+					calendar.add(Calendar.MONTH, 1);
+					calendar.add(Calendar.DATE, -1);
+					Date end = calendar.getTime();
 
-                        JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("contractSuccesAdd") + "\n" + Language.getString("contractSuccesAdd2"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-                        instance.dispose();
-					}
+
+					//adding contract to database
+					Main.getDataObject().addContract(
+							((Rentable) cbbRentables.getSelectedItem()).getId(),
+							txtFirstName.getText(),
+							txtLastName.getText(),
+							txtStreet.getText(),
+							txtStreetNumber.getText(),
+							txtZip.getText(),
+							txtCity.getText(),
+							Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
+							txtTel.getText(),
+							txtCellphone.getText(),
+							txtEmail.getText(),
+							start,
+							end,
+							Double.parseDouble(txtPrice.getText()),
+							Double.parseDouble(txtMonthlyCost.getText()),
+							Double.parseDouble(txtGuarantee.getText()));
+
+					JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("contractSuccesAdd") + "\n" + Language.getString("contractSuccesAdd2"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+					instance.dispose();
 				}
-			});
-		} else {
-			//update button
-			btnOK = new JButton(Language.getString("update"), new ImageIcon(getClass().getResource("/images/ok.png")));
-			btnOK.addMouseListener(new MouseAdapter() {
+			}
+		});
 
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (checkInput()) {
-						//correct input
-												//getting start and end date
-//						DateFormat df = new SimpleDateFormat("ddMMyyyy");
-//						Date start = null;
-//						Date end = null;
-//						try {
-//
-//							start = df.parse("01" + (cbbMonthFrom.getSelectedIndex() + 1) + cbbYearFrom.getSelectedItem());
-//
-//							end = df.parse("01" + (cbbMonthTo.getSelectedIndex() + 2) + cbbYearTo.getSelectedItem());
-//							Calendar c = Calendar.getInstance();
-//							c.setTime(end);
-//							c.add(Calendar.DATE, -1);
-//							end = c.getTime();
-//						} catch (ParseException ex) {
-//							ex.printStackTrace();
-//						}
-                        
-                        Calendar calendar = Calendar.getInstance();
-                        System.out.println("year start: " + (Integer)cbbYearFrom.getSelectedItem());
-                        System.out.println("year end: " + (Integer)cbbYearTo.getSelectedItem());
-                        calendar.set((Integer)cbbYearFrom.getSelectedItem(), (Integer)cbbMonthFrom.getSelectedItem(), 1);
-                        Date start = calendar.getTime();
-                        calendar.set((Integer)cbbYearTo.getSelectedItem(), (Integer)cbbMonthTo.getSelectedItem() + 1, 1);
-                        calendar.add(Calendar.DATE, -1);
-                        Date end = calendar.getTime();
-
-						Main.getDataObject().updateContract(
-								instance.getContractId(),
-								((Rentable)cbbRentables.getSelectedItem()).getId(),
-								txtFirstName.getText(),
-								txtLastName.getText(),
-								txtStreet.getText(),
-								txtStreetNumber.getText(),
-								txtZip.getText(),
-								txtCity.getText(),
-								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
-								txtTel.getText(),
-								txtCellphone.getText(),
-								txtEmail.getText(),
-								start,
-								end,
-								Double.parseDouble(txtPrice.getText()),
-								Double.parseDouble(txtGuarantee.getText()),
-								Double.parseDouble(txtMonthlyCost.getText()));
-					}
-				}
-			});
-		}
 
 		//TODO 100 implement this button (add mouse listner)
 		pnlButtons.add(btnOK);
@@ -484,66 +400,29 @@ public class ContractDialog extends JDialog {
 		this.setLocationRelativeTo(null);
 	}
 
-	public void fillInfo(Contract contract, boolean newContract) {
-		if (newContract) {
-			//new contract
-			cbbBuildings.setSelectedIndex(0);
-			txtFirstName.setText("");
-			txtLastName.setText("");
-			txtStreet.setText("");
-			txtStreetNumber.setText("");
-			txtZip.setText("");
-			txtCity.setText("");
-			cbbCountry.setSelectedItem(Language.getCountryByCode("BE"));
-			txtTel.setText("");
-			txtCellphone.setText("");
-			txtEmail.setText("");
-			//set times in combobox
-			cbbMonthFrom.setSelectedIndex(GregorianCalendar.getInstance().get(Calendar.MONTH));
-			cbbYearFrom.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR));
-			cbbMonthTo.setSelectedIndex(GregorianCalendar.getInstance().get(Calendar.MONTH));
-			cbbYearTo.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR) + 1);
-			//price
-			txtPrice.setText("");
-			txtMonthlyCost.setText("");
-			txtGuarantee.setText("");
-		} else {
-			//existing contract
-			//fill renter info
-			Person renter = contract.getRenter();
-			txtFirstName.setText(renter.getFirstName());
-			txtLastName.setText(renter.getName());
-			txtStreet.setText(renter.getAddress().getStreet());
-			txtStreetNumber.setText(renter.getAddress().getStreetNumber());
-			txtZip.setText(renter.getAddress().getZipcode());
-			txtCity.setText(renter.getAddress().getCity());
-			cbbCountry.setSelectedItem(Language.getCountryByCode(renter.getAddress().getCountry()));
-			txtTel.setText(renter.getTelephone());
-			txtCellphone.setText(renter.getCellphone());
-			txtEmail.setText(renter.getEmail());
+	public void fillInfo() {
+		//new contract
+		cbbBuildings.setSelectedIndex(0);
+		txtFirstName.setText("");
+		txtLastName.setText("");
+		txtStreet.setText("");
+		txtStreetNumber.setText("");
+		txtZip.setText("");
+		txtCity.setText("");
+		cbbCountry.setSelectedItem(Language.getCountryByCode("BE"));
+		txtTel.setText("");
+		txtCellphone.setText("");
+		txtEmail.setText("");
+		//set times in combobox
+		cbbMonthFrom.setSelectedIndex(GregorianCalendar.getInstance().get(Calendar.MONTH));
+		cbbYearFrom.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR));
+		cbbMonthTo.setSelectedIndex(GregorianCalendar.getInstance().get(Calendar.MONTH));
+		cbbYearTo.setSelectedItem(GregorianCalendar.getInstance().get(Calendar.YEAR) + 1);
+		//price
+		txtPrice.setText("");
+		txtMonthlyCost.setText("");
+		txtGuarantee.setText("");
 
-			//set times
-			Calendar contractStartDate = Calendar.getInstance();
-			contractStartDate.setTime(contract.getStart());
-			Calendar contractEndDate = Calendar.getInstance();
-			contractStartDate.setTime(contract.getEnd());
-			cbbMonthFrom.setSelectedIndex(contractStartDate.get(Calendar.MONTH));
-			cbbYearFrom.setSelectedItem(contractStartDate.get(Calendar.YEAR));
-			cbbMonthTo.setSelectedIndex(contractEndDate.get(Calendar.MONTH));
-			cbbYearTo.setSelectedItem(contractEndDate.get(Calendar.YEAR));
-			//set price
-			txtPrice.setText(Double.toString(contract.getPrice()));
-			txtMonthlyCost.setText(Double.toString(contract.getMonthly_cost()));
-			txtGuarantee.setText(Double.toString(contract.getGuarentee()));
-
-			try {
-				//TODO 030 isn't perfect buildingpreview object != building object
-				cbbBuildings.setSelectedItem(Main.getDataObject().getBuilding(contract.getRentable().getBuildingID())); //TODO 030 isn't perfect buildingpreview object != building object
-			} catch (SQLException ex) {
-				Logger.logger.error("Exception in contractspane fillinfo during get building from database " + ex.getMessage());
-				Logger.logger.debug("StackTrace: ", ex);
-			}
-		}
 	}
 
 	private boolean checkInput() {
@@ -664,9 +543,5 @@ public class ContractDialog extends JDialog {
 			Logger.logger.debug("StackTrace: ", ex);
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errFetchEIDPerson") + "\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-	}
-
-	public int getContractId() {
-		return contractId;
 	}
 }

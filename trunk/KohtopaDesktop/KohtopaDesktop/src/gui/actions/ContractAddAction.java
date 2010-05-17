@@ -1,7 +1,7 @@
 package gui.actions;
 
 import gui.Main;
-import gui.contractstab.ContractDialog;
+import gui.contractstab.ContractAddDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
 
@@ -17,6 +17,6 @@ public class ContractAddAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new ContractDialog(0, true,Main.getDataObject()).setVisible(true);
+		new ContractAddDialog(Main.getDataObject()).setVisible(true);
 	}
 }

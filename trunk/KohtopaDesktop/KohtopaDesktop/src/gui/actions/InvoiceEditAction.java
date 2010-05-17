@@ -1,8 +1,11 @@
 package gui.actions;
 
+import Exceptions.WrongNumberOfSelectedItemsException;
 import Language.Language;
 import data.entities.Invoice;
+import gui.JActionButton;
 import gui.Main;
+import gui.interfaces.IInvoiceListContainer;
 import gui.invoicestab.InvoiceDialog;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
@@ -20,15 +23,13 @@ public class InvoiceEditAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
-		Object[] selected =  Main.getInvoicesPane().getSelectedInvoices();
-		Object[] renters = Main.getInvoicesPane().getSelectedRenters();
-                if(renters.length != 1) {
-                    JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errSelectOneRenter") + "\n", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
-                } else if(selected.length != 1) {
-			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errSelectOneInvoice") + "\n", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			new InvoiceDialog(false).setVisible(true);
+		IInvoiceListContainer root = null;
+		root = (IInvoiceListContainer) ((JActionButton) e.getSource()).getRoot();
+		try {
+			System.out.println("edit action invoice id: "+ ((Invoice) root.getSelectedInvoices()[0]).getId());
+			new InvoiceDialog(root.getRenterId(), ((Invoice) root.getSelectedInvoices()[0]).getId(), false).setVisible(true);
+		} catch (WrongNumberOfSelectedItemsException ex) {
+			JOptionPane.showMessageDialog(Main.getInstance(), "Please select exactly 1 renter \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 }

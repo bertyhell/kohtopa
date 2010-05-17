@@ -311,7 +311,7 @@ public class BuildingAddDialog extends JFrame {
 								Integer.parseInt(txtOutlets.getText()),
 								Integer.parseInt(txtFloor.getText()),
 								Double.parseDouble(txtPrice.getText()));
-						Main.updateBuildingList();
+						Main.updateAddRemoveList();
 						instance.dispose();
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 					} catch (SQLException ex) {

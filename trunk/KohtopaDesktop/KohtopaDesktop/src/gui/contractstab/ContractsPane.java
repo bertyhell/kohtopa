@@ -70,7 +70,7 @@ public class ContractsPane extends JPanel implements IContractsListContainer, IR
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					new ContractDialog(((Contract) lstContracts.getSelectedValue()).getId(), false, Main.getDataObject()).setVisible(true);
+					new ContractEditDialog(((Contract) lstContracts.getSelectedValue()).getId(),Main.getDataObject()).setVisible(true);
 				}
 			}
 		});

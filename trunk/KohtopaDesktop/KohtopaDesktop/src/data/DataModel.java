@@ -187,7 +187,7 @@ public class DataModel {
 					for (Rentable rentable : DataConnector.getRentablesFromBuilding(id)) {
 						DataConnector.deleteRentable(rentable.getId());
 					}
-					Main.updateBuildingList();
+					Main.updateAddRemoveList();
 				} catch (SQLException ex1) {
 					Logger.logger.error("Failed to delete building: \n" + ex1.getMessage());
 					JOptionPane.showMessageDialog(Main.getInstance(), "Failed to delete building: \n" + ex1.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
@@ -346,8 +346,31 @@ public class DataModel {
 		DataConnector.addContract(rentableId, firstName, lastName, street, streetNumber, zipCode, city, countryCode, telephone, cellphone, email, contractStart, contractEnd, price, monthCost, guarantee);
 	}
 
-	public void updateContract(int contractId, int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
-		Logger.logger.info("updating contract");
-		//TODO 100 implement
+	public void updateContract(int contractId, Date contractEnd) throws SQLException {
+		Logger.logger.info("updating contracts");
+		DataConnector.updateContract(contractId, contractEnd);
+	}
+
+	public String getInvoiceXmlString(int invRentId) {
+		Logger.logger.info("getting xml invoice string");
+		return DataConnector.getInvoiceXmlString(invRentId);
+	}
+
+	public void updateInvoice(int invoiceId, Date sendDate, String xmlString) throws SQLException {
+		Logger.logger.info("updating invoice");
+		DataConnector.updateInvoice(invoiceId, sendDate, xmlString);
+	}
+
+	public Date getInvoiceSendingDate(int invoiceId) {
+		Logger.logger.info("getting invoice sending date");
+		return DataConnector.getInvoiceSendingDate(invoiceId);
+	}
+
+	public void deleteSelectedInvoices(Vector<Integer> ids) throws SQLException {
+		Logger.logger.info("deleting Selected invoices");
+		for (Integer id : ids) {
+			Logger.logger.info("\t" + id);
+			DataConnector.removeInvoice(id); //TODO more efficient in dataconnector?
+		}
 	}
 }
