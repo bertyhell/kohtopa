@@ -306,8 +306,8 @@ public class BuildingAddDialog extends JFrame {
 								txtArea.getText(),
 								Language.getWindDirCodeFromIndex(cbbWindowDir.getSelectedIndex()),
 								Integer.parseInt(txtWindowArea.getText()),
-								ckbInternet.isSelected()?"1":"0",
-								ckbCable.isSelected()?"1":"0",
+								ckbInternet.isSelected() ? "1" : "0",
+								ckbCable.isSelected() ? "1" : "0",
 								Integer.parseInt(txtOutlets.getText()),
 								Integer.parseInt(txtFloor.getText()),
 								Double.parseDouble(txtPrice.getText()));
@@ -343,9 +343,9 @@ public class BuildingAddDialog extends JFrame {
 		if (!txtStreetNumber.getText().matches("[0-9]+.*")) {
 			errorMessage += "   * " + Language.getString("errStreetNumber") + "\n";
 			error = true;
-			txtStreet.setBackground(Color.pink);
+			txtStreetNumber.setBackground(Color.pink);
 		} else {
-			txtStreet.setBackground(Color.white);
+			txtStreetNumber.setBackground(Color.white);
 		}
 		if (!txtCity.getText().matches("[^0-9]+")) {
 			errorMessage += "   * " + Language.getString("errCity") + "\n";
@@ -354,14 +354,7 @@ public class BuildingAddDialog extends JFrame {
 		} else {
 			txtCity.setBackground(Color.white);
 		}
-		if (!txtZip.getText().matches("[0-9]*")) {
-			errorMessage += "   * " + Language.getString("errZip") + "\n";
-			error = true;
-			txtCity.setBackground(Color.pink);
-		} else {
-			txtCity.setBackground(Color.white);
-		}
-		if (txtIp.getText().length()!= 0 && !txtIp.getText().matches("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")) {
+		if (txtIp.getText().length() != 0 && !txtIp.getText().matches("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")) {
 			errorMessage += "   * " + Language.getString("errIp") + "\n";
 			error = true;
 			txtIp.setBackground(Color.pink);
@@ -370,7 +363,7 @@ public class BuildingAddDialog extends JFrame {
 		}
 
 		//check rentable inputs
-			if (!txtArea.getText().matches("[0-9]+\\.?[0-9]*")) {
+		if (!txtArea.getText().matches("[0-9]+\\.?[0-9]*")) {
 			errorMessage += "   * " + Language.getString("errArea") + "\n";
 			error = true;
 			txtArea.setBackground(Color.pink);

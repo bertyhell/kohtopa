@@ -304,9 +304,6 @@ public class ContractEditDialog extends JDialog {
 				}
 			}
 		});
-
-
-		//TODO 100 implement this button (add mouse listner)
 		pnlButtons.add(btnOK);
 
 
@@ -344,7 +341,6 @@ public class ContractEditDialog extends JDialog {
 		txtMonthlyCost.setText(Double.toString(contract.getMonthly_cost()));
 		txtGuarantee.setText(Double.toString(contract.getGuarentee()));
 		try {
-			System.out.println("buildingid: " + contract.getRentable().getBuildingID());
 			txtBuildings.setText(Main.getDataObject().getBuilding(contract.getRentable().getBuildingID()).toString());
 			txtRentables.setText(Main.getDataObject().getRentable(contract.getRentable().getId()).getDescription());
 		} catch (SQLException ex) {

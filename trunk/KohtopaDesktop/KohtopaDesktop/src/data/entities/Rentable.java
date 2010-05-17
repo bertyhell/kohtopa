@@ -23,7 +23,6 @@ public class Rentable extends AbstractPlace {
 	public Rentable(int id, BufferedImage previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description, int buildingID) {
 		this(id, previewImage, type, area, windowDirection, windowArea, internet, cable, outletCount, floor, rented, price, description);
 		this.buildingID = buildingID;
-		System.out.println("buildingid in rentable is: " + buildingID);
 	}
 
 	public Rentable(int id, BufferedImage previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description) {

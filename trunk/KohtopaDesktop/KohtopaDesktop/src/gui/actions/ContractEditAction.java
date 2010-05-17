@@ -22,7 +22,6 @@ public class ContractEditAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("root: " +  ((JActionButton) e.getSource()).getRoot());
 		Object[] selected = ((IContractsListContainer) ((JActionButton) e.getSource()).getRoot()).getSelectedContracts();
 		if (selected.length == 1) {
 			new ContractEditDialog(((Contract) selected[0]).getId(), Main.getDataObject()).setVisible(true);

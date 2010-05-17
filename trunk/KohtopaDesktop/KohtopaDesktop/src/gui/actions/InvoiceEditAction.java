@@ -26,7 +26,6 @@ public class InvoiceEditAction extends AbstractIconAction {
 		IInvoiceListContainer root = null;
 		root = (IInvoiceListContainer) ((JActionButton) e.getSource()).getRoot();
 		try {
-			System.out.println("edit action invoice id: "+ ((Invoice) root.getSelectedInvoices()[0]).getId());
 			new InvoiceDialog(root.getRenterId(), ((Invoice) root.getSelectedInvoices()[0]).getId(), false).setVisible(true);
 		} catch (WrongNumberOfSelectedItemsException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Please select exactly 1 renter \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);

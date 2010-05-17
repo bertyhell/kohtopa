@@ -352,7 +352,6 @@ public class InvoiceDialog extends JFrame {
 			doc.appendChild(root);
 
 			//create item elements of every item in table
-			System.out.println("getdatavector size: " + tmInvoices.getDataVector().size());
 			for (Object item : tmInvoices.getDataVector()) {
 				Element invoiceItem = doc.createElement("invoice_item");
 				Element desc = doc.createElement("description");
@@ -465,7 +464,6 @@ public class InvoiceDialog extends JFrame {
 		c.setTime(invoice.getStart());
 		cbbMonthFrom.setSelectedIndex(c.get(Calendar.MONTH));
 		cbbYearFrom.setSelectedItem(c.get(Calendar.YEAR));
-		System.out.println("date end: " + invoice.getEnd());
 		c.setTime(invoice.getEnd());
 		cbbMonthTo.setSelectedIndex(c.get(Calendar.MONTH));
 		cbbYearTo.setSelectedItem(c.get(Calendar.YEAR));

@@ -56,19 +56,17 @@ public class DOMParser {
     public DOMParser(String blobString) {
         try {
             if (blobString == null) {
-                System.out.println("blobString is null");
+               Logger.logger.debug("blobString is null");
             } else {
-                System.out.println("blobstring: " + blobString);
+               Logger.logger.debug("blobstring: " + blobString);
             }
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-            System.out.println("OK voor de parse");
-            System.out.println("BlobString: " + blobString);
             InputSource is = new InputSource(new StringReader(blobString));
 			document = builder.parse(is);
-            System.out.println("OK na de parse ?");
-        } catch (Exception exc) {
-            System.out.println("ParseException: " + exc.getMessage());
+        } catch (Exception ex) {
+			Logger.logger.error("ParseException in DOMparser " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
     }
 
@@ -87,25 +85,25 @@ public class DOMParser {
             for (int i = 0; i < children.getLength(); i++) {
                 Node child = children.item(i);
                 if (child.getNodeName().equals(DOMConstants.NAME)) {
-                    System.out.println("name detected");
-                    System.out.println("name: " + child.getFirstChild().getNodeValue());
+                   Logger.logger.debug("name detected");
+                   Logger.logger.debug("name: " + child.getFirstChild().getNodeValue());
                     localFloorContent.setFloorName(child.getFirstChild().getNodeValue());
                 } else if (child.getNodeName().equals(DOMConstants.WIDTH)) {
-                    System.out.println("width detected");
-                    System.out.println("width: " + child.getFirstChild().getNodeValue());
+                   Logger.logger.debug("width detected");
+                   Logger.logger.debug("width: " + child.getFirstChild().getNodeValue());
                     localFloorContent.setX(Integer.parseInt(child.getFirstChild().getNodeValue()));
                 } else if (child.getNodeName().equals(DOMConstants.HEIGHT)) {
-                    System.out.println("height detected");
-                    System.out.println("height: " + child.getFirstChild().getNodeValue());
+                   Logger.logger.debug("height detected");
+                   Logger.logger.debug("height: " + child.getFirstChild().getNodeValue());
                     localFloorContent.setY(Integer.parseInt(child.getFirstChild().getNodeValue()));
                 } else if (child.getNodeName().equals(DOMConstants.IMAGE)) {
-                    System.out.println("image detected");
+                   Logger.logger.debug("image detected");
                     NodeList imageDetails = child.getChildNodes();
                     for (int j = 0; j < imageDetails.getLength(); j++) {
                         if (imageDetails.item(j).getNodeName().equals(DOMConstants.NAME)) {
 
                         } else if (imageDetails.item(j).getNodeName().equals(DOMConstants.IMAGEID)) {
-                            System.out.println("imageid: " + imageDetails.item(j).getFirstChild().getNodeValue());
+                           Logger.logger.debug("imageid: " + imageDetails.item(j).getFirstChild().getNodeValue());
                             Picture picture = Main.getDataObject().getPicture(Integer.parseInt(imageDetails.item(j).getFirstChild().getNodeValue()));
                             BufferedImage img = picture.getPicture();
                             File imgFile = new File("test.jpg");
@@ -114,12 +112,12 @@ public class DOMParser {
                         }
                     }
                 } else if (child.getNodeName().equals(DOMConstants.NAMEDPOLYGONS)) {
-                    System.out.println("named polygon detected");
+                   Logger.logger.debug("named polygon detected");
                     NodeList polygons = child.getChildNodes();
                     NamedPolygon polygon = null;
                     for (int j = 0; j < polygons.getLength(); j++) {
                         if (polygons.item(j).getNodeName().equals(DOMConstants.NAMEDPOLYGON)) {
-                            System.out.println("constructing named polygon");
+                           Logger.logger.debug("constructing named polygon");
                             polygon = makePolygon(polygons.item(j));
                             if (polygon != null) {
                                 localFloorContent.addNamedPolygon(polygon);
@@ -128,7 +126,7 @@ public class DOMParser {
                         }
                     }                    
                 } else if (child.getNodeName().equals(DOMConstants.CAMERAS)) {
-                    System.out.println("camera detected");
+                   Logger.logger.debug("camera detected");
                     NodeList cameras = child.getChildNodes();
                     Camera camera = null;
                     for (int j = 0; j < cameras.getLength(); j++) {
@@ -139,7 +137,7 @@ public class DOMParser {
                         camera = null;
                     }                    
                 } else if (child.getNodeName().equals(DOMConstants.FIREEXTINGUISHERS)) {
-                    System.out.println("fireextinguisher detected");
+                   Logger.logger.debug("fireextinguisher detected");
                     NodeList fireExtinguishers = child.getChildNodes();
                     FireExtinguisher fireExtinguisher = null;
                     for (int j = 0; j < fireExtinguishers.getLength(); j++) {
@@ -150,7 +148,7 @@ public class DOMParser {
                         fireExtinguisher = null;
                     }                    
                 } else if (child.getNodeName().equals(DOMConstants.EMERGENCYEXITS)) {
-                    System.out.println("emergency exit detected");
+                   Logger.logger.debug("emergency exit detected");
                     NodeList emergencyExits = child.getChildNodes();
                     EmergencyExit emergencyExit = null;
                     for (int j = 0; j < emergencyExits.getLength(); j++) {
@@ -162,9 +160,9 @@ public class DOMParser {
                     }                    
                 }
             }
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            System.out.println("Fout in getFloorcontent: " + exc.getMessage());
+        } catch (Exception ex) {
+			Logger.logger.error("Exception in getFloorContent in DOMParser " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
         }
         return localFloorContent;
     }
@@ -176,7 +174,7 @@ public class DOMParser {
         for (int i = 0; i < children.getLength(); i++) {
             Node child  = children.item(i);
             if (child.getNodeName().equals(DOMConstants.NAME)) {
-                System.out.println("polygon name: " + child.getFirstChild().getNodeValue());
+               Logger.logger.debug("polygon name: " + child.getFirstChild().getNodeValue());
                 polygon = new NamedPolygon(child.getFirstChild().getNodeValue());
             } else if (child.getNodeName().equals(DOMConstants.POINTS)) {
                 NodeList points = child.getChildNodes();
@@ -188,16 +186,16 @@ public class DOMParser {
                         int y = 0;
                         for (int j = 0 ; j < coordinates.getLength(); j++) {
                             Node coordinate = coordinates.item(j);
-                            System.out.println("inner node name:" + coordinate.getNodeName());
+                           Logger.logger.debug("inner node name:" + coordinate.getNodeName());
                             if (coordinate.getNodeName().equals(DOMConstants.X)) {
-                                System.out.println("named polygon x found");
+                               Logger.logger.debug("named polygon x found");
                                 x = Integer.parseInt(coordinate.getFirstChild().getNodeValue());
                             } else if (coordinate.getNodeName().equals(DOMConstants.Y)) {
-                                System.out.println("named polygon y found");
+                               Logger.logger.debug("named polygon y found");
                                 y = Integer.parseInt(coordinate.getFirstChild().getNodeValue());
                             }
                         }
-                        System.out.println("adding polygon point: " + x + ", " + y);
+                       Logger.logger.debug("adding polygon point: " + x + ", " + y);
                         polygon.addPoint(x, y);
                     }
                 }
@@ -214,7 +212,7 @@ public class DOMParser {
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeName().equals(DOMConstants.POINT)) {
-                System.out.println("constructing camera");
+               Logger.logger.debug("constructing camera");
                 NodeList coordinates = child.getChildNodes();
                 int x = 0;
                 int y = 0;
@@ -226,7 +224,7 @@ public class DOMParser {
                         y = Integer.parseInt(coordinate.getFirstChild().getNodeValue());
                     }
                 }
-                System.out.println("x: " + x + " y: " + y);
+               Logger.logger.debug("x: " + x + " y: " + y);
                 camera = new Camera(x, y);
             }
         }
@@ -241,7 +239,7 @@ public class DOMParser {
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeName().equals(DOMConstants.POINT)) {
-                System.out.println("constructing fireextinguisher");
+               Logger.logger.debug("constructing fireextinguisher");
                 NodeList coordinates = child.getChildNodes();
                 int x = 0;
                 int y = 0;
@@ -253,7 +251,7 @@ public class DOMParser {
                         y = Integer.parseInt(coordinate.getFirstChild().getNodeValue());
                     }
                 }
-                System.out.println("x: " + x + " y: " + y);
+               Logger.logger.debug("x: " + x + " y: " + y);
                 fireExtinguisher = new FireExtinguisher(x, y);
             }
         }
@@ -268,7 +266,7 @@ public class DOMParser {
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeName().equals(DOMConstants.POINT)) {
-                System.out.println("constructing emergency exit");
+               Logger.logger.debug("constructing emergency exit");
                 NodeList coordinates = child.getChildNodes();
                 int x = 0;
                 int y = 0;
@@ -280,7 +278,7 @@ public class DOMParser {
                         y = Integer.parseInt(coordinate.getFirstChild().getNodeValue());
                     }
                 }
-                System.out.println("x: " + x + " y: " + y);
+               Logger.logger.debug("x: " + x + " y: " + y);
                 emergencyExit = new EmergencyExit(x, y);
             }
         }
@@ -469,7 +467,7 @@ public class DOMParser {
     public void write(int buildingID, int floor) {
         try {
             // XML
-            System.out.println("Writing");
+           Logger.logger.info("Writing in DOMParser");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -485,8 +483,6 @@ public class DOMParser {
             // Store in database
             Main.getDataObject().addFloor(buildingID, floor, file);
 
-            System.out.println("Saved ?");
-			Logger.logger.info("invoice xml file saved to: "+file.getAbsolutePath()); //TODO 100 put in database instead of on harddrive     
         } catch (Exception ex) {
 			Logger.logger.error("Exception in write in DOMParser " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);

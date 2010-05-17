@@ -75,6 +75,15 @@ public class InvoicesPane extends JPanel implements IInvoiceListContainer, IRent
 		lstInvoices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstInvoices.setBackground(new Color(217, 217, 217));
 		lstInvoices.setCellRenderer(new InvoiceCellRenderer());
+		lstInvoices.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() == 2){
+					new InvoiceDialog(((Person)lstRenters.getSelectedValue()).getId(), ((Invoice)lstInvoices.getSelectedValue()).getId(), false).setVisible(true);
+				}
+			}
+		});
 		JScrollPane scrolInvoices = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrolInvoices.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(), Language.getString("invoices")));
 		scrolInvoices.setViewportView(lstInvoices);

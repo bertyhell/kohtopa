@@ -18,7 +18,7 @@ public class Logger {
 
 	public static void init() {
 		try {
-			System.out.println("log file under: " + LOG_FILE);
+			Logger.logger.info("log file under: " + LOG_FILE);
 			logger = org.apache.log4j.Logger.getRootLogger();
 			logger.addAppender(new FileAppender(new PatternLayout(), LOG_FILE, false));
 			logger.addAppender(new ConsoleAppender(new PatternLayout()));

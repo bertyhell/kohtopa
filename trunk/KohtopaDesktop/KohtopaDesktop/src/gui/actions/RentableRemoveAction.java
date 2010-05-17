@@ -3,6 +3,7 @@ package gui.actions;
 import Language.Language;
 import data.entities.Rentable;
 import gui.JActionButton;
+import gui.Logger;
 import gui.Main;
 import gui.interfaces.IRentableListContainer;
 import java.awt.Component;
@@ -42,7 +43,8 @@ public class RentableRemoveAction extends AbstractIconAction {
 				JOptionPane.showMessageDialog((Component)root, Language.getString("RentableSuccesDelete"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 				Main.updateAddRemoveList();
 			} catch (SQLException ex) {
-				System.out.println("error code: " + ex.getErrorCode());
+				Logger.logger.error("Exception in RentableRemoveAction preformed " + ex.getMessage());
+				Logger.logger.debug("StackTrace: ", ex);
 				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), "???", JOptionPane.ERROR_MESSAGE);
 			}
 		}
