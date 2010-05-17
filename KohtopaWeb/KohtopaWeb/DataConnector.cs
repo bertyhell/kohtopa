@@ -53,7 +53,7 @@ namespace KohtopaWeb
 
         private static string getBuildingPictureIDsByIdSQL = "select pictureID from pictures where type_floor = -3 and rentable_building_id = ?";
         private static string getRentablePictureIDsByIdSQL = "select pictureID from pictures where type_floor = -1 and rentable_building_id = ?";
-        private static string getPictureByIdSQL = "select * from pictures where pictureid = ?";
+        private static string getPictureByIdSQL = "select picture from pictures where pictureid = ?";
 
         private static string updateMessageSQL = "update messages set message_read = '1' where date_sent between ? and ? and subject = ? and recipientid = ?";
         
@@ -209,15 +209,15 @@ namespace KohtopaWeb
             command.Parameters.Add(p);
 
             conn.Open();
-            OleDbDataReader r = command.ExecuteReader();
+            OleDbDataReader reader = command.ExecuteReader();
 
             byte[] data = null;
-            if (r.NextResult())
+            if (reader.Read())
             {
-                data = (byte[])r[0];
+                data = (byte[])reader[0];
             }
 
-            r.Close();
+            reader.Close();
             conn.Close();
             return data;
 
@@ -229,9 +229,10 @@ namespace KohtopaWeb
             OleDbCommand command = conn.CreateCommand();            
             //command.CommandText = "select picture from pictures where pictureId = " + ImageId;
             command.CommandText = getPictureByIdSQL;
-            OleDbParameter p = new OleDbParameter();
-            p.Value = ImageId;
+
+            OleDbParameter p = new OleDbParameter("imageId", ImageId);
             command.Parameters.Add(p);
+
             command.Connection = conn;
             conn.Open();    
             OleDbDataReader reader = command.ExecuteReader();

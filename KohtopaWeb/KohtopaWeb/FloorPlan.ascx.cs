@@ -36,7 +36,8 @@ namespace KohtopaWeb
                     // geen gevonden => doe niets
                     if (xmlFile == null)
                     {
-                        //return;
+                        this.Visible = false;
+                        return;
                     }
                     else
                     {
