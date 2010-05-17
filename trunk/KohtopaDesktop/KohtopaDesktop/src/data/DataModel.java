@@ -16,6 +16,8 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 import data.entities.Rentable;
 import gui.Main;
+import java.io.File;
+import java.sql.Blob;
 import java.util.Vector;
 
 public class DataModel {
@@ -106,6 +108,36 @@ public class DataModel {
 	public boolean isLoggedIn() {
 		return ownerId != null;
 	}
+
+    public String getIPAddress(int buildingID) throws SQLException, IOException {
+        Logger.logger.info("get IPAddress");
+        return DataConnector.getIPAddress(buildingID);
+    }
+
+    public Picture getPicture(int pictureID) throws SQLException, IOException {
+        Logger.logger.info("get picture");
+        return DataConnector.getPicture(pictureID);
+    }
+
+    public String getFloor(int buildingID, int floor) throws SQLException, IOException {
+        Logger.logger.info("get Floor");
+        return DataConnector.getFloor(buildingID, floor);
+    }
+
+    public void addFloor(int buildingID, int floor, File xml) throws SQLException, IOException {
+        Logger.logger.info("add Floor Image");
+        DataConnector.addFloor(buildingID, floor, xml);
+    }
+
+    public void addFloorPlanImage(int buildingId, BufferedImage img, int floor) throws SQLException, IOException {
+        Logger.logger.info("add FloorPlan Image");
+        DataConnector.addFloorPlan(buildingId, img, floor);
+    }
+
+    public Integer getPictureId(int rentable_building_id, int type_floor) throws SQLException {
+        Logger.logger.info("get PictureID");
+        return DataConnector.getPictureId(rentable_building_id, type_floor);
+    }
 
 	public void addBuildingImage(int buildingId, BufferedImage img) throws SQLException, IOException {
 		Logger.logger.info("add Building Image");

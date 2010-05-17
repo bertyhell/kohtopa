@@ -32,12 +32,13 @@ public class FloorDialog extends JFrame implements IIdentifiable {
 		JLabel lblFloor = new JLabel(Language.getString("floor") + ": ");
 		pnlTop.add(lblFloor);
 		txtFloor = new JTextField(20);
+        txtFloor.setText(Integer.toString(floor));
 		pnlTop.add(txtFloor);
 
 
 		//drawing panel
         // Constructor only requires the parent frame and the name of the floor.
-        this.add(new FloorControls(this, Integer.toString(floor)));
+        this.add(new FloorControls(this, Integer.toString(floor), buildingId));
 
 		//info opvullen:
 		fillInfo(newFloor);

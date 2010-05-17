@@ -12,11 +12,13 @@ import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.EmergencyExit;
 import floorallocationmodule.view.FloorImage;
 import gui.Logger;
+import gui.Main;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Line2D;
 import java.io.File;
 import java.util.Vector;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 /**
@@ -32,6 +34,8 @@ public class FloorContent {
 
     // Floor Name
     private String floorName;
+    // BuildingID
+    private int buildingID;
 
     // Variables regarding the actual information to draw the floorImage.
     private Vector<NamedPolygon> namedPolygons;
@@ -377,12 +381,39 @@ public class FloorContent {
 
     // Method which writes the content to XML.
     public void save() {
-        DOMParser parser = new DOMParser();
-        setX(floorImage.getImageRectangle().width);
-        setY(floorImage.getImageRectangle().height);
-        
-        parser.setFloorContent(this);
-        parser.parse();
+        try {
+            // First we save the image into database
+            int pictureID = 0;
+            if (imageFile != null) {
+                Main.getDataObject().addFloorPlanImage(buildingID, ImageIO.read(imageFile), Integer.parseInt(floorName));
+                pictureID = Main.getDataObject().getPictureId(buildingID, Integer.parseInt(floorName));
+            }
+
+            // Second we save the xml-file into database
+            DOMParser parser = new DOMParser();
+            setX(floorImage.getImageRectangle().width);
+            setY(floorImage.getImageRectangle().height);
+
+            // PICTUREID = 0 : NO PICTURE AVAILABLE
+            // PICTUREID != 0 : PICTURE AVAILABLE
+            parser.setFloorContent(this, pictureID);
+            parser.parse();
+            parser.write(buildingID, Integer.parseInt(floorName));
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            System.out.println(exc.getMessage());
+            Logger.logger.error("Exception in saving FloorPlan " + exc.getMessage());
+			Logger.logger.debug("StackTrace: ", exc);
+			JOptionPane.showMessageDialog(Main.getInstance(), "Error in saving FloorPlan \n" + exc.getMessage(), "Failed to save FloorPlan", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setBuildingID(int buildingID) {
+        this.buildingID = buildingID;
+    }
+
+    public void addNamedPolygon(NamedPolygon polygon) {
+        namedPolygons.add(polygon);
     }
 
     /**
@@ -421,6 +452,10 @@ public class FloorContent {
     public void setImageFile(File imageFile) {
         this.imageFile = imageFile;
         floorImage.repaint();
+    }
+
+    public int getBuildingID() {
+        return buildingID;
     }
 
     /**
