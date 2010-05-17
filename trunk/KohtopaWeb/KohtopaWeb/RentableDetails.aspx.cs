@@ -69,6 +69,7 @@ namespace KohtopaWeb
                 lblOwnerCellphoneValue.Text = rentable.Owner.Cellphone;
 
                 DataTable dt = DataConnector.getBuildingPictureIds(rentable.Building.Id);
+                
                 foreach (DataRow dr in dt.Rows)
                 {
                     TableRow tr = new TableRow();
@@ -91,6 +92,10 @@ namespace KohtopaWeb
                     tr.Controls.Add(tc);
                     tblPictures.Rows.Add(tr);
                 }
+
+
+                floorplan.BuildingID = rentable.Building.Id;
+                floorplan.Floor = rentable.Floor;
             }
             catch (Exception exc)
             {
