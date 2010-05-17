@@ -111,6 +111,7 @@ public class Rentable extends AbstractPlace {
 	//description
 	@Override
 	public String toString() {
-		return Integer.toString(id); //TODO add name for rentable, return it here
+            return description;
+            //return Integer.toString(id); //TODO add name for rentable, return it here
 	}
 }

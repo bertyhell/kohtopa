@@ -24,7 +24,7 @@ public class InvoiceAddAction extends AbstractIconAction {
 		if (selected.length != 1) {
 			JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errSelectOneRenter") + "\n", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			new InvoiceDialog(((Person) selected[0]).getId(), true).setVisible(true);
+			new InvoiceDialog(true).setVisible(true);
 		}
 	}
 }

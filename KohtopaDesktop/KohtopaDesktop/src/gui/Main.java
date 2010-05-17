@@ -15,6 +15,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import data.DataModel;
 import data.ProgramSettings;
+import data.entities.Building;
 import gui.addremovetab.AddRemovePane;
 import gui.calendartab.CalendarPane;
 import gui.contractstab.ContractsPane;

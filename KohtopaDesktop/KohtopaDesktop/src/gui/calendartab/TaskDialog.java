@@ -58,6 +58,8 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
             listModel.addElement(t);
         }
 
+        Main.getAction("taskEdit").setEnabled(listModel.getSize() != 0 && tasks.getSelectedIndex() != -1);
+        Main.getAction("taskRemove").setEnabled(listModel.getSize() != 0 && tasks.getSelectedIndex() != -1);
         tasks.updateUI();
         return instance;
     }

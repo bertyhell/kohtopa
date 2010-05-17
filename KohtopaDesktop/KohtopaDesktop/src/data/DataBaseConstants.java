@@ -128,7 +128,7 @@ public class DataBaseConstants {
 	public static String invoiceId = "invoiceid";
 	public static String invoiceDate = "invoicedate";
 	public static String invoicePaid = "paid";
-	public static String invoiceXml = "invoice_xml";
+	public static String invoiceXml = "INVOICE_XML";
 	public static String invoiceSend = "send";
 	//tasks column labels
 	public static String taskID = "taskID";
@@ -187,6 +187,7 @@ public class DataBaseConstants {
 			+ ",i." + invoiceId
 			+ ",i." + invoicePaid
 			+ ",i." + invoiceSend
+                        + ",i." + invoiceXml
 			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tableInvoicesRead + " i ON i." + contractID + " = c." + contractID
 			+ " WHERE c." + renterID + " = ?"

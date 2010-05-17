@@ -1560,7 +1560,7 @@ public class DataConnector {
 					//existing active contract
 
 					if (guarantee) {
-						value = rs.getInt(DataBaseConstants.guarantee);
+						value = -rs.getInt(DataBaseConstants.guarantee);
 					} else {
 						value = rs.getInt(DataBaseConstants.price);
 					}
@@ -1574,7 +1574,7 @@ public class DataConnector {
 						rs = ps.executeQuery();
 						if (rs.next()) {
 							if (guarantee) {
-								value = rs.getInt(DataBaseConstants.guarantee);
+								value = -rs.getInt(DataBaseConstants.guarantee);
 							} else {
 								value = rs.getInt(DataBaseConstants.price);
 							}
@@ -1612,11 +1612,14 @@ public class DataConnector {
 				while (rsInvoices.next()) {
 					Calendar cal = GregorianCalendar.getInstance();
 					cal.setTime(rsInvoices.getDate(DataBaseConstants.invoiceDate));
+                                        System.out.println(DataBaseConstants.selectInvoices);
 					invoices.add(new Invoice(
 							rsInvoices.getInt(DataBaseConstants.invoiceId),
 							cal.getTime(),
-							rsInvoices.getString(DataBaseConstants.invoiceSend).equals("1") ? true : false,
-							rsInvoices.getString(DataBaseConstants.invoicePaid).equals("1") ? true : false));
+                                                        rsInvoices.getBlob(DataBaseConstants.invoiceXml),
+                                                        Main.getDataObject().getPerson(RenterId),
+							rsInvoices.getString(DataBaseConstants.invoiceSend).equals("1")?true:false,
+							rsInvoices.getString(DataBaseConstants.invoicePaid).equals("1")?true:false));
 				}
 			} finally {
 				conn.close();

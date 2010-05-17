@@ -40,17 +40,30 @@ public class Building extends AbstractPlace {
 
 	private void geocode(String address) {
 		try {
-			URL lookup = new URL("http://maps.google.com/maps/geo?output=csv&oe=utf8&sensor=false&key=ABQIAAAAzKGmk-jPDLGRcG8fwxkGYBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTesRHHZ4bWtr9jHa4CooA-t6-eIg%20&q=" + URLEncoder.encode(address, "UTF-8"));
-			URLConnection conn = lookup.openConnection();
+                    URL lookup = new URL("http://maps.google.com/maps/api/geocode/xml?address="+URLEncoder.encode(address, "UTF-8")+"&sensor=false");
+                    URLConnection conn = lookup.openConnection();
 			conn.connect();
 			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			String response = br.readLine();
-
-			String[] parts = response.split(",");
-			if (parts[0].equals("200")) {
-				latitude = Double.parseDouble(parts[2]);
-				longitude = Double.parseDouble(parts[3]);
-			}
+                        
+                        while(br.ready()) {
+                            //System.out.println(response);
+                            if(response.contains("<lat>")) {
+                                String[] parts = response.split("[<>]");
+                                if(parts.length > 3) {
+                                    //Logger.logger.debug("Latitude: "+ parts[2]);
+                                    latitude = Double.valueOf(parts[2]);
+                                }
+                            } else if(response.contains("<lng>")) {
+                                String[] parts = response.split("[<>]");
+                                if(parts.length > 3) {
+                                    //Logger.logger.debug("Longitude: "+ parts[2]);
+                                    longitude = Double.valueOf(parts[2]);
+                                }
+                            }
+                            response = br.readLine();
+                        }
+                        //System.out.println(latitude+","+longitude);
 			// wait 200 ms to get next value
 			long t0, t1;
 
@@ -59,7 +72,28 @@ public class Building extends AbstractPlace {
 			do {
 				t1 = System.currentTimeMillis();
 			} while ((t1 - t0) < 200);
-			Logger.logger.info(response);
+
+// oude versie, google raadt dit af
+//			URL lookup = new URL("http://maps.google.com/maps/geo?output=csv&oe=utf8&sensor=false&key=ABQIAAAAzKGmk-jPDLGRcG8fwxkGYBT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTesRHHZ4bWtr9jHa4CooA-t6-eIg%20&q=" + URLEncoder.encode(address, "UTF-8"));
+//			URLConnection conn = lookup.openConnection();
+//			conn.connect();
+//			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+//			String response = br.readLine();
+
+//			String[] parts = response.split(",");
+//			if (parts[0].equals("200")) {
+//				latitude = Double.parseDouble(parts[2]);
+//				longitude = Double.parseDouble(parts[3]);
+//			}
+//			// wait 200 ms to get next value
+//			long t0, t1;
+//
+//			t0 = System.currentTimeMillis();
+//
+//			do {
+//				t1 = System.currentTimeMillis();
+//			} while ((t1 - t0) < 200);
+			Logger.logger.info(latitude+","+longitude);
 		} catch (IOException ex) {
 			Logger.logger.error("Exception in geocode " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
@@ -91,7 +125,7 @@ public class Building extends AbstractPlace {
 	@Override
 	public String toString() {
 		try {
-			return address.getStreetLine() + ", " + address.getCityLine();
+			return address.getStreetLine() + ", " + address.getCityLine() +"("+ latitude +","+longitude+")";
 		} catch (Exception ex) {
 			System.out.println("exception in tostring of building: " + ex.getMessage());
 			return null;
