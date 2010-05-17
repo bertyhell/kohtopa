@@ -6,12 +6,15 @@
 package floorallocationmodule.view;
 
 //import floorallocationmodule.listeners.OpenImage;
+import floorallocationmodule.dom.DOMParser;
 import floorallocationmodule.listeners.CustomKeyDispatcher;
 import floorallocationmodule.listeners.LoadImageAction;
 import floorallocationmodule.objects.Camera;
 import floorallocationmodule.objects.FireExtinguisher;
 import floorallocationmodule.model.FloorContent;
 import floorallocationmodule.objects.EmergencyExit;
+import floorallocationmodule.view.FloorImage;
+import gui.Main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
@@ -80,17 +83,34 @@ public class FloorControls extends JPanel implements ActionListener {
     private JButton btnClear;
     private JButton btnSave;
 
-    public FloorControls (JFrame parentFrame, String floorName) {
+    public FloorControls (JFrame parentFrame, String floorName, int buildingID) {
         this.parentFrame = parentFrame;
         this.floorName = floorName;
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         FloorImage floorImage = new FloorImage();
-        floorContent = new FloorContent();
-        floorImage.setFloorContent(floorContent);
-        floorContent.setFloorImage(floorImage);
+
+        // Check if an XML file exists for this floor
+        String blobString = null;
+        try {
+            blobString = Main.getDataObject().getFloor(buildingID, Integer.parseInt(floorName));
+        } catch (Exception exc) {
+            System.out.println(exc.getMessage());
+        }
+
+        if (blobString != null) {
+            DOMParser parser = new DOMParser(blobString);
+            floorContent = parser.getFloorContent(floorImage);
+        } else {
+            System.out.println("geen blob gevonden");
+            floorContent = new FloorContent();
+            floorContent.setFloorImage(floorImage);
+        }
         floorContent.setFloorName(floorName);
+        floorContent.setBuildingID(buildingID);
+
+        floorImage.setFloorContent(floorContent);        
 
             // Settings regarding parentFrame.
             parentFrame.setResizable(false);

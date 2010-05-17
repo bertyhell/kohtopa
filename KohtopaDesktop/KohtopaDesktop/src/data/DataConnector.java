@@ -17,10 +17,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.*;
 import gui.Logger;
 import gui.calendartab.CalendarModel;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -448,6 +452,147 @@ public class DataConnector {
 		addFloorPlan(id, img, -4);
 	}
 
+    public static String getIPAddress(int buildingID) throws SQLException {
+        String IPAddress = null;
+        Connection conn = geefVerbindingOwner();
+        try {
+            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectIPAddress);
+            ps.setInt(1, buildingID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                IPAddress = rs.getString(DataBaseConstants.ipaddress);
+            } else {
+                System.out.println("building niet gevonden");
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+			Logger.logger.error("SQLException in getIPAddress " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in getIPAddress: error getting IPAddress in database: " + ex);
+		} catch (Exception ex) {
+			Logger.logger.error("SQLException in getIPAddress " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			JOptionPane.showMessageDialog(Main.getInstance(), "error in getIPAddress \n" + ex.getMessage(), "Failed to get IPAddress", JOptionPane.ERROR_MESSAGE);
+		} finally {
+			conn.close();
+		}
+        return IPAddress;
+    }
+
+    public static Picture getPicture(int pictureID) throws SQLException {
+        Picture picture = null;
+        Connection conn = geefVerbindingOwner();
+        try {
+            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPicture);
+            ps.setInt(1, pictureID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ByteArrayInputStream bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.picture));
+				picture = new Picture(pictureID, ImageIO.read(bais));
+            } else {
+                System.out.println("picture niet gevonden");
+			}
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+			Logger.logger.error("SQLException in getPicture " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in getPicture: error getting picture in database: " + ex);
+		} catch (Exception ex) {
+			Logger.logger.error("SQLException in getPicture " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			JOptionPane.showMessageDialog(Main.getInstance(), "error in getPicture \n" + ex.getMessage(), "Failed to get picture", JOptionPane.ERROR_MESSAGE);
+		} finally {
+			conn.close();
+		}
+        return picture;
+    }
+
+    public static String getFloor(int buildingID, int floor) throws SQLException {
+        String blobString = null;
+        Connection conn = geefVerbindingOwner();
+        try {
+            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectFloor);
+            ps.setInt(1, buildingID);
+            ps.setInt(2, floor);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Blob blob = rs.getBlob(DataBaseConstants.xml);
+                blobString = new String(blob.getBytes(1, (int) blob.length()));
+            } else {
+                System.out.println("floor niet gevonden");
+			}
+            rs.close();
+            ps.close();
+        } catch (SQLException ex) {
+			Logger.logger.error("SQLException in getFloor " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in getFloor: error getting floor in database: " + ex);
+		} catch (Exception ex) {
+			Logger.logger.error("SQLException in getFloor " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			JOptionPane.showMessageDialog(Main.getInstance(), "error in getFloor \n" + ex.getMessage(), "Failed to get floor", JOptionPane.ERROR_MESSAGE);
+		} finally {
+			conn.close();
+		}
+        return blobString;
+    }
+
+    // Aid to convert files intop bytearray
+    private static byte[] getBytesFromFile(File file) throws IOException {
+        InputStream is = new FileInputStream(file);
+
+        // Get the size of the file
+        long length = file.length();
+
+        if (length > Integer.MAX_VALUE) {
+            // File is too large
+        }
+
+        // Create the byte array to hold the data
+        byte[] bytes = new byte[(int)length];
+
+        // Read in the bytes
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length
+               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
+            offset += numRead;
+        }
+
+        // Ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file "+file.getName());
+        }
+
+        // Close the input stream and return bytes
+        is.close();
+        return bytes;
+    }
+
+    public static void addFloor(int buildingID, int floor, File xml) throws SQLException {
+        Connection conn = geefVerbindingOwner();
+        try {
+            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertFloor);
+            ps.setInt(1, buildingID);
+            ps.setInt(2, floor);
+            ps.setBytes(3, getBytesFromFile(xml));
+			ps.executeUpdate();
+			ps.close();
+        } catch (SQLException ex) {
+			Logger.logger.error("SQLException in addFloor " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in addFloor: error inserting floor in database: " + ex);
+		} catch (Exception ex) {
+			Logger.logger.error("SQLException in addFloor " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			JOptionPane.showMessageDialog(Main.getInstance(), "error in addFloor \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
+		} finally {
+			conn.close();
+		}
+    }
+
 	/**
 	 * Adds a floorplan to the database
 	 * @param id the id
@@ -477,6 +622,44 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
+	}
+
+    /**
+	 * Getter for the id of a picture
+	 * @param rentable_building_ID
+	 * @param type_floor
+     * @param connected
+	 * @return the ID used in the database
+	 * @throws SQLException thrown if the select statement fails
+	 */
+	public static Integer getPictureId(int rentable_building_ID, int type_floor) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+        Integer id = null;
+		try {
+            PreparedStatement psCheckPicture = conn.prepareStatement(DataBaseConstants.checkPicture);
+
+			psCheckPicture.setInt(1, rentable_building_ID);
+			psCheckPicture.setInt(2, type_floor);
+			ResultSet rsCheck = psCheckPicture.executeQuery();
+			if (rsCheck.next()) {
+				//picture already exists
+				id = rsCheck.getInt(DataBaseConstants.pictureID);
+			} else {
+                System.out.println("picuterid niet gevonden");
+				Logger.logger.fatal("picture nog niet gevonden na toevoegen picture > error in sql or problem with database");
+			}
+			rsCheck.close();
+			psCheckPicture.close();
+		} catch (SQLException ex) {
+            System.out.println("FATAL");
+			Logger.logger.info("picture is null where it should not be in addFloorPlan");
+			throw new SQLException(ex.getMessage());
+		} catch (Exception exc) {
+            System.out.println("Ander exceptie: " + exc.getMessage());
+        } finally {
+            conn.close();
+        }
+		return id;
 	}
 
 	/**

@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import webcammodule.WebcamDialog;
 
 /**
  *
@@ -59,7 +60,7 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (e.getClickCount() == 2) {
+                    if (e.getClickCount() == 2) {
 						//open building dialog
 						new BuildingEditDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId()).setVisible(true);
 					} else {

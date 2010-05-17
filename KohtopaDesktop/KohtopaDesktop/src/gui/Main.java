@@ -108,6 +108,7 @@ public class Main extends JFrame {
 		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
 		actions.put("floorEdit", new FloorEditAction("floorEdit", new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
 		actions.put("floorRemove", new FloorRemoveAction("floorRemove", new ImageIcon(getClass().getResource("/images/floor_remove_23.png"))));
+        actions.put("webcam", new WebcamAction("webcam", new ImageIcon(getClass().getResource("/images/webcam_23.png"))));
 
 		//jframe
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
@@ -221,7 +222,9 @@ public class Main extends JFrame {
 		JActionButton btnRemoveRentable = new JActionButton(Main.getAction("rentableRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveRentable);
 
-
+        //webcam
+        JActionButton btnWebcam = new JActionButton(Main.getAction("webcam"), pnlAddremoveInfo);
+        pnlButtonsAddRemove.add(btnWebcam);
 
 		return pnlAddremove;
 	}

@@ -50,6 +50,9 @@ public class DataBaseConstants {
 	public static String tableTasks = "tasks";
 	public static String tableTasksRead = "system.tasksview";
 	public static String tableTasksWrite = "system.changetasksview";
+    public static String tableFloors = "floors";
+    public static String tableFloorsRead = "system.floorsview";
+    public static String tableFloorsWrite = "system.changefloorsview";
 	//addresses column labels
 	public static String addressID = "addressid";
 	public static String streetNumber = "street_number";
@@ -74,6 +77,7 @@ public class DataBaseConstants {
 	public static String buildingID = "buildingid";
 	public static String latitude = "latitude";
 	public static String longitude = "longitude";
+    public static String ipaddress = "ipaddress";
 	//rentables column labels
 	public static String rentableID = "rentableid";
 	public static String rentableType = "type";
@@ -134,6 +138,9 @@ public class DataBaseConstants {
 	public static String pictureID = "pictureid";
 	public static String RentBuildID = "rentable_building_id";
 	public static String pictureData = "picture";
+    public static String xml = "xml";
+    public static String picture = "picture";
+
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
 			+ " FROM " + tablePersons
@@ -274,7 +281,18 @@ public class DataBaseConstants {
 			+ " WHERE " + buildingID + " = ?";
 	public static String deleteBuilding = "DELETE FROM " + tableBuildingsWrite + " WHERE " + buildingID + " = ?";
 	public static String deleteRentable = "DELETE FROM " + tableRentablesWrite + " WHERE " + rentableID + " = ?";
-	//pictures
+	//floors
+    public static String insertFloor = "INSERT INTO " + tableFloorsWrite + " VALUES (?,?,?)";
+    public static String selectFloor = "SELECT " + xml
+            + " FROM "  + tableFloorsRead
+            + " WHERE " + buildingID + " = ? AND " + floor + " = ?";
+    //pictures
+    public static String selectPicture = "SELECT " + picture
+            + " FROM " + tablePicturesRead
+            + " WHERE " + pictureID + " = ?";
+    public static String checkPicture = "SELECT " + pictureID
+            + " FROM " + tablePicturesRead
+            + " WHERE " + RentBuildID + " = ? AND " + pictureType + " = ?";
 	public static String insertPicture = "INSERT INTO " + tablePicturesWrite + " VALUES (0,?,?,?)";
 	public static String deletePicture = "DELETE FROM " + tablePicturesWrite + " WHERE " + pictureID + " = ?";
 	public static String selectBuildingPictures = "SELECT " + pictureData + "," + pictureID
@@ -370,6 +388,10 @@ public class DataBaseConstants {
 			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
 			+ " WHERE c." + rentableID + " = ?";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
+
+    public static String selectIPAddress = "SELECT " + ipaddress
+            + " FROM " + tableBuildingsRead
+            + " WHERE " + buildingID + " = ?";
 	public static String deletePictures = "DELETE FROM " + tablePicturesWrite
 			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = ?";
 }

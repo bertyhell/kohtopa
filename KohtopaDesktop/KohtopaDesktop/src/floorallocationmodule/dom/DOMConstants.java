@@ -19,13 +19,14 @@ public class DOMConstants {
     public static final String DATA = "data";
     public static final String NAME = "name";
     public static final String IMAGE = "image";
+    public static final String IMAGEID = "imageid";
     public static final String POINTS = "points";
     public static final String POINT = "point";
     public static final String X = "x";
     public static final String Y = "y";
     public static final String CAMERAS = "cameras";
     public static final String CAMERA = "camera";
-    public static final String FIREEXTINGUISHERS = "fireextinguisher";
+    public static final String FIREEXTINGUISHERS = "fireextinguishers";
     public static final String FIREEXTINGUISHER = "fireextinguisher";
     public static final String EMERGENCYEXITS = "emergencyexits";
     public static final String EMERGENCYEXIT = "emergencyexit";
