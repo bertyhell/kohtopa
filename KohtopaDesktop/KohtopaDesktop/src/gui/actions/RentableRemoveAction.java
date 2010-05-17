@@ -40,8 +40,7 @@ public class RentableRemoveAction extends AbstractIconAction {
 				//delete images
 				Main.getDataObject().deleteSelectedRentables(selected);
 				JOptionPane.showMessageDialog((Component)root, Language.getString("RentableSuccesDelete"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
-				Main.updateBuildingList();
-				Main.updateRentableList();
+				Main.updateAddRemoveList();
 			} catch (SQLException ex) {
 				System.out.println("error code: " + ex.getErrorCode());
 				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), "???", JOptionPane.ERROR_MESSAGE);

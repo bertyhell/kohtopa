@@ -91,6 +91,7 @@ public class InvoicesPane extends JPanel implements IInvoiceListContainer, IRent
 	}
 
 	public int getRenterId() throws WrongNumberOfSelectedItemsException {
+		System.out.println("lstRenters.getSelectedValue(): "+ lstRenters.getSelectedValue());
 		return ((Person)lstRenters.getSelectedValue()).getId();
 	}
 
@@ -99,7 +100,7 @@ public class InvoicesPane extends JPanel implements IInvoiceListContainer, IRent
 		//list of invoices
 		if (lstRenters.getSelectedIndices().length != 0) {
 			try {
-				lstInvoices = new JList(Main.getDataObject().getInvoicesPreviews(((Person) lstRenters.getSelectedValue()).getId()));
+				lstInvoices.setListData(Main.getDataObject().getInvoicesPreviews(((Person) lstRenters.getSelectedValue()).getId()));
 			} catch (SQLException ex) {
 				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			}

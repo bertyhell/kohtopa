@@ -1,16 +1,18 @@
 package data.entities;
 
+import Language.Language;
 import gui.Logger;
 import gui.Main;
 import java.io.StringReader;
-import java.sql.Blob;
-import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -20,49 +22,64 @@ import org.xml.sax.InputSource;
  */
 public class Invoice {
 
-	private int id;
+	private int invoiceId;
 	private Vector<InvoiceItem> items;
 	private Person owner;
 	private Person renter;
 	private Date sendingDate;
-        private String xml;
 	private boolean send;
 	private boolean paid;
+	private Date start;
+	private Date end;
 
-//	public Invoice(Person p, int invoiceid) {
-//            this(p);
-//	}
-
-        public Invoice(Person p) {
-
+	public Invoice(int personId, int invoiceId, boolean newInvoice) {
+		this.invoiceId = invoiceId;
 		owner = Main.getDataObject().getOwner();
+		renter = Main.getDataObject().getPerson(personId);
 		items = new Vector<InvoiceItem>();
+		if (!newInvoice) {
+			try {
+				sendingDate = Main.getDataObject().getInvoiceSendingDate(invoiceId);
+				//TODO get renter from invoice id from database
+				//TODO read xml file from database
+				//get dom parser ready
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				InputSource is = new InputSource(new StringReader(Main.getDataObject().getInvoiceXmlString(invoiceId)));
+				Document d = builder.parse(is);
 
-                renter = p;
+				DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+				Node dateStart = d.getElementsByTagName("invoice_start_date").item(0);
+				Node dateEnd = d.getElementsByTagName("invoice_end_date").item(0);
+				start = formatter.parse(dateStart.getTextContent());
+				end = formatter.parse(dateEnd.getTextContent());
 
-        }
+				NodeList invoiceItems = d.getElementsByTagName("invoice_item");
+				NodeList invoiceItemChilds;
+				String description = null;
+				for (int i = 0; i < invoiceItems.getLength(); i++) {
+					invoiceItemChilds = invoiceItems.item(i).getChildNodes();
+					for (int j = 0; j < invoiceItemChilds.getLength(); j++) {
+						if (invoiceItemChilds.item(j).getNodeName().equals("description")) {
+							description = invoiceItemChilds.item(j).getTextContent();
+						} else if (invoiceItemChilds.item(j).getNodeName().equals("price")) {
+							items.add(new InvoiceItem(description, Double.parseDouble(invoiceItemChilds.item(j).getTextContent())));
+						}
+					}
+				}
+			} catch (Exception ex) {
+				JOptionPane.showMessageDialog(Main.getInstance(), "Error getting xml items parsing... \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+				Logger.logger.debug("Stacktrace\n" + ex);
+			}
+		}
+	}
 
-
-
-        public Invoice(int invoiceId, Date sendingDate, Blob data,
-                Person renter, boolean send, boolean paid){
-            this(renter);
-            this.id = invoiceId;
-            this.sendingDate = sendingDate;
-            this.paid = paid;
-            this.send = send;
-            this.renter = renter;
-
-            try {
-                if(data != null) {
-                    xml = new String(data.getBytes(1, (int) data.length()));
-                    //System.out.println(xml);
-                    parseXml(xml);
-                }
-            } catch (SQLException ex) {
-               Logger.logger.debug("Probleem bij ophalen xml", ex);
-            }
-        }
+	public Invoice(int invoceId, Date sendingDate, boolean send, boolean paid) {
+		this.invoiceId = invoceId;
+		this.sendingDate = sendingDate;
+		this.paid = paid;
+		this.send = send;
+	}
 
 	public Person getOwner() {
 		return owner;
@@ -81,7 +98,7 @@ public class Invoice {
 	}
 
 	public int getId() {
-		return id;
+		return invoiceId;
 	}
 
 	public Vector<InvoiceItem> getItems() {
@@ -100,28 +117,11 @@ public class Invoice {
 		return sendingDate;
 	}
 
-    private void parseXml(String xml) {
-        try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(xml));
-            Document d = builder.parse(is);
+	public Date getEnd() {
+		return end;
+	}
 
-            NodeList nodes = d.getElementsByTagName("invoice_item");
-
-            for(int i=0 ; i<nodes.getLength() ; i++) {
-                Element current = (Element)nodes.item(i);
-                String description = current.getElementsByTagName("description").item(0).getTextContent();
-                
-                double price = Double.parseDouble(current.getElementsByTagName("price").item(0).getTextContent());
-
-                //System.out.println(description+"="+price);
-                addItem(description,price);
-            }
-
-        } catch (Exception ex) {
-            Logger.logger.debug("Probleem bij parsen xml", ex);
-        }
-
-    }
+	public Date getStart() {
+		return start;
+	}
 }

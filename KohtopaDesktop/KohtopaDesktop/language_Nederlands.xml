@@ -194,6 +194,7 @@
     <entry name="errMontlyCost">Maandelijkse kost mag enkel cijfers en puntjes bevatten en mag niet leeg zijn</entry>
 	<entry name="errIp">Ip adres moet er als volgt uitzien: 0-255.0-255.0-255.0-255</entry>
 	<entry name="RentableSuccesDelete">Rentable(s) succesvol verwijderd</entry>
+	<entry name="ContractSuccesUpdate">Contract succesvol geüpdated</entry>
     - <!-- types lstRentable -->
     <entry name="lstRentableType0">Kamer</entry>
     <entry name="lstRentableType1">Appartement</entry>

@@ -4,7 +4,7 @@ import Language.Language;
 import data.entities.Contract;
 import gui.JActionButton;
 import gui.Main;
-import gui.contractstab.ContractDialog;
+import gui.contractstab.ContractEditDialog;
 import gui.interfaces.IContractsListContainer;
 import java.awt.event.ActionEvent;
 import javax.swing.Icon;
@@ -25,7 +25,7 @@ public class ContractEditAction extends AbstractIconAction {
 		System.out.println("root: " +  ((JActionButton) e.getSource()).getRoot());
 		Object[] selected = ((IContractsListContainer) ((JActionButton) e.getSource()).getRoot()).getSelectedContracts();
 		if (selected.length == 1) {
-			new ContractDialog(((Contract) selected[0]).getId(), false, Main.getDataObject()).setVisible(true);
+			new ContractEditDialog(((Contract) selected[0]).getId(), Main.getDataObject()).setVisible(true);
 		} else {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Please select exacly 1 rentable to edit", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
 		}

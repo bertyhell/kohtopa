@@ -229,14 +229,6 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 		gbl2.addLayoutComponent(pnlFloorBtns, gbc);
 		pnlRentablesInfo.add(pnlFloorBtns);
 
-		JButton btnAddFloor = new JButton(Main.getAction("floorAdd"));
-		btnAddFloor.setHideActionText(true);
-		pnlFloorBtns.add(btnAddFloor);
-
-		JButton btnEditFloor = new JButton(Main.getAction("floorEdit"));
-		btnEditFloor.setHideActionText(true);
-		pnlFloorBtns.add(btnEditFloor);
-
 		JButton btnRemoveFloor = new JButton(Main.getAction("floorRemove"));
 		btnRemoveFloor.setHideActionText(true);
 		pnlFloorBtns.add(btnRemoveFloor);
@@ -318,7 +310,7 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 								txtCity.getText(),
 								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
 								txtIp.getText());
-						Main.updateBuildingList();
+						Main.updateAddRemoveList();
 						instance.dispose();
 						JOptionPane.showMessageDialog(instance, Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 					} catch (SQLException ex) {

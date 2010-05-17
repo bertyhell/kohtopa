@@ -106,10 +106,8 @@ public class Main extends JFrame {
 		actions.put("contractAdd", new ContractAddAction("contractAdd", new ImageIcon(getClass().getResource("/images/contract_add_23.png"))));
 		actions.put("contractEdit", new ContractEditAction("contractEdit", new ImageIcon(getClass().getResource("/images/contract_edit_23.png"))));
 		actions.put("contractRemove", new ContractRemoveAction("contractRemove", new ImageIcon(getClass().getResource("/images/contract_remove_23.png"))));
-		actions.put("floorAdd", new FloorAddAction("floorAdd", new ImageIcon(getClass().getResource("/images/floor_add_23.png"))));
-		actions.put("floorEdit", new FloorEditAction("floorEdit", new ImageIcon(getClass().getResource("/images/floor_edit_23.png"))));
 		actions.put("floorRemove", new FloorRemoveAction("floorRemove", new ImageIcon(getClass().getResource("/images/floor_remove_23.png"))));
-        actions.put("webcam", new WebcamAction("webcam", new ImageIcon(getClass().getResource("/images/webcam_23.png"))));
+		actions.put("webcam", new WebcamAction("webcam", new ImageIcon(getClass().getResource("/images/webcam_23.png"))));
 
 		//jframe
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/ico.png")).getImage());
@@ -164,8 +162,6 @@ public class Main extends JFrame {
 					pnlMessagesInfo = new MessagePane();
 					pnlMessages.add(pnlMessagesInfo, BorderLayout.CENTER);
 				} else if (tab == 3 && pnlInvoicesInfo == null) {
-					pnlInvoicesInfo = new InvoicesPane(data);
-					pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
 				} else if (tab == 4 && pnlContractsInfo == null) {
 					pnlContractsInfo = new ContractsPane(data);
 					pnlContracts.add(pnlContractsInfo, BorderLayout.CENTER);
@@ -223,9 +219,9 @@ public class Main extends JFrame {
 		JActionButton btnRemoveRentable = new JActionButton(Main.getAction("rentableRemove"), pnlAddremoveInfo);
 		pnlButtonsAddRemove.add(btnRemoveRentable);
 
-        //webcam
-        JActionButton btnWebcam = new JActionButton(Main.getAction("webcam"), pnlAddremoveInfo);
-        pnlButtonsAddRemove.add(btnWebcam);
+		//webcam
+		JActionButton btnWebcam = new JActionButton(Main.getAction("webcam"), pnlAddremoveInfo);
+		pnlButtonsAddRemove.add(btnWebcam);
 
 		return pnlAddremove;
 	}
@@ -296,6 +292,9 @@ public class Main extends JFrame {
 		pnlButtonsInvoice.setBackground(new Color(180, 180, 180, 100));
 		pnlInvoices.add(pnlButtonsInvoice, BorderLayout.PAGE_START);
 
+		pnlInvoicesInfo = new InvoicesPane(data);
+		pnlInvoices.add(pnlInvoicesInfo, BorderLayout.CENTER);
+
 		JActionButton btnAddInvoice = new JActionButton(actions.get("invoiceAdd"), pnlInvoicesInfo);
 		btnAddInvoice.setHideActionText(disableBtnText);
 		pnlButtonsInvoice.add(btnAddInvoice);
@@ -324,9 +323,6 @@ public class Main extends JFrame {
 		JActionButton btnEditContract = new JActionButton(actions.get("contractEdit"), pnlContractsInfo);
 		btnEditContract.setHideActionText(disableBtnText);
 		pnlButtonsContract.add(btnEditContract);
-		JActionButton btnRemoveContract = new JActionButton(actions.get("contractRemove"), pnlContractsInfo);
-		btnRemoveContract.setHideActionText(disableBtnText);
-		pnlButtonsContract.add(btnRemoveContract);
 
 		return pnlContracts;
 	}
@@ -476,24 +472,21 @@ public class Main extends JFrame {
 		return (String) cbbLanguages.getSelectedItem();
 	}
 
-	public static void updateBuildingList(){
+	public static void updateAddRemoveList() {
 		pnlAddremoveInfo.updateBuildingList();
-	}
-
-	public static void updateRentableList(){
 		pnlAddremoveInfo.updateRentableList();
 	}
 
-	public static void updateInvoiceList(){
+	public static void updateInvoiceList() {
 		pnlInvoicesInfo.updateInvoicesList();
 	}
 
-	public static void updateRenterList(){
+	public static void updateRenterList() {
 		pnlInvoicesInfo.updateRenterList();
 		pnlContractsInfo.updateRenterList();
 	}
 
-	public static void updateContractList(){
+	public static void updateContractList() {
 		pnlContractsInfo.updateContractList();
 	}
 }

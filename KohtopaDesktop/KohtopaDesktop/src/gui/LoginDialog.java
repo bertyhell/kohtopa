@@ -14,6 +14,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTextUI.BasicCaret;
 
@@ -108,13 +109,6 @@ public class LoginDialog extends JFrame implements ActionListener {
 		gbl.addLayoutComponent(lblLoginFailed2, gbc);
 		pnlLogin.add(lblLoginFailed2);
 
-		//FIXME remove this after iterations?
-		JLabel lblLoginTip = new JLabel(DataConnector.getOptimalLogin());
-		lblLoginTip.setForeground(Color.DARK_GRAY);
-		Layout.buildConstraints(gbc, 0, 5, 2, 1, 60, 1, GridBagConstraints.WEST, GridBagConstraints.WEST);
-		gbl.addLayoutComponent(lblLoginTip, gbc);
-		pnlLogin.add(lblLoginTip);
-
 		JButton btnLogin = new JButton(null, new ImageIcon(getClass().getResource("/images/next_16.png")));
 		Layout.buildConstraints(gbc, 1, 1, 1, 1, 20, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(btnLogin, gbc);
@@ -130,7 +124,14 @@ public class LoginDialog extends JFrame implements ActionListener {
 
 	public void checkLogin() {
 		//check login
-		Integer ownerId = DataConnector.checkLogin(txtUser.getText(), txtPass.getText());
+		ProgramSettings.setUsername(txtUser.getText());
+		ProgramSettings.setPassword(txtPass.getText());
+		Integer ownerId = null;
+		try {
+			ownerId = DataConnector.checkLogin();
+		} catch (SQLException ex) {
+			JOptionPane.showMessageDialog(LoginDialog.getInstance(), "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
+		}
 		if (ownerId != null) {
 			logIn(ownerId, false);
 		} else {
@@ -195,7 +196,12 @@ public class LoginDialog extends JFrame implements ActionListener {
 				//check settings if remember pass is true:
 				if (ProgramSettings.isRemeberPassword()) {
 					//check if stored pass is correct
-					Integer ownerId = DataConnector.checkLogin(ProgramSettings.getUsername(), ProgramSettings.getPassword());
+					Integer ownerId = null;
+					try {
+						ownerId = DataConnector.checkLogin();
+					} catch (SQLException ex) {
+						JOptionPane.showMessageDialog(LoginDialog.getInstance(), "login attempt failed: \n" + ex.getMessage(), "login fail", JOptionPane.ERROR_MESSAGE);
+					}
 					if (ownerId == null) {
 						LoginDialog.getInstance().setVisible(true);
 					} else {

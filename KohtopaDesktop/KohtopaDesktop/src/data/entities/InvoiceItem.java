@@ -22,7 +22,7 @@ public class InvoiceItem {
 		return prijs;
 	}
 
-	public Object[] toObject(){
+	public Object[] toObjects(){
 		return new Object[]{description, new Double(prijs)};
 	}
 }

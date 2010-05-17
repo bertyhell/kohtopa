@@ -145,12 +145,8 @@ public class DataBaseConstants {
 	public static String picture = "picture";
 	//dataconnector statement strings
 	public static String checkLogin = "SELECT " + personID
-			+ " FROM " + tablePersons
-			+ " WHERE " + username + " = ? AND " + password + " = ?";
-	public static String selectOwners = "SELECT " + personID + "," + personName + ","
-			+ firstName + "," + email + "," + telephone + "," + cellphone
-			+ " FROM " + tablePersons + " b"
-			+ " WHERE " + roleID + " = owner";
+			+ " FROM " + tablePersonsRead
+			+ " WHERE " + roleID + " = 'owner'";
 	public static String selectPerson = "SELECT "
 			+ "p." + personName
 			+ ",p." + firstName
@@ -187,7 +183,7 @@ public class DataBaseConstants {
 			+ ",i." + invoiceId
 			+ ",i." + invoicePaid
 			+ ",i." + invoiceSend
-                        + ",i." + invoiceXml
+			+ ",i." + invoiceXml
 			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tableInvoicesRead + " i ON i." + contractID + " = c." + contractID
 			+ " WHERE c." + renterID + " = ?"
@@ -197,7 +193,7 @@ public class DataBaseConstants {
 			+ " FROM ("
 			+ " SELECT " + contractID + ", rank() over(order by " + contract_end + " asc) rank"
 			+ " FROM " + tableContractsRead
-			+ " WHERE " + renterID + " = ? AND sysdate - " + contract_end + " >= 0)"
+			+ " WHERE " + renterID + " = ? AND sysdate > " + contract_start + ")"
 			+ " WHERE rank=1) ,?,0,?,0)";
 	public static String selectRentPriceFinal = "WITH x AS( SELECT "
 			+ price + "," + guarantee + ", rank() OVER(ORDER BY " + contract_end + " asc) rank"
@@ -253,6 +249,7 @@ public class DataBaseConstants {
 			+ "," + price
 			+ "," + rented
 			+ "," + rentableDescription
+			+ "," + buildingID
 			+ " FROM " + tableRentablesRead
 			+ " WHERE " + rentableID + " = ?";
 	public static String selectRentablesFromOwner = "SELECT "
@@ -396,10 +393,30 @@ public class DataBaseConstants {
 			+ " WHERE c." + rentableID + " = ?";
 	public static String addContract = "INSERT INTO "
 			+ tableAddContractView + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static String updateContract = "UPDATE "
+			+ tableContractsWrite + " SET "
+			+ contract_end + " = ?, "
+			+ contractID + " = ? "
+			+ " WHERE " + contractID + " = ?";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
 	public static String selectIPAddress = "SELECT " + ipaddress
 			+ " FROM " + tableBuildingsRead
 			+ " WHERE " + buildingID + " = ?";
 	public static String deletePictures = "DELETE FROM " + tablePicturesWrite
 			+ " WHERE " + RentBuildID + " = ? AND " + pictureType + " = ?";
+	public static String selectInvoiceXmlString = "SELECT " + invoiceXml
+			+ " FROM " + tableInvoicesRead
+			+ " WHERE " + invoiceId + " = ?";
+	public static String updateInvoice = "UPDATE " + tableInvoicesWrite + " SET "
+			+ invoiceDate + " = ? , "
+			+ invoiceXml + " = ?"
+			+ " WHERE " + invoiceId + " = ?";
+	public static String selectInvoiceSendingDate = "SELECT " + invoiceDate
+			+ " FROM " + tableInvoicesRead
+			+ " WHERE " + invoiceId + " = ?";
+	public static String deleteInvoice = "DELETE FROM " + tableInvoicesWrite
+			+ " WHERE " + invoiceId + " = ?";
+	public static String updateBuildingPosition = "UPDATE " + tableBuildingsWrite + " SET "
+			+ latitude + " = ? " + longitude + " = ?"
+			+ " WHERE " + buildingID + " = ?";
 }

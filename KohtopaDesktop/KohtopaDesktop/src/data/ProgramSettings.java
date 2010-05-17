@@ -37,8 +37,8 @@ public class ProgramSettings {
 	username = "";
 	password = "";
 	ownerId = null;
-	connectionstring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
-//	connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
+	//connectionstring = "jdbc:oracle:thin:@localhost:1521:XE"; //jelle & ruben
+	connectionstring = "jdbc:oracle:thin:@192.168.58.128:1521:kohtopa"; //laptop bert
 	//connectionstring = "jdbc:oracle:thin:@192.168.19.129:1521:kohtopa"; //pc bert
 	savePass = false;
 	loggerLevel = Level.DEBUG;
