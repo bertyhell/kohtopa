@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import data.entities.*;
 import gui.Logger;
@@ -1106,6 +1105,49 @@ public class DataConnector {
 		return contracts;
 	}
 
+    /**
+     * Inserts a contract in the database
+     */
+    public static void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+        try {
+            Connection conn = geefVerbindingOwner();
+
+            try {
+//                System.out.println("start: " + contractStart.toString());
+//                System.out.println("end: " + contractEnd.toString());
+//                java.sql.Date start = new java.sql.Date(contractStart.getTime());
+//                System.out.println("start: " + start.toString());
+//                java.sql.Date end = new java.sql.Date(contractEnd.getTime());
+//                System.out.println("end: " + end.toString());
+                
+                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.addContract);
+                ps.setInt(1, rentableId);
+                ps.setDate(2, new java.sql.Date(contractStart.getTime()));
+                ps.setDate(3, new java.sql.Date(contractEnd.getTime()));
+                ps.setDouble(4, price);
+                ps.setDouble(5, monthCost);
+                ps.setDouble(6, guarantee);
+                ps.setString(7, streetNumber);
+                ps.setString(8, street);
+                ps.setString(9, zipCode);
+                ps.setString(10, city);
+                ps.setString(11, countryCode);
+                ps.setString(12, lastName);
+                ps.setString(13, firstName);
+                ps.setString(14, email);
+                ps.setString(15, telephone);
+                ps.setString(16, city);
+                ps.execute();
+                System.out.println("Contract added!");
+            } finally {
+				conn.close();
+			}
+        } catch (Exception ex) {
+			Logger.logger.error("Exception in addContract " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+		}
+    }
+
 	/**
 	 * Removes a contract from the database
 	 * @param contract the contract to remove
@@ -1113,7 +1155,7 @@ public class DataConnector {
 	public static void removeContract(Contract contract) {
 	    //TODO 100 can not be possible, only if contract is not active its possible to delete, else: edit to shorten enddate
 		try {
-			Connection conn = geefVerbinding();
+			Connection conn = geefVerbindingOwner();
 
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.removeContract);

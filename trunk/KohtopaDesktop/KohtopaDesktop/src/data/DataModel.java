@@ -315,7 +315,7 @@ public class DataModel {
 
 	public void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
 		Logger.logger.info("adding contract");
-		//TODO 100 implement
+		DataConnector.addContract(rentableId, firstName, lastName, street, streetNumber, zipCode, city, countryCode, telephone, cellphone, email, contractStart, contractEnd, price, monthCost, guarantee);
 	}
 
 	public void updateContract(int contractId, int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {

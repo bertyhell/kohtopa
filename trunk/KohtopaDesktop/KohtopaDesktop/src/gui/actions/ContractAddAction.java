@@ -17,6 +17,6 @@ public class ContractAddAction extends AbstractIconAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		new ContractDialog(0, true,Main.getDataObject());
+		new ContractDialog(0, true,Main.getDataObject()).setVisible(true);
 	}
 }

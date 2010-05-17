@@ -32,6 +32,7 @@ public class DataBaseConstants {
 	public static String tableContracts = "contracts";
 	public static String tableContractsRead = "system.contractsview";
 	public static String tableContractsWrite = "system.changecontractsview";
+    public static String tableAddContractView = "system.addcontractview";
 	public static String tableInvoices = "invoices";
 	public static String tableInvoicesRead = "system.invoicesview";
 	public static String tableInvoicesWrite = "system.changeinvoicesview";
@@ -387,6 +388,8 @@ public class DataBaseConstants {
 			+ " FROM " + tableContractsRead + " c"
 			+ " JOIN " + tablePersonsRead + " p ON p." + personID + " = c." + renterID
 			+ " WHERE c." + rentableID + " = ?";
+    public static String addContract = "INSERT INTO "
+            + tableAddContractView + " values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	public static String removeContract = "DELETE FROM " + tableContractsWrite + " WHERE " + contractID + " = ?";
 
     public static String selectIPAddress = "SELECT " + ipaddress
