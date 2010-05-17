@@ -20,12 +20,11 @@ import javax.swing.event.ChangeListener;
 /**
  * Represents a model for a CalendarPanel, it listens to the spinner,
  * functions as a Calendar and keeps track of tasks, tasks are put in a HashMap
- * with as key time(ms)/86400000(this represents days since beginning of calendar),
+ * with as key their time( represented by an integer of form yyyymmdd),
  * this cannot be a date because  a date has hours too.
  * @author Jelle
  */
 public class CalendarModel extends GregorianCalendar implements ChangeListener {
-    //public static final long CONVERTMSTODAY = 86400000;
     CalendarPane calendarPanel;
     HashMap<Integer,Vector<Task>> tasks;
 
