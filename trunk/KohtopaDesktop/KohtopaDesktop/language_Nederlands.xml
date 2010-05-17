@@ -192,6 +192,8 @@
     <entry name="errGuarantee">Garantie mag enkel cijfers en puntjes bevatten en mag niet leeg zijn</entry>
     <entry name="errPrice">Prijs mag enkel cijfers en puntjes bevatten en mag niet leeg zijn</entry>
     <entry name="errMontlyCost">Maandelijkse kost mag enkel cijfers en puntjes bevatten en mag niet leeg zijn</entry>
+	<entry name="errIp">Ip adres moet er als volgt uitzien: 0-255.0-255.0-255.0-255</entry>
+	<entry name="RentableSuccesDelete">Rentable(s) succesvol verwijderd</entry>
     - <!-- types lstRentable -->
     <entry name="lstRentableType0">Kamer</entry>
     <entry name="lstRentableType1">Appartement</entry>

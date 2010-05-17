@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
 public class RestartAction extends AbstractAction {
 
 	public RestartAction(ImageIcon img) {
-		super("Apply",img);
+		super("Apply", img);
 	}
 
 	public void actionPerformed(ActionEvent ae) {
@@ -40,16 +40,18 @@ public class RestartAction extends AbstractAction {
 					Logger.logger.info("option 0: restart now");
 					//restart now
 					try {
-						Main.getInstance().dispose();
+						Logger.logger.info("writing settings file on close main, settings language is: " + ProgramSettings.getLanguage());
+						ProgramSettings.write();//store settings
+						ProgramSettings.print();
 						System.exit(100);
 					} catch (Exception ex) {
 						Logger.logger.error("Exception during restart attempt " + ex.getMessage());
 						Logger.logger.debug("StackTrace: ", ex);
 					}
-				}else{
+				} else {
 					Logger.logger.info("option 1: restart later");
 				}
-			}else{
+			} else {
 				Logger.logger.info("option 2: cancel");
 				JOptionPane.showMessageDialog(Main.getInstance(), "Language already applied", Language.getString("error"), JOptionPane.INFORMATION_MESSAGE);
 			}

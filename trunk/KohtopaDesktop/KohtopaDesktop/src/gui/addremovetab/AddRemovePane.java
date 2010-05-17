@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -22,7 +23,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
-import webcammodule.WebcamDialog;
 
 /**
  *
@@ -60,7 +60,7 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
+					if (e.getClickCount() == 2) {
 						//open building dialog
 						new BuildingEditDialog(Main.getInstance(), ((Building) lstBuildings.getSelectedValue()).getId()).setVisible(true);
 					} else {
@@ -127,8 +127,13 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 	}
 
 	public void updateBuildingList() {
+
 		try {
+			Object selected = lstBuildings.getSelectedValue();
 			lstBuildings.setListData(data.getBuildingPreviews());
+			if (selected != null) {
+				lstBuildings.setSelectedValue(selected, true);
+			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect buildings from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
@@ -136,9 +141,12 @@ public class AddRemovePane extends JPanel implements IBuildingListContainer, IRe
 
 	public void updateRentableList() {
 		try {
-			lstRentables.setListData(data.getRentablePreviews(((Building) instance.getSelectedBuildings()[0]).getId()));
+			Vector<Rentable> rentables = data.getRentablePreviews(((Building) instance.getSelectedBuildings()[0]).getId());
+			if (!rentables.isEmpty()) {
+				lstRentables.setListData(data.getRentablePreviews(((Building) instance.getSelectedBuildings()[0]).getId()));
+			}
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to collect rentables from database:  \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+			lstRentables.setListData(new Object[]{});
 		}
 	}
 }

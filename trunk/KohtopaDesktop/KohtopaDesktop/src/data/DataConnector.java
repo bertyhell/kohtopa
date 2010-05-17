@@ -326,6 +326,48 @@ public class DataConnector {
 		return addressID;
 	}
 
+//	/**
+//	 * Adds an address tot the database
+//	 * @param conn the connection to use
+//	 * @param street the street
+//	 * @param streetNumber the streetnumber
+//	 * @param zip zipcode of the address
+//	 * @param city city of the address
+//	 * @return the id of the address that is used in the database
+//	 * @throws SQLException thrown if there is a problem in the commands used
+//	 */
+//	static Integer addAddress(Connection conn, String street, String streetNumber, String zip, String city, String country) throws SQLException {
+//
+//		Integer addressID = getAddressID(conn, street, streetNumber, zip, city, country, true);
+//		System.out.println("address gevonden on first try: " + addressID);
+//		try {
+//			if (addressID == null) {
+//				System.out.println("address niet gevonden op 1e try");
+//				//address does not exists > make it and then get id
+//				System.out.println("adding address (should end up in notconnectedview");
+//				PreparedStatement psAddAddress = conn.prepareStatement(DataBaseConstants.addAddress);
+//				psAddAddress.setString(1, streetNumber);
+//				psAddAddress.setString(2, street);
+//				psAddAddress.setString(3, zip);
+//				psAddAddress.setString(4, city);
+//				psAddAddress.setString(5, country);
+//				psAddAddress.execute();
+//				System.out.println("adding succesfull");
+//				addressID = getAddressID(conn, street, streetNumber, zip, city, country, false);
+//
+//				if (addressID == null) {
+//					Logger.logger.error("addressid is null where it should not be in addAddress");
+//					throw new NullPointerException("address id is still null > proigramming error");
+//				}
+//				System.out.println("address is nu gevonden na toevoegen: " + addressID);
+//			}
+//		} catch (SQLException ex) {
+//			Logger.logger.error("SQLException in addAddress " + ex.getMessage());
+//			Logger.logger.debug("StackTrace: ", ex);
+//			throw new SQLException(ex.getMessage());
+//		}
+//		return addressID;
+//	}
 	/**
 	 * Getter for the id of an address
 	 * @param conn the connection to use
@@ -375,29 +417,68 @@ public class DataConnector {
 		return id;
 	}
 
+//	/**
+//	 * Updates a building in the database
+//	 * @param id the id of the building
+//	 * @param street the new street of the building
+//	 * @param streetNumber the new streetnumber of the building
+//	 * @param zip the new zipcode of the building
+//	 * @param city the new city of the building
+//	 * @throws SQLException thrown when the update fails
+//	 */
+//	public static void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
+//		Connection conn = geefVerbinding();
+//		try {
+//			//TODO: old address: has to be cleaned up by garbagecollect if it is not used anymore
+//			System.out.println("checking address");
+//			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
+//			System.out.println("addres is: " + addressID);
+//			System.out.println("updating building****");
+//			//adding building with correct address id
+//			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
+//			psAddBuilding.setInt(1, addressID);
+//			psAddBuilding.setInt(2, id);
+//			psAddBuilding.execute();
+//			psAddBuilding.close();
+//		} catch (SQLException ex) {
+//			Logger.logger.error("SQLException in updateBuilding " + ex.getMessage());
+//			Logger.logger.debug("StackTrace: ", ex);
+//			throw new SQLException("error in updateBuilding: " + ex);
+//		} catch (Exception ex) {
+//			Logger.logger.error("Exception in updateBuilding (encoding error?) " + ex.getMessage());
+//			Logger.logger.debug("StackTrace: ", ex);
+//			JOptionPane.showMessageDialog(Main.getInstance(), "error in updateBuilding: encoding bufferedImage failed \n" + ex.getMessage(), "Failed to store image", JOptionPane.ERROR_MESSAGE);
+//		} finally {
+//			conn.close();
+//		}
+//	}
 	/**
 	 * Updates a building in the database
-	 * @param id the id of the building
+	 * @param buildingId the id of the building
 	 * @param street the new street of the building
 	 * @param streetNumber the new streetnumber of the building
 	 * @param zip the new zipcode of the building
 	 * @param city the new city of the building
+	 * @param ip the ip address of the webcam server atht eremote location
 	 * @throws SQLException thrown when the update fails
 	 */
-	public static void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
-		Connection conn = geefVerbinding();
+	static void updateBuilding(int buildingId, String street, String streetNumber, String zip, String city, String country, int latitude, int longtitude, String ip) throws SQLException {
+		Connection conn = geefVerbindingOwner();
 		try {
-			//TODO: old address: has to be cleaned up by garbagecollect if it is not used anymore
-			System.out.println("checking address");
-			Integer addressID = addAddress(conn, street, streetNumber, zip, city, country);
-			System.out.println("addres is: " + addressID);
-			System.out.println("updating building****");
-			//adding building with correct address id
-			PreparedStatement psAddBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
-			psAddBuilding.setInt(1, addressID);
-			psAddBuilding.setInt(2, id);
-			psAddBuilding.execute();
-			psAddBuilding.close();
+			PreparedStatement psUpdateBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
+
+			Logger.logger.debug("command in update buildings: " + DataBaseConstants.updateBuilding);
+			psUpdateBuilding.setInt(1, buildingId);
+			psUpdateBuilding.setString(2, streetNumber);
+			psUpdateBuilding.setString(3, street);
+			psUpdateBuilding.setString(4, zip);
+			psUpdateBuilding.setString(5, city);
+			psUpdateBuilding.setString(6, country);
+			psUpdateBuilding.setDouble(7, latitude);
+			psUpdateBuilding.setDouble(8, longtitude);
+			psUpdateBuilding.setString(9, ip);
+			psUpdateBuilding.execute();
+			psUpdateBuilding.close();
 		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in updateBuilding " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
@@ -451,21 +532,21 @@ public class DataConnector {
 		addFloorPlan(id, img, -4);
 	}
 
-    public static String getIPAddress(int buildingID) throws SQLException {
-        String IPAddress = null;
-        Connection conn = geefVerbindingOwner();
-        try {
-            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectIPAddress);
-            ps.setInt(1, buildingID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                IPAddress = rs.getString(DataBaseConstants.ipaddress);
-            } else {
-                System.out.println("building niet gevonden");
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
+	public static String getIPAddress(int buildingID) throws SQLException {
+		String IPAddress = null;
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectIPAddress);
+			ps.setInt(1, buildingID);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				IPAddress = rs.getString(DataBaseConstants.ipaddress);
+			} else {
+				System.out.println("building niet gevonden");
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in getIPAddress " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getIPAddress: error getting IPAddress in database: " + ex);
@@ -476,25 +557,25 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-        return IPAddress;
-    }
+		return IPAddress;
+	}
 
-    public static Picture getPicture(int pictureID) throws SQLException {
-        Picture picture = null;
-        Connection conn = geefVerbindingOwner();
-        try {
-            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPicture);
-            ps.setInt(1, pictureID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ByteArrayInputStream bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.picture));
+	public static Picture getPicture(int pictureID) throws SQLException {
+		Picture picture = null;
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPicture);
+			ps.setInt(1, pictureID);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				ByteArrayInputStream bais = new ByteArrayInputStream(rs.getBytes(DataBaseConstants.picture));
 				picture = new Picture(pictureID, ImageIO.read(bais));
-            } else {
-                System.out.println("picture niet gevonden");
+			} else {
+				System.out.println("picture niet gevonden");
 			}
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
+			rs.close();
+			ps.close();
+		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in getPicture " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getPicture: error getting picture in database: " + ex);
@@ -505,26 +586,26 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-        return picture;
-    }
+		return picture;
+	}
 
-    public static String getFloor(int buildingID, int floor) throws SQLException {
-        String blobString = null;
-        Connection conn = geefVerbindingOwner();
-        try {
-            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectFloor);
-            ps.setInt(1, buildingID);
-            ps.setInt(2, floor);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Blob blob = rs.getBlob(DataBaseConstants.xml);
-                blobString = new String(blob.getBytes(1, (int) blob.length()));
-            } else {
-                System.out.println("floor niet gevonden");
+	public static String getFloor(int buildingID, int floor) throws SQLException {
+		String blobString = null;
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectFloor);
+			ps.setInt(1, buildingID);
+			ps.setInt(2, floor);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				Blob blob = rs.getBlob(DataBaseConstants.xml);
+				blobString = new String(blob.getBytes(1, (int) blob.length()));
+			} else {
+				System.out.println("floor niet gevonden");
 			}
-            rs.close();
-            ps.close();
-        } catch (SQLException ex) {
+			rs.close();
+			ps.close();
+		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in getFloor " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in getFloor: error getting floor in database: " + ex);
@@ -535,51 +616,51 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-        return blobString;
-    }
+		return blobString;
+	}
 
-    // Aid to convert files intop bytearray
-    private static byte[] getBytesFromFile(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
+	// Aid to convert files intop bytearray
+	private static byte[] getBytesFromFile(File file) throws IOException {
+		InputStream is = new FileInputStream(file);
 
-        // Get the size of the file
-        long length = file.length();
+		// Get the size of the file
+		long length = file.length();
 
-        if (length > Integer.MAX_VALUE) {
-            // File is too large
-        }
+		if (length > Integer.MAX_VALUE) {
+			// File is too large
+		}
 
-        // Create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
+		// Create the byte array to hold the data
+		byte[] bytes = new byte[(int) length];
 
-        // Read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length
-               && (numRead=is.read(bytes, offset, bytes.length-offset)) >= 0) {
-            offset += numRead;
-        }
+		// Read in the bytes
+		int offset = 0;
+		int numRead = 0;
+		while (offset < bytes.length
+				&& (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+			offset += numRead;
+		}
 
-        // Ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file "+file.getName());
-        }
+		// Ensure all the bytes have been read in
+		if (offset < bytes.length) {
+			throw new IOException("Could not completely read file " + file.getName());
+		}
 
-        // Close the input stream and return bytes
-        is.close();
-        return bytes;
-    }
+		// Close the input stream and return bytes
+		is.close();
+		return bytes;
+	}
 
-    public static void addFloor(int buildingID, int floor, File xml) throws SQLException {
-        Connection conn = geefVerbindingOwner();
-        try {
-            PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertFloor);
-            ps.setInt(1, buildingID);
-            ps.setInt(2, floor);
-            ps.setBytes(3, getBytesFromFile(xml));
+	public static void addFloor(int buildingID, int floor, File xml) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertFloor);
+			ps.setInt(1, buildingID);
+			ps.setInt(2, floor);
+			ps.setBytes(3, getBytesFromFile(xml));
 			ps.executeUpdate();
 			ps.close();
-        } catch (SQLException ex) {
+		} catch (SQLException ex) {
 			Logger.logger.error("SQLException in addFloor " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in addFloor: error inserting floor in database: " + ex);
@@ -590,7 +671,7 @@ public class DataConnector {
 		} finally {
 			conn.close();
 		}
-    }
+	}
 
 	/**
 	 * Adds a floorplan to the database
@@ -623,19 +704,19 @@ public class DataConnector {
 		}
 	}
 
-    /**
+	/**
 	 * Getter for the id of a picture
 	 * @param rentable_building_ID
 	 * @param type_floor
-     * @param connected
+	 * @param connected
 	 * @return the ID used in the database
 	 * @throws SQLException thrown if the select statement fails
 	 */
 	public static Integer getPictureId(int rentable_building_ID, int type_floor) throws SQLException {
 		Connection conn = geefVerbindingOwner();
-        Integer id = null;
+		Integer id = null;
 		try {
-            PreparedStatement psCheckPicture = conn.prepareStatement(DataBaseConstants.checkPicture);
+			PreparedStatement psCheckPicture = conn.prepareStatement(DataBaseConstants.checkPicture);
 
 			psCheckPicture.setInt(1, rentable_building_ID);
 			psCheckPicture.setInt(2, type_floor);
@@ -644,20 +725,20 @@ public class DataConnector {
 				//picture already exists
 				id = rsCheck.getInt(DataBaseConstants.pictureID);
 			} else {
-                System.out.println("picuterid niet gevonden");
+				System.out.println("picuterid niet gevonden");
 				Logger.logger.fatal("picture nog niet gevonden na toevoegen picture > error in sql or problem with database");
 			}
 			rsCheck.close();
 			psCheckPicture.close();
 		} catch (SQLException ex) {
-            System.out.println("FATAL");
+			System.out.println("FATAL");
 			Logger.logger.info("picture is null where it should not be in addFloorPlan");
 			throw new SQLException(ex.getMessage());
 		} catch (Exception exc) {
-            System.out.println("Ander exceptie: " + exc.getMessage());
-        } finally {
-            conn.close();
-        }
+			System.out.println("Ander exceptie: " + exc.getMessage());
+		} finally {
+			conn.close();
+		}
 		return id;
 	}
 
@@ -1105,55 +1186,55 @@ public class DataConnector {
 		return contracts;
 	}
 
-    /**
-     * Inserts a contract in the database
-     */
-    public static void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
-        try {
-            Connection conn = geefVerbindingOwner();
+	/**
+	 * Inserts a contract in the database
+	 */
+	public static void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+		try {
+			Connection conn = geefVerbindingOwner();
 
-            try {
+			try {
 //                System.out.println("start: " + contractStart.toString());
 //                System.out.println("end: " + contractEnd.toString());
 //                java.sql.Date start = new java.sql.Date(contractStart.getTime());
 //                System.out.println("start: " + start.toString());
 //                java.sql.Date end = new java.sql.Date(contractEnd.getTime());
 //                System.out.println("end: " + end.toString());
-                
-                PreparedStatement ps = conn.prepareStatement(DataBaseConstants.addContract);
-                ps.setInt(1, rentableId);
-                ps.setDate(2, new java.sql.Date(contractStart.getTime()));
-                ps.setDate(3, new java.sql.Date(contractEnd.getTime()));
-                ps.setDouble(4, price);
-                ps.setDouble(5, monthCost);
-                ps.setDouble(6, guarantee);
-                ps.setString(7, streetNumber);
-                ps.setString(8, street);
-                ps.setString(9, zipCode);
-                ps.setString(10, city);
-                ps.setString(11, countryCode);
-                ps.setString(12, lastName);
-                ps.setString(13, firstName);
-                ps.setString(14, email);
-                ps.setString(15, telephone);
-                ps.setString(16, city);
-                ps.execute();
-                System.out.println("Contract added!");
-            } finally {
+
+				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.addContract);
+				ps.setInt(1, rentableId);
+				ps.setDate(2, new java.sql.Date(contractStart.getTime()));
+				ps.setDate(3, new java.sql.Date(contractEnd.getTime()));
+				ps.setDouble(4, price);
+				ps.setDouble(5, monthCost);
+				ps.setDouble(6, guarantee);
+				ps.setString(7, streetNumber);
+				ps.setString(8, street);
+				ps.setString(9, zipCode);
+				ps.setString(10, city);
+				ps.setString(11, countryCode);
+				ps.setString(12, lastName);
+				ps.setString(13, firstName);
+				ps.setString(14, email);
+				ps.setString(15, telephone);
+				ps.setString(16, city);
+				ps.execute();
+				System.out.println("Contract added!");
+			} finally {
 				conn.close();
 			}
-        } catch (Exception ex) {
+		} catch (Exception ex) {
 			Logger.logger.error("Exception in addContract " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 		}
-    }
+	}
 
 	/**
 	 * Removes a contract from the database
 	 * @param contract the contract to remove
 	 */
 	public static void removeContract(Contract contract) {
-	    //TODO 100 can not be possible, only if contract is not active its possible to delete, else: edit to shorten enddate
+		//TODO 100 can not be possible, only if contract is not active its possible to delete, else: edit to shorten enddate
 		try {
 			Connection conn = geefVerbindingOwner();
 
@@ -1534,8 +1615,8 @@ public class DataConnector {
 					invoices.add(new Invoice(
 							rsInvoices.getInt(DataBaseConstants.invoiceId),
 							cal.getTime(),
-							rsInvoices.getString(DataBaseConstants.invoiceSend).equals("1")?true:false,
-							rsInvoices.getString(DataBaseConstants.invoicePaid).equals("1")?true:false));
+							rsInvoices.getString(DataBaseConstants.invoiceSend).equals("1") ? true : false,
+							rsInvoices.getString(DataBaseConstants.invoicePaid).equals("1") ? true : false));
 				}
 			} finally {
 				conn.close();
@@ -1657,8 +1738,6 @@ public class DataConnector {
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException ex) {
-			Logger.logger.error("error in remove building: " + buildingId + " from database: " + ex.getMessage());
-			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in remove building: " + buildingId + " from database: " + ex.getMessage());
 		} finally {
 			conn.close();
@@ -1715,7 +1794,7 @@ public class DataConnector {
 			ps.setInt(1, buildingId);
 			ps.setInt(2, ProgramSettings.getOwnerId());
 			ps.setInt(3, type);
-			ps.setString(4, "description"); //TODO 010 add description to gui so owner can add usefull info to this field
+			ps.setString(4, Language.getRentableType(type) + "," + area + "m²," + price + "€");
 			ps.setDouble(5, area);
 			ps.setString(6, winDir);
 			ps.setDouble(7, winArea);
@@ -1746,7 +1825,7 @@ public class DataConnector {
 			System.out.println("update rentables command: " + DataBaseConstants.updateRentable);
 
 			ps.setInt(1, type);
-			ps.setString(2, "description"); //TODO 010 add description to gui so owner can add usefull info to this field
+			ps.setString(2, Language.getRentableType(type) + "," + area + "m²," + price + "€"); //TODO 010 add description to gui so owner can add usefull info to this field
 			ps.setDouble(3, area);
 			ps.setString(4, winDir);
 			ps.setDouble(5, winArea);
@@ -1763,6 +1842,57 @@ public class DataConnector {
 			Logger.logger.error("error in adding rentable: " + ex.getMessage());
 			Logger.logger.debug("StackTrace: ", ex);
 			throw new SQLException("error in adding rentable: " + ex.getMessage());
+		} finally {
+			conn.close();
+		}
+	}
+
+	static void addBuilding(
+			String street,
+			String streetNumber,
+			String zip,
+			String city,
+			String countryCode,
+			String ip,
+			int type,
+			String description,
+			String area,
+			String winDir,
+			int winArea,
+			String internet,
+			String cable,
+			int outlets,
+			int floor,
+			double price) throws SQLException {
+		Connection conn = geefVerbindingOwner();
+		try {
+			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertBuilding);
+
+			System.out.println("add building command: " + DataBaseConstants.insertBuilding);
+
+			ps.setString(1, streetNumber);
+			ps.setString(2, street);
+			ps.setString(3, zip);
+			ps.setString(4, city);
+			ps.setString(5, countryCode);
+			ps.setString(6, ip);
+			ps.setInt(7, type);
+			ps.setString(8, description);
+			ps.setString(9, area);
+			ps.setString(10, winDir);
+			ps.setInt(11, winArea);
+			ps.setString(12, internet);
+			ps.setString(13, cable);
+			ps.setInt(14, outlets);
+			ps.setInt(15, floor);
+			ps.setDouble(16, price);
+
+			ps.executeUpdate();
+			ps.close();
+		} catch (SQLException ex) {
+			Logger.logger.error("error in adding building: " + ex.getMessage());
+			Logger.logger.debug("StackTrace: ", ex);
+			throw new SQLException("error in adding building: " + ex.getMessage());
 		} finally {
 			conn.close();
 		}

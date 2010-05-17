@@ -76,7 +76,7 @@ public class DataModel {
 		return DataConnector.getPreviewContractsFromRenter(renterId);
 	}
 
-	public Contract getContract( int contractId) {
+	public Contract getContract(int contractId) {
 		Logger.logger.info("getting contract with id: " + contractId);
 		return DataConnector.getContract(contractId);
 	}
@@ -165,7 +165,6 @@ public class DataModel {
 				//delete building
 				DataConnector.deleteBuilding(id);
 			} catch (Exception ex) {//TODO 010 fix this exception use > check if there are any rentables in building yourself
-				Logger.logger.info("expected exception during deletion building (contains rentables): \n" + ex.getMessage());
 				if (!continueWithouthConfirm) {
 					Object[] options = {"Always", "Once", "Abort"};
 					int choise = JOptionPane.showOptionDialog(
@@ -188,8 +187,7 @@ public class DataModel {
 					for (Rentable rentable : DataConnector.getRentablesFromBuilding(id)) {
 						DataConnector.deleteRentable(rentable.getId());
 					}
-					//deleting building (should be empty now
-					DataConnector.deleteBuilding(id);
+					Main.updateBuildingList();
 				} catch (SQLException ex1) {
 					Logger.logger.error("Failed to delete building: \n" + ex1.getMessage());
 					JOptionPane.showMessageDialog(Main.getInstance(), "Failed to delete building: \n" + ex1.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
@@ -209,16 +207,46 @@ public class DataModel {
 		DataConnector.addRentablePreviewPicture(id, img);
 	}
 
-	public void addBuilding(String street, String streetNumber, String zip, String city, String country) throws SQLException {
-
+	public void addBuilding(
+			String street,
+			String streetNumber,
+			String zip,
+			String city,
+			String countryCode,
+			String ip,
+			int type,
+			String area,
+			String winDir,
+			int winArea,
+			String internet,
+			String cable,
+			int outlets,
+			int floor,
+			double price) throws SQLException {
 		Logger.logger.info("add building");
-		DataConnector.addBuilding(street, streetNumber, zip, city, country);
+		DataConnector.addBuilding(
+				street,
+				streetNumber,
+				zip,
+				city,
+				countryCode,
+				ip,
+				type,
+				Language.getRentableType(type) + "," + area + "m²," + price + "€",
+				area,
+				winDir,
+				winArea,
+				internet,
+				cable,
+				outlets,
+				floor,
+				price);
 	}
 
-	public void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country) throws SQLException {
+	public void updateBuilding(int id, String street, String streetNumber, String zip, String city, String country, String ip) throws SQLException {
 
 		Logger.logger.info("update building");
-		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country);
+		DataConnector.updateBuilding(id, street, streetNumber, zip, city, country, 0,0,ip);
 		Main.updatePanels();
 	}
 
@@ -293,7 +321,7 @@ public class DataModel {
 		return DataConnector.getRentablePictures(rentableId);
 	}
 
-	public String getRenterInRentable(int rentableId) throws SQLException{
+	public String getRenterInRentable(int rentableId) throws SQLException {
 		Logger.logger.info("getting RenterInRentable");
 		return DataConnector.getRenterInRentable(rentableId);
 	}
@@ -305,20 +333,20 @@ public class DataModel {
 
 	public void addRentable(int buildingId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
 		Logger.logger.info("adding rentable");
-		DataConnector.addRentable(buildingId,type, area, winDir, winArea, internet, cable, outlet, floor, price);
+		DataConnector.addRentable(buildingId, type, area, winDir, winArea, internet, cable, outlet, floor, price);
 	}
 
 	public void updateRentable(int rentableId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
 		Logger.logger.info("updating rentable");
-		DataConnector.updateRentable(rentableId,type, area, winDir, winArea, internet, cable, outlet, floor, price);
+		DataConnector.updateRentable(rentableId, type, area, winDir, winArea, internet, cable, outlet, floor, price);
 	}
 
-	public void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+	public void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
 		Logger.logger.info("adding contract");
 		DataConnector.addContract(rentableId, firstName, lastName, street, streetNumber, zipCode, city, countryCode, telephone, cellphone, email, contractStart, contractEnd, price, monthCost, guarantee);
 	}
 
-	public void updateContract(int contractId, int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode , String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
+	public void updateContract(int contractId, int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
 		Logger.logger.info("updating contract");
 		//TODO 100 implement
 	}

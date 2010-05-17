@@ -5,10 +5,12 @@ import data.entities.Rentable;
 import gui.JActionButton;
 import gui.Main;
 import gui.interfaces.IRentableListContainer;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 import java.util.Vector;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -37,8 +39,12 @@ public class RentableRemoveAction extends AbstractIconAction {
 			try {
 				//delete images
 				Main.getDataObject().deleteSelectedRentables(selected);
+				JOptionPane.showMessageDialog((Component)root, Language.getString("RentableSuccesDelete"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+				Main.updateBuildingList();
+				Main.updateRentableList();
 			} catch (SQLException ex) {
-				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
+				System.out.println("error code: " + ex.getErrorCode());
+				JOptionPane.showMessageDialog(Main.getInstance(), ex.getMessage(), "???", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 

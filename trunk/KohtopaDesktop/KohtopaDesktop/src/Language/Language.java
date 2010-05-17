@@ -144,19 +144,19 @@ public class Language {
 		} else if (dir.toLowerCase().equals("n")) {
 			return windDir[0];
 		} else if (dir.toLowerCase().equals("ne")) {
-			return windDir[0];
+			return windDir[1];
 		} else if (dir.toLowerCase().equals("e")) {
-			return windDir[0];
+			return windDir[2];
 		} else if (dir.toLowerCase().equals("se")) {
-			return windDir[0];
+			return windDir[3];
 		} else if (dir.toLowerCase().equals("s")) {
-			return windDir[0];
+			return windDir[4];
 		} else if (dir.toLowerCase().equals("sw")) {
-			return windDir[0];
+			return windDir[5];
 		} else if (dir.toLowerCase().equals("w")) {
-			return windDir[0];
+			return windDir[6];
 		} else if (dir.toLowerCase().equals("nw")) {
-			return windDir[0];
+			return windDir[7];
 		} else {
 			JOptionPane.showMessageDialog(Main.getInstance(), "Failed to find window direction", Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 			return windDir[0];

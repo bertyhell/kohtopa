@@ -26,6 +26,7 @@ public class BuildingAddDialog extends JFrame {
 	private JTextField txtZip;
 	private JTextField txtCity;
 	private JComboBox cbbCountry;
+	private JTextField txtIp;
 	//rentable
 	private JComboBox cbbType;
 	private JTextField txtArea;
@@ -121,7 +122,17 @@ public class BuildingAddDialog extends JFrame {
 		gbl.addLayoutComponent(cbbCountry, gbc);
 		pnlBuildingInformation.add(cbbCountry);
 
+		row++; //next row
 
+		JLabel lblIp = new JLabel("IP:");
+		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
+		gbl.addLayoutComponent(lblIp, gbc);
+		pnlBuildingInformation.add(lblIp);
+
+		txtIp = new JTextField();
+		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(txtIp, gbc);
+		pnlBuildingInformation.add(txtIp);
 
 
 
@@ -284,8 +295,24 @@ public class BuildingAddDialog extends JFrame {
 				if (CheckInput()) {
 					try {
 						Logger.logger.info("add building");
-						Main.getDataObject().addBuilding(txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()));
+						Main.getDataObject().addBuilding(
+								txtStreet.getText(),
+								txtStreetNumber.getText(),
+								txtZip.getText(),
+								txtCity.getText(),
+								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
+								txtIp.getText(),
+								cbbType.getSelectedIndex(),
+								txtArea.getText(),
+								Language.getWindDirCodeFromIndex(cbbWindowDir.getSelectedIndex()),
+								Integer.parseInt(txtWindowArea.getText()),
+								ckbInternet.isSelected()?"1":"0",
+								ckbCable.isSelected()?"1":"0",
+								Integer.parseInt(txtOutlets.getText()),
+								Integer.parseInt(txtFloor.getText()),
+								Double.parseDouble(txtPrice.getText()));
 						Main.updateBuildingList();
+						instance.dispose();
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmAddBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 					} catch (SQLException ex) {
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errAddBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
@@ -333,6 +360,13 @@ public class BuildingAddDialog extends JFrame {
 			txtCity.setBackground(Color.pink);
 		} else {
 			txtCity.setBackground(Color.white);
+		}
+		if (txtIp.getText().length()!= 0 && !txtIp.getText().matches("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")) {
+			errorMessage += "   * " + Language.getString("errIp") + "\n";
+			error = true;
+			txtIp.setBackground(Color.pink);
+		} else {
+			txtIp.setBackground(Color.white);
 		}
 
 		//check rentable inputs
