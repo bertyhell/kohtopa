@@ -445,7 +445,7 @@ public class Main extends JFrame {
 	 * @return the message pane
 	 */
 	public static MessagePane getMessagePane() {
-		return instance.pnlMessagesInfo;
+		return Main.pnlMessagesInfo;
 	}
 
 	/**
@@ -453,7 +453,7 @@ public class Main extends JFrame {
 	 * @return the invoice pane
 	 */
 	public static InvoicesPane getInvoicesPane() {
-		return instance.pnlInvoicesInfo;
+		return Main.pnlInvoicesInfo;
 	}
 
 	/**
@@ -461,7 +461,7 @@ public class Main extends JFrame {
 	 * @return the contract pane
 	 */
 	public static ContractsPane getContractsPane() {
-		return instance.pnlContractsInfo;
+		return Main.pnlContractsInfo;
 	}
 
 	/**

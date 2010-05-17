@@ -39,6 +39,7 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 	private JList lstPicture;
 	private Vector<Integer> floors;
 	private PicturePreviewPanel pnlPreview;
+	private JTextField txtIp;
 
 	public BuildingEditDialog(Window parent, int buildingId) {
 		this.buildingId = buildingId;
@@ -167,6 +168,18 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
 		gbl.addLayoutComponent(cbbCountry, gbc);
 		pnlTopInformation.add(cbbCountry);
+
+		row++; //next row
+
+		JLabel lblIp = new JLabel("IP:");
+		Layout.buildConstraints(gbc, 0, row, 1, 1, 10, 1, GridBagConstraints.EAST, GridBagConstraints.EAST);
+		gbl.addLayoutComponent(lblIp, gbc);
+		pnlTopInformation.add(lblIp);
+
+		txtIp = new JTextField();
+		Layout.buildConstraints(gbc, 1, row, 3, 1, 150, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST);
+		gbl.addLayoutComponent(txtIp, gbc);
+		pnlTopInformation.add(txtIp);
 
 
 
@@ -297,9 +310,17 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 				if (CheckInput()) {
 					try {
 						Logger.logger.info("update building");
+						Main.getDataObject().updateBuilding(
+								instance.getBuildingId(),
+								txtStreet.getText(),
+								txtStreetNumber.getText(),
+								txtZip.getText(),
+								txtCity.getText(),
+								Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()),
+								txtIp.getText());
 						Main.updateBuildingList();
-						Main.getDataObject().updateBuilding(instance.getBuildingId(), txtStreet.getText(), txtStreetNumber.getText(), txtZip.getText(), txtCity.getText(), Language.getCountryCodeByIndex(cbbCountry.getSelectedIndex()));
-						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
+						instance.dispose();
+						JOptionPane.showMessageDialog(instance, Language.getString("confirmUpdateBuilding"), Language.getString("succes"), JOptionPane.INFORMATION_MESSAGE, new ImageIcon(getClass().getResource("/images/succes_48.png")));
 					} catch (SQLException ex) {
 						JOptionPane.showMessageDialog(Main.getInstance(), Language.getString("errUpdateBuilding") + ": \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 					}
@@ -379,6 +400,13 @@ public class BuildingEditDialog extends JFrame implements IRentableListContainer
 			txtCity.setBackground(Color.pink);
 		} else {
 			txtCity.setBackground(Color.white);
+		}
+		if (txtIp.getText().length()!= 0 && !txtIp.getText().matches("(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])")) {
+			errorMessage += "   * " + Language.getString("errIp") + "\n";
+			error = true;
+			txtIp.setBackground(Color.pink);
+		} else {
+			txtIp.setBackground(Color.white);
 		}
 		if (error) {
 			JOptionPane.showMessageDialog(this, errorMessage, Language.getString("error"), JOptionPane.ERROR_MESSAGE);
