@@ -40,10 +40,10 @@ public class TaskDialog extends JDialog implements ListSelectionListener {
 
     /**
      * Getter for the instance of the dialog
-     * @param Date the date the instance uses
+     * @param date the date the instance uses
      * @return the dialog screen
      * @throws IllegalAccessException thrown when setModel has not yet been called
-     * @see setModel(CalendarModel model)
+     * @see #setModel(CalendarModel model)
      */
     public static TaskDialog getInstance(Date date) throws IllegalAccessException {
         if (model == null) {

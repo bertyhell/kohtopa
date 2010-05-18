@@ -55,7 +55,7 @@ public class DataConnector {
 	 * @return the connection
 	 * @throws SQLException thrown if something goes wrong creating the connection
 	 */
-	private static Connection geefVerbindingOwner() throws SQLException {
+	private static Connection getConnectionOwner() throws SQLException {
 		return DriverManager.getConnection(ProgramSettings.getConnectionstring(), ProgramSettings.getUsername(), ProgramSettings.getPassword());
 	}
 
@@ -75,15 +75,13 @@ public class DataConnector {
 
 	/**
 	 * Checks the login
-	 * @param username the username to check
-	 * @param password the password to check
 	 * @return the userID, null if no user found
 	 * @throws SQLException thrown if select fails
 	 */
 	public static Integer checkLoginInDatabase() throws SQLException {
 		Integer ownerId = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.checkLogin);
 				ResultSet rs = ps.executeQuery();
@@ -111,7 +109,7 @@ public class DataConnector {
 	public static Vector<Building> selectBuildingPreviews() throws SQLException, IOException {
 		Vector<Building> buildings = new Vector<Building>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				Statement selectBuildings = conn.createStatement();
 				ResultSet rsBuildings = selectBuildings.executeQuery(DataBaseConstants.selectBuildingPreviews);
@@ -145,13 +143,13 @@ public class DataConnector {
 
 	/**
 	 * Fetches renter previews from the database
-	 * @return an Vector of renters
+	 * @return an Vector of rentersFetches renter previews from the database
 	 * @throws SQLException thrown if something goes wrong with the select statements
 	 * @throws IOException thrown if there is a problem fetching the images
 	 */
 	public static Vector<Person> selectRenterPreviews() throws SQLException, IOException {
 		Vector<Person> renters = new Vector<Person>();
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement psSelectRenters = conn.prepareStatement(DataBaseConstants.selectRenterPreviews);
 			ResultSet rsRenters = psSelectRenters.executeQuery();
@@ -175,7 +173,7 @@ public class DataConnector {
 	 */
 	public static void updateBuildingPosition(Building b) throws SQLException {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psPosition = conn.prepareStatement(null);
 				if (b.getLatitude() != 0) {
@@ -205,7 +203,7 @@ public class DataConnector {
 	 * @throws SQLException thrown when the update fails
 	 */
 	static void updateBuilding(int buildingId, String street, String streetNumber, String zip, String city, String country, int latitude, int longtitude, String ip) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement psUpdateBuilding = conn.prepareStatement(DataBaseConstants.updateBuilding);
 
@@ -276,7 +274,7 @@ public class DataConnector {
 
 	public static String getIPAddress(int buildingID) throws SQLException {
 		String IPAddress = null;
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectIPAddress);
 			ps.setInt(1, buildingID);
@@ -304,7 +302,7 @@ public class DataConnector {
 
 	public static Picture getPicture(int pictureID) throws SQLException {
 		Picture picture = null;
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPicture);
 			ps.setInt(1, pictureID);
@@ -333,7 +331,7 @@ public class DataConnector {
 
 	public static String getFloor(int buildingID, int floor) throws SQLException {
 		String blobString = null;
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectFloor);
 			ps.setInt(1, buildingID);
@@ -394,7 +392,7 @@ public class DataConnector {
 	}
 
 	public static void addFloor(int buildingID, int floor, File xml) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertFloor);
 			ps.setInt(1, buildingID);
@@ -423,7 +421,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if insert fails
 	 */
 	public static void addFloorPlan(int id, BufferedImage img, int floor) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(img, "jpg", baos);
@@ -450,12 +448,11 @@ public class DataConnector {
 	 * Getter for the id of a picture
 	 * @param rentable_building_ID
 	 * @param type_floor
-	 * @param connected
 	 * @return the ID used in the database
 	 * @throws SQLException thrown if the select statement fails
 	 */
 	public static Integer getPictureId(int rentable_building_ID, int type_floor) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		Integer id = null;
 		try {
 			PreparedStatement psCheckPicture = conn.prepareStatement(DataBaseConstants.checkPicture);
@@ -490,7 +487,7 @@ public class DataConnector {
 	 * @throws SQLException thrown id delete fails
 	 */
 	public static void removePicture(int id) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePicture);
 
@@ -538,7 +535,7 @@ public class DataConnector {
 	private static Vector<Picture> getPictures(int id, boolean isBuilding) throws SQLException {
 		Vector<Picture> pictures = new Vector<Picture>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				ByteArrayInputStream bais = null;
 				PreparedStatement ps;
@@ -573,7 +570,7 @@ public class DataConnector {
 		Vector<Rentable> rentables = new Vector<Rentable>();
 		try {
 			//int id, ImageIcon previewImage, int type, int area, String windowDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				Statement st = conn.createStatement();
 				ResultSet rs = st.executeQuery(DataBaseConstants.selectRentablesFromOwner);
@@ -613,7 +610,7 @@ public class DataConnector {
 		//TODO: select by rentable/owner/...?
 		HashMap<Integer, Vector<Task>> tasks = new HashMap<Integer, Vector<Task>>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 
 			try {
 				Statement selectTasks = conn.createStatement();
@@ -657,7 +654,7 @@ public class DataConnector {
 	 */
 	public static void insertTask(Task t) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.insertTask);
 				//rentableID, description,start_time,end_time,repeats_every
@@ -685,7 +682,7 @@ public class DataConnector {
 	 */
 	public static void removeTask(Task t) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.deleteTask);
 				//rentableID,description,start_time
@@ -711,7 +708,7 @@ public class DataConnector {
 	 */
 	public static void updateTask(Task originalTask, Task newTask) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psTasks = conn.prepareStatement(DataBaseConstants.updateTask);
 
@@ -745,7 +742,7 @@ public class DataConnector {
 		// create message vector
 		Vector<Message> messages = new Vector<Message>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectMessage);
 				ps.setInt(1, id);
@@ -783,7 +780,7 @@ public class DataConnector {
 	public static Vector<Person> getRenters() {
 		Vector<Person> renters = new Vector<Person>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				Statement ts = conn.createStatement();
 				ResultSet rsRenters = ts.executeQuery(DataBaseConstants.selectRenters);
@@ -821,7 +818,7 @@ public class DataConnector {
 	public static Vector<Contract> getPreviewContractsFromRenter(int RenterId) {
 		Vector<Contract> contracts = new Vector<Contract>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectPreviewContracts);
 				ps.setInt(1, RenterId);
@@ -857,7 +854,7 @@ public class DataConnector {
 	static Contract getContract(int contractId) {
 		Contract contract = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContract);
 				ps.setInt(1, contractId);
@@ -898,7 +895,7 @@ public class DataConnector {
 		//int id, Rentable rentable, Person renter, Date start, Date end, float price, float monthly_cost, float guarentee
 		Vector<Contract> contracts = new Vector<Contract>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectContracts);
 				ResultSet rs = ps.executeQuery();
@@ -935,7 +932,7 @@ public class DataConnector {
 	 */
 	public static void addContract(int rentableId, String firstName, String lastName, String street, String streetNumber, String zipCode, String city, String countryCode, String telephone, String cellphone, String email, Date contractStart, Date contractEnd, double price, double monthCost, double guarantee) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.addContract);
 				ps.setInt(1, rentableId);
@@ -968,7 +965,7 @@ public class DataConnector {
 	static Person getPerson(int id) {
 		Person person = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				person = getPerson(id, conn);
 			} finally {
@@ -1018,7 +1015,7 @@ public class DataConnector {
 	 */
 	public static void updateMessageState(Message m) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateMessageReplied);
 				ps.setString(1, m.getRead());
@@ -1042,7 +1039,7 @@ public class DataConnector {
 	 */
 	public static void sendMessage(Message m) {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertMessage);
@@ -1074,7 +1071,7 @@ public class DataConnector {
 	public static Building getBuilding(int buildingID) throws SQLException {
 		Building building = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				//TODO get images for building
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectBuilding);
@@ -1113,7 +1110,7 @@ public class DataConnector {
 	public static Vector<Rentable> getRentablesFromBuilding(int buildingID) throws SQLException {
 		Vector<Rentable> rentables = new Vector<Rentable>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentablePreviewsFromBuilding);
 				ps.setInt(1, buildingID);
@@ -1151,7 +1148,7 @@ public class DataConnector {
 	static Rentable getRentable(int rentableID) throws SQLException {
 		//int id, ImageIcon previewImage, int type, int area, String windowsDirection, int windowArea, boolean internet, boolean cable, int outletCount, int floor, boolean rented, double price, String description
 		Rentable rentable = null;
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			rentable = getRentable(rentableID, conn);
 		} finally {
@@ -1207,7 +1204,7 @@ public class DataConnector {
 	static Vector<Integer> getFloors(int buildingId) throws SQLException {
 		Vector<Integer> floors = new Vector<Integer>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psFloors = conn.prepareStatement(DataBaseConstants.selectFloors);
 				psFloors.setInt(1, buildingId);
@@ -1264,7 +1261,7 @@ public class DataConnector {
 	 */
 	public static double getRentPriceOrGuarantee(int renterId, boolean guarantee) throws SQLException, ContractNotValidException {
 		double value = 0;
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRentPrice);
@@ -1319,7 +1316,7 @@ public class DataConnector {
 	static Vector<Invoice> getInvoicesPreviews(int RenterId) throws SQLException {
 		Vector<Invoice> invoices = new Vector<Invoice>();
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psInvoices = conn.prepareStatement(DataBaseConstants.selectInvoices);
 
@@ -1356,7 +1353,7 @@ public class DataConnector {
 	 */
 	static void getUtilitiesInvoiceItems(int renterId, Vector<InvoiceItem> items) throws SQLException {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectUtilities);
 				ps.setInt(1, renterId);
@@ -1385,7 +1382,7 @@ public class DataConnector {
 	 */
 	static void insertInvoice(int renterId, Date sendDate, String xmlString) throws SQLException {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertInvoice);
 
@@ -1407,35 +1404,13 @@ public class DataConnector {
 		}
 	}
 
-//	/**
-//	 * Creates views for the owners
-//	 * @throws SQLException thrown if select fails
-//	 */
-//	public static void createViewsForAllOwners() throws SQLException {
-//		try {
-//			Connection conn = geefVerbinding();
-//			try {
-//				//TODO get images for building
-//				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectOwners);
-//				ResultSet rs = ps.executeQuery();
-//				while (rs.next()) {
-//				}
-//			} finally {
-//				conn.close();
-//			}
-//		} catch (Exception ex) {
-//			Logger.logger.error("Exception in createViewsForAllOwners: " + ex.getMessage());
-//			Logger.logger.debug("StackTrace: ", ex);
-//			throw new SQLException("error in makeViews: " + ex);
-//		}
-//	}
 	/**
 	 * Deletes the specified rentable from database
 	 * @param rentableId the identification of the rentable that has to be deleted
 	 * @throws SQLException thrown if delete fails
 	 */
 	static void deleteRentable(int rentableId) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteRentable);
 			ps.setInt(1, rentableId);
@@ -1456,7 +1431,7 @@ public class DataConnector {
 	 * @throws SQLException thrown if delete fails
 	 */
 	static void deleteBuilding(Integer buildingId) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteBuilding);
 			ps.setInt(1, buildingId);
@@ -1472,7 +1447,7 @@ public class DataConnector {
 	static String getRenterInRentable(int rentableId) throws SQLException {
 		String name = Language.getString("notRented");
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectRenterInRentable);
 				ps.setInt(1, rentableId);
@@ -1491,7 +1466,7 @@ public class DataConnector {
 	}
 
 	static void deletePictures(int rentBuildId, int type) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deletePictures);
 			ps.setInt(1, rentBuildId);
@@ -1508,7 +1483,7 @@ public class DataConnector {
 	}
 
 	static void addRentable(int buildingId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertRentable);
 
@@ -1540,7 +1515,7 @@ public class DataConnector {
 	}
 
 	static void updateRentable(int rentableId, int type, double area, String winDir, double winArea, String internet, String cable, int outlet, int floor, double price) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateRentable);
@@ -1587,7 +1562,7 @@ public class DataConnector {
 			int outlets,
 			int floor,
 			double price) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.insertBuilding);
 
@@ -1622,7 +1597,7 @@ public class DataConnector {
 	}
 
 	static void updateContract(int contractId, Date contractEnd) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateContract);
@@ -1646,7 +1621,7 @@ public class DataConnector {
 	static String getInvoiceXmlString(int invoiceId) {
 		String xmlString = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement psInvoiceXml = conn.prepareStatement(DataBaseConstants.selectInvoiceXmlString);
 
@@ -1671,7 +1646,7 @@ public class DataConnector {
 
 	static void updateInvoice(int invoiceId, Date sendDate, String xmlString) throws SQLException {
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.updateInvoice);
 				Logger.logger.debug("command invoice add: " + DataBaseConstants.updateInvoice);
@@ -1696,7 +1671,7 @@ public class DataConnector {
 	static Date getInvoiceSendingDate(int invoiceId) {
 		Date sendDate = null;
 		try {
-			Connection conn = geefVerbindingOwner();
+			Connection conn = getConnectionOwner();
 			try {
 				PreparedStatement ps = conn.prepareStatement(DataBaseConstants.selectInvoiceSendingDate);
 
@@ -1720,7 +1695,7 @@ public class DataConnector {
 	}
 
 	static void removeInvoice(Integer id) throws SQLException {
-		Connection conn = geefVerbindingOwner();
+		Connection conn = getConnectionOwner();
 		try {
 			PreparedStatement ps = conn.prepareStatement(DataBaseConstants.deleteInvoice);
 			Logger.logger.debug("command delete invoice: " + DataBaseConstants.deleteInvoice);
