@@ -18,10 +18,10 @@ public class Logger {
 
 	public static void init() {
 		try {
-			Logger.logger.info("log file under: " + LOG_FILE);
 			logger = org.apache.log4j.Logger.getRootLogger();
 			logger.addAppender(new FileAppender(new PatternLayout(), LOG_FILE, false));
 			logger.addAppender(new ConsoleAppender(new PatternLayout()));
+			Logger.logger.info("log file under: " + LOG_FILE);
 		} catch (IOException ex) {
 			JOptionPane.showMessageDialog(Main.getInstance(), "failed to start logger \n" + ex.getMessage(), Language.getString("error"), JOptionPane.ERROR_MESSAGE);
 		}
