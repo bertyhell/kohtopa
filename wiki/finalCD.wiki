@@ -1,0 +1,10 @@
+#labels Featured
+#afgewerkte cd iso file
+
+= afgewerkte cd link =
+
+hier kan je de iso downloaden van ons project
+indien je deze wil houden
+gelieve te downloaden want de link zal niet eeuwig online blijven staan
+
+http://dl.dropbox.com/u/705280/VOP%203e%20batchlor/CD.iso
